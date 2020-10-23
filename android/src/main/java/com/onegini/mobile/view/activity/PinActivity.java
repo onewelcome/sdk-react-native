@@ -27,6 +27,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.onegini.mobile.R;
+import com.onegini.mobile.R2;
 import com.onegini.mobile.view.handlers.CreatePinRequestHandler;
 import com.onegini.mobile.view.handlers.PinAuthenticationRequestHandler;
 import com.onegini.mobile.helpers.PinInputFields;
@@ -40,7 +41,7 @@ public class PinActivity extends AuthenticationActivity {
   protected static final int MAX_DIGITS = 5;
 
   @SuppressWarnings({ "unused", "WeakerAccess" })
-  @BindView(R.id.pin_error_message)
+  @BindView(R2.id.pin_error_message)
   TextView errorTextView;
 
 
@@ -159,7 +160,7 @@ public class PinActivity extends AuthenticationActivity {
   }
 
   @SuppressWarnings("unused")
-  @OnClick(R.id.auth_cancel_button)
+  @OnClick(R2.id.auth_cancel_button)
   public void onCancelClicked() {
     cancelRequest();
   }

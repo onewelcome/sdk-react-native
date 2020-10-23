@@ -4,6 +4,7 @@ import android.os.Bundle;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.onegini.mobile.R;
+import com.onegini.mobile.R2;
 import com.onegini.mobile.view.handlers.BasicCustomAuthenticationRequestHandler;
 
 public class CustomAuthActivity extends AuthenticationActivity {
@@ -23,7 +24,7 @@ public class CustomAuthActivity extends AuthenticationActivity {
   }
 
   @SuppressWarnings("unused")
-  @OnClick(R.id.auth_accept_button)
+  @OnClick(R2.id.auth_accept_button)
   public void onAcceptClicked() {
     if (BasicCustomAuthenticationRequestHandler.CALLBACK != null) {
       BasicCustomAuthenticationRequestHandler.CALLBACK.acceptAuthenticationRequest();
@@ -31,7 +32,7 @@ public class CustomAuthActivity extends AuthenticationActivity {
   }
 
   @SuppressWarnings("unused")
-  @OnClick(R.id.auth_deny_button)
+  @OnClick(R2.id.auth_deny_button)
   public void onDenyClicked() {
     if (BasicCustomAuthenticationRequestHandler.CALLBACK != null) {
       BasicCustomAuthenticationRequestHandler.CALLBACK.denyAuthenticationRequest();
@@ -40,7 +41,7 @@ public class CustomAuthActivity extends AuthenticationActivity {
 
 
   @SuppressWarnings("unused")
-  @OnClick(R.id.fallback_to_pin_button)
+  @OnClick(R2.id.fallback_to_pin_button)
   public void onFallbackClicked() {
     if (BasicCustomAuthenticationRequestHandler.CALLBACK != null) {
       BasicCustomAuthenticationRequestHandler.CALLBACK.fallbackToPin();

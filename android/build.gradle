@@ -2,19 +2,19 @@ buildscript {
     // The Android Gradle plugin is only required when opening the android folder stand-alone.
     // This avoids unnecessary downloads and potential conflicts when the library is included as a
     // module dependency in an application project.
-    if (project == rootProject) {
-        repositories {
-            google()
-            jcenter()
-        }
+    repositories {
+        google()
+        jcenter()
+    }
 
-        dependencies {
-            classpath("com.android.tools.build:gradle:3.6.1")
-        }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.5.3'
+        classpath 'com.jakewharton:butterknife-gradle-plugin:10.2.0'
     }
 }
 
 apply plugin: 'com.android.library'
+apply plugin: 'com.jakewharton.butterknife'
 
 def safeExtGet(prop, fallback) {
     rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
@@ -51,6 +51,12 @@ repositories {
 
 dependencies {
     implementation 'com.facebook.react:react-native:+'  // From node_modules
+
+    // Onegini SDK
+    api('com.onegini.mobile.sdk.android:onegini-sdk:10.2.1@aar') {
+        transitive = true
+    }
+
     implementation 'com.jakewharton:butterknife:10.2.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.0'
 }

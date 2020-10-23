@@ -9,12 +9,12 @@ import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.onegini.mobile.helpers.OneginiClientInitializer;
 import com.onegini.mobile.helpers.RegistrationHelper;
+import com.onegini.mobile.view.handlers.InitializationHandler;
 import com.onegini.mobile.sdk.android.handlers.OneginiRegistrationHandler;
 import com.onegini.mobile.sdk.android.handlers.error.OneginiRegistrationError;
 import com.onegini.mobile.sdk.android.model.OneginiIdentityProvider;
 import com.onegini.mobile.sdk.android.model.entity.CustomInfo;
 import com.onegini.mobile.sdk.android.model.entity.UserProfile;
-import com.onegini.mobile.view.handlers.InitializationHandler;
 
 import java.util.Set;
 import javax.annotation.Nullable;
@@ -22,10 +22,12 @@ import javax.annotation.Nullable;
 public class RNOneginiSdkModule extends ReactContextBaseJavaModule {
 
   private final ReactApplicationContext reactContext;
+  private final RegistrationHelper registrationHelper;
 
   public RNOneginiSdkModule(ReactApplicationContext reactContext) {
     super(reactContext);
     this.reactContext = reactContext;
+    this.registrationHelper = new RegistrationHelper();
   }
 
   @Override

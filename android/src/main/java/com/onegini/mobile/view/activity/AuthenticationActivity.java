@@ -12,7 +12,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import butterknife.BindView;
+
 import com.onegini.mobile.R;
+import com.onegini.mobile.R2;
 import com.onegini.mobile.storage.UserStorage;
 import com.onegini.mobile.sdk.android.model.entity.UserProfile;
 
@@ -23,13 +25,13 @@ public abstract class AuthenticationActivity extends Activity {
   public static final String EXTRA_USER_PROFILE_ID = "user_profile_id";
 
   @SuppressWarnings({ "unused", "WeakerAccess" })
-  @BindView(R.id.welcome_user_text)
+  @BindView(R2.id.welcome_user_text)
   TextView welcomeTextView;
   @SuppressWarnings({ "unused", "WeakerAccess" })
-  @BindView(R.id.authenticator_message)
+  @BindView(R2.id.authenticator_message)
   TextView authenticatorMessage;
   @SuppressWarnings({ "unused" })
-  @BindView(R.id.auth_cancel_button)
+  @BindView(R2.id.auth_cancel_button)
   Button cancelButton;
 
   protected String errorMessage;
