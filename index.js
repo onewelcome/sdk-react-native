@@ -39,4 +39,13 @@ OneginiSdk.cancelRegistration         = function () {
   RNOneginiSdk.cancelRegistration();
 }
 
+OneginiSdk.setConfigModelClassName = function (className = null) {
+  RNOneginiSdk.setConfigModelClassName(className);
+}
+
+OneginiSdk.setSecurityControllerClassName = function (className = null) {
+  RNOneginiSdk.setSecurityControllerClassName(className);
+}
+
+
 export default OneginiSdk;
