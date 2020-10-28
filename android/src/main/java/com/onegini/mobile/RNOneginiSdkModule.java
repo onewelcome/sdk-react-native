@@ -1,5 +1,7 @@
 package com.onegini.mobile;
 
+import android.util.Log;
+
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -7,29 +9,53 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.onegini.mobile.helpers.OneginiClientInitializer;
 import com.onegini.mobile.helpers.RegistrationHelper;
-import com.onegini.mobile.view.handlers.InitializationHandler;
 import com.onegini.mobile.sdk.android.handlers.OneginiRegistrationHandler;
 import com.onegini.mobile.sdk.android.handlers.error.OneginiRegistrationError;
 import com.onegini.mobile.sdk.android.model.OneginiIdentityProvider;
 import com.onegini.mobile.sdk.android.model.entity.CustomInfo;
 import com.onegini.mobile.sdk.android.model.entity.UserProfile;
+import com.onegini.mobile.view.handlers.BridgePinNotificationHandler;
+import com.onegini.mobile.view.handlers.CreatePinRequestHandler;
+import com.onegini.mobile.view.handlers.InitializationHandler;
+import com.onegini.mobile.view.handlers.PinAuthenticationRequestHandler;
+
+import java.util.Set;
 
 import javax.annotation.Nullable;
+
+import static com.onegini.mobile.Constants.PIN_ACTION_CANCEL;
+import static com.onegini.mobile.Constants.PIN_ACTION_PROVIDE;
+import static com.onegini.mobile.Constants.PIN_NOTIFICATION_CLOSE_VIEW;
+import static com.onegini.mobile.Constants.PIN_NOTIFICATION_CONFIRM_VIEW;
+import static com.onegini.mobile.Constants.PIN_NOTIFICATION_OPEN_VIEW;
+import static com.onegini.mobile.Constants.PIN_NOTIFICATION_SHOW_ERROR;
 
 public class RNOneginiSdkModule extends ReactContextBaseJavaModule {
 
     private final ReactApplicationContext reactContext;
     private final RegistrationHelper registrationHelper;
 
+    private final static String ONEGINI_PIN_NOTIFICATION = "ONEGINI_PIN_NOTIFICATION";
+    private final static String LOG_TAG = "RNOneginiSdk";
+
     private String configModelClassName = null;
     private String securityControllerClassName = "com.onegini.mobile.SecurityController";
+
+    public static BridgePinNotificationHandler pinNotificationHandler;
 
     public RNOneginiSdkModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
         this.registrationHelper = new RegistrationHelper();
+        pinNotificationHandler = this.createBridgePinNotificationHandler();
+    }
+
+    @Override
+    public boolean canOverrideExistingModule() {
+        return true;
     }
 
     @Override
@@ -37,9 +63,8 @@ public class RNOneginiSdkModule extends ReactContextBaseJavaModule {
         return "RNOneginiSdk";
     }
 
-    //@todo obfuscation should be optional and should be controlled
+    // React methods will be below
 
-    /* React methods will be below */
 
     @ReactMethod
     public void setConfigModelClassName(String configModelClassName) {
@@ -50,7 +75,6 @@ public class RNOneginiSdkModule extends ReactContextBaseJavaModule {
     public void setSecurityControllerClassName(String securityControllerClassName) {
         this.securityControllerClassName = securityControllerClassName;
     }
-
 
     @ReactMethod
     public void startClient(Callback callback) {
@@ -145,4 +169,68 @@ public class RNOneginiSdkModule extends ReactContextBaseJavaModule {
     public void cancelRegistration() {
         registrationHelper.cancelRegistration();
     }
+
+    @ReactMethod
+    public void submitPinAction(String action, Boolean isCreatePinFlow, @Nullable String pin) {
+        switch (action){
+            case PIN_ACTION_PROVIDE:
+                if (isCreatePinFlow) {
+                    CreatePinRequestHandler.CALLBACK.onPinProvided(pin.toCharArray());
+                } else {
+                    PinAuthenticationRequestHandler.CALLBACK.acceptAuthenticationRequest(pin.toCharArray());
+                }
+                break;
+            case PIN_ACTION_CANCEL:
+                if (isCreatePinFlow) {
+                    CreatePinRequestHandler.CALLBACK.pinCancelled();
+                } else {
+                    PinAuthenticationRequestHandler.CALLBACK.denyAuthenticationRequest();
+                }
+                break;
+            default:
+                Log.e(LOG_TAG, "Got unsupported PIN action: " + action);
+                break;
+        }
+    }
+
+    private BridgePinNotificationHandler createBridgePinNotificationHandler(){
+        return new BridgePinNotificationHandler(){
+            @Override
+            public void onNotify(final String event, final Boolean isCreatePinFlow){
+
+                WritableMap data = Arguments.createMap();
+
+                switch (event){
+                    case PIN_NOTIFICATION_OPEN_VIEW:
+                        data.putString("action", PIN_NOTIFICATION_OPEN_VIEW);
+                        data.putBoolean("isCreatePinFlow", isCreatePinFlow);
+                        break;
+                    case PIN_NOTIFICATION_CONFIRM_VIEW:
+                        data.putString("action", PIN_NOTIFICATION_CONFIRM_VIEW);
+                        break;
+                    case PIN_NOTIFICATION_CLOSE_VIEW:
+                        data.putString("action", PIN_NOTIFICATION_CLOSE_VIEW);
+                        break;
+                    default:
+                        Log.e(LOG_TAG, "Got unsupported PIN notification type: " + event);
+                        break;
+
+                }
+
+                if(data.getString("action") != null){
+                    getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(ONEGINI_PIN_NOTIFICATION, data);
+                }
+            }
+
+            @Override
+            public void onError(final String message){
+                WritableMap data = Arguments.createMap();
+                data.putString("action", PIN_NOTIFICATION_SHOW_ERROR);
+                data.putString("errorMsg", message);
+
+                getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(ONEGINI_PIN_NOTIFICATION, data);
+            }
+        };
+    }
+
 }

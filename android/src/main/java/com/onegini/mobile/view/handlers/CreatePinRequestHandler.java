@@ -1,21 +1,16 @@
 package com.onegini.mobile.view.handlers;
 
-import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-import static com.onegini.mobile.Constants.COMMAND_FINISH;
-import static com.onegini.mobile.Constants.COMMAND_START;
-import static com.onegini.mobile.Constants.EXTRA_COMMAND;
-import static com.onegini.mobile.view.activity.AuthenticationActivity.EXTRA_ERROR_MESSAGE;
-import static com.onegini.mobile.view.activity.AuthenticationActivity.EXTRA_MESSAGE;
-import static com.onegini.mobile.helpers.ErrorMessageParser.parseErrorMessage;
+import static com.onegini.mobile.Constants.PIN_NOTIFICATION_CLOSE_VIEW;
+import static com.onegini.mobile.Constants.PIN_NOTIFICATION_CONFIRM_VIEW;
+import static com.onegini.mobile.Constants.PIN_NOTIFICATION_OPEN_VIEW;
 
 import java.util.Arrays;
 
 import android.content.Context;
-import android.content.Intent;
+
+import com.onegini.mobile.RNOneginiSdkModule;
 import com.onegini.mobile.OneginiSDK;
 import com.onegini.mobile.util.DeregistrationUtil;
-import com.onegini.mobile.view.activity.PinActivity;
 import com.onegini.mobile.sdk.android.handlers.OneginiPinValidationHandler;
 import com.onegini.mobile.sdk.android.handlers.error.OneginiPinValidationError;
 import com.onegini.mobile.sdk.android.handlers.request.OneginiCreatePinRequestHandler;
@@ -35,8 +30,7 @@ public class CreatePinRequestHandler implements OneginiCreatePinRequestHandler {
 
   @Override
   public void startPinCreation(final UserProfile userProfile, final OneginiPinCallback oneginiPinCallback, final int pinLength) {
-    PinActivity.setIsCreatePinFlow(true);
-    notifyActivity(context.getString(R.string.pin_title_choose_pin), "");
+    notifyOnOpen();
 
     CALLBACK = new PinWithConfirmationHandler(oneginiPinCallback);
   }
@@ -48,7 +42,7 @@ public class CreatePinRequestHandler implements OneginiCreatePinRequestHandler {
 
   @Override
   public void finishPinCreation() {
-    notifyActivity("", "", COMMAND_FINISH);
+    notifyOnSimpleAction(PIN_NOTIFICATION_CLOSE_VIEW);
   }
 
   /**
@@ -77,7 +71,7 @@ public class CreatePinRequestHandler implements OneginiCreatePinRequestHandler {
         @Override
         public void onSuccess() {
           PinWithConfirmationHandler.this.pin = pin;
-          notifyActivity(context.getString(R.string.pin_title_verify_pin), "");
+          notifyOnSimpleAction(PIN_NOTIFICATION_CONFIRM_VIEW);
         }
 
         @Override
@@ -93,7 +87,7 @@ public class CreatePinRequestHandler implements OneginiCreatePinRequestHandler {
       if (pinsEqual) {
         originalHandler.acceptAuthenticationRequest(pin);
       } else {
-        notifyActivity(context.getString(R.string.pin_title_choose_pin), context.getString(R.string.pin_error_not_equal));
+        notifyOnError(context.getString(R.string.pin_error_not_equal));
       }
     }
 
@@ -121,44 +115,40 @@ public class CreatePinRequestHandler implements OneginiCreatePinRequestHandler {
     @OneginiPinValidationError.PinValidationErrorType int errorType = oneginiPinValidationError.getErrorType();
     switch (errorType) {
       case OneginiPinValidationError.WRONG_PIN_LENGTH:
-        notifyActivity(context.getString(R.string.pin_title_choose_pin), context.getString(R.string.pin_error_invalid_length));
+        notifyOnError(context.getString(R.string.pin_error_invalid_length));
         break;
       case OneginiPinValidationError.PIN_BLACKLISTED:
-        notifyActivity(context.getString(R.string.pin_title_choose_pin), context.getString(R.string.pin_error_blacklisted));
+        notifyOnError(context.getString(R.string.pin_error_blacklisted));
         break;
       case OneginiPinValidationError.PIN_IS_A_SEQUENCE:
-        notifyActivity(context.getString(R.string.pin_title_choose_pin), context.getString(R.string.pin_error_sequence));
+        notifyOnError(context.getString(R.string.pin_error_sequence));
         break;
       case OneginiPinValidationError.PIN_USES_SIMILAR_DIGITS:
-        notifyActivity(context.getString(R.string.pin_title_choose_pin), context.getString(R.string.pin_error_similar));
+        notifyOnError(context.getString(R.string.pin_error_similar));
         break;
       case OneginiPinValidationError.DEVICE_DEREGISTERED:
         new DeregistrationUtil(context).onDeviceDeregistered();
-        // Will need this later
         //startLoginActivity(parseErrorMessage(oneginiPinValidationError));
         break;
       case OneginiPinValidationError.GENERAL_ERROR:
       default:
-        notifyActivity(context.getString(R.string.pin_title_choose_pin), oneginiPinValidationError.getMessage());
+        notifyOnError(oneginiPinValidationError.getMessage());
         break;
     }
   }
 
-  private void notifyActivity(final String message, final String errorMessage) {
-    notifyActivity(message, errorMessage, COMMAND_START);
+  private void notifyOnSimpleAction(final String notifyAction) {
+    RNOneginiSdkModule.pinNotificationHandler.onNotify(notifyAction, null);
   }
 
-  private void notifyActivity(final String message, final String errorMessage, final String command) {
-    final Intent intent = new Intent(context, PinActivity.class);
-    intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
-    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-    intent.putExtra(EXTRA_MESSAGE, message);
-    intent.putExtra(EXTRA_ERROR_MESSAGE, errorMessage);
-    intent.putExtra(EXTRA_COMMAND, command);
-    context.startActivity(intent);
+  private void notifyOnOpen() {
+    RNOneginiSdkModule.pinNotificationHandler.onNotify(PIN_NOTIFICATION_OPEN_VIEW, true);
   }
 
-  // Will need this later
+  private void notifyOnError(final String errorMessage) {
+    RNOneginiSdkModule.pinNotificationHandler.onError(errorMessage);
+  }
+
 /*  private void startLoginActivity(final String errorMessage) {
     final Intent intent = new Intent(context, LoginActivity.class);
     intent.putExtra(LoginActivity.ERROR_MESSAGE_EXTRA, errorMessage);

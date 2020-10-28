@@ -1,9 +1,9 @@
 package com.onegini.mobile.helpers;
 
-import android.content.Context;
-
+import java.util.Set;
 import javax.annotation.Nullable;
 
+import android.content.Context;
 import com.onegini.mobile.OneginiSDK;
 import com.onegini.mobile.storage.UserStorage;
 import com.onegini.mobile.util.DeregistrationUtil;
@@ -25,11 +25,11 @@ public class OneginiClientInitializer {
 
     public OneginiClientInitializer(final Context context, @Nullable String configModelClassName, @Nullable String securityControllerClassName) {
         this.context = context;
-        deregistrationUtil = new DeregistrationUtil(context);
-        userStorage = new UserStorage(context);
-
         this.configModelClassName = configModelClassName;
         this.securityControllerClassName = securityControllerClassName;
+
+        deregistrationUtil = new DeregistrationUtil(context);
+        userStorage = new UserStorage(context);
     }
 
     public void startOneginiClient(final InitializationHandler initializationHandler) {

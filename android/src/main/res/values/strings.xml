@@ -1,23 +1,7 @@
 <resources>
-    <string name="pin_error_invalid_pin">Wrong PIN, %1$d attempt(s) left</string>
-    <string name="pin_title_choose_pin">Create PIN</string>
-    <string name="pin_title_verify_pin">Confirm PIN</string>
     <string name="pin_error_blacklisted">This PIN is blacklisted</string>
     <string name="pin_error_sequence">PIN should not be a sequence</string>
     <string name="pin_error_invalid_length">PIN length is incorrect</string>
     <string name="pin_error_not_equal">PIN was not the same, choose PIN</string>
     <string name="pin_error_similar">Too many similar digits</string>
-    <string name="authenticator_message_enter_pin">Enter PIN</string>
-    <string name="use_pin_authentication">Use PIN code</string>
-    <string name="custom_auth_registration_title">Auth registration</string>
-    <string name="custom_auth_deregistration_title">Auth deregistration</string>
-    <string name="custom_auth_authentication_title">Authentication</string>
-    <string name="btn_auth_accept">Accept</string>
-    <string name="btn_auth_deny">Deny</string>
-    <string name="btn_cancel_label">CANCEL</string>
-    <string name="custom_auth_positive_action">Return success</string>
-    <string name="custom_auth_negative_action">Return failure</string>
-    <string name="custom_auth_error_action">Return error</string>
-    <string name="welcome_user_text">Hello, %1$s!</string>
-    <string name="do_you_want_to_confirm_with_custom_auth">Do you want to authenticate with custom authenticator?</string>
 </resources>
