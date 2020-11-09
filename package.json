@@ -1,20 +1,38 @@
 {
   "name": "react-native-onegini-sdk",
-  "version": "0.0.1",
-  "description": "",
+  "title": "React Native Onegini SDK",
+  "version": "0.0.2",
+  "description": "Onegini SDK component for React Native (iOS and Android)",
   "main": "index.js",
+  "files": [
+    "README.md",
+    "android",
+    "index.js",
+    "ios",
+    "react-native-onegini-sdk.podspec"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/develocraft/onegini-react-native-sdk.git",
+    "baseUrl": "https://gitlab.com/develocraft/onegini-react-native-sdk"
   },
   "keywords": [
     "react-native",
     "onegini",
-    "onegini-sdk",
-    "sdk"
+    "onegini-sdk"
   ],
-  "author": "",
-  "license": "",
+  "author": {
+    "name": "Valeriy Rumak",
+    "email": "valeriy.rumak@develocraft.com"
+  },
+  "license": "MIT",
+  "licenseFilename": "LICENSE",
+  "readmeFilename": "README.md",
   "peerDependencies": {
-    "react-native": ">=0.60.0"
+    "react": "^16.13.1",
+    "react-native": ">=0.63.0"
   }
 }
