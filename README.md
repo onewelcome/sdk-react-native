@@ -68,9 +68,7 @@ OR
 	```
 4. Set **onegini_artifactory_user** and **onegini_artifactory_password** at `android/gradle.properties` or globaly for gradle
 
-5. Modify `android/app/src/main/AndroidManifest.xml`:
-	5.1. Add <intent-filter> to your .MainActivity for listening browser redirects. !!! scheme="reactnativeexample" should be changed to your(will be provided by onegini-sdk-configurator) schema.
-
+5. Modify `android/app/src/main/AndroidManifest.xml`. Add `<intent-filter>` to your .MainActivity for listening browser redirects. !!! scheme="reactnativeexample" should be changed to your(will be provided by onegini-sdk-configurator) schema:
 	```
 	<intent-filter>
 		<action android:name="android.intent.action.VIEW" />
@@ -80,32 +78,6 @@ OR
 
 		<data android:scheme="reactnativeexample"/>
 	</intent-filter>
-	```
-
-	5.2 Add next activities to your application:
-
-	```
-	<activity
-		android:name="com.onegini.mobile.view.activity.PinActivity"
-		android:screenOrientation="portrait" />
-
-	<activity
-		android:name="com.onegini.mobile.view.activity.CustomAuthActivity"
-		android:launchMode="singleTask"
-		android:screenOrientation="portrait" />
-
-	<activity
-		android:name="com.onegini.mobile.view.activity.BasicAuthenticatorRegistrationActivity"
-		android:launchMode="singleTask"
-		android:screenOrientation="portrait" />
-	<activity
-		android:name="com.onegini.mobile.view.activity.BasicAuthenticatorDeregistrationActivity"
-		android:launchMode="singleTask"
-		android:screenOrientation="portrait" />
-	<activity
-		android:name="com.onegini.mobile.view.activity.BasicAuthenticatorAuthenticationActivity"
-		android:launchMode="singleTask"
-			android:screenOrientation="portrait" />
 	```
 		
 
