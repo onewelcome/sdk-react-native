@@ -1,13 +1,14 @@
-#import "RNOneginiSdk.h"
+#import <Foundation/Foundation.h>
+#import <React/RCTBridgeModule.h>
+#import <React/RCTEventEmitter.h>
 
-@implementation RNOneginiSdk
 
-RCT_EXPORT_MODULE()
-
-RCT_EXPORT_METHOD(sampleMethod:(NSString *)stringArgument numberParameter:(nonnull NSNumber *)numberArgument callback:(RCTResponseSenderBlock)callback)
-{
-    // TODO: Implement some actually useful functionality
-    callback(@[[NSString stringWithFormat: @"numberArgument: %@ stringArgument: %@", numberArgument, stringArgument]]);
-}
-
+@interface RCT_EXTERN_MODULE(RNOneginiSdk, RCTEventEmitter)
+RCT_EXTERN_METHOD(supportedEvents)
+RCT_EXTERN_METHOD(startClient:(RCTResponseSenderBlock *)callback)
+RCT_EXTERN_METHOD(getRedirectUri:(RCTResponseSenderBlock *)callback)
+RCT_EXTERN_METHOD(registerUser:(NSString *)identityProviderId callback:(RCTResponseSenderBlock *)callback)
+RCT_EXTERN_METHOD(handleRegistrationCallback:(NSString *)url)
+RCT_EXTERN_METHOD(cancelRegistration)
+RCT_EXTERN_METHOD(submitPinAction:(NSString *)action isCreatePinFlow:(nonnull NSNumber *)isCreatePinFlow pin:(NSString *)pin)
 @end
