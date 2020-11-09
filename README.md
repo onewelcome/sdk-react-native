@@ -79,7 +79,37 @@ OR
 		<data android:scheme="reactnativeexample"/>
 	</intent-filter>
 	```
-		
+#### iOS: 
+
+1. The Onegini SDK is uploaded to the Onegini Artifactory repository. In order to let CocoaPods use an Artifactory repository you need to install a specific plugin.
+	```
+	gem install cocoapods-art
+	```
+2. The Onegini SDK repository is not a public repository. You must provide credentials in order to access the repo. Create a file named .netrc in your Home folder (~/) and add the following contents to it:
+	```
+	machine repo.onegini.com
+	login <username>
+	password <password>
+	```
+	Replace the <username> and <password> with the credentials that you use to login to support.onegini.com.
+
+3. The Onegini CocoaPods repository must be added to your local machine using the following command:
+	```
+	pod repo-art add onegini https://repo.onegini.com/artifactory/api/pods/cocoapods-public
+	```
+
+4. In order to update the Repository you must manually perform an update:
+	```
+	pod repo-art add onegini https://repo.onegini.com/artifactory/api/pods/cocoapods-public
+	```
+
+5. Add next to `ios/Podfile`(before app target):
+	```
+	plugin 'cocoapods-art', :sources => [
+	'onegini'
+	]
+	```
+6. Add `SecurityController.h` and `SecurityController.m` as described [HERE](https://docs.onegini.com/msp/stable/ios-sdk/reference/security-controls.html)
 
 ## Linking Native Code
 
