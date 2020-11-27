@@ -20,9 +20,7 @@
     "baseUrl": "https://gitlab.com/develocraft/onegini-react-native-sdk"
   },
   "keywords": [
-    "react-native",
-    "onegini",
-    "onegini-sdk"
+    "react-native"
   ],
   "author": {
     "name": "Valeriy Rumak",
