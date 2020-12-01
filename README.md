@@ -190,41 +190,17 @@ OR
 | **`getAccessToken()`**                                    |  Returns the access token if exist. |
 | **`enrollMobileAuthentication()`**                        |  The first enrollment step. |
 | **`registerUser(identityProviderId):Promise`**            |  Starts the process of registration user. If success then the response contain the success = true if not then contain success = false. |
-| **`deregisterUser(profileId):Promise`**                   |      Starts the process of deregistration user. If success then the response contain the success = true if not then contain success = false. |
-| **`getRedirectUri():Promise`**                            |      Returns an object with the redirect Uri field. |
-| **`getUserProfiles():Promise`**                           |     Returns all registered profiles id. |
-| **`handleRegistrationCallback(uri)`**                     |      Setup a url for the registration process by browser. |
-| **`cancelRegistration():Promise`**                        |      Interrupts process of registration. |
-
-    Triggers the ReturnSuccess method in callback from the custom registration process.
-    If the identityProviderId does not exist then an error occurs.
-    submitCustomRegistrationReturnSuccess(identityProviderId, result);
-
-    Triggers the ReturnError method in callback from the custom registration process.
-    If the identityProviderId does not exist then an error occurs.
-    submitCustomRegistrationReturnError(identityProviderId, result);
-
-    Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION").
-    If flow is authentication then the submitAuthenticationPinAction method is triggered.
-    If flow is create then the submitCreatePinAction method is triggered.
-    If flow is change then the submitChangePinAction method is triggered.
-    submitPinAction(flow, action, pin);
-
-    Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION").
-    Possible actions: provide, cancel, change.
-    submitAuthenticationPinAction(action, pin)
-
-    Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION").
-    Possible actions: provide, cancel, change.
-    submitCreatePinAction(action, pin)
-
-    Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION").
-    Possible actions: provide, cancel, change.
-    submitChangePinAction(action, pin);
-
-    Starts the process of authentication user.
-    authenticateUser(profileId):Promise
-
-    Starts the process of logout user.
-    logout():Promise
+| **`deregisterUser(profileId):Promise`**                   |  Starts the process of deregistration user. If success then the response contain the success = true if not then contain success = false. |
+| **`getRedirectUri():Promise`**                            |  Returns an object with the redirect Uri field. |
+| **`getUserProfiles():Promise`**                           |  Returns all registered profiles id. |
+| **`handleRegistrationCallback(uri)`**                     |  Setup a url for the registration process by browser. |
+| **`cancelRegistration():Promise`**                        |  Interrupts process of registration. |
+| **`submitCustomRegistrationReturnSuccess(identityProviderId, result)`**|        Triggers the ReturnSuccess method in callback from the custom registration process. If the identityProviderId does not exist then an error occurs. |
+| **`submitCustomRegistrationReturnError(identityProviderId, result)`**                        |      Triggers the ReturnError method in callback from the custom registration process.If the identityProviderId does not exist then an error occurs. |
+| **`submitPinAction(flow, action, pin):Promise`**          |Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION"). If flow is authentication then the submitAuthenticationPinAction method is triggered. If flow is create then the submitCreatePinAction method is triggered. If flow is change then the submitChangePinAction method is triggered. |
+| **`submitAuthenticationPinAction(action, pin)`**          |Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION"). Possible actions: provide, cancel, change. |
+| **`submitChangePinAction(action, pin)`**                  |Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION"). Possible actions: provide, cancel, change. |
+| **`submitCreatePinAction(action, pin):Promise`**          |Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION"). Possible actions: provide, cancel, change. |
+| **`authenticateUser(profileId):Promise`**                 |Starts the process of authentication user. |
+| **`logout():Promise`**                                    |Starts the process of logout user. |
   
