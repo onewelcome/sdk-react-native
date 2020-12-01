@@ -179,7 +179,7 @@ OR
 
 ## Supported Methods
 
-    startClient(reactNativeConfig):Promise
+    startClient():Promise
 
     addEventListener(eventType)
 
@@ -222,25 +222,4 @@ OR
     authenticateUser(profileId):Promise
 
     logout():Promise
-
-### Example config class:
-    class ReactNativeConfig {
-
-        customProviders
-
-        constructor() {
-            this.customProviders = []
-            this.customProviders.push(new IdentityProvider("2-way-otp-api", true))
-        }
-    }
-
-    class IdentityProvider {
-        id
-        isTwoStep
-
-        constructor(id, isTwoStep) {
-            this.id = id
-            this.isTwoStep = isTwoStep
-        }
-}
   
