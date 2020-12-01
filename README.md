@@ -179,47 +179,78 @@ OR
 
 ## Supported Methods
 
+    Method init the OriginiSDK and setup configuration.
     startClient():Promise
 
-    addEventListener(eventType)
-
-    removeEventListener(eventType)
-
-    getIdentityProviders():Promise
-
-    getAccessToken():Promise
-
-    enrollMobileAuthentication():Promise
-
-    registerUser(response)
-
-    deregisterUser(profileId):Promise
-
-    getRedirectUri(response)
-
-    getUserProfiles():Promise
-
+    Setup ConfigModelClassName. This has to be set before startClient().
     setConfigModelClassName(className);
 
+    Setup SecurityControllerClassName. This has to be set before startClient().
     setSecurityControllerClassName(className);
 
+    Listens on the events supported by lib(ONEGINI_PIN_NOTIFICATION, ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION)
+    addEventListener(eventType, cb)
+
+    removeEventListener(eventType, cb)
+
+    Returns the identity Providers with are registered int the lib.
+    getIdentityProviders():Promise
+
+    Returns the access token if exist.
+    getAccessToken():Promise
+
+    The first enrollment step.
+    enrollMobileAuthentication():Promise
+
+    Starts the process of registration user.
+    if success then the response contain the success = true if not then contain success = false.
+    registerUser(identityProviderId):Promise
+
+    Starts the process of deregistration user.
+    if success then the response contain the success = true if not then contain success = false.
+    deregisterUser(profileId):Promise
+
+    Returns an object with the redirect Uri field.
+    getRedirectUri(response):Promise
+
+    Returns all registered profiles id.
+    getUserProfiles():Promise
+
+    Setup a url for the registration process by browser.
     handleRegistrationCallback(uri);
 
+    Interrupts process of registration.
     cancelRegistration();
 
+    Triggers the ReturnSuccess method in callback from the custom registration process.
+    If the identityProviderId does not exist then an error occurs.
     submitCustomRegistrationReturnSuccess(identityProviderId, result);
 
+    Triggers the ReturnError method in callback from the custom registration process.
+    If the identityProviderId does not exist then an error occurs.
     submitCustomRegistrationReturnError(identityProviderId, result);
 
+    Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION").
+    If flow is authentication then the submitAuthenticationPinAction method is triggered.
+    If flow is create then the submitCreatePinAction method is triggered.
+    If flow is change then the submitChangePinAction method is triggered.
     submitPinAction(flow, action, pin);
 
-    submitCreatePinAction(action, pin)
-
-    submitChangePinAction(action, pin);
-
+    Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION").
+    Possible actions: provide, cancel, change.
     submitAuthenticationPinAction(action, pin)
 
+    Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION").
+    Possible actions: provide, cancel, change.
+    submitCreatePinAction(action, pin)
+
+    Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION").
+    Possible actions: provide, cancel, change.
+    submitChangePinAction(action, pin);
+
+    Starts the process of authentication user.
     authenticateUser(profileId):Promise
 
+    Starts the process of logout user.
     logout():Promise
   
