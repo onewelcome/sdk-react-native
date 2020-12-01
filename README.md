@@ -70,7 +70,7 @@ OR
 			}
 		}
 	} else {
-		throw new InvalidUserDataException("You must configure the 'artifactory_user' and 'artifactory_password' properties in your project before you can " +
+		throw new InvalidUserDataException("You must configure the 'onegini.artifactory_user' and 'onegini.artifactory_password' properties in your project before you can " +
 				"build it.")
 	}
 	```
