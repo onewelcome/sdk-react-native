@@ -175,7 +175,7 @@ OR
   	- Change PIN
 
 # Usage
-- import RNOneginiSdk from 'react-native-onegini-sdk';
+- import OneginiSdk from 'react-native-sdk-beta';
 
 ## Supported Methods
 
