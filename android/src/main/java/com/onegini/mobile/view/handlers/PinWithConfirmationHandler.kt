@@ -9,7 +9,7 @@ import com.onegini.mobile.sdk.android.handlers.error.OneginiPinValidationError
 import com.onegini.mobile.sdk.android.handlers.error.OneginiPinValidationError.PinValidationErrorType
 import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiPinCallback
 import com.onegini.mobile.util.DeregistrationUtil
-import com.oneginirnexampleapp.R
+import com.onegini.mobile.R
 import java.util.*
 
 class PinWithConfirmationHandler(private val originalHandler: OneginiPinCallback,

@@ -1,8 +1,4 @@
 buildscript {
-    // The Android Gradle plugin is only required when opening the android folder stand-alone.
-    // This avoids unnecessary downloads and potential conflicts when the library is included as a
-    // module dependency in an application project.
-    if (project == rootProject) {
         repositories {
             google()
             jcenter()
@@ -12,11 +8,11 @@ buildscript {
             classpath('com.android.tools.build:gradle:4.1.1')
             classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.10"
         }
-    }
 }
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+
 
 def safeExtGet(prop, fallback) {
     rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
@@ -47,8 +43,8 @@ repositories {
         // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
         url "$rootDir/../node_modules/react-native/android"
     }
-    google()
     jcenter()
+    google()
 }
 
 dependencies {
