@@ -1,12 +1,12 @@
-# react-native-onegini-sdk
+# react-native-sdk-beta
 
 ## Getting started
 
-`npm install react-native-onegini-sdk --save`
+`npm install react-native-sdk-beta --save`
 
 OR
 
-`yarn add react-native-onegini-sdk`
+`yarn add react-native-sdk-beta`
 
 ## SDK Configuration
 
@@ -129,7 +129,7 @@ OR
 
 ##### Auto linking
 
-`react-native link react-native-onegini-sdk`
+`react-native link react-native-sdk-beta`
 
 ##### Manual installation
 
@@ -137,7 +137,7 @@ OR
 #### iOS
 
 1. In XCode, in the project navigator, right click `Libraries` ➜ `Add Files to [your project's name]`
-2. Go to `node_modules` ➜ `react-native-onegini-sdk` and add `RNOneginiSdk.xcodeproj`
+2. Go to `node_modules` ➜ `react-native-sdk-beta` and add `RNOneginiSdk.xcodeproj`
 3. In XCode, in the project navigator, select your project. Add `libRNOneginiSdk.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
 4. Run your project (`Cmd+R`)<
 
@@ -148,12 +148,12 @@ OR
   - Add `new RNOneginiSdkPackage()` to the list returned by the `getPackages()` method
 2. Append the following lines to `android/settings.gradle`:
   	```
-  	include ':react-native-onegini-sdk'
-  	project(':react-native-onegini-sdk').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-onegini-sdk/android')
+  	include ':react-native-sdk-beta'
+  	project(':react-native-sdk-beta').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-sdk-beta/android')
   	```
 3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
   	```
-      compile project(':react-native-onegini-sdk')
+      compile project(':react-native-sdk-beta')
   	```
 
 # Functional scope
