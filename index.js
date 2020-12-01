@@ -1,4 +1,5 @@
 import { NativeModules, Platform, NativeEventEmitter, DeviceEventEmitter } from 'react-native';
+import { ONEGINI_SDK_CONFIG } from "./js/config";
 
 const { RNOneginiSdk } = NativeModules;
 
@@ -9,6 +10,7 @@ const OneginiEventEmitter =
 
 export const ONEGINI_SDK_EVENTS = {
   ONEGINI_PIN_NOTIFICATION: 'ONEGINI_PIN_NOTIFICATION',
+  ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION: 'ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION',
 };
 
 export const ONEGINI_PIN_NOTIFICATIONS = {
@@ -17,11 +19,19 @@ export const ONEGINI_PIN_NOTIFICATIONS = {
   CLOSE: 'close',
   ERROR: 'show_error',
   AUTH_ATTEMPT: 'auth_attempt',
+  CHANGED: 'changed'
 };
 
 export const ONEGINI_PIN_ACTIONS = {
   PROVIDE_PIN: 'provide',
+  CHANGE: 'change',
   CANCEL: 'cancel',
+};
+
+export const ONEGINI_PIN_FLOW = {
+  AUTHENTICATION: 'authentication',
+  CREATE: 'create',
+  CHANGE: 'change',
 };
 
 const OneginiSdk = {};
@@ -39,7 +49,9 @@ OneginiSdk.addEventListener = function (eventType, cb) {
 
   this.listeners[eventType] = OneginiEventEmitter.addListener(
     eventType,
-    (item) => cb(item),
+    (item) => {
+      cb(item);
+    },
   );
 };
 
@@ -54,14 +66,20 @@ OneginiSdk.removeEventListener = function (eventType) {
 
 OneginiSdk.startClient = function () {
   return new Promise((resolve) =>
-    RNOneginiSdk.startClient((response) => resolve(response)),
+    RNOneginiSdk.startClient(ONEGINI_SDK_CONFIG, (response) => resolve(response)),
   );
 };
 
 OneginiSdk.getIdentityProviders = function () {
-  return new Promise((resolve) =>
-    RNOneginiSdk.getIdentityProviders((response) => resolve(response)),
-  );
+  return RNOneginiSdk.getIdentityProviders();
+};
+
+OneginiSdk.getAccessToken = function () {
+  return RNOneginiSdk.getAccessToken();
+};
+
+OneginiSdk.enrollMobileAuthentication = function () {
+  return RNOneginiSdk.enrollMobileAuthentication();
 };
 
 //@todo will return profileId -> Later check out whole profile + don't forget to ask for userName on RN side
@@ -72,6 +90,14 @@ OneginiSdk.registerUser = function (identityProvider = null) {
     ),
   );
 };
+
+OneginiSdk.deregisterUser = function (profileId) {
+  RNOneginiSdk.deregisterUser(profileId);
+}
+
+OneginiSdk.getUserProfiles = function () {
+  return RNOneginiSdk.getUserProfiles();
+}
 
 OneginiSdk.getRedirectUri = function () {
   return new Promise((resolve) =>
@@ -95,10 +121,44 @@ OneginiSdk.setSecurityControllerClassName = function (className = null) {
   RNOneginiSdk.setSecurityControllerClassName(className);
 }
 
-// action = ONEGINI_PIN_ACTIONS
-OneginiSdk.submitPinAction = function (action, isCreatePinFlow = false, pin = null) {
-  RNOneginiSdk.submitPinAction(action, isCreatePinFlow, pin);
+
+OneginiSdk.submitCustomRegistrationReturnSuccess = function (identityProviderId, result = null) {
+  RNOneginiSdk.submitCustomRegistrationReturnSuccess(
+    identityProviderId,
+    result,
+  );
 }
+
+OneginiSdk.submitCustomRegistrationReturnError = function (identityProviderId, result = null) {
+  RNOneginiSdk.submitCustomRegistrationReturnError(
+    identityProviderId,
+    result,
+  );
+}
+
+OneginiSdk.submitPinAction = function (flow, action, pin = null) {
+  RNOneginiSdk.submitPinAction(flow, action, pin);
+}
+
+OneginiSdk.submitCreatePinAction = function (action, pin = null) {
+  RNOneginiSdk.submitCreatePinAction(action, pin);
+}
+
+OneginiSdk.submitChangePinAction = function (action, pin = null) {
+  RNOneginiSdk.submitChangePinAction(action, pin);
+}
+
+OneginiSdk.submitAuthenticationPinAction = function (action, pin = null) {
+  RNOneginiSdk.submitAuthenticationPinAction(action, pin);
+}
+
+OneginiSdk.authenticateUser = function (profileId) { RNOneginiSdk.authenticateUser(profileId); }
+
+OneginiSdk.logout = function () {
+  return new Promise((resolve) =>
+    RNOneginiSdk.logout((response) => resolve(response)),
+  );
+};
 
 
 export default OneginiSdk;

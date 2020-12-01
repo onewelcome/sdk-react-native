@@ -35,8 +35,8 @@ import com.onegini.mobile.view.handlers.customregistration.CustomRegistrationObs
 class OneginiModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
 
     companion object {
-        private const val LOG_TAG = "OneginiModule"
-        private const val TAG = "OneginiModule"
+        private const val LOG_TAG = "RNOneginiSdk"
+        private const val TAG = "RNOneginiSdk"
     }
 
     private val reactContext: ReactApplicationContext
@@ -62,7 +62,7 @@ class OneginiModule(reactContext: ReactApplicationContext) : ReactContextBaseJav
     }
 
     override fun getName(): String {
-        return "OneginiModule"
+        return "RNOneginiSdk"
     }
 
     // React methods will be below
