@@ -9,6 +9,7 @@
     "android",
     "index.js",
     "ios",
+    "js",
     "react-native-onegini-sdk.podspec"
   ],
   "scripts": {
