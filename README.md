@@ -45,7 +45,15 @@ OR
     -keep class com.onegini.mobile.SecurityController { *; }
   	```
 
-3. Add to `android/build.gradle`[allprojects.repositories]: 
+3. Add to `android/build.gradle`[allprojects.repositories]:
+
+    ```
+	dependencies {
+        	classpath("com.android.tools.build:gradle:4.1.1")
+        	classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.10")
+    	}
+
+	```
 
 	```
 	mavenCentral()
