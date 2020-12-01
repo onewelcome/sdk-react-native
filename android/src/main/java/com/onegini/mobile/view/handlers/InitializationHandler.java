@@ -1,3 +1,4 @@
+//@todo Later will be transferred to RN Wrapper
 package com.onegini.mobile.view.handlers;
 
 public interface InitializationHandler {
