@@ -148,15 +148,6 @@ OR
       compile project(':react-native-onegini-sdk')
   	```
 
-
-## Usage
-```javascript
-import RNOneginiSdk from 'react-native-onegini-sdk';
-
-// TODO: What to do with the module?
-RNOneginiSdk;
-```
-
 # Functional scope
 ## Done on the Android:
 ### Milestone 1:
@@ -175,4 +166,73 @@ RNOneginiSdk;
 ### Milestone 6:
   	- Change PIN
 
+# Usage
+- import RNOneginiSdk from 'react-native-onegini-sdk';
+
+## Supported Methods
+
+    startClient(reactNativeConfig):Promise
+
+    addEventListener(eventType)
+
+    removeEventListener(eventType)
+
+    getIdentityProviders():Promise
+
+    getAccessToken():Promise
+
+    enrollMobileAuthentication():Promise
+
+    registerUser(response)
+
+    deregisterUser(profileId):Promise
+
+    getRedirectUri(response)
+
+    getUserProfiles():Promise
+
+    setConfigModelClassName(className);
+
+    setSecurityControllerClassName(className);
+
+    handleRegistrationCallback(uri);
+
+    cancelRegistration();
+
+    submitCustomRegistrationReturnSuccess(identityProviderId, result);
+
+    submitCustomRegistrationReturnError(identityProviderId, result);
+
+    submitPinAction(flow, action, pin);
+
+    submitCreatePinAction(action, pin)
+
+    submitChangePinAction(action, pin);
+
+    submitAuthenticationPinAction(action, pin)
+
+    authenticateUser(profileId):Promise
+
+    logout():Promise
+
+### Example config class:
+    class ReactNativeConfig {
+
+        customProviders
+
+        constructor() {
+            this.customProviders = []
+            this.customProviders.push(new IdentityProvider("2-way-otp-api", true))
+        }
+    }
+
+    class IdentityProvider {
+        id
+        isTwoStep
+
+        constructor(id, isTwoStep) {
+            this.id = id
+            this.isTwoStep = isTwoStep
+        }
+}
   
