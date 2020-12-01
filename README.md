@@ -57,7 +57,7 @@ OR
 
 	```
 	mavenCentral()
-	if (project.hasProperty('onegini.artifactory_user') && project.hasProperty('onegini.artifactory_password')) {
+	if (project.hasProperty('onegini_artifactory_user') && project.hasProperty('onegini_artifactory_password')) {
 		maven {
 			/*
 			Before the release please change the url below to: https://repo.onegini.com/artifactory/onegini-sdk
@@ -70,7 +70,7 @@ OR
 			}
 		}
 	} else {
-		throw new InvalidUserDataException("You must configure the 'onegini.artifactory_user' and 'onegini.artifactory_password' properties in your project before you can " +
+		throw new InvalidUserDataException("You must configure the 'onegini_artifactory_user' and 'onegini_artifactory_password' properties in your project before you can " +
 				"build it.")
 	}
 	```
