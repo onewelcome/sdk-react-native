@@ -156,4 +156,23 @@ import RNOneginiSdk from 'react-native-onegini-sdk';
 // TODO: What to do with the module?
 RNOneginiSdk;
 ```
+
+# Functional scope
+## Done on the Android:
+### Milestone 1:
+	- Start
+  	- Security Controls and Configuration of the SDK
+  	- User registration
+   	   - Browser
+### Milestone 2:
+  	- User registration
+    	   - Custom
+  	- User deregistration
+### Milestone 3:
+  	- User authentication with PIN
+  	- Fetch user access token
+  	- Logout
+### Milestone 6:
+  	- Change PIN
+
   
