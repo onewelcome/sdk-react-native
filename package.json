@@ -1,7 +1,7 @@
 {
   "name": "react-native-sdk-beta",
   "title": "React Native SDK",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Onegini SDK component for React Native (iOS and Android)",
   "main": "index.js",
   "files": [
@@ -9,6 +9,7 @@
     "android",
     "index.js",
     "ios",
+    "js",
     "react-native-onegini-sdk.podspec"
   ],
   "scripts": {
