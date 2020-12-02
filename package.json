@@ -6,14 +6,19 @@
   "main": "index.js",
   "files": [
     "README.md",
-    "android",
+    "android/src",
+    "android/build.gradle",
+    "ios/",
+    "js/",
     "index.js",
-    "ios",
-    "js",
     "react-native-onegini-sdk.podspec"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+    "test": "jest",
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",
@@ -21,7 +26,11 @@
     "baseUrl": "https://gitlab.com/develocraft/onegini-react-native-sdk"
   },
   "keywords": [
-    "react-native"
+    "react-native",
+    "react native",
+    "onegini-sdk",
+    "onegini sdk",
+    "sdk"
   ],
   "author": {
     "name": "Valeriy Rumak",
@@ -33,5 +42,24 @@
   "peerDependencies": {
     "react": "^16.13.1",
     "react-native": ">=0.63.0"
+  },
+  "devDependencies": {
+    "react": "16.13.1",
+    "react-native": "0.63.3",
+    "@babel/core": "^7.12.3",
+    "@babel/runtime": "^7.12.1",
+    "@react-native-community/eslint-config": "^2.0.0",
+    "@react-native-async-storage/async-storage": "^1.13.2",
+    "babel-jest": "^26.6.0",
+    "eslint": "^7.11.0",
+    "jest": "^26.6.0",
+    "metro-react-native-babel-preset": "^0.63.0",
+    "react-test-renderer": "16.13.1"
+  },
+  "jest": {
+    "preset": "react-native",
+    "setupFiles": [
+      "./example/jest.setup.js"
+    ]
   }
 }
