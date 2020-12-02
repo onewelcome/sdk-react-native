@@ -152,7 +152,7 @@ OneginiSdk.submitAuthenticationPinAction = function (action, pin = null) {
   RNOneginiSdk.submitAuthenticationPinAction(action, pin);
 }
 
-OneginiSdk.authenticateUser = function (profileId) { RNOneginiSdk.authenticateUser(profileId); }
+OneginiSdk.authenticateUser = function (profileId) { return RNOneginiSdk.authenticateUser(profileId); }
 
 OneginiSdk.logout = function () {
   return new Promise((resolve) =>
