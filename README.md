@@ -57,7 +57,7 @@ OR
 
 	```
 	mavenCentral()
-	if (project.hasProperty('onegini.artifactory_user') && project.hasProperty('onegini.artifactory_password')) {
+	if (project.hasProperty('onegini_artifactory_user') && project.hasProperty('onegini_artifactory_password')) {
 		maven {
 			/*
 			Before the release please change the url below to: https://repo.onegini.com/artifactory/onegini-sdk
@@ -70,7 +70,7 @@ OR
 			}
 		}
 	} else {
-		throw new InvalidUserDataException("You must configure the 'onegini.artifactory_user' and 'onegini.artifactory_password' properties in your project before you can " +
+		throw new InvalidUserDataException("You must configure the 'onegini_artifactory_user' and 'onegini_artifactory_password' properties in your project before you can " +
 				"build it.")
 	}
 	```
@@ -179,47 +179,28 @@ OR
 
 ## Supported Methods
 
-    startClient():Promise
-
-    addEventListener(eventType)
-
-    removeEventListener(eventType)
-
-    getIdentityProviders():Promise
-
-    getAccessToken():Promise
-
-    enrollMobileAuthentication():Promise
-
-    registerUser(response)
-
-    deregisterUser(profileId):Promise
-
-    getRedirectUri(response)
-
-    getUserProfiles():Promise
-
-    setConfigModelClassName(className);
-
-    setSecurityControllerClassName(className);
-
-    handleRegistrationCallback(uri);
-
-    cancelRegistration();
-
-    submitCustomRegistrationReturnSuccess(identityProviderId, result);
-
-    submitCustomRegistrationReturnError(identityProviderId, result);
-
-    submitPinAction(flow, action, pin);
-
-    submitCreatePinAction(action, pin)
-
-    submitChangePinAction(action, pin);
-
-    submitAuthenticationPinAction(action, pin)
-
-    authenticateUser(profileId):Promise
-
-    logout():Promise
+| Method                     | Description                                                                                                                                                                               |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`startClient():Promise`**                               |  Method init the OriginiSDK and setup configuration.                                                                |
+| **`setConfigModelClassName(className)`**                  |  Setup ConfigModelClassName. This has to be set before startClient().                                               |
+| **`setSecurityControllerClassName(className)`**           |  Setup SecurityControllerClassName. This has to be set before startClient()..                                       |
+| **`addEventListener(eventType, cb)`**                     |  Listens on the events supported by lib(ONEGINI_PIN_NOTIFICATION, ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION).        |
+| **`removeEventListener(eventType, cb)`**                  |         |
+| **`getIdentityProviders()`**                              |  Returns the identity Providers with are registered int the lib.  |
+| **`getAccessToken()`**                                    |  Returns the access token if exist. |
+| **`enrollMobileAuthentication()`**                        |  The first enrollment step. |
+| **`registerUser(identityProviderId):Promise`**            |  Starts the process of registration user. If success then the response contain the success = true if not then contain success = false. |
+| **`deregisterUser(profileId):Promise`**                   |  Starts the process of deregistration user. If success then the response contain the success = true if not then contain success = false. |
+| **`getRedirectUri():Promise`**                            |  Returns an object with the redirect Uri field. |
+| **`getUserProfiles():Promise`**                           |  Returns all registered profiles id. |
+| **`handleRegistrationCallback(uri)`**                     |  Setup a url for the registration process by browser. |
+| **`cancelRegistration():Promise`**                        |  Interrupts process of registration. |
+| **`submitCustomRegistrationReturnSuccess(identityProviderId, result)`**|        Triggers the ReturnSuccess method in callback from the custom registration process. If the identityProviderId does not exist then an error occurs. |
+| **`submitCustomRegistrationReturnError(identityProviderId, result)`**                        |      Triggers the ReturnError method in callback from the custom registration process.If the identityProviderId does not exist then an error occurs. |
+| **`submitPinAction(flow, action, pin):Promise`**          |Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION"). If flow is authentication then the submitAuthenticationPinAction method is triggered. If flow is create then the submitCreatePinAction method is triggered. If flow is change then the submitChangePinAction method is triggered. |
+| **`submitAuthenticationPinAction(action, pin)`**          |Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION"). Possible actions: provide, cancel. |
+| **`submitChangePinAction(action, pin)`**                  |Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION"). Possible actions: provide, cancel, change. |
+| **`submitCreatePinAction(action, pin):Promise`**          |Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION"). Possible actions: provide, cancel. |
+| **`authenticateUser(profileId):Promise`**                 |Starts the process of authentication user. |
+| **`logout():Promise`**                                    |Starts the process of logout user. |
   
