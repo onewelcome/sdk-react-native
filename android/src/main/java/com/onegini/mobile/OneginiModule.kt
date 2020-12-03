@@ -7,6 +7,9 @@ import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEm
 import com.onegini.mobile.Constants.CUSTOM_REGISTRATION_NOTIFICATION
 import com.onegini.mobile.Constants.CUSTOM_REGISTRATION_NOTIFICATION_FINISH_REGISTRATION
 import com.onegini.mobile.Constants.CUSTOM_REGISTRATION_NOTIFICATION_INIT_REGISTRATION
+import com.onegini.mobile.Constants.MOBILE_AUTH_OTP_FINISH_AUTHENTICATION
+import com.onegini.mobile.Constants.MOBILE_AUTH_OTP_NOTIFICATION
+import com.onegini.mobile.Constants.MOBILE_AUTH_OTP_START_AUTHENTICATION
 import com.onegini.mobile.Constants.ONEGINI_PIN_NOTIFICATION
 import com.onegini.mobile.Constants.PinFlow
 import com.onegini.mobile.OneginiComponets.deregistrationUtil
@@ -15,10 +18,8 @@ import com.onegini.mobile.OneginiComponets.userStorage
 import com.onegini.mobile.helpers.ErrorHelper
 import com.onegini.mobile.helpers.OneginiClientInitializer
 import com.onegini.mobile.helpers.RegistrationHelper
+import com.onegini.mobile.mapers.*
 import com.onegini.mobile.mapers.CustomInfoMapper.add
-import com.onegini.mobile.mapers.OneginiErrorMapper
-import com.onegini.mobile.mapers.OneginiIdentityProviderMapper
-import com.onegini.mobile.mapers.OneginiReactNativeConfigMapper
 import com.onegini.mobile.mapers.UserProfileMapper.add
 import com.onegini.mobile.mapers.UserProfileMapper.toUserProfile
 import com.onegini.mobile.mapers.UserProfileMapper.toWritableMap
@@ -26,11 +27,13 @@ import com.onegini.mobile.sdk.android.handlers.*
 import com.onegini.mobile.sdk.android.handlers.error.*
 import com.onegini.mobile.sdk.android.handlers.error.OneginiRegistrationError.RegistrationErrorType
 import com.onegini.mobile.sdk.android.model.entity.CustomInfo
+import com.onegini.mobile.sdk.android.model.entity.OneginiMobileAuthenticationRequest
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.util.DeregistrationUtil
 import com.onegini.mobile.view.handlers.InitializationHandler
 import com.onegini.mobile.view.handlers.PinNotificationObserver
 import com.onegini.mobile.view.handlers.customregistration.CustomRegistrationObserver
+import com.onegini.mobile.view.handlers.mobileauthotp.MobileAuthOtpRequestObserver
 
 class OneginiModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
 
@@ -45,6 +48,7 @@ class OneginiModule(reactContext: ReactApplicationContext) : ReactContextBaseJav
     private var securityControllerClassName = "com.onegini.mobile.SecurityController"
     private val pinNotificationObserver: PinNotificationObserver
     private val customRegistrationObserver: CustomRegistrationObserver
+    private val mobileAuthOtpRequestObserver: MobileAuthOtpRequestObserver
     private val oneginiSDK: OneginiSDK
         private get() = OneginiComponets.oneginiSDK
 
@@ -55,6 +59,7 @@ class OneginiModule(reactContext: ReactApplicationContext) : ReactContextBaseJav
         registrationHelper = RegistrationHelper(oneginiSDK)
         pinNotificationObserver = createBridgePinNotificationHandler()
         customRegistrationObserver = createCustomRegistrationObserver()
+        mobileAuthOtpRequestObserver = createMobileAuthOtpRequestObserver()
     }
 
     override fun canOverrideExistingModule(): Boolean {
@@ -107,6 +112,7 @@ class OneginiModule(reactContext: ReactApplicationContext) : ReactContextBaseJav
     private fun oneginiSDKInitiated() {
         oneginiSDK.setPinNotificationObserver(pinNotificationObserver)
         oneginiSDK.setCustomRegistrationObserver(customRegistrationObserver)
+        oneginiSDK.setMobileAuthOtpRequestObserver(mobileAuthOtpRequestObserver)
     }
 
     @ReactMethod
@@ -117,6 +123,11 @@ class OneginiModule(reactContext: ReactApplicationContext) : ReactContextBaseJav
     @ReactMethod
     fun getAccessToken(promise: Promise) {
         promise.resolve(oneginiSDK.oneginiClient.accessToken)
+    }
+
+    @ReactMethod
+    fun getAuthenticatedUserProfile(promise: Promise) {
+        promise.resolve(UserProfileMapper.toWritableMap(oneginiSDK.oneginiClient.userClient.authenticatedUserProfile))
     }
 
     @ReactMethod
@@ -282,9 +293,58 @@ class OneginiModule(reactContext: ReactApplicationContext) : ReactContextBaseJav
     }
 
     @ReactMethod
+    fun submitAcceptMobileAuthOtp(promise: Promise) {
+        val handler = oneginiSDK.mobileAuthOtpRequestHandler
+        if (handler == null) {
+            promise.reject(Exception("The Mobile auth Otp is disabled"))
+        }
+        handler!!.acceptAuthenticationRequest()
+    }
+
+    @ReactMethod
+    fun submitDenyMobileAuthOtp(promise: Promise) {
+        val handler = oneginiSDK.mobileAuthOtpRequestHandler
+        if (handler == null) {
+            promise.reject(Exception("The Mobile auth Otp is disabled"))
+        }
+        handler!!.denyAuthenticationRequest()
+    }
+
+    @ReactMethod
+    fun handleMobileAuthWithOtp(otpCode: String, promise: Promise) {
+        oneginiSDK.oneginiClient.userClient.handleMobileAuthWithOtp(otpCode, object : OneginiMobileAuthWithOtpHandler {
+            override fun onSuccess() {
+                promise.resolve(null)
+            }
+
+            override fun onError(error: OneginiMobileAuthWithOtpError?) {
+                promise.reject(error)
+            }
+        })
+    }
+
+    @ReactMethod
     fun getUserProfiles(promise: Promise) {
         val profiles = oneginiSDK.oneginiClient.userClient.userProfiles
         promise.resolve(toWritableMap(profiles))
+    }
+
+    private fun createMobileAuthOtpRequestObserver(): MobileAuthOtpRequestObserver {
+        return object : MobileAuthOtpRequestObserver {
+            override fun startAuthentication(request: OneginiMobileAuthenticationRequest?) {
+                val map = Arguments.createMap()
+                map.putString("action", MOBILE_AUTH_OTP_START_AUTHENTICATION)
+                OneginiMobileAuthenticationRequestMapper.add(map, request)
+                reactApplicationContext.getJSModule(RCTDeviceEventEmitter::class.java).emit(MOBILE_AUTH_OTP_NOTIFICATION, map)
+            }
+
+            override fun finishAuthentication() {
+                val map = Arguments.createMap()
+                map.putString("action", MOBILE_AUTH_OTP_FINISH_AUTHENTICATION)
+                reactApplicationContext.getJSModule(RCTDeviceEventEmitter::class.java).emit(MOBILE_AUTH_OTP_NOTIFICATION, map)
+            }
+
+        }
     }
 
     private fun createCustomRegistrationObserver(): CustomRegistrationObserver {
