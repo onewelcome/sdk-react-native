@@ -15,6 +15,7 @@ import com.onegini.mobile.Constants.PinFlow
 import com.onegini.mobile.OneginiComponets.deregistrationUtil
 import com.onegini.mobile.OneginiComponets.init
 import com.onegini.mobile.OneginiComponets.userStorage
+import com.onegini.mobile.helpers.AuthenticatorHelper
 import com.onegini.mobile.helpers.ErrorHelper
 import com.onegini.mobile.helpers.OneginiClientInitializer
 import com.onegini.mobile.helpers.RegistrationHelper
@@ -44,6 +45,7 @@ class OneginiModule(reactContext: ReactApplicationContext) : ReactContextBaseJav
 
     private val reactContext: ReactApplicationContext
     private val registrationHelper: RegistrationHelper
+    private val authenticatorHelper: AuthenticatorHelper
     private var configModelClassName: String? = null
     private var securityControllerClassName = "com.onegini.mobile.SecurityController"
     private val pinNotificationObserver: PinNotificationObserver
@@ -57,6 +59,7 @@ class OneginiModule(reactContext: ReactApplicationContext) : ReactContextBaseJav
         init(reactContext.applicationContext)
         this.reactContext = reactContext
         registrationHelper = RegistrationHelper(oneginiSDK)
+        authenticatorHelper = AuthenticatorHelper(oneginiSDK)
         pinNotificationObserver = createBridgePinNotificationHandler()
         customRegistrationObserver = createCustomRegistrationObserver()
         mobileAuthOtpRequestObserver = createMobileAuthOtpRequestObserver()
@@ -128,6 +131,11 @@ class OneginiModule(reactContext: ReactApplicationContext) : ReactContextBaseJav
     @ReactMethod
     fun getAuthenticatedUserProfile(promise: Promise) {
         promise.resolve(UserProfileMapper.toWritableMap(oneginiSDK.oneginiClient.userClient.authenticatedUserProfile))
+    }
+
+    @ReactMethod
+    fun registerFingerprintAuthenticator(profileId: String) {
+        authenticatorHelper
     }
 
     @ReactMethod
