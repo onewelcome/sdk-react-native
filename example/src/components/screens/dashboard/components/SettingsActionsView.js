@@ -3,6 +3,7 @@ import {Text, StyleSheet} from 'react-native';
 import PropTypes from 'prop-types';
 import ContentContainer from './ContentContainer';
 import Button from '../../../general/Button';
+import { enrollMobileAuthentication } from '../../../helpers/MobileAuthenticationHelper';
 
 const renderButton = (name, onPress = () => null, disabled = true) => {
   return (
@@ -24,7 +25,10 @@ const SettingsActionsView = (props) => {
   return (
     <ContentContainer>
       {renderMessage(message)}
-      {renderButton('ENROLL FOR MOBILE AUTH')}
+      {renderButton('ENROLL FOR MOBILE AUTH', () => {
+        setMessage("")
+        enrollMobileAuthentication(setMessage, setMessage)
+      },false)}
       {renderButton('CHANGE PIN', props.onChangePinPressed, false)}
       {renderButton('CHANGE AUTHENTICATION', props.onChangeAuthPressed, false)}
     </ContentContainer>
