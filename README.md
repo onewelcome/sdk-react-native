@@ -88,7 +88,7 @@ OR
 	</intent-filter>
 	```
 
-6. Setup the OneginiConfigModel:
+6. Setup the Onegini config:
     Generate a 'OneginiConfigModel' and 'keystore.bks' by [SDK Configurator]("https://github.com/Onegini/onegini-sdk-configurator#android").Next the 'OneginiConfigModel' puts into {packageName}. Exmaple `com.onegini.mobile.OneginiConfigModel`
     The 'keystore.bks' puts into '/res/raw'. You have 2 possibility way:
     - Keep it as it is.
