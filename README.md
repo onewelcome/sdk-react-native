@@ -19,118 +19,122 @@ OR
 
 1. Modify `android/app/build.gradle`:
 
-	1.1. Add to `android` section:
+    1.1. Add to `android` section:
 
-  	```
+    ```
     lintOptions {
         abortOnError false
     }
-  	```
+    ```
 
-	1.2 Add to `android` -> `defaultConfig` section:
-	
-	```
-	minSdkVersion 19
-	multiDexEnabled true
-	```
+    1.2 Add to `android` -> `defaultConfig` section:
+    
+    ```
+    minSdkVersion 19
+    multiDexEnabled true
+    ```
 
-	1.3 Add to `dependencies` section:
+    1.3 Add to `dependencies` section:
 
-	```
-	implementation 'androidx.multidex:multidex:2.0.1'
-	```
+    ```
+    implementation 'androidx.multidex:multidex:2.0.1'
+    ```
 
 2. Add to `android/app/proguard-rules.pro`:
-   	```
+    ```
     -keep class com.onegini.mobile.SecurityController { *; }
-  	```
+    ```
 
 3. Add to `android/build.gradle`[allprojects.repositories]:
 
     ```
-	dependencies {
-        	classpath("com.android.tools.build:gradle:4.1.1")
-        	classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.10")
-    	}
+    dependencies {
+            classpath("com.android.tools.build:gradle:4.1.1")
+            classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.10")
+        }
 
-	```
+    ```
 
-	```
-	mavenCentral()
-	if (project.hasProperty('onegini_artifactory_user') && project.hasProperty('onegini_artifactory_password')) {
-		maven {
-			/*
-			Before the release please change the url below to: https://repo.onegini.com/artifactory/onegini-sdk
-			Please change it back to https://repo.onegini.com/artifactory/public after the release
-			*/
-			url "https://repo.onegini.com/artifactory/onegini-sdk"
-			credentials {
-				username "${onegini_artifactory_user}"
-				password "${onegini_artifactory_password}"
-			}
-		}
-	} else {
-		throw new InvalidUserDataException("You must configure the 'onegini_artifactory_user' and 'onegini_artifactory_password' properties in your project before you can " +
-				"build it.")
-	}
-	```
+    ```
+    mavenCentral()
+    if (project.hasProperty('onegini_artifactory_user') && project.hasProperty('onegini_artifactory_password')) {
+        maven {
+            /*
+            Before the release please change the url below to: https://repo.onegini.com/artifactory/onegini-sdk
+            Please change it back to https://repo.onegini.com/artifactory/public after the release
+            */
+            url "https://repo.onegini.com/artifactory/onegini-sdk"
+            credentials {
+                username "${onegini_artifactory_user}"
+                password "${onegini_artifactory_password}"
+            }
+        }
+    } else {
+        throw new InvalidUserDataException("You must configure the 'onegini_artifactory_user' and 'onegini_artifactory_password' properties in your project before you can " +
+                "build it.")
+    }
+    ```
 4. Set **onegini_artifactory_user** and **onegini_artifactory_password** at `android/gradle.properties` or globaly for gradle
 
 5. Modify `android/app/src/main/AndroidManifest.xml`. Add `<intent-filter>` to your .MainActivity for listening browser redirects. !!! scheme="reactnativeexample" should be changed to your(will be provided by onegini-sdk-configurator) schema:
-	```
-	<intent-filter>
-		<action android:name="android.intent.action.VIEW" />
+    ```
+    <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
 
-		<category android:name="android.intent.category.DEFAULT"/>
-		<category android:name="android.intent.category.BROWSABLE"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
 
-		<data android:scheme="reactnativeexample"/>
-	</intent-filter>
-	```
+        <data android:scheme="reactnativeexample"/>
+    </intent-filter>
+    ```
 
-6. Setup the Onegini config:
-    Generate a `OneginiConfigModel` and `keystore.bks` by [SDK Configurator](https://github.com/Onegini/onegini-sdk-configurator#android). Next the `OneginiConfigModel` puts into {packageName}. Exmaple `com.onegini.mobile.OneginiConfigModel`
-    The `keystore.bks` puts into '/res/raw'. You have 2 possibility way:
+6. <a name="android-setup-config"/>Setup the Onegini config: Generate a 'OneginiConfigModel' and 'keystore.bks' with [SDK Configurator](https://github.com/Onegini/onegini-sdk-configurator#android). 
+    
+    Configurator will put `OneginiConfigModel` into `[RN_application_package_classpath.OneginiConfigModel]` (e.g. `com.exampleapp.OneginiConfigModel`) and the `keystore.bks` into '/res/raw'. 
+    After configurator used - you have 2 options:
     - Keep it as it is.
-    - Move `OneginiConfigModel` to another place. You have to set the path into OneginiSdk. [Supported Methods:](#supported-methods) setConfigModelClassName(className).
+    - If there is a need to move `OneginiConfigModel` to another place - it's **required** to specify custom classpath for OneginiSdk: [Supported Methods:](#supported-methods) setConfigModelClassName(className).
+    
+    More information [HERE](https://docs.onegini.com/msp/stable/android-sdk/topics/setting-up-the-project.html#verifying), section: Running the SDK Configurator.
 
-        More information [HERE](https://docs.onegini.com/msp/stable/android-sdk/topics/setting-up-the-project.html#verifying) section: Running the SDK Configurator.
-
-7. Setup the SecurityController(not required):
-        Create a SecurityController. Example class you find in the lib("com.onegini.mobile.SecurityController"). See the [Supported Methods:](#supported-methods) setSecurityControllerClassName(className).
-        If the file is not set, then the app gets it from `com.onegini.mobile.SecurityController`.
-        More information [HERE](https://docs.onegini.com/msp/stable/android-sdk/reference/security-controls.html#examples) section: SecurityController.
+7. <a name="android-setup-security-controller"/>Setup the SecurityController(<u>not required</u>).
+    
+    In order to change security options you should create your own instance SecurityController and handle it to OneginiSdk -  See the [Supported Methods:](#supported-methods) setSecurityControllerClassName(className). 
+    Example SecurityController implementation you can find inside library source code("com.onegini.mobile.SecurityController").
+    By default security options brought from `com.onegini.mobile.SecurityController`.
+    
+    More information [HERE](https://docs.onegini.com/msp/stable/android-sdk/reference/security-controls.html#examples), section: SecurityController.
 
 #### iOS: 
 
 1. The Onegini SDK is uploaded to the Onegini Artifactory repository. In order to let CocoaPods use an Artifactory repository you need to install a specific plugin.
-	```
-	gem install cocoapods-art
-	```
+    ```
+    gem install cocoapods-art
+    ```
 2. The Onegini SDK repository is not a public repository. You must provide credentials in order to access the repo. Create a file named .netrc in your Home folder (~/) and add the following contents to it:
-	```
-	machine repo.onegini.com
-	login <username>
-	password <password>
-	```
-	Replace the <username> and <password> with the credentials that you use to login to support.onegini.com.
+    ```
+    machine repo.onegini.com
+    login <username>
+    password <password>
+    ```
+    Replace the <username> and <password> with the credentials that you use to login to support.onegini.com.
 
 3. The Onegini CocoaPods repository must be added to your local machine using the following command:
-	```
-	pod repo-art add onegini https://repo.onegini.com/artifactory/api/pods/cocoapods-public
-	```
+    ```
+    pod repo-art add onegini https://repo.onegini.com/artifactory/api/pods/cocoapods-public
+    ```
 
 4. In order to update the Repository you must manually perform an update:
-	```
-	pod repo-art add onegini https://repo.onegini.com/artifactory/api/pods/cocoapods-public
-	```
+    ```
+    pod repo-art add onegini https://repo.onegini.com/artifactory/api/pods/cocoapods-public
+    ```
 
 5. Add next to `ios/Podfile`(before app target):
-	```
-	plugin 'cocoapods-art', :sources => [
-	'onegini'
-	]
-	```
+    ```
+    plugin 'cocoapods-art', :sources => [
+    'onegini'
+    ]
+    ```
 6. Add `SecurityController.h` and `SecurityController.m` as described [HERE](https://docs.onegini.com/msp/stable/ios-sdk/reference/security-controls.html)
 
 ## Linking Native Code
@@ -161,32 +165,32 @@ OR
   - Add `import com.onegini.mobile.RNOneginiSdkPackage;` to the imports at the top of the file
   - Add `new RNOneginiSdkPackage()` to the list returned by the `getPackages()` method
 2. Append the following lines to `android/settings.gradle`:
-  	```
-  	include ':react-native-sdk-beta'
-  	project(':react-native-sdk-beta').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-sdk-beta/android')
-  	```
+    ```
+    include ':react-native-sdk-beta'
+    project(':react-native-sdk-beta').projectDir = new File(rootProject.projectDir,     '../node_modules/react-native-sdk-beta/android')
+    ```
 3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
-  	```
+    ```
       compile project(':react-native-sdk-beta')
-  	```
+    ```
 
 # Functional scope
 ## Done on the Android:
 ### Milestone 1:
-	- Start
-  	- Security Controls and Configuration of the SDK
-  	- User registration
-   	   - Browser
+    - Start
+    - Security Controls and Configuration of the SDK
+    - User registration
+       - Browser
 ### Milestone 2:
-  	- User registration
-    	   - Custom
-  	- User deregistration
+    - User registration
+           - Custom
+    - User deregistration
 ### Milestone 3:
-  	- User authentication with PIN
-  	- Fetch user access token
-  	- Logout
+    - User authentication with PIN
+    - Fetch user access token
+    - Logout
 ### Milestone 6:
-  	- Change PIN
+    - Change PIN
 
 # Usage
 - import OneginiSdk from 'react-native-sdk-beta';
@@ -195,11 +199,11 @@ OR
 
 | Method                     | Description                                                                                                                                                                               |
 | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **`setConfigModelClassName(className)`**                  |  Sets a class the OneginiConfigModel. Example `com.onegini.mobile.OneginiConfigModel`. Default path is `{packageName}.OneginiConfigModel`. This has to be set before startClient(). More information App Configuration Android point 6. [HERE](#android)                                                |
-| **`setSecurityControllerClassName(className)`**           |  Sets a class the SecurityController. Example `com.onegini.mobile.SecurityController`. Default class is brought from `com.onegini.mobile.SecurityController`. This has to be set before startClient(). More information App Configuration Android point 7. [HERE](#android)
+| **`setConfigModelClassName(className)`**                  |  (Android only) Sets the path to OneginiConfigModel class(e.g. `com.exampleapp.OneginiConfigModel`). By default SDK looking for config at `[RN_application_package_classpath].OneginiConfigModel`. This has to be set **before** startClient(). More information [HERE](#android-setup-config)                                                |
+| **`setSecurityControllerClassName(className)`**           |  (Android only) Sets the path to SecurityController class(e.g. `com.exampleapp.SecurityController`). By default controller brought from `com.onegini.mobile.SecurityController`. This has to be set **before** startClient(). More information [HERE](#android-setup-security-controller)
 | **`startClient():Promise`**                               |  Method init the OriginiSDK and setup configuration.                                                                |                                      |
-| **`addEventListener(eventType, cb)`**                     |  Listens on the events supported by lib(ONEGINI_PIN_NOTIFICATION, ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION).        |
-| **`removeEventListener(eventType, cb)`**                  |         |
+| **`addEventListener(eventType, cb)`**                     |  Adds listener for certain event type(ONEGINI_PIN_NOTIFICATION, ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION).        |
+| **`removeEventListener(eventType, cb)`**                  |  Removes listener for certain event type(ONEGINI_PIN_NOTIFICATION, ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION)       |
 | **`getIdentityProviders()`**                              |  Returns the identity Providers with are registered int the lib.  |
 | **`getAccessToken()`**                                    |  Returns the access token if exist. |
 | **`enrollMobileAuthentication()`**                        |  The first enrollment step. |
@@ -207,14 +211,13 @@ OR
 | **`deregisterUser(profileId):Promise`**                   |  Starts the process of deregistration user. If success then the response contain the success = true if not then contain success = false. |
 | **`getRedirectUri():Promise`**                            |  Returns an object with the redirect Uri field. |
 | **`getUserProfiles():Promise`**                           |  Returns all registered profiles id. |
-| **`handleRegistrationCallback(uri)`**                     |  Setup a url for the registration process by browser. |
+| **`handleRegistrationCallback(uri)`**                     |  Pass a url for the registration process which obtained from browser redirect action. |
 | **`cancelRegistration():Promise`**                        |  Interrupts process of registration. |
-| **`submitCustomRegistrationReturnSuccess(identityProviderId, result)`**|        Triggers the ReturnSuccess method in callback from the custom registration process. If the identityProviderId does not exist then an error occurs. |
-| **`submitCustomRegistrationReturnError(identityProviderId, result)`**                        |      Triggers the ReturnError method in callback from the custom registration process.If the identityProviderId does not exist then an error occurs. |
-| **`submitPinAction(flow, action, pin):Promise`**          |Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION"). If flow is authentication then the submitAuthenticationPinAction method is triggered. If flow is create then the submitCreatePinAction method is triggered. If flow is change then the submitChangePinAction method is triggered. |
-| **`submitAuthenticationPinAction(action, pin)`**          |Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION"). Possible actions: provide, cancel. |
-| **`submitChangePinAction(action, pin)`**                  |Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION"). Possible actions: provide, cancel, change. |
-| **`submitCreatePinAction(action, pin):Promise`**          |Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION"). Possible actions: provide, cancel. |
-| **`authenticateUser(profileId):Promise`**                 |Starts the process of authentication user. |
-| **`logout():Promise`**                                    |Starts the process of logout user. |
-  
+| **`submitCustomRegistrationReturnSuccess(identityProviderId, result)`**|  Triggers the ReturnSuccess method in callback from the custom registration process. If the identityProviderId does not exist then an error occurs. |
+| **`submitCustomRegistrationReturnError(identityProviderId, result)`** |  Triggers the ReturnError method in callback from the custom registration process.If the identityProviderId does not exist then an error occurs. |
+| **`submitPinAction(flow, action, pin):Promise`**          |  Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION"). If flow is authentication then the submitAuthenticationPinAction method is triggered. If flow is create then the submitCreatePinAction method is triggered. If flow is change then the submitChangePinAction method is triggered.  |
+| **`submitAuthenticationPinAction(action, pin)`**          |  Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION"). Possible actions: provide, cancel. |
+| **`submitChangePinAction(action, pin)`**                  |  Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION"). Possible actions: provide, cancel, change. |
+| **`submitCreatePinAction(action, pin):Promise`**          |  Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION"). Possible actions: provide, cancel. |
+| **`authenticateUser(profileId):Promise`**                 |  Starts the process of authentication user.  |
+| **`logout():Promise`**                                    |  Starts the process of logout user.  |
