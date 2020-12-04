@@ -89,7 +89,7 @@ OR
 	```
 
 6. Setup the OneginiConfigModel:
-    Generate a 'OneginiConfigModel' and 'keystore.bks' by 'SDK Configurator'.Next the 'OneginiConfigModel' puts into {packageName}. Exmaple `com.onegini.mobile.OneginiConfigModel`
+    Generate a 'OneginiConfigModel' and 'keystore.bks' by [SDK Configurator]("https://github.com/Onegini/onegini-sdk-configurator#android").Next the 'OneginiConfigModel' puts into {packageName}. Exmaple `com.onegini.mobile.OneginiConfigModel`
     The 'keystore.bks' puts into '/res/raw'. You have 2 possibility way:
     - Keep it as it is.
     - Move 'OneginiConfigModel' to another place. You have to set the path into OneginiSdk. [Supported Methods:](#supported-methods) setConfigModelClassName(className).
