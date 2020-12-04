@@ -89,13 +89,13 @@ OR
 	```
 
 6. Setup the OneginiConfigModel:
-        Create a OneginiConfigModel with class implemented the OneginiClientConfigModel. Put the file in {packageName}. Exmaple "com.onegini.mobile.OneginiConfigModel".
+        Create a OneginiConfigModel with class implemented the OneginiClientConfigModel. Put the file in {packageName}. Exmaple `com.onegini.mobile.OneginiConfigModel`.
         You can also put the file in other place but you have to set the path in OneginiSdk. See the Supported Methods: setConfigModelClassName(className).
         More information [HERE](https://docs.onegini.com/msp/stable/android-sdk/topics/setting-up-the-project.html) section: Running the SDK Configurator.
 
 7. Setup the SecurityController(not required):
         Create a SecurityController. Example class you find in the lib("com.onegini.mobile.SecurityController"). See the Supported Methods: setSecurityControllerClassName(className).
-        If the file is not set, then the app gets it from "com.onegini.mobile.SecurityController".
+        If the file is not set, then the app gets it from `com.onegini.mobile.SecurityController`.
         More information [HERE](https://docs.onegini.com/msp/stable/android-sdk/reference/security-controls.html#examples) section: SecurityController.
 
 #### iOS: 
@@ -192,8 +192,8 @@ OR
 
 | Method                     | Description                                                                                                                                                                               |
 | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **`setConfigModelClassName(className)`**                  |  Sets a path the OneginiConfigModel. Example "com.onegini.mobile.OneginiConfigModel". Default path is "{packageName}.OneginiConfigModel". This has to be set before startClient(). More information App Configuration Android point 6. [HERE](#android)                                                |
-| **`setSecurityControllerClassName(className)`**           |  Sets a path the SecurityController. Example "com.onegini.mobile.SecurityController". Default class is brought from com.onegini.mobile.SecurityController. This has to be set before startClient(). More information App Configuration Android point 7. [HERE](#android)
+| **`setConfigModelClassName(className)`**                  |  Sets a path the OneginiConfigModel. Example `com.onegini.mobile.OneginiConfigModel`. Default path is `{packageName}.OneginiConfigModel`. This has to be set before startClient(). More information App Configuration Android point 6. [HERE](#android)                                                |
+| **`setSecurityControllerClassName(className)`**           |  Sets a path the SecurityController. Example `com.onegini.mobile.SecurityController`. Default class is brought from com.onegini.mobile.SecurityController. This has to be set before startClient(). More information App Configuration Android point 7. [HERE](#android)
 | **`startClient():Promise`**                               |  Method init the OriginiSDK and setup configuration.                                                                |                                      |
 | **`addEventListener(eventType, cb)`**                     |  Listens on the events supported by lib(ONEGINI_PIN_NOTIFICATION, ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION).        |
 | **`removeEventListener(eventType, cb)`**                  |         |
