@@ -90,12 +90,12 @@ OR
 
 6. Setup the OneginiConfigModel:
         Create a OneginiConfigModel with class implemented the OneginiClientConfigModel. Put the file in {packageName}. Exmaple "com.onegini.mobile.OneginiConfigModel".
-        You can also put the file in other place but you have to set the path in OneginiSdk. See OneginiSdk
+        You can also put the file in other place but you have to set the path in OneginiSdk. See the Supported Methods: setConfigModelClassName(className).
         More information [HERE](https://docs.onegini.com/msp/stable/android-sdk/topics/setting-up-the-project.html) section: Running the SDK Configurator.
 
 7. Setup the SecurityController(not required):
-        Create a SecurityController. Example class you find in the lib("com.onegini.mobile.SecurityController").
-        If the file is not set, then the app gets it from "com.onegini.mobile.SecurityController"
+        Create a SecurityController. Example class you find in the lib("com.onegini.mobile.SecurityController"). See the Supported Methods: setSecurityControllerClassName(className).
+        If the file is not set, then the app gets it from "com.onegini.mobile.SecurityController".
         More information [HERE](https://docs.onegini.com/msp/stable/android-sdk/reference/security-controls.html#examples) section: SecurityController.
 
 #### iOS: 
