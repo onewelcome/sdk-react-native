@@ -87,6 +87,15 @@ OR
 		<data android:scheme="reactnativeexample"/>
 	</intent-filter>
 	```
+
+6. Setup the OneginiConfigModel:
+        Create a OneginiConfigModel with implemented the OneginiClientConfigModel. Put the file in {packageName}. Exmaple "com.onegini.mobile.OneginiConfigModel".
+        More information: https://docs.onegini.com/msp/stable/android-sdk/topics/setting-up-the-project.html section: Running the SDK Configurator.
+
+7. Setup the SecurityController(not required):
+        Create a SecurityController. Example class you find lib("com.onegini.mobile.SecurityController").
+        If the file is not set, then the app gets it from "com.onegini.mobile.SecurityController"
+
 #### iOS: 
 
 1. The Onegini SDK is uploaded to the Onegini Artifactory repository. In order to let CocoaPods use an Artifactory repository you need to install a specific plugin.
@@ -155,14 +164,6 @@ OR
   	```
       compile project(':react-native-sdk-beta')
   	```
-4. Setup the OneginiConfigModel:
-    Create a OneginiConfigModel with implemented the OneginiClientConfigModel. Put the file in {packageName}. Exmaple "com.onegini.mobile.OneginiConfigModel".
-    More information: https://docs.onegini.com/msp/stable/android-sdk/topics/setting-up-the-project.html section: Running the SDK Configurator.
-
-5. Setup the SecurityController(not required):
-    Create a SecurityController. Example class you find lib("com.onegini.mobile.SecurityController").
-    If the file is not set, then the app gets it from "com.onegini.mobile.SecurityController"
-
 
 # Functional scope
 ## Done on the Android:
@@ -190,8 +191,8 @@ OR
 | Method                     | Description                                                                                                                                                                               |
 | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **`startClient():Promise`**                               |  Method init the OriginiSDK and setup configuration.                                                                |
-| **`setConfigModelClassName(className)`**                  |  Sets a path the OneginiConfigModel. Example "com.onegini.mobile.OneginiConfigModel". Default path is "{packageName}.OneginiConfigModel". This has to be set before startClient(). More information Android point 4.                                              |
-| **`setSecurityControllerClassName(className)`**           |  Sets a path the SecurityController SecurityController. Example "com.onegini.mobile.SecurityController" More information Android point 5. Default class is brought from com.onegini.mobile.SecurityController. This has to be set before startClient().                                      |
+| **`setConfigModelClassName(className)`**                  |  Sets a path the OneginiConfigModel. Example "com.onegini.mobile.OneginiConfigModel". Default path is "{packageName}.OneginiConfigModel". This has to be set before startClient(). More information App Configuration Android point 6.                                              |
+| **`setSecurityControllerClassName(className)`**           |  Sets a path the SecurityController SecurityController. Example "com.onegini.mobile.SecurityController" App Configuration Android point 7. Default class is brought from com.onegini.mobile.SecurityController. This has to be set before startClient().                                      |
 | **`addEventListener(eventType, cb)`**                     |  Listens on the events supported by lib(ONEGINI_PIN_NOTIFICATION, ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION).        |
 | **`removeEventListener(eventType, cb)`**                  |         |
 | **`getIdentityProviders()`**                              |  Returns the identity Providers with are registered int the lib.  |
