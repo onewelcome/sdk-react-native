@@ -90,6 +90,7 @@ OR
 
 6. Setup the OneginiConfigModel:
         Create a OneginiConfigModel with implemented the OneginiClientConfigModel. Put the file in {packageName}. Exmaple "com.onegini.mobile.OneginiConfigModel".
+        You can also put the file in other place but you have to set the path in OneginiSdk. See OneginiSdk
         More information: https://docs.onegini.com/msp/stable/android-sdk/topics/setting-up-the-project.html section: Running the SDK Configurator.
 
 7. Setup the SecurityController(not required):
