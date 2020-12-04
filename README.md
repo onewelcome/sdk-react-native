@@ -94,7 +94,7 @@ OR
         More information [HERE](https://docs.onegini.com/msp/stable/android-sdk/topics/setting-up-the-project.html) section: Running the SDK Configurator.
 
 7. Setup the SecurityController(not required):
-        Create a SecurityController. Example class you find in the lib("com.onegini.mobile.SecurityController"). See the [Supported Methods:](#supported-methods) setSecurityControllerClassName(className) [HERE](#supported_methods).
+        Create a SecurityController. Example class you find in the lib("com.onegini.mobile.SecurityController"). See the [Supported Methods:](#supported-methods) setSecurityControllerClassName(className).
         If the file is not set, then the app gets it from `com.onegini.mobile.SecurityController`.
         More information [HERE](https://docs.onegini.com/msp/stable/android-sdk/reference/security-controls.html#examples) section: SecurityController.
 
