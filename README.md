@@ -89,8 +89,11 @@ OR
 	```
 
 6. Setup the OneginiConfigModel:
-        Create a OneginiConfigModel with class implemented the OneginiClientConfigModel. Put the file in {packageName}. Exmaple `com.onegini.mobile.OneginiConfigModel`.
-        You can also put the file in other place but you have to set the path into OneginiSdk. See the [Supported Methods:](#supported-methods) setConfigModelClassName(className).
+        Generate a 'OneginiConfigModel' and 'keystore.bks' by 'SDK Configurator'.Next the 'OneginiConfigModel' puts into {packageName}. Exmaple `com.onegini.mobile.OneginiConfigModel`
+        The 'keystore.bks' puts into '/res/raw'. You have 2 possibility way:
+        - Keep it as it is
+        - Move 'OneginiConfigModel' to another place. You have to set the path into OneginiSdk. [Supported Methods:](#supported-methods) setConfigModelClassName(className).
+
         More information [HERE](https://docs.onegini.com/msp/stable/android-sdk/topics/setting-up-the-project.html#verifying) section: Running the SDK Configurator.
 
 7. Setup the SecurityController(not required):
