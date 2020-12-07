@@ -7,6 +7,9 @@
 RCT_EXTERN_METHOD(supportedEvents)
 RCT_EXTERN_METHOD(startClient:(RCTResponseSenderBlock *)callback)
 RCT_EXTERN_METHOD(getRedirectUri:(RCTResponseSenderBlock *)callback)
+RCT_EXTERN_METHOD(getUserProfiles:
+(RCTPromiseResolveBlock)resolve
+rejecter:(RCTPromiseRejectBlock)reject)
 RCT_EXTERN_METHOD(registerUser:(NSString *)identityProviderId callback:(RCTResponseSenderBlock *)callback)
 RCT_EXTERN_METHOD(handleRegistrationCallback:(NSString *)url)
 RCT_EXTERN_METHOD(cancelRegistration)

@@ -2,15 +2,16 @@ protocol BridgeToChangePinConnectorProtocol: AnyObject {
     var bridgeConnector: BridgeConnectorProtocol? { get set }
     var pinView: ChangePinConnectorToViewProtocol? { get set }
   
-    func handlePinAction(_ action: (NSString), _ isCreatePinFlow: (NSNumber), _ pin: (NSString)) -> Void
+    func handlePinAction(_ flow: (NSString), _ action: (NSString), _ pin: (NSString)) -> Void
     func sendNotification(event: PinNotification, mode: PINEntryMode?, error: SdkError?) -> Void
 }
 
+//@todo handle change and auth flows
 class ChangePinConnector : BridgeToChangePinConnectorProtocol {
     unowned var bridgeConnector: BridgeConnectorProtocol?
     unowned var pinView: ChangePinConnectorToViewProtocol?
     
-    func handlePinAction(_ action: (NSString), _ isCreatePinFlow: (NSNumber), _ pin: (NSString)) -> Void {
+    func handlePinAction(_ flow: (NSString), _ action: (NSString), _ pin: (NSString)) -> Void {
       if(PinAction.provide.rawValue === action){
           pinView?.onPinProvided(pin: pin)
       } else if (PinAction.cancel.rawValue === action){
@@ -23,19 +24,19 @@ class ChangePinConnector : BridgeToChangePinConnectorProtocol {
     func sendNotification(event: PinNotification, mode: PINEntryMode?, error: SdkError?) {
         switch (event){
             case .open:
-                sendEvent(data: ["action": PinNotification.open.rawValue, "isCreatePinFlow": mode == PINEntryMode.registration || mode == PINEntryMode.registration])
+                sendEvent(data: ["flow": PinFlow.create.rawValue, "action": PinNotification.open.rawValue])
                 break
             case .confirm:
-                sendEvent(data: ["action": PinNotification.confirm.rawValue])
+                sendEvent(data: ["flow": PinFlow.create.rawValue, "action": PinNotification.confirm.rawValue])
                 break;
             case .close:
-                sendEvent(data: ["action": PinNotification.close.rawValue])
+                sendEvent(data: ["flow": PinFlow.create.rawValue, "action": PinNotification.close.rawValue])
                 break;
             case .authAttempt:
-                sendEvent(data: ["action": PinNotification.authAttempt.rawValue])
+                sendEvent(data: ["flow": PinFlow.create.rawValue, "action": PinNotification.authAttempt.rawValue])
                 break
             case .showError:
-                sendEvent(data: ["action": PinNotification.showError.rawValue, "errorMsg": error?.errorDescription])
+                sendEvent(data: ["flow": PinFlow.create.rawValue, "action": PinNotification.showError.rawValue, "errorMsg": error?.errorDescription])
                 break
         }
     }
@@ -59,4 +60,11 @@ enum PinNotification : String {
 enum PinAction : NSString {
     case provide = "provide",
          cancel = "cancel"
+}
+
+// Pin flows from RN Bridge
+enum PinFlow : NSString {
+    case create = "create",
+         change = "change",
+         authentication = "authentication"
 }

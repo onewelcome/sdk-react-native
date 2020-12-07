@@ -2,8 +2,6 @@
 
 
 module.exports = {
-// not working on windows and removing it resolves.
-//  reactNativePath: '../node_modules/react-native',
   project: {
     android: {
       sourceDir: './example/android',

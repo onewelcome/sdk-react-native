@@ -12,10 +12,11 @@ target 'RNExampleApp' do
 
   config = use_native_modules!
 
-  use_react_native!(:path => config[:reactNativePath])
+  use_react_native!(:path => '../../node_modules/react-native')
 
-  pod 'react-native-sdk-beta', :path => '../../local-react-native-onegini-sdk.podspec'
   pod 'RNCAsyncStorage', :podspec => '../../node_modules/@react-native-async-storage/async-storage'
+  pod 'local-react-native-sdk-beta', :podspec => '../..'
+
 
   target 'RNExampleAppTests' do
     inherit! :complete

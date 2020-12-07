@@ -10,6 +10,7 @@ protocol ConnectorToRNBridgeProtocol: NSObject {
 // Pin notification actions for RN Bridge
 enum OneginiBridgeEvents : String {
     case pinNotification = "ONEGINI_PIN_NOTIFICATION"
+    case customRegistrationNotification = "ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION"
 }
 
 @objc(RNOneginiSdk)
@@ -24,7 +25,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     override func supportedEvents() -> [String]! {
-        return [OneginiBridgeEvents.pinNotification.rawValue]
+        return [OneginiBridgeEvents.pinNotification.rawValue, OneginiBridgeEvents.customRegistrationNotification.rawValue]
     }
 
     @objc
@@ -48,6 +49,14 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
         let redirectUri = ONGClient.sharedInstance().configModel.redirectURL;
 
         callback([["success" : true, "redirectUri" : redirectUri!]])
+    }
+
+    @objc
+    func getUserProfiles(_ resolve: RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
+        let profiles = ONGClient.sharedInstance().userClient.userProfiles() as NSSet;
+        let result = profiles.allObjects as NSArray;
+
+        resolve(result)
     }
 
     @objc
