@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.onegini.mobile.helpers
+package com.onegini.mobile.managers
 
 import android.net.Uri
 import com.onegini.mobile.Constants.DEFAULT_SCOPES
@@ -25,7 +25,7 @@ import com.onegini.mobile.sdk.android.handlers.error.OneginiRegistrationError.Re
 import com.onegini.mobile.sdk.android.model.OneginiIdentityProvider
 import com.onegini.mobile.view.handlers.customregistration.SimpleCustomRegistrationAction
 
-class RegistrationHelper(private val oneginiSDK: OneginiSDK) {
+class RegistrationManager(private val oneginiSDK: OneginiSDK) {
     val redirectUri: String
         get() {
             val client = oneginiSDK.oneginiClient

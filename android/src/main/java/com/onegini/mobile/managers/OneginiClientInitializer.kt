@@ -1,5 +1,5 @@
 //@todo Later will be transferred to RN Wrapper
-package com.onegini.mobile.helpers
+package com.onegini.mobile.managers
 
 import com.onegini.mobile.OneginiSDK
 import com.onegini.mobile.model.rn.OneginiReactNativeConfig

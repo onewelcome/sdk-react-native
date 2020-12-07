@@ -15,10 +15,10 @@ import com.onegini.mobile.Constants.PinFlow
 import com.onegini.mobile.OneginiComponets.deregistrationUtil
 import com.onegini.mobile.OneginiComponets.init
 import com.onegini.mobile.OneginiComponets.userStorage
-import com.onegini.mobile.helpers.AuthenticatorHelper
-import com.onegini.mobile.helpers.ErrorHelper
-import com.onegini.mobile.helpers.OneginiClientInitializer
-import com.onegini.mobile.helpers.RegistrationHelper
+import com.onegini.mobile.managers.AuthenticatorManager
+import com.onegini.mobile.managers.ErrorHelper
+import com.onegini.mobile.managers.OneginiClientInitializer
+import com.onegini.mobile.managers.RegistrationManager
 import com.onegini.mobile.mapers.*
 import com.onegini.mobile.mapers.CustomInfoMapper.add
 import com.onegini.mobile.mapers.UserProfileMapper.add
@@ -44,8 +44,8 @@ class OneginiModule(reactContext: ReactApplicationContext) : ReactContextBaseJav
     }
 
     private val reactContext: ReactApplicationContext
-    private val registrationHelper: RegistrationHelper
-    private val authenticatorHelper: AuthenticatorHelper
+    private val registrationManager: RegistrationManager
+    private val authenticatorManager: AuthenticatorManager
     private var configModelClassName: String? = null
     private var securityControllerClassName = "com.onegini.mobile.SecurityController"
     private val pinNotificationObserver: PinNotificationObserver
@@ -58,8 +58,8 @@ class OneginiModule(reactContext: ReactApplicationContext) : ReactContextBaseJav
     init {
         init(reactContext.applicationContext)
         this.reactContext = reactContext
-        registrationHelper = RegistrationHelper(oneginiSDK)
-        authenticatorHelper = AuthenticatorHelper(oneginiSDK)
+        registrationManager = RegistrationManager(oneginiSDK)
+        authenticatorManager = AuthenticatorManager(oneginiSDK)
         pinNotificationObserver = createBridgePinNotificationHandler()
         customRegistrationObserver = createCustomRegistrationObserver()
         mobileAuthOtpRequestObserver = createMobileAuthOtpRequestObserver()
@@ -134,13 +134,51 @@ class OneginiModule(reactContext: ReactApplicationContext) : ReactContextBaseJav
     }
 
     @ReactMethod
-    fun registerFingerprintAuthenticator(profileId: String) {
-        authenticatorHelper
+    fun registerFingerprintAuthenticator(profileId: String, promise: Promise) {
+        try {
+            authenticatorManager.registerFingerprintAuthenticator(profileId, object : OneginiAuthenticatorRegistrationHandler {
+                override fun onSuccess(info: CustomInfo?) {
+                    promise.resolve(CustomInfoMapper.toWritableMap(info))
+                }
+
+                override fun onError(error: OneginiAuthenticatorRegistrationError?) {
+                    promise.reject(error)
+                }
+            })
+        } catch (e: Exception) {
+            promise.reject(e)
+        }
+    }
+
+    @ReactMethod
+    fun isFingerprintAuthenticatorRegistered(profileId: String, promise: Promise) {
+        try {
+            promise.resolve(authenticatorManager.isFingerprintAuthenticatorRegistered(profileId))
+        } catch (e: Exception) {
+            promise.reject(e)
+        }
+    }
+
+    @ReactMethod
+    fun deregisterFingerprintAuthenticator(profileId: String, promise: Promise) {
+        try {
+            authenticatorManager.deregisterFingerprintAuthenticator(profileId, object : OneginiAuthenticatorDeregistrationHandler {
+                override fun onSuccess() {
+                    promise.resolve(null)
+                }
+
+                override fun onError(error: OneginiAuthenticatorDeregistrationError?) {
+                    promise.reject(error)
+                }
+            })
+        } catch (e: Exception) {
+            promise.reject(e)
+        }
     }
 
     @ReactMethod
     fun registerUser(identityProviderId: String?, callback: Callback) {
-        registrationHelper.registerUser(identityProviderId, object : OneginiRegistrationHandler {
+        registrationManager.registerUser(identityProviderId, object : OneginiRegistrationHandler {
             override fun onSuccess(userProfile: UserProfile?, customInfo: CustomInfo?) {
                 val result = Arguments.createMap()
                 result.putBoolean("success", true)
@@ -154,7 +192,7 @@ class OneginiModule(reactContext: ReactApplicationContext) : ReactContextBaseJav
 
             override fun onError(oneginiRegistrationError: OneginiRegistrationError) {
                 @RegistrationErrorType val errorType = oneginiRegistrationError.errorType
-                var errorMessage = registrationHelper.getErrorMessageByCode(errorType)
+                var errorMessage = registrationManager.getErrorMessageByCode(errorType)
                 if (errorMessage == null) {
                     errorMessage = oneginiRegistrationError.message
                 }
@@ -189,7 +227,7 @@ class OneginiModule(reactContext: ReactApplicationContext) : ReactContextBaseJav
 
     @ReactMethod
     fun submitCustomRegistrationReturnSuccess(identityProviderId: String, result: String?) {
-        val action = registrationHelper.getSimpleCustomRegistrationAction(identityProviderId)
+        val action = registrationManager.getSimpleCustomRegistrationAction(identityProviderId)
                 ?: throw Exception("The $identityProviderId was not configured ")
 
         action.returnSuccess(result)
@@ -197,7 +235,7 @@ class OneginiModule(reactContext: ReactApplicationContext) : ReactContextBaseJav
 
     @ReactMethod
     fun submitCustomRegistrationReturnError(identityProviderId: String, errorMessage: String?) {
-        val action = registrationHelper.getSimpleCustomRegistrationAction(identityProviderId)
+        val action = registrationManager.getSimpleCustomRegistrationAction(identityProviderId)
                 ?: throw Exception("The $identityProviderId was not configured ")
 
         action.returnError(java.lang.Exception(errorMessage))
@@ -205,7 +243,7 @@ class OneginiModule(reactContext: ReactApplicationContext) : ReactContextBaseJav
 
     @ReactMethod
     fun getRedirectUri(callback: Callback) {
-        val uri = registrationHelper.redirectUri
+        val uri = registrationManager.redirectUri
         val result = Arguments.createMap()
         result.putBoolean("success", true)
         result.putString("redirectUri", uri)
@@ -214,12 +252,12 @@ class OneginiModule(reactContext: ReactApplicationContext) : ReactContextBaseJav
 
     @ReactMethod
     fun handleRegistrationCallback(uri: String?) {
-        registrationHelper.handleRegistrationCallback(uri)
+        registrationManager.handleRegistrationCallback(uri)
     }
 
     @ReactMethod
     fun cancelRegistration() {
-        registrationHelper.cancelRegistration()
+        registrationManager.cancelRegistration()
     }
 
     @ReactMethod

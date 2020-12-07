@@ -4,9 +4,9 @@ import { ONEGINI_SDK_CONFIG } from "./js/config";
 const { RNOneginiSdk } = NativeModules;
 
 const OneginiEventEmitter =
-        Platform.OS === 'ios'
-          ? new NativeEventEmitter(RNOneginiSdk)
-          : DeviceEventEmitter;
+  Platform.OS === 'ios'
+    ? new NativeEventEmitter(RNOneginiSdk)
+    : DeviceEventEmitter;
 
 export const ONEGINI_SDK_EVENTS = {
   ONEGINI_PIN_NOTIFICATION: 'ONEGINI_PIN_NOTIFICATION',
@@ -98,12 +98,12 @@ OneginiSdk.submitDenyMobileAuthOtp = function () {
   return RNOneginiSdk.submitDenyMobileAuthOtp()
 }
 
-OneginiSdk.handleMobileAuthWithOtp  = function (otpCode){
+OneginiSdk.handleMobileAuthWithOtp = function (otpCode) {
   return RNOneginiSdk.handleMobileAuthWithOtp(otpCode)
 }
 
 OneginiSdk.getAuthenticatedUserProfile = function () {
-    return RNOneginiSdk.getAuthenticatedUserProfile()
+  return RNOneginiSdk.getAuthenticatedUserProfile()
 }
 
 //@todo will return profileId -> Later check out whole profile + don't forget to ask for userName on RN side
@@ -133,7 +133,7 @@ OneginiSdk.handleRegistrationCallback = function (uri) {
   RNOneginiSdk.handleRegistrationCallback(uri);
 }
 
-OneginiSdk.cancelRegistration         = function () {
+OneginiSdk.cancelRegistration = function () {
   RNOneginiSdk.cancelRegistration();
 }
 
@@ -184,5 +184,18 @@ OneginiSdk.logout = function () {
   );
 };
 
+
+//Fingerprint
+OneginiSdk.registerFingerprintAuthenticator = function (profileId) {
+  RNOneginiSdk.registerFingerprintAuthenticator(profileId);
+}
+
+OneginiSdk.deregisterFingerprintAuthenticator = function (profileId) {
+  RNOneginiSdk.deregisterFingerprintAuthenticator(profileId);
+}
+
+OneginiSdk.isFingerprintAuthenticatorRegistered = function (profileId) {
+  RNOneginiSdk.isFingerprintAuthenticatorRegistered(profileId);
+}
 
 export default OneginiSdk;

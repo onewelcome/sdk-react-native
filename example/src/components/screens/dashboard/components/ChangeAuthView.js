@@ -1,12 +1,31 @@
-import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import ContentContainer from './ContentContainer';
 import Row from '../../../general/Row';
 import Switch from '../../../general/Switch';
+import { registerFingerprintAuthenticator, deregisterFingerprintAuthenticator, isFingerprintAuthenticatorRegistered } from '../../../helpers/FingerprintHelper'
 
 const ChangeAuthView = (props) => {
+  const [isFigerprintEnable, setFingerprintEnable] = useState(false);
+  const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    isFingerprintAuthenticatorRegistered(setFingerprintEnable)
+  }, []);
+
+  const renderMessage = (message) => {
+    if (message != "") {
+      return (
+        <Text style={styles.message}>{message}</Text>
+      );
+    } else {
+      return 
+    }
+  };
+
   return (
     <ContentContainer containerStyle={styles.container}>
+      {renderMessage(message)}
       <Row containerStyle={styles.row}>
         <Text style={styles.methodLabel}>Login Method</Text>
         <Text style={styles.methodText}>PIN</Text>
@@ -27,13 +46,29 @@ const ChangeAuthView = (props) => {
           containerStyle={styles.fingerprintSwitchContainer}
           labelStyle={styles.switchLabel}
           label={'Fingerprint'}
-          onSwitch={() => null}
-          value={false}
+          onSwitch={(isEnable) => onSwithFingerprint(isEnable, setFingerprintEnable, setMessage)}
+          value={isFigerprintEnable}
         />
       </View>
     </ContentContainer>
   );
 };
+
+const onSwithFingerprint = (isEnable, setFigerprintEnable, setMessage) => {
+  if (isEnable) {
+    registerFingerprintAuthenticator((successful) => {
+      if (successful) {
+        setFigerprintEnable(true)
+      }
+    }, setMessage)
+  } else {
+    deregisterFingerprintAuthenticator((successful) => {
+      if (successful) {
+        setFigerprintEnable(false)
+      }
+    }, setMessage)
+  }
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -75,6 +110,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '500',
     color: '#7c7c7c',
+  },
+  message: {
+    margin: 15,
   },
 });
 
