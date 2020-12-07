@@ -8,8 +8,6 @@
 const path = require('path');
 const rnProjectRoot =  path.join(__dirname, '/example');
 
-console.log('wtf', rnProjectRoot)
-
 module.exports = {
   projectRoot: rnProjectRoot,
   watchFolders: [rnProjectRoot, __dirname],

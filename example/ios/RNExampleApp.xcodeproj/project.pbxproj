@@ -42,13 +42,6 @@
 			remoteGlobalIDString = 2D02E47A1E0B4A5D006451C7;
 			remoteInfo = "RNExampleApp-tvOS";
 		};
-		C7927DB3257AA45300109C79 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = C7927DAF257AA45300109C79 /* RNOneginiSdk.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 134814201AA4EA6300B7C361;
-			remoteInfo = RNOneginiSdk;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -78,7 +71,6 @@
 		91DD9DDBBF4D1BFAD2FD4E26 /* OneginiConfigModel.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = OneginiConfigModel.m; path = Configuration/OneginiConfigModel.m; sourceTree = "<group>"; };
 		A1E10371429B63327FF9C01E /* libPods-RNExampleApp-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RNExampleApp-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0536859D334601F1341D1E6 /* Pods-RNExampleApp-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNExampleApp-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-RNExampleApp-tvOSTests/Pods-RNExampleApp-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
-		C7927DAF257AA45300109C79 /* RNOneginiSdk.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNOneginiSdk.xcodeproj; path = ../../ios/RNOneginiSdk.xcodeproj; sourceTree = "<group>"; };
 		C7F1FBDB255929230054C758 /* SecurityController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SecurityController.h; sourceTree = "<group>"; };
 		C7F1FBDC255929230054C758 /* SecurityController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SecurityController.m; sourceTree = "<group>"; };
 		E186EE90144DA49CB66D9D40 /* libPods-RNExampleApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RNExampleApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -143,7 +135,6 @@
 		13B07FAE1A68108700A75B9A /* RNExampleApp */ = {
 			isa = PBXGroup;
 			children = (
-				C7927DAF257AA45300109C79 /* RNOneginiSdk.xcodeproj */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -224,14 +215,6 @@
 				7DAE8D2B6FA921790F810F3F /* CloudFlareIncECCCA3.cer */,
 			);
 			name = Resources;
-			sourceTree = "<group>";
-		};
-		C7927DB0257AA45300109C79 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				C7927DB4257AA45300109C79 /* libRNOneginiSdk.a */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		F6AE1EEDC53EEC7FD0C0CC79 /* Configuration */ = {
@@ -380,12 +363,6 @@
 			mainGroup = 83CBB9F61A601CBA00E9B192;
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = C7927DB0257AA45300109C79 /* Products */;
-					ProjectRef = C7927DAF257AA45300109C79 /* RNOneginiSdk.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				13B07F861A680F5B00A75B9A /* RNExampleApp */,
@@ -395,16 +372,6 @@
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		C7927DB4257AA45300109C79 /* libRNOneginiSdk.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libRNOneginiSdk.a;
-			remoteRef = C7927DB3257AA45300109C79 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		00E356EC1AD99517003FC87E /* Resources */ = {

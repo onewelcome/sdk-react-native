@@ -84,8 +84,8 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     @objc
-    func submitPinAction(_ action: (NSString), isCreatePinFlow: (NSNumber), pin: (NSString)) -> Void {
-        bridgeConnector.toChangePinConnector.handlePinAction(action, isCreatePinFlow, pin)
+    func submitPinAction(_ flow: (NSString), action: (NSString), pin: (NSString)) -> Void {
+        bridgeConnector.toChangePinConnector.handlePinAction(flow, action, pin)
     }
 
     func sendBridgeEvent(eventName: OneginiBridgeEvents, data: Any!) -> Void {
