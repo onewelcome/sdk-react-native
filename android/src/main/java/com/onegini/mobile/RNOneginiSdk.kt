@@ -32,7 +32,7 @@ import com.onegini.mobile.view.handlers.InitializationHandler
 import com.onegini.mobile.view.handlers.PinNotificationObserver
 import com.onegini.mobile.view.handlers.customregistration.CustomRegistrationObserver
 
-class OneginiModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
+class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
 
     companion object {
         private const val LOG_TAG = "RNOneginiSdk"
