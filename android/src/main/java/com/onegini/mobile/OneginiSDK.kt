@@ -10,6 +10,7 @@ import com.onegini.mobile.view.handlers.*
 import com.onegini.mobile.view.handlers.customregistration.CustomRegistrationObserver
 import com.onegini.mobile.view.handlers.customregistration.SimpleCustomRegistrationAction
 import com.onegini.mobile.view.handlers.customregistration.SimpleCustomRegistrationFactory
+import com.onegini.mobile.view.handlers.fingerprint.FingerprintAuthenticationObserver
 import com.onegini.mobile.view.handlers.fingerprint.FingerprintAuthenticationRequestHandler
 import com.onegini.mobile.view.handlers.mobileauthotp.MobileAuthOtpRequestHandler
 import com.onegini.mobile.view.handlers.mobileauthotp.MobileAuthOtpRequestObserver
@@ -123,6 +124,10 @@ class OneginiSDK(private val appContext: Context) {
 
     fun setMobileAuthOtpRequestObserver(mobileAuthOtpRequestObserver: MobileAuthOtpRequestObserver) {
         mobileAuthOtpRequestHandler?.observer = mobileAuthOtpRequestObserver
+    }
+
+    fun setFingerprintAuthenticationObserver(observer: FingerprintAuthenticationObserver) {
+        fingerprintAuthenticationRequestHandler?.observer = observer
     }
 
     private fun setConfigModel(clientBuilder: OneginiClientBuilder) {

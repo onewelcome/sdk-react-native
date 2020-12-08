@@ -7,10 +7,7 @@ import com.onegini.mobile.sdk.android.model.entity.UserProfile
 class FingerprintAuthenticationRequestHandler : OneginiFingerprintAuthenticationRequestHandler {
 
     private var callback: OneginiFingerprintCallback? = null
-    private var observer: FingerprintAuthenticationObserver? = null
-    fun setPinNotificationObserver(observer: FingerprintAuthenticationObserver?) {
-        this.observer = observer
-    }
+    var observer: FingerprintAuthenticationObserver? = null
 
     override fun startAuthentication(user: UserProfile?, callback: OneginiFingerprintCallback) {
         this.callback = callback

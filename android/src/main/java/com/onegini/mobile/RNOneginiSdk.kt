@@ -124,6 +124,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         oneginiSDK.setPinNotificationObserver(pinNotificationObserver)
         oneginiSDK.setCustomRegistrationObserver(customRegistrationObserver)
         oneginiSDK.setMobileAuthOtpRequestObserver(mobileAuthOtpRequestObserver)
+        oneginiSDK.setFingerprintAuthenticationObserver(fingerprintAuthenticationObserver)
     }
 
     @ReactMethod
@@ -156,6 +157,11 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         } catch (e: Exception) {
             promise.reject(e)
         }
+    }
+
+    @ReactMethod
+    fun getRegisteredAuthenticators(promise: Promise){
+            to do
     }
 
     @ReactMethod
