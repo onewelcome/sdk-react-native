@@ -187,15 +187,15 @@ OneginiSdk.logout = function () {
 
 //Fingerprint
 OneginiSdk.registerFingerprintAuthenticator = function (profileId) {
-  RNOneginiSdk.registerFingerprintAuthenticator(profileId);
+  return RNOneginiSdk.registerFingerprintAuthenticator(profileId);
 }
 
 OneginiSdk.deregisterFingerprintAuthenticator = function (profileId) {
-  RNOneginiSdk.deregisterFingerprintAuthenticator(profileId);
+  return RNOneginiSdk.deregisterFingerprintAuthenticator(profileId);
 }
 
 OneginiSdk.isFingerprintAuthenticatorRegistered = function (profileId) {
-  RNOneginiSdk.isFingerprintAuthenticatorRegistered(profileId);
+  return RNOneginiSdk.isFingerprintAuthenticatorRegistered(profileId);
 }
 
 export default OneginiSdk;

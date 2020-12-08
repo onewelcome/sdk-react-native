@@ -55,6 +55,7 @@ const ChangeAuthView = (props) => {
 };
 
 const onSwithFingerprint = (isEnable, setFigerprintEnable, setMessage) => {
+  setMessage("")
   if (isEnable) {
     registerFingerprintAuthenticator((successful) => {
       if (successful) {
