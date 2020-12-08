@@ -10,6 +10,8 @@ import com.onegini.mobile.view.handlers.*
 import com.onegini.mobile.view.handlers.customregistration.CustomRegistrationObserver
 import com.onegini.mobile.view.handlers.customregistration.SimpleCustomRegistrationAction
 import com.onegini.mobile.view.handlers.customregistration.SimpleCustomRegistrationFactory
+import com.onegini.mobile.view.handlers.mobileauthotp.MobileAuthOtpRequestHandler
+import com.onegini.mobile.view.handlers.mobileauthotp.MobileAuthOtpRequestObserver
 import java.lang.reflect.InvocationTargetException
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -27,12 +29,15 @@ class OneginiSDK(private val appContext: Context) {
 
     val simpleCustomRegistrationActions = ArrayList<SimpleCustomRegistrationAction>()
 
-    private var config: OneginiReactNativeConfig? = null
+    var mobileAuthOtpRequestHandler: MobileAuthOtpRequestHandler? = null
+        private set
+
+    private lateinit var config: OneginiReactNativeConfig
     private var configModelClassName: String? = null
     private var securityControllerClassName: String? = null
 
 
-    fun init(oneginiReactNativeConfig: OneginiReactNativeConfig?, configModelClassName: String?, securityControllerClassName: String?) {
+    fun init(oneginiReactNativeConfig: OneginiReactNativeConfig, configModelClassName: String?, securityControllerClassName: String?) {
         this.config = oneginiReactNativeConfig
         this.configModelClassName = configModelClassName
         this.securityControllerClassName = securityControllerClassName
@@ -72,11 +77,16 @@ class OneginiSDK(private val appContext: Context) {
 
         // Set security controller
         setSecurityController(clientBuilder)
+
+        if (config.enableMobileAuthenticationOtp) {
+            mobileAuthOtpRequestHandler = MobileAuthOtpRequestHandler()
+            clientBuilder.setMobileAuthWithOtpRequestHandler(mobileAuthOtpRequestHandler!!)
+        }
         return clientBuilder.build()
     }
 
     private fun setProviders(clientBuilder: OneginiClientBuilder) {
-        config?.identityProviders?.forEach {
+        config.identityProviders.forEach {
             val provider = SimpleCustomRegistrationFactory.getSimpleCustomRegistrationProvider(it)
             simpleCustomRegistrationActions.add(provider.action)
             clientBuilder.addCustomIdentityProvider(provider)
@@ -99,6 +109,10 @@ class OneginiSDK(private val appContext: Context) {
         simpleCustomRegistrationActions.forEach {
             it.setCustomRegistrationObserver(observer)
         }
+    }
+
+    fun setMobileAuthOtpRequestObserver(mobileAuthOtpRequestObserver: MobileAuthOtpRequestObserver) {
+        mobileAuthOtpRequestHandler?.observer = mobileAuthOtpRequestObserver
     }
 
     private fun setConfigModel(clientBuilder: OneginiClientBuilder) {

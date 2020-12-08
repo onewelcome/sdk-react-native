@@ -11,6 +11,7 @@ const OneginiEventEmitter =
 export const ONEGINI_SDK_EVENTS = {
   ONEGINI_PIN_NOTIFICATION: 'ONEGINI_PIN_NOTIFICATION',
   ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION: 'ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION',
+  ONEGINI_MOBILE_AUTH_OTP_NOTIFICATION: 'ONEGINI_MOBILE_AUTH_OTP_NOTIFICATION'
 };
 
 export const ONEGINI_PIN_NOTIFICATIONS = {
@@ -20,6 +21,11 @@ export const ONEGINI_PIN_NOTIFICATIONS = {
   ERROR: 'show_error',
   AUTH_ATTEMPT: 'auth_attempt',
   CHANGED: 'changed'
+};
+
+export const MOBILE_AUTH_OTP_NOTIFICATION = {
+  START_AUTHENTICATION: 'startAuthentication',
+  FINISH_AUTHENTICATION: 'finishAuthentication',
 };
 
 export const ONEGINI_PIN_ACTIONS = {
@@ -39,6 +45,8 @@ const OneginiSdk = {};
 
 OneginiSdk.listeners = {
   [ONEGINI_SDK_EVENTS.ONEGINI_PIN_NOTIFICATION]: null, // fires ONEGINI_PIN_NOTIFICATIONS
+  [ONEGINI_SDK_EVENTS.ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION]: null,
+  [ONEGINI_SDK_EVENTS.ONEGINI_MOBILE_AUTH_OTP_NOTIFICATION]: null,
 };
 
 // eventType = ONEGINI_SDK_EVENTS
@@ -83,6 +91,22 @@ OneginiSdk.getAccessToken = function () {
 OneginiSdk.enrollMobileAuthentication = function () {
   return RNOneginiSdk.enrollMobileAuthentication();
 };
+
+OneginiSdk.submitAcceptMobileAuthOtp = function () {
+  return RNOneginiSdk.submitAcceptMobileAuthOtp()
+}
+
+OneginiSdk.submitDenyMobileAuthOtp = function () {
+  return RNOneginiSdk.submitDenyMobileAuthOtp()
+}
+
+OneginiSdk.handleMobileAuthWithOtp  = function (otpCode){
+  return RNOneginiSdk.handleMobileAuthWithOtp(otpCode)
+}
+
+OneginiSdk.getAuthenticatedUserProfile = function () {
+    return RNOneginiSdk.getAuthenticatedUserProfile()
+}
 
 //@todo will return profileId -> Later check out whole profile + don't forget to ask for userName on RN side
 OneginiSdk.registerUser = function (identityProvider = null) {
