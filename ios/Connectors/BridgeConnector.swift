@@ -3,18 +3,17 @@ protocol BridgeConnectorProtocol: AnyObject {
 }
 
 class BridgeConnector : BridgeConnectorProtocol {
-    let toRegistrationHandler: BridgeToRegisterViewProtocol
-    var toChangePinConnector: BridgeToChangePinConnectorProtocol
+    let toRegistrationHandler: BridgeToRegisterHandlerProtocol = RegistrationHandler()
+    var toPinHandlerConnector: BridgeToPinConnectorProtocol
     unowned var bridge: ConnectorToRNBridgeProtocol?
     public static var shared:BridgeConnector?
-    
+
     init() {
-        self.toRegistrationHandler = RegistrationHandler()
-        self.toChangePinConnector = ChangePinConnector()
-        self.toChangePinConnector.bridgeConnector = self
+        self.toPinHandlerConnector = PinConnector()
+        self.toPinHandlerConnector.bridgeConnector = self
         BridgeConnector.shared = self
     }
-  
+
     func sendBridgeEvent(eventName: OneginiBridgeEvents, data: Any!) {
         bridge?.sendBridgeEvent(eventName: eventName, data: data)
     }

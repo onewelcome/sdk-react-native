@@ -66,7 +66,9 @@ OneginiSdk.removeEventListener = function (eventType) {
 
 OneginiSdk.startClient = function () {
   return new Promise((resolve) =>
-    RNOneginiSdk.startClient(ONEGINI_SDK_CONFIG, (response) => resolve(response)),
+    Platform.OS === 'ios'
+      ? RNOneginiSdk.startClient((response) => resolve(response))
+      : RNOneginiSdk.startClient(ONEGINI_SDK_CONFIG, (response) => resolve(response)),
   );
 };
 

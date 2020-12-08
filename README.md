@@ -135,7 +135,10 @@ OR
     'onegini'
     ]
     ```
-6. Add `SecurityController.h` and `SecurityController.m` as described [HERE](https://docs.onegini.com/msp/stable/ios-sdk/reference/security-controls.html)
+
+6. Run `pod install`    
+
+7. Add `SecurityController.h` and `SecurityController.m` as described [HERE](https://docs.onegini.com/msp/stable/ios-sdk/reference/security-controls.html)
 
 ## Linking Native Code
 
@@ -206,18 +209,18 @@ OR
 | **`removeEventListener(eventType, cb)`**                  |  Removes listener for certain event type(ONEGINI_PIN_NOTIFICATION, ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION)       |
 | **`getIdentityProviders()`**                              |  Returns the identity Providers with are registered int the lib.  |
 | **`getAccessToken()`**                                    |  Returns the access token if exist. |
-| **`enrollMobileAuthentication()`**                        |  The first enrollment step. |
+| **`enrollMobileAuthentication()`**                        |  The first enrollment step. **[iOS not supported, yet**] |
 | **`registerUser(identityProviderId):Promise`**            |  Starts the process of registration user. If success then the response contain the success = true if not then contain success = false. |
 | **`deregisterUser(profileId):Promise`**                   |  Starts the process of deregistration user. If success then the response contain the success = true if not then contain success = false. |
 | **`getRedirectUri():Promise`**                            |  Returns an object with the redirect Uri field. |
 | **`getUserProfiles():Promise`**                           |  Returns all registered profiles id. |
 | **`handleRegistrationCallback(uri)`**                     |  Pass a url for the registration process which obtained from browser redirect action. |
 | **`cancelRegistration():Promise`**                        |  Interrupts process of registration. |
-| **`submitCustomRegistrationReturnSuccess(identityProviderId, result)`**|  Triggers the ReturnSuccess method in callback from the custom registration process. If the identityProviderId does not exist then an error occurs. |
-| **`submitCustomRegistrationReturnError(identityProviderId, result)`** |  Triggers the ReturnError method in callback from the custom registration process.If the identityProviderId does not exist then an error occurs. |
+| **`submitCustomRegistrationReturnSuccess(identityProviderId, result)`**|  Triggers the ReturnSuccess method in callback from the custom registration process.  If the identityProviderId does not exist then an error occurs. **[iOS not supported, yet**|
+| **`submitCustomRegistrationReturnError(identityProviderId, result)`** |  Triggers the ReturnError method in callback from the custom registration process.If the identityProviderId does not exist then an error occurs. **[iOS not supported, yet**|
 | **`submitPinAction(flow, action, pin):Promise`**          |  Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION"). If flow is authentication then the submitAuthenticationPinAction method is triggered. If flow is create then the submitCreatePinAction method is triggered. If flow is change then the submitChangePinAction method is triggered.  |
-| **`submitAuthenticationPinAction(action, pin)`**          |  Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION"). Possible actions: provide, cancel. |
-| **`submitChangePinAction(action, pin)`**                  |  Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION"). Possible actions: provide, cancel, change. |
-| **`submitCreatePinAction(action, pin):Promise`**          |  Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION"). Possible actions: provide, cancel. |
-| **`authenticateUser(profileId):Promise`**                 |  Starts the process of authentication user.  |
+| **`submitAuthenticationPinAction(action, pin)`**          |  (Android only) Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION"). Possible actions: provide, cancel. |
+| **`submitChangePinAction(action, pin)`**                  |  (Android only) Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION"). Possible actions: provide, cancel, change. |
+| **`submitCreatePinAction(action, pin):Promise`**          |  (Android only) Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION"). Possible actions: provide, cancel. |
+| **`authenticateUser(profileId):Promise`**                 |  (Android only) Starts the process of authentication user.  |
 | **`logout():Promise`**                                    |  Starts the process of logout user.  |
