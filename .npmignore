@@ -4,9 +4,6 @@ yarn.lock
 yarn-error.log
 npm-debug.log
 
-# Project files
-README.md
-
 # Config files
 babel.config.js
 metro.config.js
