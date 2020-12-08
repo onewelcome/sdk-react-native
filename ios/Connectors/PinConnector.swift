@@ -1,24 +1,28 @@
-protocol BridgeToChangePinConnectorProtocol: AnyObject {
+protocol BridgeToPinConnectorProtocol: AnyObject {
     var bridgeConnector: BridgeConnectorProtocol? { get set }
-    var pinView: ChangePinConnectorToViewProtocol? { get set }
+    var pinHandler: PinConnectorToPinHandler { get }
   
     func handlePinAction(_ flow: (NSString), _ action: (NSString), _ pin: (NSString)) -> Void
     func sendNotification(event: PinNotification, mode: PINEntryMode?, error: SdkError?) -> Void
 }
 
 //@todo handle change and auth flows
-class ChangePinConnector : BridgeToChangePinConnectorProtocol {
+class PinConnector : BridgeToPinConnectorProtocol {
+    var pinHandler: PinConnectorToPinHandler
     unowned var bridgeConnector: BridgeConnectorProtocol?
-    unowned var pinView: ChangePinConnectorToViewProtocol?
+    
+    init() {
+        pinHandler = PinHandler()
+    }
     
     func handlePinAction(_ flow: (NSString), _ action: (NSString), _ pin: (NSString)) -> Void {
-      if(PinAction.provide.rawValue === action){
-          pinView?.onPinProvided(pin: pin)
-      } else if (PinAction.cancel.rawValue === action){
-          pinView?.onCancel()
-      } else {
+        if(PinAction.provide.rawValue === action){
+            pinHandler.onPinProvided(pin: pin)
+        } else if (PinAction.cancel.rawValue === action){
+            pinHandler.onCancel()
+        } else {
         
-      }
+        }
     }
   
     func sendNotification(event: PinNotification, mode: PINEntryMode?, error: SdkError?) {

@@ -75,7 +75,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
     @objc
     func handleRegistrationCallback(_ url: (NSString)) -> Void {
-        bridgeConnector.toRegistrationHandler.handleRedirectURL(url: URL(string: url as String)!)
+        bridgeConnector.toRegistrationHandler.processRedirectURL(url: URL(string: url as String)!)
     }
 
     @objc
@@ -85,7 +85,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
     @objc
     func submitPinAction(_ flow: (NSString), action: (NSString), pin: (NSString)) -> Void {
-        bridgeConnector.toChangePinConnector.handlePinAction(flow, action, pin)
+        bridgeConnector.toPinHandlerConnector.handlePinAction(flow, action, pin)
     }
 
     func sendBridgeEvent(eventName: OneginiBridgeEvents, data: Any!) -> Void {
