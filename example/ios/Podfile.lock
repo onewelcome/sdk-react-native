@@ -434,7 +434,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   local-react-native-sdk-beta:
-    :commit: f663b0bcf7eca3f8793f9d439d4e37efe7b602d0
+    :commit: 981b6139282bb04cbc1d6ab55b8cd6ac537d94c4
     :git: file:///Users/valeriy.rumak/WebstormProjects/Develocraft/Onegini/react-native-onegini-sdk
 
 SPEC CHECKSUMS:
