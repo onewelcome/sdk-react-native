@@ -10,6 +10,7 @@ import com.onegini.mobile.view.handlers.*
 import com.onegini.mobile.view.handlers.customregistration.CustomRegistrationObserver
 import com.onegini.mobile.view.handlers.customregistration.SimpleCustomRegistrationAction
 import com.onegini.mobile.view.handlers.customregistration.SimpleCustomRegistrationFactory
+import com.onegini.mobile.view.handlers.fingerprint.FingerprintAuthenticationRequestHandler
 import com.onegini.mobile.view.handlers.mobileauthotp.MobileAuthOtpRequestHandler
 import com.onegini.mobile.view.handlers.mobileauthotp.MobileAuthOtpRequestObserver
 import java.lang.reflect.InvocationTargetException
@@ -30,6 +31,9 @@ class OneginiSDK(private val appContext: Context) {
     val simpleCustomRegistrationActions = ArrayList<SimpleCustomRegistrationAction>()
 
     var mobileAuthOtpRequestHandler: MobileAuthOtpRequestHandler? = null
+        private set
+
+    var fingerprintAuthenticationRequestHandler: FingerprintAuthenticationRequestHandler? = null
         private set
 
     private lateinit var config: OneginiReactNativeConfig
@@ -82,6 +86,12 @@ class OneginiSDK(private val appContext: Context) {
             mobileAuthOtpRequestHandler = MobileAuthOtpRequestHandler()
             clientBuilder.setMobileAuthWithOtpRequestHandler(mobileAuthOtpRequestHandler!!)
         }
+
+        if (config.enableFingerprint) {
+            fingerprintAuthenticationRequestHandler = FingerprintAuthenticationRequestHandler()
+            clientBuilder.setFingerprintAuthenticationRequestHandler(fingerprintAuthenticationRequestHandler!!)
+        }
+
         return clientBuilder.build()
     }
 

@@ -7,6 +7,11 @@ import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEm
 import com.onegini.mobile.Constants.CUSTOM_REGISTRATION_NOTIFICATION
 import com.onegini.mobile.Constants.CUSTOM_REGISTRATION_NOTIFICATION_FINISH_REGISTRATION
 import com.onegini.mobile.Constants.CUSTOM_REGISTRATION_NOTIFICATION_INIT_REGISTRATION
+import com.onegini.mobile.Constants.FINGERPRINT_NOTIFICATION
+import com.onegini.mobile.Constants.FINGERPRINT_NOTIFICATION_FINISH_AUTHENTICATION
+import com.onegini.mobile.Constants.FINGERPRINT_NOTIFICATION_ON_FINGERPRINT_CAPTURED
+import com.onegini.mobile.Constants.FINGERPRINT_NOTIFICATION_ON_NEXT_AUTHENTICATION_ATTEMPT
+import com.onegini.mobile.Constants.FINGERPRINT_NOTIFICATION_START_AUTHENTICATION
 import com.onegini.mobile.Constants.MOBILE_AUTH_OTP_FINISH_AUTHENTICATION
 import com.onegini.mobile.Constants.MOBILE_AUTH_OTP_NOTIFICATION
 import com.onegini.mobile.Constants.MOBILE_AUTH_OTP_START_AUTHENTICATION
@@ -34,6 +39,7 @@ import com.onegini.mobile.util.DeregistrationUtil
 import com.onegini.mobile.view.handlers.InitializationHandler
 import com.onegini.mobile.view.handlers.PinNotificationObserver
 import com.onegini.mobile.view.handlers.customregistration.CustomRegistrationObserver
+import com.onegini.mobile.view.handlers.fingerprint.FingerprintAuthenticationObserver
 import com.onegini.mobile.view.handlers.mobileauthotp.MobileAuthOtpRequestObserver
 
 class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
@@ -51,6 +57,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     private val pinNotificationObserver: PinNotificationObserver
     private val customRegistrationObserver: CustomRegistrationObserver
     private val mobileAuthOtpRequestObserver: MobileAuthOtpRequestObserver
+    private val fingerprintAuthenticationObserver: FingerprintAuthenticationObserver
     private val oneginiSDK: OneginiSDK
         private get() = OneginiComponets.oneginiSDK
 
@@ -63,6 +70,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         pinNotificationObserver = createBridgePinNotificationHandler()
         customRegistrationObserver = createCustomRegistrationObserver()
         mobileAuthOtpRequestObserver = createMobileAuthOtpRequestObserver()
+        fingerprintAuthenticationObserver = createFingerprintAuthenticationObserver()
     }
 
     override fun canOverrideExistingModule(): Boolean {
@@ -390,6 +398,35 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                 reactApplicationContext.getJSModule(RCTDeviceEventEmitter::class.java).emit(MOBILE_AUTH_OTP_NOTIFICATION, map)
             }
 
+        }
+    }
+
+    private fun createFingerprintAuthenticationObserver(): FingerprintAuthenticationObserver {
+        return object : FingerprintAuthenticationObserver {
+            override fun startAuthentication(user: UserProfile?) {
+                val map = Arguments.createMap()
+                add(map, user)
+                map.putString("action", FINGERPRINT_NOTIFICATION_START_AUTHENTICATION)
+                reactApplicationContext.getJSModule(RCTDeviceEventEmitter::class.java).emit(FINGERPRINT_NOTIFICATION, map)
+            }
+
+            override fun onNextAuthenticationAttempt() {
+                val map = Arguments.createMap()
+                map.putString("action", FINGERPRINT_NOTIFICATION_START_AUTHENTICATION)
+                reactApplicationContext.getJSModule(RCTDeviceEventEmitter::class.java).emit(FINGERPRINT_NOTIFICATION_ON_NEXT_AUTHENTICATION_ATTEMPT, map)
+            }
+
+            override fun onFingerprintCaptured() {
+                val map = Arguments.createMap()
+                map.putString("action", FINGERPRINT_NOTIFICATION_START_AUTHENTICATION)
+                reactApplicationContext.getJSModule(RCTDeviceEventEmitter::class.java).emit(FINGERPRINT_NOTIFICATION_ON_FINGERPRINT_CAPTURED, map)
+            }
+
+            override fun finishAuthentication() {
+                val map = Arguments.createMap()
+                map.putString("action", FINGERPRINT_NOTIFICATION_START_AUTHENTICATION)
+                reactApplicationContext.getJSModule(RCTDeviceEventEmitter::class.java).emit(FINGERPRINT_NOTIFICATION_FINISH_AUTHENTICATION, map)
+            }
         }
     }
 
