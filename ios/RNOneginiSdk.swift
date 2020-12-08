@@ -53,8 +53,12 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
     @objc
     func getUserProfiles(_ resolve: RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
-        let profiles = ONGClient.sharedInstance().userClient.userProfiles() as NSSet;
-        let result = profiles.allObjects as NSArray;
+        let profiles = ONGClient.sharedInstance().userClient.userProfiles()
+        var result: NSMutableArray  = []
+
+        for profile in profiles {
+            result.add(["profileId": profile.value(forKey: "profileId")])
+        }
 
         resolve(result)
     }
@@ -74,6 +78,24 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     @objc
+    func deregisterUser(_ profileId: (NSString),
+                        resolver resolve: @escaping RCTPromiseResolveBlock,
+                        rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        let profile: ONGUserProfile = ONGClient.sharedInstance().userClient.userProfiles().first(where: { $0.value(forKey: "profileId") as! NSObject == profileId })!;
+
+        ONGClient.sharedInstance().userClient.deregisterUser(profile) {
+            (result: Bool, error) -> Void in
+
+            if let error = error {
+                let mappedError = ErrorMapper().mapError(error);
+                reject(nil, mappedError.errorDescription, nil)
+              } else {
+                resolve(true)
+              }
+        }
+    }
+
+    @objc
     func handleRegistrationCallback(_ url: (NSString)) -> Void {
         bridgeConnector.toRegistrationHandler.processRedirectURL(url: URL(string: url as String)!)
     }
@@ -86,6 +108,18 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     @objc
     func submitPinAction(_ flow: (NSString), action: (NSString), pin: (NSString)) -> Void {
         bridgeConnector.toPinHandlerConnector.handlePinAction(flow, action, pin)
+    }
+
+    @objc
+    func logout(_ callback: @escaping (RCTResponseSenderBlock)) -> Void {
+        ONGClient.sharedInstance().userClient.logoutUser { _, error in
+            if let error = error {
+                let mappedError = ErrorMapper().mapError(error);
+                callback([["success" : false, "errorMsg" : mappedError.errorDescription]])
+              } else {
+                callback([["success" : true]])
+              }
+        }
     }
 
     func sendBridgeEvent(eventName: OneginiBridgeEvents, data: Any!) -> Void {
