@@ -23,6 +23,7 @@ scripts/
 # Example
 example/
 app.json
+local-react-native-sdk-beta.podspec
 
 # Android
 android/*/build/
