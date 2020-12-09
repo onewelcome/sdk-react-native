@@ -19,6 +19,9 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 class OneginiSDK(private val appContext: Context) {
+
+    var isInitialized: Boolean = false
+
     lateinit var registrationRequestHandler: RegistrationRequestHandler
         private set
     lateinit var pinAuthenticationRequestHandler: PinAuthenticationRequestHandler
