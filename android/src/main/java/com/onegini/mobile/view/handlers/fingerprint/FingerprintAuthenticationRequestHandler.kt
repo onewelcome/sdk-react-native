@@ -11,6 +11,7 @@ class FingerprintAuthenticationRequestHandler : OneginiFingerprintAuthentication
 
     override fun startAuthentication(user: UserProfile?, callback: OneginiFingerprintCallback) {
         this.callback = callback
+        observer?.startAuthentication(user)
     }
 
     override fun onNextAuthenticationAttempt() {
@@ -23,5 +24,17 @@ class FingerprintAuthenticationRequestHandler : OneginiFingerprintAuthentication
 
     override fun finishAuthentication() {
         observer?.finishAuthentication()
+    }
+
+    fun acceptAuthenticationRequest(){
+        callback?.acceptAuthenticationRequest()
+    }
+
+    fun denyAuthenticationRequest(){
+        callback?.denyAuthenticationRequest()
+    }
+
+    fun fallbackToPin(){
+        callback?.fallbackToPin()
     }
 }
