@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C78992E525816243002CA5AF /* LoginHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78992E425816243002CA5AF /* LoginHandler.swift */; };
+		C78992E8258162A7002CA5AF /* AuthenticationErrorDomainMapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78992E7258162A7002CA5AF /* AuthenticationErrorDomainMapping.swift */; };
 		C7AA005E2558E4B80001AB19 /* RNOneginiSdk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AA005D2558E4B80001AB19 /* RNOneginiSdk.swift */; };
 		C7AA00612558E5430001AB19 /* SdkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AA00602558E5430001AB19 /* SdkError.swift */; };
 		C7AA00652558E55B0001AB19 /* BridgeConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AA00642558E55B0001AB19 /* BridgeConnector.swift */; };
@@ -35,6 +37,8 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNOneginiSdk.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNOneginiSdk.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		C78992E425816243002CA5AF /* LoginHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginHandler.swift; sourceTree = "<group>"; };
+		C78992E7258162A7002CA5AF /* AuthenticationErrorDomainMapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationErrorDomainMapping.swift; sourceTree = "<group>"; };
 		C7AA005C2558E4B70001AB19 /* RNOneginiSdk-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RNOneginiSdk-Bridging-Header.h"; sourceTree = "<group>"; };
 		C7AA005D2558E4B80001AB19 /* RNOneginiSdk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RNOneginiSdk.swift; sourceTree = "<group>"; };
 		C7AA00602558E5430001AB19 /* SdkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SdkError.swift; sourceTree = "<group>"; };
@@ -99,6 +103,7 @@
 				C7AA006B2558E5920001AB19 /* RegistrationHandler.swift */,
 				C7AA006E2558E59D0001AB19 /* PinHandler.swift */,
 				C7AA00712558E5A80001AB19 /* BrowserHandler.swift */,
+				C78992E425816243002CA5AF /* LoginHandler.swift */,
 			);
 			path = Handlers;
 			sourceTree = "<group>";
@@ -117,6 +122,7 @@
 				C7AA009C2558E6FA0001AB19 /* ErrorMapper.swift */,
 				C7AA00A02558E70E0001AB19 /* GenericErrorDomainMapping.swift */,
 				C7AA00A32558E71F0001AB19 /* PinValidationErrorDomainMapping.swift */,
+				C78992E7258162A7002CA5AF /* AuthenticationErrorDomainMapping.swift */,
 			);
 			path = ErrorMappings;
 			sourceTree = "<group>";
@@ -211,6 +217,8 @@
 				C7AA00A12558E70E0001AB19 /* GenericErrorDomainMapping.swift in Sources */,
 				C7AA00612558E5430001AB19 /* SdkError.swift in Sources */,
 				C7AA00A42558E71F0001AB19 /* PinValidationErrorDomainMapping.swift in Sources */,
+				C78992E8258162A7002CA5AF /* AuthenticationErrorDomainMapping.swift in Sources */,
+				C78992E525816243002CA5AF /* LoginHandler.swift in Sources */,
 				C7AA006C2558E5920001AB19 /* RegistrationHandler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

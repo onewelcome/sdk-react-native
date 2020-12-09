@@ -1,10 +1,8 @@
 protocol PinConnectorToPinHandler: AnyObject {
     func onPinProvided(pin: (NSString))
     func onCancel()
-    func setPinReciever(reciever: PinHandlerToReceiverProtocol)
-    func openFlow(_ flow: PinFlow)
+    func handleFlowUpdate(_ flow: PinFlow, _ error: SdkError?, reciever: PinHandlerToReceiverProtocol)
     func closeFlow()
-    func notifyOnError(_ error: SdkError)
 }
 
 protocol ChangePinProtocol: AnyObject {
@@ -42,12 +40,10 @@ class PinHandler: NSObject {
               handleConfirmRegistrationPin(pinEntry, pincode)
               break
           case .login:
-                //@todo will need this at MVP stage
-                //entity.pin = pincode
-                //viewToPresenterProtocol.handlePin()
+                pinReciever?.handlePin(pin: pincode)
               break
           case .none:
-              self.notifyOnError(SdkError(title: "Pin validation error", errorDescription: "Unexpected PIN mode.", recoverySuggestion: "Open and close modal."))
+              notifyOnError(SdkError(title: "Pin validation error", errorDescription: "Unexpected PIN mode.", recoverySuggestion: "Open and close modal."))
               break
         }
     }
@@ -69,20 +65,7 @@ class PinHandler: NSObject {
             pinReciever?.handlePin(pin: pincode)
         } else {
             mode = .registration
-            self.notifyOnError(SdkError(title: "Pin validation error", errorDescription: "The confirmation PIN does not match.", recoverySuggestion: "Try a different one."))
-        }
-    }
-
-  private func sendConnectorNotification(_ event: PinNotification, _ mode: PINEntryMode?, _ error: SdkError?) {
-    BridgeConnector.shared?.toPinHandlerConnector.sendNotification(event: event, mode: mode, error: error)
-  }
-}
-
-extension PinHandler : PinConnectorToPinHandler {
-    func openFlow(_ flow: PinFlow) {
-        if(mode == nil) {
-            mode = .registration
-            sendConnectorNotification(PinNotification.open, mode, nil)
+            notifyOnError(SdkError(title: "Pin validation error", errorDescription: "The confirmation PIN does not match.", recoverySuggestion: "Try a different one."))
         }
     }
 
@@ -94,8 +77,36 @@ extension PinHandler : PinConnectorToPinHandler {
         }
     }
 
-    func setPinReciever(reciever: PinHandlerToReceiverProtocol) {
+    private func sendConnectorNotification(_ event: PinNotification, _ mode: PINEntryMode?, _ error: SdkError?) {
+        BridgeConnector.shared?.toPinHandlerConnector.sendNotification(event: event, mode: mode, error: error)
+    }
+}
+
+extension PinHandler : PinConnectorToPinHandler {
+    // @todo Support different pinLength
+    func handleFlowUpdate(_ flow: PinFlow, _ error: SdkError?, reciever: PinHandlerToReceiverProtocol) {
+
         pinReciever = reciever
+
+        if(error != nil){
+            notifyOnError(error!)
+        } else {
+            if(mode == nil) {
+                switch flow {
+                    case PinFlow.authentication:
+                        mode = .login
+                        break
+                    case PinFlow.create:
+                        mode = .registration
+                        break
+                    default:
+                        mode = .registration
+                        break
+                }
+
+                sendConnectorNotification(PinNotification.open, mode, nil)
+            }
+        }
     }
 
     func closeFlow() {

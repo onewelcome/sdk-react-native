@@ -11,6 +11,7 @@ protocol ConnectorToRNBridgeProtocol: NSObject {
 enum OneginiBridgeEvents : String {
     case pinNotification = "ONEGINI_PIN_NOTIFICATION"
     case customRegistrationNotification = "ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION"
+    case authWithOtpNotification = "ONEGINI_MOBILE_AUTH_OTP_NOTIFICATION"
 }
 
 @objc(RNOneginiSdk)
@@ -25,7 +26,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     override func supportedEvents() -> [String]! {
-        return [OneginiBridgeEvents.pinNotification.rawValue, OneginiBridgeEvents.customRegistrationNotification.rawValue]
+        return [OneginiBridgeEvents.pinNotification.rawValue, OneginiBridgeEvents.customRegistrationNotification.rawValue, OneginiBridgeEvents.authWithOtpNotification.rawValue]
     }
 
     @objc
@@ -108,6 +109,23 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     @objc
     func submitPinAction(_ flow: (NSString), action: (NSString), pin: (NSString)) -> Void {
         bridgeConnector.toPinHandlerConnector.handlePinAction(flow, action, pin)
+    }
+
+    @objc
+    func authenticateUser(_ profileId: (NSString),
+                        resolver resolve: @escaping RCTPromiseResolveBlock,
+                        rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        let profile: ONGUserProfile = ONGClient.sharedInstance().userClient.userProfiles().first(where: { $0.value(forKey: "profileId") as! NSObject == profileId })!;
+
+        bridgeConnector.toLoginHandler.authenticateUser(profile) {
+            (userProfile, error) -> Void in
+
+            if let error = error {
+                reject(nil, error.errorDescription, nil)
+              } else {
+                resolve(true)
+              }
+        }
     }
 
     @objc
