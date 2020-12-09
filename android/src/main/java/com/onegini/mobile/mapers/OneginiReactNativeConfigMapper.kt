@@ -9,7 +9,7 @@ object OneginiReactNativeConfigMapper {
 
     fun toOneginiReactNativeConfig(rnConfig: ReadableMap): OneginiReactNativeConfig {
         return OneginiReactNativeConfig(toReactNativeIdentityProviderList(rnConfig.getArray("customProviders")),
-                rnConfig.getBoolean("enableMobileAuthenticationOtp"))
+                rnConfig.getBoolean("enableMobileAuthenticationOtp"), rnConfig.getBoolean("enableFingerprint"))
     }
 
     fun toReactNativeIdentityProviderList(identityProvider: ReadableArray?): List<ReactNativeIdentityProvider> {

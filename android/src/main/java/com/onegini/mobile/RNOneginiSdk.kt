@@ -154,22 +154,35 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                     promise.reject(error)
                 }
             })
-        } catch (e: Exception) {
-            promise.reject(e)
+        } catch (e: OneginiError) {
+            promise.reject(e, OneginiErrorMapper.toWritableMap(e))
         }
     }
 
     @ReactMethod
-    fun getRegisteredAuthenticators(promise: Promise){
-            to do
+    fun getAllAuthenticators(profileId: String, promise: Promise) {
+        try {
+            promise.resolve(OneginiAuthenticatorMapper.toWritableMap(authenticatorManager.getAllAuthenticators(profileId)))
+        } catch (e: OneginiError) {
+            promise.reject(e, OneginiErrorMapper.toWritableMap(e))
+        }
+    }
+
+    @ReactMethod
+    fun getRegisteredAuthenticators(profileId: String, promise: Promise) {
+        try {
+            promise.resolve(OneginiAuthenticatorMapper.toWritableMap(authenticatorManager.getRegisteredAuthenticators(profileId)))
+        } catch (e: OneginiError) {
+            promise.reject(e, OneginiErrorMapper.toWritableMap(e))
+        }
     }
 
     @ReactMethod
     fun isFingerprintAuthenticatorRegistered(profileId: String, promise: Promise) {
         try {
             promise.resolve(authenticatorManager.isFingerprintAuthenticatorRegistered(profileId))
-        } catch (e: Exception) {
-            promise.reject(e)
+        } catch (e: OneginiError) {
+            promise.reject(e, OneginiErrorMapper.toWritableMap(e))
         }
     }
 
@@ -185,8 +198,17 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                     promise.reject(error)
                 }
             })
-        } catch (e: Exception) {
-            promise.reject(e)
+        } catch (e: OneginiError) {
+            promise.reject(e, OneginiErrorMapper.toWritableMap(e))
+        }
+    }
+
+    @ReactMethod
+    fun setPreferredAuthenticator(profileId: String, idOneginiAuthenticator: String, promise: Promise) {
+        try {
+            authenticatorManager.setPreferredAuthenticator(profileId, idOneginiAuthenticator)
+        } catch (e: OneginiError) {
+            promise.reject(e, OneginiErrorMapper.toWritableMap(e))
         }
     }
 
