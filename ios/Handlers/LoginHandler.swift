@@ -6,7 +6,7 @@ protocol BridgeToLoginHandlerProtocol: AnyObject {
 class LoginHandler: NSObject, PinHandlerToReceiverProtocol {
     var pinChallenge: ONGPinChallenge?
     var loginCompletion: ((ONGUserProfile?, SdkError?) -> Void)?
-    
+
 
     func handlePin(pin: String?) {
         guard let pinChallenge = self.pinChallenge else { return }
@@ -40,7 +40,7 @@ extension LoginHandler: ONGAuthenticationDelegate {
     func userClient(_: ONGUserClient, didReceive challenge: ONGPinChallenge) {
         pinChallenge = challenge
         let pinError = mapErrorFromPinChallenge(challenge)
-        BridgeConnector.shared?.toPinHandlerConnector.pinHandler.handleFlowUpdate(PinFlow.authentication, pinError, reciever: self)
+        BridgeConnector.shared?.toPinHandlerConnector.pinHandler.handleFlowUpdate(PinFlow.authentication, pinError, receiver: self)
     }
 
     func userClient(_: ONGUserClient, didReceive challenge: ONGCustomAuthFinishAuthenticationChallenge) {
@@ -48,14 +48,17 @@ extension LoginHandler: ONGAuthenticationDelegate {
     }
 
     func userClient(_: ONGUserClient, didAuthenticateUser userProfile: ONGUserProfile, info _: ONGCustomInfo?) {
+        pinChallenge = nil
         loginCompletion!(userProfile, nil)
         BridgeConnector.shared?.toPinHandlerConnector.pinHandler.closeFlow()
     }
 
     func userClient(_: ONGUserClient, didFailToAuthenticateUser profile: ONGUserProfile, error: Error) {
+        pinChallenge = nil
+        BridgeConnector.shared?.toPinHandlerConnector.pinHandler.closeFlow()
+
         if error.code == ONGGenericError.actionCancelled.rawValue {
             loginCompletion!(nil, SdkError(errorDescription: "Login cancelled."))
-            BridgeConnector.shared?.toPinHandlerConnector.pinHandler.closeFlow()
         } else {
             let mappedError = ErrorMapper().mapError(error)
             loginCompletion!(nil, mappedError)

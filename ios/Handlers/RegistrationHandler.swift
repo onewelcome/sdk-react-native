@@ -78,18 +78,21 @@ extension RegistrationHandler: ONGRegistrationDelegate {
     func userClient(_: ONGUserClient, didReceivePinRegistrationChallenge challenge: ONGCreatePinChallenge) {
         createPinChallenge = challenge
         let pinError = mapErrorFromPinChallenge(challenge)
-        BridgeConnector.shared?.toPinHandlerConnector.pinHandler.handleFlowUpdate(PinFlow.create, pinError, reciever: self)
+        BridgeConnector.shared?.toPinHandlerConnector.pinHandler.handleFlowUpdate(PinFlow.create, pinError, receiver: self)
     }
 
     func userClient(_: ONGUserClient, didRegisterUser userProfile: ONGUserProfile, info _: ONGCustomInfo?) {
+        createPinChallenge = nil
         signUpCompletion!(true, userProfile, nil)
         BridgeConnector.shared?.toPinHandlerConnector.pinHandler.closeFlow()
     }
 
     func userClient(_: ONGUserClient, didFailToRegisterWithError error: Error) {
+        createPinChallenge = nil
+        BridgeConnector.shared?.toPinHandlerConnector.pinHandler.closeFlow()
+
         if error.code == ONGGenericError.actionCancelled.rawValue {
             signUpCompletion!(false, nil, SdkError(errorDescription: "Registration  cancelled."))
-            BridgeConnector.shared?.toPinHandlerConnector.pinHandler.closeFlow()
         } else {
             let mappedError = ErrorMapper().mapError(error)
             signUpCompletion!(false, nil, mappedError)

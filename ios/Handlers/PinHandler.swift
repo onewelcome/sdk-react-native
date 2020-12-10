@@ -1,7 +1,7 @@
 protocol PinConnectorToPinHandler: AnyObject {
     func onPinProvided(pin: (NSString))
     func onCancel()
-    func handleFlowUpdate(_ flow: PinFlow, _ error: SdkError?, reciever: PinHandlerToReceiverProtocol)
+    func handleFlowUpdate(_ flow: PinFlow, _ error: SdkError?, receiver: PinHandlerToReceiverProtocol)
     func closeFlow()
 }
 
@@ -28,7 +28,7 @@ class PinHandler: NSObject {
     var flow: PinFlow?
     var mode: PINEntryMode?
     var pinEntryToVerify = Array<String>()
-    unowned var pinReciever: PinHandlerToReceiverProtocol?
+    unowned var pinReceiver: PinHandlerToReceiverProtocol?
 
     func processPin(pinEntry: Array<String>) {
         let pincode = pinEntry.joined()
@@ -40,7 +40,7 @@ class PinHandler: NSObject {
               handleConfirmRegistrationPin(pinEntry, pincode)
               break
           case .login:
-                pinReciever?.handlePin(pin: pincode)
+                pinReceiver?.handlePin(pin: pincode)
               break
           case .none:
               notifyOnError(SdkError(title: "Pin validation error", errorDescription: "Unexpected PIN mode.", recoverySuggestion: "Open and close modal."))
@@ -50,7 +50,7 @@ class PinHandler: NSObject {
 
     private func processCancelAction() {
         mode = nil
-        pinReciever?.handlePin(pin: nil)
+        pinReceiver?.handlePin(pin: nil)
     }
 
     private func handleRegistrationPin(_ pinEntry: Array<String>) {
@@ -62,7 +62,7 @@ class PinHandler: NSObject {
     private func handleConfirmRegistrationPin(_ pinEntry: Array<String>, _ pincode: String) {
         let pincodeConfirm = pinEntryToVerify.joined()
         if pincode == pincodeConfirm {
-            pinReciever?.handlePin(pin: pincode)
+            pinReceiver?.handlePin(pin: pincode)
         } else {
             mode = .registration
             notifyOnError(SdkError(title: "Pin validation error", errorDescription: "The confirmation PIN does not match.", recoverySuggestion: "Try a different one."))
@@ -84,9 +84,12 @@ class PinHandler: NSObject {
 
 extension PinHandler : PinConnectorToPinHandler {
     // @todo Support different pinLength
-    func handleFlowUpdate(_ flow: PinFlow, _ error: SdkError?, reciever: PinHandlerToReceiverProtocol) {
+    func handleFlowUpdate(_ flow: PinFlow, _ error: SdkError?, receiver: PinHandlerToReceiverProtocol) {
+        if(self.flow == nil){
+            self.flow = flow
+            pinReceiver = receiver
+        }
 
-        pinReciever = reciever
 
         if(error != nil){
             notifyOnError(error!)
@@ -110,9 +113,11 @@ extension PinHandler : PinConnectorToPinHandler {
     }
 
     func closeFlow() {
-        mode = nil
-        flow = nil
-        sendConnectorNotification(PinNotification.close, mode, nil)
+        if(flow != nil){
+            mode = nil
+            flow = nil
+            sendConnectorNotification(PinNotification.close, mode, nil)
+        }
     }
 
     func onPinProvided(pin: (NSString)) {
