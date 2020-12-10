@@ -1,9 +1,16 @@
 import React, {useState} from 'react';
 import {Text, StyleSheet} from 'react-native';
 import PropTypes from 'prop-types';
+import OneginiSdk from 'react-native-sdk-beta';
 import ContentContainer from './ContentContainer';
 import Button from '../../../general/Button';
 import { enrollMobileAuthentication } from '../../../helpers/MobileAuthenticationHelper';
+
+const onChangePinPressed = (setMessage) => {
+  OneginiSdk.changePin()
+    .then(() => alert('Success'))
+    .catch((error) => alert(error))
+}
 
 const renderButton = (name, onPress = () => null, disabled = true) => {
   return (
@@ -29,7 +36,7 @@ const SettingsActionsView = (props) => {
         setMessage("")
         enrollMobileAuthentication(setMessage, setMessage)
       },false)}
-      {renderButton('CHANGE PIN', props.onChangePinPressed, false)}
+      {renderButton('CHANGE PIN', () => onChangePinPressed(setMessage), false)}
       {renderButton('CHANGE AUTHENTICATION', props.onChangeAuthPressed, false)}
     </ContentContainer>
   );

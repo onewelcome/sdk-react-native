@@ -13,6 +13,7 @@ RCT_EXTERN_METHOD(deregisterUser:(NSString *)profileId resolver:(RCTPromiseResol
 RCT_EXTERN_METHOD(handleRegistrationCallback:(NSString *)url)
 RCT_EXTERN_METHOD(cancelRegistration)
 RCT_EXTERN_METHOD(submitPinAction:(NSString *)flow action:(NSString *)action pin:(NSString *)pin)
+RCT_EXTERN_METHOD(changePin:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 RCT_EXTERN_METHOD(authenticateUser:(NSString *)profileId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 RCT_EXTERN_METHOD(logout:(RCTResponseSenderBlock *)callback)
 @end

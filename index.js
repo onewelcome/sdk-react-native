@@ -19,7 +19,6 @@ export const ONEGINI_PIN_NOTIFICATIONS = {
   CONFIRM: 'confirm',
   CLOSE: 'close',
   ERROR: 'show_error',
-  AUTH_ATTEMPT: 'auth_attempt',
   CHANGED: 'changed'
 };
 
@@ -165,6 +164,8 @@ OneginiSdk.submitCustomRegistrationReturnError = function (identityProviderId, r
 OneginiSdk.submitPinAction = function (flow, action, pin = null) {
   RNOneginiSdk.submitPinAction(flow, action, pin);
 }
+
+OneginiSdk.changePin = function () { return RNOneginiSdk.changePin(); }
 
 OneginiSdk.submitCreatePinAction = function (action, pin = null) {
   RNOneginiSdk.submitCreatePinAction(action, pin);

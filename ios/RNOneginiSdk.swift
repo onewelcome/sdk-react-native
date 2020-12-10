@@ -112,6 +112,19 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     @objc
+    func changePin(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        bridgeConnector.toPinHandlerConnector.pinHandler.onChangePinCalled() {
+            (_, error) -> Void in
+
+            if let error = error {
+                reject(nil, error.errorDescription, nil)
+            } else {
+                resolve(true)
+            }
+        }
+    }
+
+    @objc
     func authenticateUser(_ profileId: (NSString),
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
