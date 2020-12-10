@@ -280,7 +280,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         }
     }
 
-    @ReactMethod
     fun submitCreatePinAction(action: String, pin: String?) {
         when (action) {
             Constants.PIN_ACTION_PROVIDE -> oneginiSDK.createPinRequestHandler.onPinProvided(pin!!.toCharArray(), PinFlow.Create)
@@ -289,7 +288,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         }
     }
 
-    @ReactMethod
     fun submitAuthenticationPinAction(action: String, pin: String?) {
         when (action) {
             Constants.PIN_ACTION_PROVIDE -> oneginiSDK.pinAuthenticationRequestHandler.acceptAuthenticationRequest(pin!!.toCharArray())
@@ -298,7 +296,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         }
     }
 
-    @ReactMethod
     fun submitChangePinAction(action: String, pin: String?) {
         when (action) {
             Constants.PIN_ACTION_CHANGE -> oneginiSDK.changePinHandler.onStartChangePin()

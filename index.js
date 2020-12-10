@@ -165,19 +165,8 @@ OneginiSdk.submitPinAction = function (flow, action, pin = null) {
   RNOneginiSdk.submitPinAction(flow, action, pin);
 }
 
+// @todo implement on Android side
 OneginiSdk.changePin = function () { return RNOneginiSdk.changePin(); }
-
-OneginiSdk.submitCreatePinAction = function (action, pin = null) {
-  RNOneginiSdk.submitCreatePinAction(action, pin);
-}
-
-OneginiSdk.submitChangePinAction = function (action, pin = null) {
-  RNOneginiSdk.submitChangePinAction(action, pin);
-}
-
-OneginiSdk.submitAuthenticationPinAction = function (action, pin = null) {
-  RNOneginiSdk.submitAuthenticationPinAction(action, pin);
-}
 
 OneginiSdk.authenticateUser = function (profileId) { return RNOneginiSdk.authenticateUser(profileId); }
 
