@@ -232,4 +232,8 @@ OneginiSdk.submitFingerprintFallbackToPin = function () {
   return RNOneginiSdk.submitFingerprintFallbackToPin();
 }
 
+OneginiSdk.startSingleSignOn = function (url) {
+  return RNOneginiSdk.startSingleSignOn(url);
+}
+
 export default OneginiSdk;
