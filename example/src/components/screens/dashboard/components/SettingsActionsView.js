@@ -6,7 +6,8 @@ import ContentContainer from './ContentContainer';
 import Button from '../../../general/Button';
 import { enrollMobileAuthentication } from '../../../helpers/MobileAuthenticationHelper';
 
-const onChangePinPressed = (setMessage) => {
+const onChangePinPressed = () => {
+  //@todo handle deregistration error when codes will be presented
   OneginiSdk.changePin()
     .then(() => alert('Success'))
     .catch((error) => alert(error))
@@ -36,7 +37,7 @@ const SettingsActionsView = (props) => {
         setMessage("")
         enrollMobileAuthentication(setMessage, setMessage)
       },false)}
-      {renderButton('CHANGE PIN', () => onChangePinPressed(setMessage), false)}
+      {renderButton('CHANGE PIN', onChangePinPressed, false)}
       {renderButton('CHANGE AUTHENTICATION', props.onChangeAuthPressed, false)}
     </ContentContainer>
   );
