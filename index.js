@@ -236,4 +236,12 @@ OneginiSdk.startSingleSignOn = function (url) {
   return RNOneginiSdk.startSingleSignOn(url);
 }
 
+OneginiSdk.getImplicitUserDetails = function (profileId) {
+  return RNOneginiSdk.getImplicitUserDetails(profileId);
+}
+
+OneginiSdk.authenticateDevice = function () {
+  return RNOneginiSdk.authenticateDevice();
+}
+
 export default OneginiSdk;

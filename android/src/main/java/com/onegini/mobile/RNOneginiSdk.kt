@@ -21,6 +21,7 @@ import com.onegini.mobile.Constants.PinFlow
 import com.onegini.mobile.OneginiComponets.deregistrationUtil
 import com.onegini.mobile.OneginiComponets.init
 import com.onegini.mobile.OneginiComponets.userStorage
+import com.onegini.mobile.exception.OneginReactNativeException
 import com.onegini.mobile.exception.OneginReactNativeException.Companion.FINGERPRINT_IS_NOT_ENABLED
 import com.onegini.mobile.managers.AuthenticatorManager
 import com.onegini.mobile.managers.ErrorHelper
@@ -142,7 +143,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     fun getAuthenticatedUserProfile(promise: Promise) {
-        promise.resolve(UserProfileMapper.toWritableMap(oneginiSDK.oneginiClient.userClient.authenticatedUserProfile))
+        promise.resolve(toWritableMap(oneginiSDK.oneginiClient.userClient.authenticatedUserProfile))
     }
 
     @ReactMethod
@@ -577,5 +578,37 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                     }
                 }
         )
+    }
+
+    @ReactMethod
+    private fun getImplicitUserDetails(profileId: String, promise: Promise) {
+        val userProfile = authenticatorManager.getUserProfile(profileId)
+        if (userProfile == null) {
+            promise.reject(OneginReactNativeException.PROFILE_DOES_NOT_EXIST.toString(), "The profileId $profileId does not exist")
+        } else {
+            oneginiSDK.oneginiClient.userClient
+                    .authenticateUserImplicitly(userProfile, arrayOf("read"), object : OneginiImplicitAuthenticationHandler {
+                        override fun onSuccess(profile: UserProfile) {
+                            promise.resolve(toWritableMap(profile))
+                        }
+
+                        override fun onError(error: OneginiImplicitTokenRequestError) {
+                            promise.reject(error.errorType.toString(), error.message)
+                        }
+                    })
+        }
+    }
+
+    @ReactMethod
+    private fun authenticateDevice(promise: Promise) {
+        oneginiSDK.oneginiClient.deviceClient.authenticateDevice(arrayOf("application-details"), object : OneginiDeviceAuthenticationHandler {
+            override fun onSuccess() {
+                promise.resolve(null)
+            }
+
+            override fun onError(error: OneginiDeviceAuthenticationError) {
+                promise.reject(error.errorType.toString(), error.message)
+            }
+        })
     }
 }
