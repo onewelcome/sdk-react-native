@@ -54,6 +54,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     private val oneginiSDK: OneginiSDK
         private get() = OneginiComponets.oneginiSDK
 
+    private val promisses = Promisses()
 
     init {
         init(reactContext.applicationContext)
@@ -261,6 +262,12 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
+    fun changePin(promise: Promise) {
+        promisses.changePinPromise = promise
+        submitChangePinAction(Constants.PIN_ACTION_CHANGE, null)
+    }
+
+    @ReactMethod
     @Throws(Exception::class)
     fun submitPinAction(flowString: String?, action: String, pin: String?) {
         val flow = PinFlow.parse(flowString)
@@ -430,6 +437,8 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                     Constants.PIN_NOTIFICATION_CHANGED -> {
                         data.putString("action", Constants.PIN_NOTIFICATION_CHANGED)
                         data.putString("flow", flow.flowString)
+                        promisses.changePinPromise?.resolve(null)
+                        promisses.changePinPromise = null
                     }
                     else -> Log.e(LOG_TAG, "Got unsupported PIN notification type: $event")
                 }
@@ -438,10 +447,17 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                 }
             }
 
-            override fun onError(message: String) {
+            override fun onError(message: String, flow: PinFlow) {
                 val data = Arguments.createMap()
                 data.putString("action", Constants.PIN_NOTIFICATION_SHOW_ERROR)
                 data.putString("errorMsg", message)
+
+                //TODO The error handling wil be fixed in ORS-26
+                if (flow == PinFlow.Change){
+                    promisses.changePinPromise?.reject("unknow", message)
+                    promisses.changePinPromise = null
+                }
+
                 reactApplicationContext.getJSModule(RCTDeviceEventEmitter::class.java).emit(ONEGINI_PIN_NOTIFICATION, data)
             }
         }

@@ -16,7 +16,7 @@ class PinWithConfirmationHandler(private val originalHandler: OneginiPinCallback
                                  private val oneginiSDK: OneginiSDK,
                                  private val context: Context) {
 
-    var pinNotificationObserver: PinNotificationObserver? =null
+    var pinNotificationObserver: PinNotificationObserver? = null
 
     private var pin: CharArray? = null
 
@@ -82,7 +82,7 @@ class PinWithConfirmationHandler(private val originalHandler: OneginiPinCallback
     }
 
     fun notifyOnError(errorMessage: String?) {
-        pinNotificationObserver?.onError(errorMessage)
+        pinNotificationObserver?.onError(errorMessage ?: "", lastFlow)
     }
 
     fun handlePinValidationError(oneginiPinValidationError: OneginiPinValidationError) {

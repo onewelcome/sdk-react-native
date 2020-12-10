@@ -27,7 +27,7 @@ class PinAuthenticationRequestHandler(private val oneginiSDK: OneginiSDK) : Oneg
 
     override fun onNextAuthenticationAttempt(attemptCounter: AuthenticationAttemptCounter) {
         if (pinNotificationObserver != null) {
-            pinNotificationObserver!!.onError(AuthenticationAttemptCounterMapper.toErrorString(attemptCounter))
+            pinNotificationObserver!!.onError(AuthenticationAttemptCounterMapper.toErrorString(attemptCounter), Constants.PinFlow.Authentication)
         }
     }
 
