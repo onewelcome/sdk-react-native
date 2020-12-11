@@ -32,9 +32,10 @@ import com.onegini.mobile.sdk.android.model.entity.OneginiMobileAuthenticationRe
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.util.DeregistrationUtil
 import com.onegini.mobile.view.handlers.InitializationHandler
-import com.onegini.mobile.view.handlers.pins.PinNotificationObserver
 import com.onegini.mobile.view.handlers.customregistration.CustomRegistrationObserver
 import com.onegini.mobile.view.handlers.mobileauthotp.MobileAuthOtpRequestObserver
+import com.onegini.mobile.view.handlers.pins.ChangePinHandler
+import com.onegini.mobile.view.handlers.pins.PinNotificationObserver
 
 class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
 
@@ -53,8 +54,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     private val mobileAuthOtpRequestObserver: MobileAuthOtpRequestObserver
     private val oneginiSDK: OneginiSDK
         private get() = OneginiComponets.oneginiSDK
-
-    private val promisses = Promisses()
 
     init {
         init(reactContext.applicationContext)
@@ -263,8 +262,15 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     fun changePin(promise: Promise) {
-        promisses.changePinPromise = promise
-        oneginiSDK.changePinHandler.onStartChangePin()
+        oneginiSDK.changePinHandler.onStartChangePin(object : ChangePinHandler.ChangePinHandlerResponse {
+            override fun onSuccess() {
+                promise.resolve(null)
+            }
+
+            override fun onError(error: OneginiChangePinError?) {
+                promise.reject(error?.errorType.toString(), error?.message)
+            }
+        })
     }
 
     @ReactMethod
@@ -436,8 +442,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                     Constants.PIN_NOTIFICATION_CHANGED -> {
                         data.putString("action", Constants.PIN_NOTIFICATION_CHANGED)
                         data.putString("flow", flow.flowString)
-                        promisses.changePinPromise?.resolve(null)
-                        promisses.changePinPromise = null
                     }
                     else -> Log.e(LOG_TAG, "Got unsupported PIN notification type: $event")
                 }
@@ -450,13 +454,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                 val data = Arguments.createMap()
                 data.putString("action", Constants.PIN_NOTIFICATION_SHOW_ERROR)
                 data.putString("errorMsg", message)
-
-                //TODO The error handling wil be fixed in ORS-26
-                if (flow == PinFlow.Change){
-                    promisses.changePinPromise?.reject("unknow", message)
-                    promisses.changePinPromise = null
-                }
-
                 reactApplicationContext.getJSModule(RCTDeviceEventEmitter::class.java).emit(ONEGINI_PIN_NOTIFICATION, data)
             }
         }

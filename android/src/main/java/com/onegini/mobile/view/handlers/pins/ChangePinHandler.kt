@@ -10,17 +10,22 @@ class ChangePinHandler(private val oneginiSDK: OneginiSDK) : OneginiChangePinHan
 
     var pinNotificationObserver: PinNotificationObserver? = null
 
+    private var response: ChangePinHandlerResponse? = null
+
     override fun onSuccess() {
         pinNotificationObserver?.onNotify(PIN_NOTIFICATION_CHANGED, PinFlow.Change);
         oneginiSDK.createPinRequestHandler.setPinFlow(PinFlow.Create)
+        response?.onSuccess()
     }
 
     override fun onError(error: OneginiChangePinError?) {
         pinNotificationObserver?.onError(error?.message ?: "", PinFlow.Change);
         oneginiSDK.createPinRequestHandler.setPinFlow(PinFlow.Create)
+        response?.onError(error)
     }
 
-    fun onStartChangePin() {
+    fun onStartChangePin(response: ChangePinHandlerResponse) {
+        this.response = response
         oneginiSDK.createPinRequestHandler.setPinFlow(PinFlow.Change)
         oneginiSDK.oneginiClient.userClient.changePin(this)
     }
@@ -33,4 +38,9 @@ class ChangePinHandler(private val oneginiSDK: OneginiSDK) : OneginiChangePinHan
         oneginiSDK.createPinRequestHandler.pinCancelled(PinFlow.Change)
     }
 
+    interface ChangePinHandlerResponse {
+        fun onSuccess()
+
+        fun onError(error: OneginiChangePinError?)
+    }
 }
