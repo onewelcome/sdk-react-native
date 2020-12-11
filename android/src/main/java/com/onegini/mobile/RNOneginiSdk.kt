@@ -32,6 +32,7 @@ import com.onegini.mobile.mapers.CustomInfoMapper.add
 import com.onegini.mobile.mapers.UserProfileMapper.add
 import com.onegini.mobile.mapers.UserProfileMapper.toUserProfile
 import com.onegini.mobile.mapers.UserProfileMapper.toWritableMap
+import com.onegini.mobile.network.ImplicitUserService
 import com.onegini.mobile.sdk.android.handlers.*
 import com.onegini.mobile.sdk.android.handlers.error.*
 import com.onegini.mobile.sdk.android.handlers.error.OneginiRegistrationError.RegistrationErrorType
@@ -590,6 +591,10 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                     .authenticateUserImplicitly(userProfile, arrayOf("read"), object : OneginiImplicitAuthenticationHandler {
                         override fun onSuccess(profile: UserProfile) {
                             promise.resolve(toWritableMap(profile))
+
+                            ImplicitUserService.getInstance(this)
+                                    .implicitUserDetails
+                                    .subscribe({ implicitUserDetails: ImplicitUserDetails? -> this.onImplicitUserDetailsFetched(implicitUserDetails) }) { throwable: Throwable? -> this.onImplicitDetailsFetchFailed(throwable) }
                         }
 
                         override fun onError(error: OneginiImplicitTokenRequestError) {
