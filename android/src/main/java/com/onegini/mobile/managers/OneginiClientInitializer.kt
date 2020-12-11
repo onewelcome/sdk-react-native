@@ -17,7 +17,7 @@ class OneginiClientInitializer(private val oneginiSDK: OneginiSDK,
                                private val deregistrationUtil: DeregistrationUtil,
                                private val userStorage: UserStorage) {
     fun startOneginiClient(config: OneginiReactNativeConfig, initializationHandler: InitializationHandler) {
-        if (!isInitialized) {
+        if (!oneginiSDK.isInitialized) {
             start(config, initializationHandler)
         } else {
             initializationHandler.onSuccess()
@@ -53,12 +53,8 @@ class OneginiClientInitializer(private val oneginiSDK: OneginiSDK,
 
             @Synchronized
             private fun setInitialized() {
-                isInitialized = true
+                oneginiSDK.isInitialized = true
             }
         })
-    }
-
-    companion object {
-        private var isInitialized = false
     }
 }
