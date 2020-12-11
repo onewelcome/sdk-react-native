@@ -11,7 +11,8 @@ const OneginiEventEmitter =
 export const ONEGINI_SDK_EVENTS = {
   ONEGINI_PIN_NOTIFICATION: 'ONEGINI_PIN_NOTIFICATION',
   ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION: 'ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION',
-  ONEGINI_MOBILE_AUTH_OTP_NOTIFICATION: 'ONEGINI_MOBILE_AUTH_OTP_NOTIFICATION'
+  ONEGINI_MOBILE_AUTH_OTP_NOTIFICATION: 'ONEGINI_MOBILE_AUTH_OTP_NOTIFICATION',
+  ONEGINI_FINGERPRINT_NOTIFICATION: 'ONEGINI_FINGERPRINT_NOTIFICATION'
 };
 
 export const ONEGINI_PIN_NOTIFICATIONS = {
@@ -40,6 +41,13 @@ export const ONEGINI_PIN_FLOW = {
   CHANGE: 'change',
 };
 
+export const FINGERPRINT_NOTIFICATION = {
+  START_AUTHENTICATION : "startAuthentication",
+  ON_NEXT_AUTHENTICATION_ATTEMPT : "onNextAuthenticationAttempt",
+  ON_FINGERPRINT_CAPTURED : "onFingerprintCaptured",
+  FINISH_AUTHENTICATION : "finishAuthentication"
+}
+
 const OneginiSdk = {};
 
 OneginiSdk.config = {
@@ -51,6 +59,7 @@ OneginiSdk.listeners = {
   [ONEGINI_SDK_EVENTS.ONEGINI_PIN_NOTIFICATION]: null, // fires ONEGINI_PIN_NOTIFICATIONS
   [ONEGINI_SDK_EVENTS.ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION]: null,
   [ONEGINI_SDK_EVENTS.ONEGINI_MOBILE_AUTH_OTP_NOTIFICATION]: null,
+  [ONEGINI_SDK_EVENTS.ONEGINI_FINGERPRINT_NOTIFICATION]: null,
 };
 
 // eventType = ONEGINI_SDK_EVENTS
@@ -184,12 +193,23 @@ OneginiSdk.submitAuthenticationPinAction = function (action, pin = null) {
 
 OneginiSdk.authenticateUser = function (profileId) { return RNOneginiSdk.authenticateUser(profileId); }
 
+OneginiSdk.getRegisteredAuthenticators = function (profileId) {
+  return RNOneginiSdk.getRegisteredAuthenticators(profileId);
+}
+
+OneginiSdk.getAllAuthenticators = function (profileId) {
+  return RNOneginiSdk.getAllAuthenticators(profileId);
+}
+
 OneginiSdk.logout = function () {
   return new Promise((resolve) =>
     RNOneginiSdk.logout((response) => resolve(response)),
   );
 };
 
+OneginiSdk.setPreferredAuthenticator = function (profileId, idOneginiAuthenticator) {
+  return RNOneginiSdk.setPreferredAuthenticator(profileId, idOneginiAuthenticator);
+}
 
 //Fingerprint
 OneginiSdk.registerFingerprintAuthenticator = function (profileId) {
@@ -202,6 +222,18 @@ OneginiSdk.deregisterFingerprintAuthenticator = function (profileId) {
 
 OneginiSdk.isFingerprintAuthenticatorRegistered = function (profileId) {
   return RNOneginiSdk.isFingerprintAuthenticatorRegistered(profileId);
+}
+
+OneginiSdk.submitFingerprintAcceptAuthenticationRequest = function () {
+  return RNOneginiSdk.submitFingerprintAcceptAuthenticationRequest();
+}
+
+OneginiSdk.submitFingerprintDenyAuthenticationRequest = function () {
+  return RNOneginiSdk.submitFingerprintDenyAuthenticationRequest();
+}
+
+OneginiSdk.submitFingerprintFallbackToPin = function () {
+  return RNOneginiSdk.submitFingerprintFallbackToPin();
 }
 
 export default OneginiSdk;

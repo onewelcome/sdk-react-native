@@ -7,6 +7,11 @@ import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEm
 import com.onegini.mobile.Constants.CUSTOM_REGISTRATION_NOTIFICATION
 import com.onegini.mobile.Constants.CUSTOM_REGISTRATION_NOTIFICATION_FINISH_REGISTRATION
 import com.onegini.mobile.Constants.CUSTOM_REGISTRATION_NOTIFICATION_INIT_REGISTRATION
+import com.onegini.mobile.Constants.ONEGINI_FINGERPRINT_NOTIFICATION
+import com.onegini.mobile.Constants.FINGERPRINT_NOTIFICATION_FINISH_AUTHENTICATION
+import com.onegini.mobile.Constants.FINGERPRINT_NOTIFICATION_ON_FINGERPRINT_CAPTURED
+import com.onegini.mobile.Constants.FINGERPRINT_NOTIFICATION_ON_NEXT_AUTHENTICATION_ATTEMPT
+import com.onegini.mobile.Constants.FINGERPRINT_NOTIFICATION_START_AUTHENTICATION
 import com.onegini.mobile.Constants.MOBILE_AUTH_OTP_FINISH_AUTHENTICATION
 import com.onegini.mobile.Constants.MOBILE_AUTH_OTP_NOTIFICATION
 import com.onegini.mobile.Constants.MOBILE_AUTH_OTP_START_AUTHENTICATION
@@ -15,6 +20,7 @@ import com.onegini.mobile.Constants.PinFlow
 import com.onegini.mobile.OneginiComponets.deregistrationUtil
 import com.onegini.mobile.OneginiComponets.init
 import com.onegini.mobile.OneginiComponets.userStorage
+import com.onegini.mobile.exception.OneginReactNativeException.Companion.FINGERPRINT_IS_NOT_ENABLED
 import com.onegini.mobile.managers.AuthenticatorManager
 import com.onegini.mobile.managers.ErrorHelper
 import com.onegini.mobile.managers.OneginiClientInitializer
@@ -34,6 +40,7 @@ import com.onegini.mobile.util.DeregistrationUtil
 import com.onegini.mobile.view.handlers.InitializationHandler
 import com.onegini.mobile.view.handlers.PinNotificationObserver
 import com.onegini.mobile.view.handlers.customregistration.CustomRegistrationObserver
+import com.onegini.mobile.view.handlers.fingerprint.FingerprintAuthenticationObserver
 import com.onegini.mobile.view.handlers.mobileauthotp.MobileAuthOtpRequestObserver
 
 class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
@@ -51,6 +58,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     private val pinNotificationObserver: PinNotificationObserver
     private val customRegistrationObserver: CustomRegistrationObserver
     private val mobileAuthOtpRequestObserver: MobileAuthOtpRequestObserver
+    private val fingerprintAuthenticationObserver: FingerprintAuthenticationObserver
     private val oneginiSDK: OneginiSDK
         private get() = OneginiComponets.oneginiSDK
 
@@ -63,6 +71,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         pinNotificationObserver = createBridgePinNotificationHandler()
         customRegistrationObserver = createCustomRegistrationObserver()
         mobileAuthOtpRequestObserver = createMobileAuthOtpRequestObserver()
+        fingerprintAuthenticationObserver = createFingerprintAuthenticationObserver()
     }
 
     override fun canOverrideExistingModule(): Boolean {
@@ -116,6 +125,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         oneginiSDK.setPinNotificationObserver(pinNotificationObserver)
         oneginiSDK.setCustomRegistrationObserver(customRegistrationObserver)
         oneginiSDK.setMobileAuthOtpRequestObserver(mobileAuthOtpRequestObserver)
+        oneginiSDK.setFingerprintAuthenticationObserver(fingerprintAuthenticationObserver)
     }
 
     @ReactMethod
@@ -145,8 +155,26 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                     promise.reject(error)
                 }
             })
-        } catch (e: Exception) {
-            promise.reject(e)
+        } catch (e: OneginiError) {
+            promise.reject(e, OneginiErrorMapper.toWritableMap(e))
+        }
+    }
+
+    @ReactMethod
+    fun getAllAuthenticators(profileId: String, promise: Promise) {
+        try {
+            promise.resolve(OneginiAuthenticatorMapper.toWritableMap(authenticatorManager.getAllAuthenticators(profileId)))
+        } catch (e: OneginiError) {
+            promise.reject(e, OneginiErrorMapper.toWritableMap(e))
+        }
+    }
+
+    @ReactMethod
+    fun getRegisteredAuthenticators(profileId: String, promise: Promise) {
+        try {
+            promise.resolve(OneginiAuthenticatorMapper.toWritableMap(authenticatorManager.getRegisteredAuthenticators(profileId)))
+        } catch (e: OneginiError) {
+            promise.reject(e, OneginiErrorMapper.toWritableMap(e))
         }
     }
 
@@ -154,8 +182,8 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     fun isFingerprintAuthenticatorRegistered(profileId: String, promise: Promise) {
         try {
             promise.resolve(authenticatorManager.isFingerprintAuthenticatorRegistered(profileId))
-        } catch (e: Exception) {
-            promise.reject(e)
+        } catch (e: OneginiError) {
+            promise.reject(e, OneginiErrorMapper.toWritableMap(e))
         }
     }
 
@@ -171,8 +199,41 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                     promise.reject(error)
                 }
             })
-        } catch (e: Exception) {
-            promise.reject(e)
+        } catch (e: OneginiError) {
+            promise.reject(e, OneginiErrorMapper.toWritableMap(e))
+        }
+    }
+
+    @ReactMethod
+    fun submitFingerprintAcceptAuthenticationRequest(promise: Promise) {
+        if (oneginiSDK.fingerprintAuthenticationRequestHandler == null) {
+            promise.reject(FINGERPRINT_IS_NOT_ENABLED.toString(), " The fingerprint is no enabled. Please check your configuration")
+        }
+        oneginiSDK.fingerprintAuthenticationRequestHandler!!.acceptAuthenticationRequest()
+    }
+
+    @ReactMethod
+    fun submitFingerprintDenyAuthenticationRequest(promise: Promise) {
+        if (oneginiSDK.fingerprintAuthenticationRequestHandler == null) {
+            promise.reject(FINGERPRINT_IS_NOT_ENABLED.toString(), " The fingerprint is no enabled. Please check your configuration")
+        }
+        oneginiSDK.fingerprintAuthenticationRequestHandler!!.denyAuthenticationRequest()
+    }
+
+    @ReactMethod
+    fun submitFingerprintFallbackToPin(promise: Promise) {
+        if (oneginiSDK.fingerprintAuthenticationRequestHandler == null) {
+            promise.reject(FINGERPRINT_IS_NOT_ENABLED.toString(), " The fingerprint is no enabled. Please check your configuration")
+        }
+        oneginiSDK.fingerprintAuthenticationRequestHandler!!.fallbackToPin()
+    }
+
+    @ReactMethod
+    fun setPreferredAuthenticator(profileId: String, idOneginiAuthenticator: String, promise: Promise) {
+        try {
+            authenticatorManager.setPreferredAuthenticator(profileId, idOneginiAuthenticator)
+        } catch (e: OneginiError) {
+            promise.reject(e, OneginiErrorMapper.toWritableMap(e))
         }
     }
 
@@ -390,6 +451,35 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                 reactApplicationContext.getJSModule(RCTDeviceEventEmitter::class.java).emit(MOBILE_AUTH_OTP_NOTIFICATION, map)
             }
 
+        }
+    }
+
+    private fun createFingerprintAuthenticationObserver(): FingerprintAuthenticationObserver {
+        return object : FingerprintAuthenticationObserver {
+            override fun startAuthentication(user: UserProfile?) {
+                val map = Arguments.createMap()
+                add(map, user)
+                map.putString("action", FINGERPRINT_NOTIFICATION_START_AUTHENTICATION)
+                reactApplicationContext.getJSModule(RCTDeviceEventEmitter::class.java).emit(ONEGINI_FINGERPRINT_NOTIFICATION, map)
+            }
+
+            override fun onNextAuthenticationAttempt() {
+                val map = Arguments.createMap()
+                map.putString("action", FINGERPRINT_NOTIFICATION_ON_NEXT_AUTHENTICATION_ATTEMPT)
+                reactApplicationContext.getJSModule(RCTDeviceEventEmitter::class.java).emit(ONEGINI_FINGERPRINT_NOTIFICATION, map)
+            }
+
+            override fun onFingerprintCaptured() {
+                val map = Arguments.createMap()
+                map.putString("action", FINGERPRINT_NOTIFICATION_ON_FINGERPRINT_CAPTURED)
+                reactApplicationContext.getJSModule(RCTDeviceEventEmitter::class.java).emit(ONEGINI_FINGERPRINT_NOTIFICATION, map)
+            }
+
+            override fun finishAuthentication() {
+                val map = Arguments.createMap()
+                map.putString("action", FINGERPRINT_NOTIFICATION_FINISH_AUTHENTICATION)
+                reactApplicationContext.getJSModule(RCTDeviceEventEmitter::class.java).emit(ONEGINI_FINGERPRINT_NOTIFICATION, map)
+            }
         }
     }
 

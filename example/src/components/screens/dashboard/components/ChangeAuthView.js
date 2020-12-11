@@ -3,14 +3,32 @@ import { StyleSheet, Text, View } from 'react-native';
 import ContentContainer from './ContentContainer';
 import Row from '../../../general/Row';
 import Switch from '../../../general/Switch';
-import { registerFingerprintAuthenticator, deregisterFingerprintAuthenticator, isFingerprintAuthenticatorRegistered } from '../../../helpers/FingerprintHelper'
+import ModalSelector from 'react-native-modal-selector'
+import {
+  registerFingerprintAuthenticator,
+  deregisterFingerprintAuthenticator,
+  isFingerprintAuthenticatorRegistered,
+  getRegisteredAuthenticators,
+  setPreferredAuthenticator
+} from '../../../helpers/FingerprintHelper'
+
+const emptyRegisteredAuthenticators = [
+  { id: 0, section: true, name: '' },
+];
+
+const pinRegisteredAuthenticators = [
+  { id: 0, section: true, name: 'PIN' },
+];
 
 const ChangeAuthView = (props) => {
   const [isFigerprintEnable, setFingerprintEnable] = useState(false);
   const [message, setMessage] = useState('');
+  const [registeredAuthenticators, setRegisteredAuthenticators] = useState(emptyRegisteredAuthenticators);
+  const [preferred, setPreferred] = useState(pinRegisteredAuthenticators);
 
   useEffect(() => {
     isFingerprintAuthenticatorRegistered(setFingerprintEnable)
+    getRegisteredAuthenticators(setRegisteredAuthenticators, setPreferred)
   }, []);
 
   const renderMessage = (message) => {
@@ -19,7 +37,7 @@ const ChangeAuthView = (props) => {
         <Text style={styles.message}>{message}</Text>
       );
     } else {
-      return 
+      return
     }
   };
 
@@ -28,17 +46,22 @@ const ChangeAuthView = (props) => {
       {renderMessage(message)}
       <Row containerStyle={styles.row}>
         <Text style={styles.methodLabel}>Login Method</Text>
-        <Text style={styles.methodText}>PIN</Text>
-        {/* @todo PIN/Fingerprint Clickable with Modal selector in the future */}
+        <ModalSelector
+          data={registeredAuthenticators}
+          initValue={preferred.name}
+          keyExtractor={item => item.id}
+          labelExtractor={item => item.name}
+          onChange={(option) => { onPreferredChanged(option, setMessage, setPreferred) }}
+        >
+        </ModalSelector>
       </Row>
-      {/* @todo Later add here errors output */}
       <View style={styles.authenticatorsHolder}>
         <Text style={styles.authenticatorsLabel}>Possible authenticators:</Text>
         <Switch
           containerStyle={styles.pinSwitchContainer}
           labelStyle={styles.switchLabel}
           label={'PIN'}
-          onSwitch={() => null}
+          onSwitch={(option) => null}
           value={true}
           disabled={true}
         />
@@ -46,7 +69,11 @@ const ChangeAuthView = (props) => {
           containerStyle={styles.fingerprintSwitchContainer}
           labelStyle={styles.switchLabel}
           label={'Fingerprint'}
-          onSwitch={(isEnable) => onSwithFingerprint(isEnable, setFingerprintEnable, setMessage)}
+          onSwitch={(isEnable) => onSwithFingerprint(isEnable,
+            setFingerprintEnable,
+            setMessage,
+            setRegisteredAuthenticators,
+            setPreferred)}
           value={isFigerprintEnable}
         />
       </View>
@@ -54,19 +81,27 @@ const ChangeAuthView = (props) => {
   );
 };
 
-const onSwithFingerprint = (isEnable, setFigerprintEnable, setMessage) => {
+const onPreferredChanged = (preferred, setMessage, setPreferred) => {
+  setPreferredAuthenticator(preferred, (successful) => {
+    getRegisteredAuthenticators(setRegisteredAuthenticators, setPreferred)
+  }, setMessage)
+}
+
+const onSwithFingerprint = (isEnable, setFigerprintEnable, setMessage, setRegisteredAuthenticators, setPreferred) => {
   setMessage("")
   if (isEnable) {
     registerFingerprintAuthenticator((successful) => {
       if (successful) {
         setFigerprintEnable(true)
       }
+      getRegisteredAuthenticators(setRegisteredAuthenticators, setPreferred)
     }, setMessage)
   } else {
     deregisterFingerprintAuthenticator((successful) => {
       if (successful) {
         setFigerprintEnable(false)
       }
+      getRegisteredAuthenticators(setRegisteredAuthenticators, setPreferred)
     }, setMessage)
   }
 }
