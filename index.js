@@ -24,6 +24,11 @@ export const ONEGINI_PIN_NOTIFICATIONS = {
   CHANGED: 'changed'
 };
 
+export const CUSTOM_REGISTRATION_NOTIFICATIONS = {
+  INIT_REGISTRATION : 'initRegistration',
+  FINISH_REGISTRATION: 'finishRegistration',
+};
+
 export const MOBILE_AUTH_OTP_NOTIFICATION = {
   START_AUTHENTICATION: 'startAuthentication',
   FINISH_AUTHENTICATION: 'finishAuthentication',
