@@ -52,7 +52,8 @@ const OneginiSdk = {};
 
 OneginiSdk.config = {
   customProviders: [{ id: '2-way-otp-api', isTwoStep: true }],
-  enableMobileAuthenticationOtp: true
+  enableMobileAuthenticationOtp: true,
+  enableFingerprint: true
 }
 
 OneginiSdk.listeners = {
