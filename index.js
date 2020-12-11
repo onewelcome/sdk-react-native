@@ -42,6 +42,10 @@ export const ONEGINI_PIN_FLOW = {
 
 const OneginiSdk = {};
 
+OneginiSdk.config = {
+  customProviders: [{ id: '2-way-otp-api', isTwoStep: true }],
+  enableMobileAuthenticationOtp: true
+}
 
 OneginiSdk.listeners = {
   [ONEGINI_SDK_EVENTS.ONEGINI_PIN_NOTIFICATION]: null, // fires ONEGINI_PIN_NOTIFICATIONS
@@ -72,11 +76,11 @@ OneginiSdk.removeEventListener = function (eventType) {
   }
 };
 
-OneginiSdk.startClient = function () {
+OneginiSdk.startClient = function (sdkConfig = OneginiSdk.config) {
   return new Promise((resolve) =>
     Platform.OS === 'ios'
       ? RNOneginiSdk.startClient((response) => resolve(response))
-      : RNOneginiSdk.startClient(ONEGINI_SDK_CONFIG, (response) => resolve(response)),
+      : RNOneginiSdk.startClient(sdkConfig, (response) => resolve(response)),
   );
 };
 
