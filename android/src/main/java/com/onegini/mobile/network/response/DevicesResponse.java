@@ -14,15 +14,21 @@
  * limitations under the License.
  */
 
-package com.onegini.mobile.network.client;
+package com.onegini.mobile.network.response;
 
-import com.onegini.mobile.network.response.DevicesResponse;
+import com.google.gson.annotations.SerializedName;
+import com.onegini.mobile.model.Device;
 
-import io.reactivex.Single;
-import retrofit2.http.GET;
+import java.util.ArrayList;
+import java.util.List;
 
-public interface UserClient {
+@SuppressWarnings("unused")
+public class DevicesResponse {
 
-  @GET("devices")
-  Single<DevicesResponse> getDevices();
+  @SerializedName("devices")
+  final private List<Device> devices = new ArrayList<>();
+
+  public List<Device> getDevices() {
+    return devices;
+  }
 }

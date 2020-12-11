@@ -31,12 +31,12 @@ class ImplicitUserService private constructor() {
 
     companion object {
         private var INSTANCE: ImplicitUserService? = null
-        val instance: ImplicitUserService?
+        val instance: ImplicitUserService
             get() {
                 if (INSTANCE == null) {
                     INSTANCE = ImplicitUserService()
                 }
-                return INSTANCE
+                return INSTANCE!!
             }
     }
 

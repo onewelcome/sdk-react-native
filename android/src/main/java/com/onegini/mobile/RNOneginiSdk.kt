@@ -46,6 +46,7 @@ import com.onegini.mobile.view.handlers.PinNotificationObserver
 import com.onegini.mobile.view.handlers.customregistration.CustomRegistrationObserver
 import com.onegini.mobile.view.handlers.fingerprint.FingerprintAuthenticationObserver
 import com.onegini.mobile.view.handlers.mobileauthotp.MobileAuthOtpRequestObserver
+import io.reactivex.disposables.CompositeDisposable
 
 class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
 
@@ -66,6 +67,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     private val oneginiSDK: OneginiSDK
         private get() = OneginiComponets.oneginiSDK
 
+    private val disposables = CompositeDisposable()
 
     init {
         init(reactContext.applicationContext)
@@ -582,7 +584,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    private fun getImplicitUserDetails(profileId: String, promise: Promise) {
+    private fun getImplicitUserDetails(profileId: String?, promise: Promise) {
         val userProfile = authenticatorManager.getUserProfile(profileId)
         if (userProfile == null) {
             promise.reject(OneginReactNativeException.PROFILE_DOES_NOT_EXIST.toString(), "The profileId $profileId does not exist")
@@ -590,11 +592,13 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
             oneginiSDK.oneginiClient.userClient
                     .authenticateUserImplicitly(userProfile, arrayOf("read"), object : OneginiImplicitAuthenticationHandler {
                         override fun onSuccess(profile: UserProfile) {
-                            promise.resolve(toWritableMap(profile))
-
-                            ImplicitUserService.getInstance(this)
+                            disposables.add(ImplicitUserService.instance
                                     .implicitUserDetails
-                                    .subscribe({ implicitUserDetails: ImplicitUserDetails? -> this.onImplicitUserDetailsFetched(implicitUserDetails) }) { throwable: Throwable? -> this.onImplicitDetailsFetchFailed(throwable) }
+                                    .subscribe({
+                                        promise.resolve(ImplicitUserDetailsMapper.toWritableMap(it))
+                                    }, {
+                                        promise.reject(OneginReactNativeException.IMPLICIT_USER_DETAILS_ERROR.toString(), it.message)
+                                    }))
                         }
 
                         override fun onError(error: OneginiImplicitTokenRequestError) {
@@ -615,5 +619,10 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                 promise.reject(error.errorType.toString(), error.message)
             }
         })
+    }
+
+    override fun onCatalystInstanceDestroy() {
+        disposables.clear()
+        super.onCatalystInstanceDestroy()
     }
 }
