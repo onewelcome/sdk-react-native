@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Text} from 'react-native';
+import {StyleSheet, View, Text, Platform} from 'react-native';
 import PropTypes from 'prop-types';
 import OneginiSdk, {
   ONEGINI_PIN_ACTIONS,
@@ -60,7 +60,9 @@ const PinView = (props) => {
           name={'Cancel'}
           containerStyle={styles.buttonStyle}
           onPress={() => {
-            OneginiSdk.submitPinAction(
+            Platform.OS === 'ios'
+              ? setError('Unfortunately this feature is not supported, yet.')
+              : OneginiSdk.submitPinAction(
               props.flow,
               ONEGINI_PIN_ACTIONS.CANCEL,
               null,

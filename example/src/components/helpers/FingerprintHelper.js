@@ -7,7 +7,7 @@ const registerFingerprintAuthenticator = async (successful, message) => {
     message("Fingerprint is enabled")
     successful(true)
   } catch (error) {
-    message(e.message)
+    message(error.message)
     successful(false)
   }
 };
@@ -19,7 +19,7 @@ const deregisterFingerprintAuthenticator = async (successful, message) => {
     message("Fingerprint is disabled")
     successful(true)
   } catch (error) {
-    message(e.message)
+    message(error.message)
     successful(false)
   }
 };
