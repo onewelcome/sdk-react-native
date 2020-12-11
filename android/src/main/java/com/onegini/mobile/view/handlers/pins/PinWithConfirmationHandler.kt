@@ -1,4 +1,4 @@
-package com.onegini.mobile.view.handlers
+package com.onegini.mobile.view.handlers.pins
 
 import android.content.Context
 import com.onegini.mobile.Constants

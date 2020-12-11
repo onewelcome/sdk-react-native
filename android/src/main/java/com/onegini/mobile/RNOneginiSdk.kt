@@ -32,7 +32,7 @@ import com.onegini.mobile.sdk.android.model.entity.OneginiMobileAuthenticationRe
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.util.DeregistrationUtil
 import com.onegini.mobile.view.handlers.InitializationHandler
-import com.onegini.mobile.view.handlers.PinNotificationObserver
+import com.onegini.mobile.view.handlers.pins.PinNotificationObserver
 import com.onegini.mobile.view.handlers.customregistration.CustomRegistrationObserver
 import com.onegini.mobile.view.handlers.mobileauthotp.MobileAuthOtpRequestObserver
 
@@ -264,7 +264,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     @ReactMethod
     fun changePin(promise: Promise) {
         promisses.changePinPromise = promise
-        submitChangePinAction(Constants.PIN_ACTION_CHANGE, null)
+        oneginiSDK.changePinHandler.onStartChangePin()
     }
 
     @ReactMethod
@@ -305,7 +305,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     fun submitChangePinAction(action: String, pin: String?) {
         when (action) {
-            Constants.PIN_ACTION_CHANGE -> oneginiSDK.changePinHandler.onStartChangePin()
             Constants.PIN_ACTION_PROVIDE -> oneginiSDK.changePinHandler.onPinProvided(pin!!.toCharArray())
             Constants.PIN_ACTION_CANCEL -> oneginiSDK.changePinHandler.pinCancelled()
             else -> Log.e(LOG_TAG, "Got unsupported PIN action: $action")

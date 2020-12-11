@@ -47,7 +47,6 @@ object Constants {
     // Pin actions for RN Bridge
     const val PIN_ACTION_CANCEL = "cancel"
     const val PIN_ACTION_PROVIDE = "provide"
-    const val PIN_ACTION_CHANGE = "change"
 
     // Custom registration
     const val CUSTOM_REGISTRATION_NOTIFICATION = "ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION"

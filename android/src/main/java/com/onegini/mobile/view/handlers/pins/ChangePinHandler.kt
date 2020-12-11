@@ -1,4 +1,4 @@
-package com.onegini.mobile.view.handlers
+package com.onegini.mobile.view.handlers.pins
 
 import com.onegini.mobile.Constants.PIN_NOTIFICATION_CHANGED
 import com.onegini.mobile.Constants.PinFlow
@@ -6,7 +6,7 @@ import com.onegini.mobile.OneginiSDK
 import com.onegini.mobile.sdk.android.handlers.OneginiChangePinHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiChangePinError
 
-class ChangePinHandler(private val oneginiSDK: OneginiSDK) : OneginiChangePinHandler, RegisteredHandler {
+class ChangePinHandler(private val oneginiSDK: OneginiSDK) : OneginiChangePinHandler {
 
     var pinNotificationObserver: PinNotificationObserver? = null
 
@@ -33,7 +33,4 @@ class ChangePinHandler(private val oneginiSDK: OneginiSDK) : OneginiChangePinHan
         oneginiSDK.createPinRequestHandler.pinCancelled(PinFlow.Change)
     }
 
-    override fun onStart() {
-
-    }
 }
