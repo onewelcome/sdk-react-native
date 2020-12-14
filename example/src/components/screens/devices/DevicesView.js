@@ -3,7 +3,6 @@ import {StyleSheet, Text, View, ScrollView} from 'react-native';
 import AppColors from "../../constants/AppColors";
 import PropTypes from "prop-types";
 import OneginiSdk from 'react-native-sdk-beta';
-import ContentContainer from "../dashboard/components/ContentContainer";
 
 const DevicesView = (props) => {
     const [isLoading, setLoading] = useState(true);
@@ -29,7 +28,6 @@ const DevicesView = (props) => {
             })
     }, []);
 
-
     const renderLoading = () => {
         return (
             <View style={styles.container}>
@@ -38,15 +36,10 @@ const DevicesView = (props) => {
         );
     };
 
-    //  public String getDeviceFullInfo() {
-//    return getName() + Constants.NEW_LINE + getApplication() + Constants.NEW_LINE + getPlatform() + Constants.NEW_LINE
-//        + "Mobile authentication enabled: " + isMobileAuthenticationEnabled();
-//  }
-
     const base = () => {
         return (
             <ScrollView style={styles.container}>
-                <View>
+                <View style={styles.scrollViewContainer}>
                     {devices.devices.map(it => {
                         return (
                             <View style={styles.row}>
@@ -56,20 +49,6 @@ const DevicesView = (props) => {
                             </View>
                         )
                     })}
-                    {/*<View style={styles.row}>*/}
-                    {/*    <Text style={styles.label}>User Info</Text>*/}
-                    {/*    <Text style={styles.info}>{"Profile id:  " + profileId}</Text>*/}
-                    {/*    <Text style={styles.info}>{"Implicit details: " + implicitDetails}</Text>*/}
-                    {/*</View>*/}
-                    {/*<View style={styles.row}>*/}
-                    {/*    <Text style={styles.label}>Device details</Text>*/}
-                    {/*    <Text style={styles.info}>{"Application ID: " + applicationDetails.applicationIdentifier}</Text>*/}
-                    {/*    <Text style={styles.info}>{"Application Version: " + applicationDetails.applicationVersion}</Text>*/}
-                    {/*    <Text style={styles.info}>{"Platform: " + applicationDetails.applicationPlatform}</Text>*/}
-                    {/*</View>*/}
-                    {/*<View style={styles.cancelButton}>*/}
-                    {/*    <Button name={"CANCEL"} onPress={props.onFinished}/>*/}
-                    {/*</View>*/}
                 </View>
             </ScrollView>
         );
@@ -88,14 +67,26 @@ DevicesView.propTypes = {
 
 const styles = StyleSheet.create({
     container: {
-        top: '10%',
-        paddingHorizontal: '6%',
-        paddingTop: '4%',
+        marginTop: '15%',
+        paddingBottom:'15%',
+        paddingHorizontal: '4%',
+    },
+    scrollViewContainer: {
+        paddingBottom:'15%',
     },
     row: {
-        paddingHorizontal: '10%',
-        justifyContent: 'flex-start',
-        alignItems: 'flex-start'
+        marginTop: '5%',
+        borderRadius: 4,
+        backgroundColor: AppColors.white,
+        shadowColor: AppColors.gray,
+        shadowOffset: {
+            width: 0,
+            height: 1,
+        },
+        shadowOpacity: 0.2,
+        shadowRadius: 2,
+        elevation: 3,
+        padding: '5%',
     },
     label: {
         justifyContent: 'center',

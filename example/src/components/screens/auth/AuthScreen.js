@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     },
     registerContainer: {
         position: 'absolute',
-        bottom: '16%',
+        bottom: '20%',
         width: '100%',
         alignSelf: 'center',
     },
