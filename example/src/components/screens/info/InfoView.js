@@ -7,14 +7,19 @@ import PropTypes from "prop-types";
 import OneginiSdk from 'react-native-sdk-beta';
 
 const InfoView = (props) => {
-    const [profileId, setProfileId] = useState("Profile id: ");
-    const [implicitDetails, setImplicitDetails] = useState("Implicit details:");
+    const [profileId, setProfileId] = useState("");
+    const [implicitDetails, setImplicitDetails] = useState("");
+    const [applicationDetails, setApplicationDetails] = useState({
+        "applicationIdentifier": "",
+        "applicationVersion": "",
+        "applicationPlatform": ""
+    });
 
     useEffect(() => {
         OneginiSdk.getUserProfiles().then((it) => {
             var profile = it[0]
             if (profile != null) {
-                setProfileId("Profile id: " + profile.profileId)
+                setProfileId(profile.profileId)
                 OneginiSdk.getImplicitUserDetails(profile.profileId).then((details) => {
                     setImplicitDetails("Implicit details:" + details)
                 }).catch((e) => {
@@ -23,19 +28,25 @@ const InfoView = (props) => {
             }
         })
         OneginiSdk.authenticateDevice()
-            .then((it)=>{
-
+            .then((it) => {
+                setApplicationDetails(it)
             }).catch((e) => {
-                alert(e)
-            })
+            alert(e)
+        })
     }, []);
 
     return (
         <ContentContainer containerStyle={styles.container}>
             <View style={styles.row}>
                 <Text style={styles.label}>User Info</Text>
-                <Text style={styles.info}>{profileId}</Text>
-                <Text style={styles.info}>{implicitDetails}</Text>
+                <Text style={styles.info}>{"Profile id:  " + profileId}</Text>
+                <Text style={styles.info}>{"Implicit details: " + implicitDetails}</Text>
+            </View>
+            <View style={styles.row}>
+                <Text style={styles.label}>Device details</Text>
+                <Text style={styles.info}>{"Application ID: " + applicationDetails.applicationIdentifier}</Text>
+                <Text style={styles.info}>{"Application Version: " + applicationDetails.applicationVersion}</Text>
+                <Text style={styles.info}>{"Platform: " + applicationDetails.applicationPlatform}</Text>
             </View>
             <View style={styles.cancelButton}>
                 <Button name={"CANCEL"} onPress={props.onFinished}/>
