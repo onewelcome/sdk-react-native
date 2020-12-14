@@ -244,33 +244,14 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    fun registerUser(identityProviderId: String?, callback: Callback) {
+    fun registerUser(identityProviderId: String?, promise: Promise) {
         registrationManager.registerUser(identityProviderId, object : OneginiRegistrationHandler {
             override fun onSuccess(userProfile: UserProfile?, customInfo: CustomInfo?) {
-                val result = Arguments.createMap()
-                result.putBoolean("success", true)
-                result.putString("profileId", userProfile?.profileId ?: "")
-                try {
-                    callback.invoke(result)
-                } catch (e: RuntimeException) {
-                    Log.w(TAG, "The" + result.toString() + "was not send")
-                }
+                promise.resolve(toWritableMap(userProfile))
             }
 
-            override fun onError(oneginiRegistrationError: OneginiRegistrationError) {
-                @RegistrationErrorType val errorType = oneginiRegistrationError.errorType
-                var errorMessage = registrationManager.getErrorMessageByCode(errorType)
-                if (errorMessage == null) {
-                    errorMessage = oneginiRegistrationError.message
-                }
-                val result = Arguments.createMap()
-                result.putBoolean("success", false)
-                result.putString("errorMsg", errorMessage)
-                try {
-                    callback.invoke(result)
-                } catch (e: RuntimeException) {
-                    Log.w(TAG, "The" + result.toString() + "was not send")
-                }
+            override fun onError(error: OneginiRegistrationError) {
+                promise.reject(error.errorType.toString(), error.message)
             }
         })
     }

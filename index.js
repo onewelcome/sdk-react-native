@@ -141,11 +141,7 @@ OneginiSdk.getAuthenticatedUserProfile = function () {
 
 //@todo will return profileId -> Later check out whole profile + don't forget to ask for userName on RN side
 OneginiSdk.registerUser = function (identityProvider = null) {
-  return new Promise((resolve) =>
-    RNOneginiSdk.registerUser(identityProvider, (response) =>
-      resolve(response),
-    ),
-  );
+  return RNOneginiSdk.registerUser(identityProvider)
 };
 
 OneginiSdk.deregisterUser = function (profileId) {
