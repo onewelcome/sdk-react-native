@@ -22,6 +22,7 @@ import com.onegini.mobile.OneginiComponets.deregistrationUtil
 import com.onegini.mobile.OneginiComponets.init
 import com.onegini.mobile.OneginiComponets.userStorage
 import com.onegini.mobile.exception.OneginReactNativeException
+import com.onegini.mobile.exception.OneginReactNativeException.Companion.AUTHENTICATE_DEVICE_ERROR
 import com.onegini.mobile.exception.OneginReactNativeException.Companion.FINGERPRINT_IS_NOT_ENABLED
 import com.onegini.mobile.managers.AuthenticatorManager
 import com.onegini.mobile.managers.ErrorHelper
@@ -32,6 +33,8 @@ import com.onegini.mobile.mapers.CustomInfoMapper.add
 import com.onegini.mobile.mapers.UserProfileMapper.add
 import com.onegini.mobile.mapers.UserProfileMapper.toUserProfile
 import com.onegini.mobile.mapers.UserProfileMapper.toWritableMap
+import com.onegini.mobile.model.ApplicationDetails
+import com.onegini.mobile.network.AnonymousService
 import com.onegini.mobile.network.ImplicitUserService
 import com.onegini.mobile.sdk.android.handlers.*
 import com.onegini.mobile.sdk.android.handlers.error.*
@@ -612,7 +615,14 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     private fun authenticateDevice(promise: Promise) {
         oneginiSDK.oneginiClient.deviceClient.authenticateDevice(arrayOf("application-details"), object : OneginiDeviceAuthenticationHandler {
             override fun onSuccess() {
-                promise.resolve(null)
+                disposables.add(
+                        AnonymousService.getInstance()
+                                .applicationDetails
+                                .subscribe({ details: ApplicationDetails? ->
+                                    promise.resolve(ApplicationDetailsMapper.toWritableMap(details))
+
+                                }) { throwable -> promise.reject(AUTHENTICATE_DEVICE_ERROR.toString(), throwable.message) }
+                )
             }
 
             override fun onError(error: OneginiDeviceAuthenticationError) {

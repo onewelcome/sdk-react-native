@@ -1,11 +1,9 @@
-import React, {useState, useEffect} from 'react';
-import {StyleSheet, Text, View, TextInput} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, Text, View} from 'react-native';
 import Button from "../../general/Button";
-import {handleMobileAuthWithOtp} from "../../helpers/MobileAuthenticationHelper";
 import ContentContainer from "../dashboard/components/ContentContainer";
 import AppColors from "../../constants/AppColors";
 import PropTypes from "prop-types";
-import {getRegisteredAuthenticators, isFingerprintAuthenticatorRegistered} from "../../helpers/FingerprintHelper";
 import OneginiSdk from 'react-native-sdk-beta';
 
 const InfoView = (props) => {
@@ -19,12 +17,17 @@ const InfoView = (props) => {
                 setProfileId("Profile id: " + profile.profileId)
                 OneginiSdk.getImplicitUserDetails(profile.profileId).then((details) => {
                     setImplicitDetails("Implicit details:" + details)
-                }).catch((e)=>{
+                }).catch((e) => {
                     setImplicitDetails("Implicit details:" + e.message)
                 })
             }
         })
-        // OneginiSdk.getImplicitUserDetails().then()
+        OneginiSdk.authenticateDevice()
+            .then((it)=>{
+
+            }).catch((e) => {
+                alert(e)
+            })
     }, []);
 
     return (
@@ -58,13 +61,13 @@ const styles = StyleSheet.create({
     label: {
         justifyContent: 'center',
         color: AppColors.blue,
-        fontSize: 32,
+        fontSize: 24,
         fontWeight: '500',
     },
     info: {
         justifyContent: 'center',
         color: AppColors.black,
-        fontSize: 18,
+        fontSize: 12,
         fontWeight: '500',
         padding: 6,
     },
