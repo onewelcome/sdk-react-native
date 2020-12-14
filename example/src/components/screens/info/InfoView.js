@@ -21,9 +21,9 @@ const InfoView = (props) => {
             if (profile != null) {
                 setProfileId(profile.profileId)
                 OneginiSdk.getImplicitUserDetails(profile.profileId).then((details) => {
-                    setImplicitDetails("Implicit details:" + details)
+                    setImplicitDetails(details)
                 }).catch((e) => {
-                    setImplicitDetails("Implicit details:" + e.message)
+                    setImplicitDetails(e.message)
                 })
             }
         })
