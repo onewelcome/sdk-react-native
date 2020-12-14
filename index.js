@@ -92,11 +92,9 @@ OneginiSdk.removeEventListener = function (eventType) {
 };
 
 OneginiSdk.startClient = function (sdkConfig = OneginiSdk.config) {
-  return new Promise((resolve) =>
-    Platform.OS === 'ios'
-      ? RNOneginiSdk.startClient((response) => resolve(response))
-      : RNOneginiSdk.startClient(sdkConfig, (response) => resolve(response)),
-  );
+  return Platform.OS === 'ios'
+      ? RNOneginiSdk.startClient()
+      : RNOneginiSdk.startClient(sdkConfig)
 };
 
 OneginiSdk.getIdentityProviders = function () {
@@ -159,9 +157,7 @@ OneginiSdk.getUserProfiles = function () {
 }
 
 OneginiSdk.getRedirectUri = function () {
-  return new Promise((resolve) =>
-    RNOneginiSdk.getRedirectUri((response) => resolve(response)),
-  );
+  return RNOneginiSdk.getRedirectUri()
 };
 
 OneginiSdk.handleRegistrationCallback = function (uri) {

@@ -105,7 +105,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    fun startClient(rnConfig: ReadableMap, callback: Callback) {
+    fun startClient(rnConfig: ReadableMap, promise: Promise) {
         val config = OneginiReactNativeConfigMapper.toOneginiReactNativeConfig(rnConfig)
 
         val oneginiClientInitializer = OneginiClientInitializer(
@@ -118,16 +118,11 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         oneginiClientInitializer.startOneginiClient(config, object : InitializationHandler {
             override fun onSuccess() {
                 oneginiSDKInitiated()
-                val result = Arguments.createMap()
-                result.putBoolean("success", true)
-                callback.invoke(result)
+                promise.resolve(null)
             }
 
-            override fun onError(errorMessage: String) {
-                val result = Arguments.createMap()
-                result.putBoolean("success", false)
-                result.putString("errorMsg", errorMessage)
-                callback.invoke(result)
+            override fun onError(error: OneginiInitializationError) {
+                promise.reject(error.errorType.toString(), error.message)
             }
         })
     }
@@ -328,12 +323,11 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    fun getRedirectUri(callback: Callback) {
+    fun getRedirectUri(promise: Promise) {
         val uri = registrationManager.redirectUri
         val result = Arguments.createMap()
-        result.putBoolean("success", true)
         result.putString("redirectUri", uri)
-        callback.invoke(result)
+        promise.resolve(result)
     }
 
     @ReactMethod
