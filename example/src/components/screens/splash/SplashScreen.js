@@ -5,7 +5,7 @@ import OneginiSdk from 'react-native-sdk-beta';
 import {Assets} from '../../../../assets';
 
 const startSdk = async (onStarted = () => null) => {
-  const startResult = await OneginiSdk.startClient();
+  const startResult = await OneginiSdk.startClient(OneginiSdk.config);
 
   if (startResult.success) {
     const linkUriResult = await OneginiSdk.getRedirectUri();
