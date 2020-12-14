@@ -51,9 +51,4 @@ public class Device {
     public boolean isMobileAuthenticationEnabled() {
         return mobileAuthenticationEnabled;
     }
-
-//  public String getDeviceFullInfo() {
-//    return getName() + Constants.NEW_LINE + getApplication() + Constants.NEW_LINE + getPlatform() + Constants.NEW_LINE
-//        + "Mobile authentication enabled: " + isMobileAuthenticationEnabled();
-//  }
 }

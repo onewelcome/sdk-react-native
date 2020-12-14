@@ -23,6 +23,7 @@ import com.onegini.mobile.OneginiComponets.init
 import com.onegini.mobile.OneginiComponets.userStorage
 import com.onegini.mobile.exception.OneginReactNativeException
 import com.onegini.mobile.exception.OneginReactNativeException.Companion.AUTHENTICATE_DEVICE_ERROR
+import com.onegini.mobile.exception.OneginReactNativeException.Companion.CAN_NOT_DOWNLOAD_DEVICES
 import com.onegini.mobile.exception.OneginReactNativeException.Companion.FINGERPRINT_IS_NOT_ENABLED
 import com.onegini.mobile.managers.AuthenticatorManager
 import com.onegini.mobile.managers.ErrorHelper
@@ -36,6 +37,7 @@ import com.onegini.mobile.mapers.UserProfileMapper.toWritableMap
 import com.onegini.mobile.model.ApplicationDetails
 import com.onegini.mobile.network.AnonymousService
 import com.onegini.mobile.network.ImplicitUserService
+import com.onegini.mobile.network.UserService
 import com.onegini.mobile.sdk.android.handlers.*
 import com.onegini.mobile.sdk.android.handlers.error.*
 import com.onegini.mobile.sdk.android.handlers.error.OneginiRegistrationError.RegistrationErrorType
@@ -629,6 +631,13 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                 promise.reject(error.errorType.toString(), error.message)
             }
         })
+    }
+
+    @ReactMethod
+    private fun getClientResource(promise: Promise) {
+        disposables.add(UserService.getInstance().devices.subscribe({
+            promise.resolve(DevicesResponseMapper.toWritableMap(it))
+        }, { promise.reject(CAN_NOT_DOWNLOAD_DEVICES.toString(), it.message) }))
     }
 
     override fun onCatalystInstanceDestroy() {

@@ -13,6 +13,7 @@ class OneginReactNativeException(errorType: Int, errorDetails: OneginiErrorDetai
         const val FINGERPRINT_IS_NOT_ENABLED = 20003
         const val IMPLICIT_USER_DETAILS_ERROR = 20004
         const val AUTHENTICATE_DEVICE_ERROR = 20005
+        const val CAN_NOT_DOWNLOAD_DEVICES = 20006
     }
 
     override fun getErrorType(): Int {

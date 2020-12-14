@@ -306,4 +306,8 @@ OneginiSdk.authenticateDevice = function () {
   return RNOneginiSdk.authenticateDevice();
 }
 
+OneginiSdk.getClientResource = function () {
+  return RNOneginiSdk.getClientResource();
+}
+
 export default OneginiSdk;

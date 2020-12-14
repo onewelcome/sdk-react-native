@@ -6,7 +6,7 @@ import com.onegini.mobile.model.ApplicationDetails
 
 object ApplicationDetailsMapper {
 
-    const val APPLICATION_DETAILS = "ApplicationDetails"
+    const val APPLICATION_DETAILS = "applicationDetails"
 
     fun toWritableMap(details: ApplicationDetails?): WritableMap {
         val map = Arguments.createMap()
