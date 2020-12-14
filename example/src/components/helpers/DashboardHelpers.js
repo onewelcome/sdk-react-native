@@ -1,11 +1,10 @@
 import OneginiSdk from 'react-native-sdk-beta';
 
 const logout = async (onLogoutSuccess) => {
-  const result = await OneginiSdk.logout();
-
-  if (result.success) {
+  try {
+    await OneginiSdk.logout();
     onLogoutSuccess();
-  } else {
+  } catch (e) {
     alert(result.errorMsg ? result.errorMsg : 'Something strange happened.');
   }
 };

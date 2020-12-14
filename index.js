@@ -226,9 +226,7 @@ OneginiSdk.getAllAuthenticators = function (profileId) {
 }
 
 OneginiSdk.logout = function () {
-  return new Promise((resolve) =>
-    RNOneginiSdk.logout((response) => resolve(response)),
-  );
+  return RNOneginiSdk.logout()
 };
 
 OneginiSdk.setPreferredAuthenticator = function (profileId, idOneginiAuthenticator) {

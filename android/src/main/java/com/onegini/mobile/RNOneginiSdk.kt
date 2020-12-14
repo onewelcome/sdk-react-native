@@ -541,23 +541,16 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    fun logout(callback: Callback) {
+    fun logout(promise: Promise) {
         val userClient = oneginiSDK.oneginiClient.userClient
-        val userProfile = userClient.authenticatedUserProfile
         userClient.logout(
                 object : OneginiLogoutHandler {
                     override fun onSuccess() {
-                        val result = Arguments.createMap()
-                        result.putBoolean("success", true)
-                        callback.invoke(result)
+                        promise.resolve(null)
                     }
 
-                    override fun onError(oneginiLogoutError: OneginiLogoutError?) {
-                        val message = ErrorHelper.handleLogoutError(oneginiLogoutError, userProfile, reactContext)
-                        val result = Arguments.createMap()
-                        result.putBoolean("success", false)
-                        result.putString("errorMsg", message)
-                        callback.invoke(result)
+                    override fun onError(error: OneginiLogoutError?) {
+                        promise.reject(error?.errorType.toString(), error?.message)
                     }
                 }
         )
