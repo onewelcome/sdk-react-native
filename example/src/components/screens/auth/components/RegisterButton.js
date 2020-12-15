@@ -22,7 +22,7 @@ const startRegister = async (
         onRegisterSuccess();
     } catch (e) {
         setRegistering(false);
-        setError(result.errorMsg ? result.errorMsg : 'Something strange happened');
+        setError(e.message ? e.message : 'Something strange happened');
     }
 };
 
