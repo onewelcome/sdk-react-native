@@ -26,7 +26,6 @@ import com.onegini.mobile.exception.OneginReactNativeException.Companion.AUTHENT
 import com.onegini.mobile.exception.OneginReactNativeException.Companion.CAN_NOT_DOWNLOAD_DEVICES
 import com.onegini.mobile.exception.OneginReactNativeException.Companion.FINGERPRINT_IS_NOT_ENABLED
 import com.onegini.mobile.managers.AuthenticatorManager
-import com.onegini.mobile.managers.ErrorHelper
 import com.onegini.mobile.managers.OneginiClientInitializer
 import com.onegini.mobile.managers.RegistrationManager
 import com.onegini.mobile.mapers.*
@@ -40,7 +39,6 @@ import com.onegini.mobile.network.ImplicitUserService
 import com.onegini.mobile.network.UserService
 import com.onegini.mobile.sdk.android.handlers.*
 import com.onegini.mobile.sdk.android.handlers.error.*
-import com.onegini.mobile.sdk.android.handlers.error.OneginiRegistrationError.RegistrationErrorType
 import com.onegini.mobile.sdk.android.model.OneginiAppToWebSingleSignOn
 import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 import com.onegini.mobile.sdk.android.model.entity.OneginiMobileAuthenticationRequest
@@ -530,10 +528,10 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                 }
             }
 
-            override fun onError(message: String) {
+            override fun onError(error: OneginiError?) {
                 val data = Arguments.createMap()
                 data.putString("action", Constants.PIN_NOTIFICATION_SHOW_ERROR)
-                data.putString("errorMsg", message)
+                OneginiErrorMapper.update(data, error)
                 reactApplicationContext.getJSModule(RCTDeviceEventEmitter::class.java).emit(ONEGINI_PIN_NOTIFICATION, data)
             }
         }
