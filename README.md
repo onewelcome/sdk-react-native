@@ -198,18 +198,43 @@ OR
 # Usage
 - import OneginiSdk from 'react-native-sdk-beta';
 
+## Configuration
+### Config structure
+   {
+      customProviders: [],
+      enableMobileAuthenticationOtp: true,
+      enableFingerprint: true
+   }
+   
+   - customProviders - conteins the custom registration providers with app want to support. 
+   - enableMobileAuthenticationOtp - true if you want to use the authentication by Otp. If true then the events MOBILE_AUTH_OTP_NOTIFICATION are triggered.
+   - enableFingerprint - true if you want to use the fingerprint in-app as the Authentication method. If true then the events ONEGINI_FINGERPRINT_NOTIFICATION are triggered.
+
+### CustomProviders structure
+   [{id:"id1", isTwoStep: true}, ...]
+
+   - id - this is identity provider id. if the id provider is supported, then the events ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION are triggered.
+   - isTwoStep:
+      - true - possible actions initRegistration, initRegistration are sent by ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION
+      - false - possible actions finishRegistration are sent by ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION
+      
+
 ## Supported Methods
 
 | Method                     | Description                                                                                                                                                                               |
 | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **`setConfigModelClassName(className)`**                  |  (Android only) Sets the path to OneginiConfigModel class(e.g. `com.exampleapp.OneginiConfigModel`). By default SDK looking for config at `[RN_application_package_classpath].OneginiConfigModel`. This has to be set **before** startClient(). More information [HERE](#android-setup-config)                                                |
 | **`setSecurityControllerClassName(className)`**           |  (Android only) Sets the path to SecurityController class(e.g. `com.exampleapp.SecurityController`). By default controller brought from `com.onegini.mobile.SecurityController`. This has to be set **before** startClient(). More information [HERE](#android-setup-security-controller)
-| **`startClient():Promise`**                               |  Method init the OriginiSDK and setup configuration.                                                                |                                      |
+| **`startClient(config):Promise`**                         |  Method init the OriginiSDK. Config is optional. Example object is in "js/config.js". See structure [HERE](#config-structure). If the config is not set the app uses the js/config.js as the default.                                                             |                                      |
 | **`addEventListener(eventType, cb)`**                     |  Adds listener for certain event type(ONEGINI_PIN_NOTIFICATION, ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION).        |
 | **`removeEventListener(eventType, cb)`**                  |  Removes listener for certain event type(ONEGINI_PIN_NOTIFICATION, ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION)       |
 | **`getIdentityProviders()`**                              |  Returns the identity Providers with are registered int the lib.  |
 | **`getAccessToken()`**                                    |  Returns the access token if exist. |
 | **`enrollMobileAuthentication()`**                        |  The first enrollment step. **[iOS not supported, yet**] |
+| **`submitAcceptMobileAuthOtp()`**                         |  User can return accept authentication request. **[iOS not supported, yet**] |
+| **`submitDenyMobileAuthOtp()`**                           |  User can return deny authentication request. **[iOS not supported, yet**] |
+| **`handleMobileAuthWithOtp()`**                           |  User can return otpCode. **[iOS not supported, yet**] |
+| **`getAuthenticatedUserProfile()`**                       |  Returns user who is logged in. **[iOS not supported, yet**] |
 | **`registerUser(identityProviderId):Promise`**            |  Starts the process of registration user. If success then the response contain the success = true if not then contain success = false. |
 | **`deregisterUser(profileId):Promise`**                   |  Starts the process of deregistration user. If success then the response contain the success = true if not then contain success = false. |
 | **`getRedirectUri():Promise`**                            |  Returns an object with the redirect Uri field. |
@@ -224,3 +249,12 @@ OR
 | **`submitCreatePinAction(action, pin):Promise`**          |  (Android only) Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION"). Possible actions: provide, cancel. |
 | **`authenticateUser(profileId):Promise`**                 |  (Android only) Starts the process of authentication user.  |
 | **`logout():Promise`**                                    |  Starts the process of logout user.  |
+| **`getRegisteredAuthenticators():Promise`**               |  Returns all authenticators which are registered. One of the authenticators can be set as preferred authenticator.|
+| **`getAllAuthenticators():Promise`**                      |  Returns all supported authenticators.  |
+| **`setPreferredAuthenticator(profileId, idOneginiAuthenticator):Promise`** |  sets an authenticator that is used at the process of user authentication  **[iOS not supported, yet**] |
+| **`registerFingerprintAuthenticator(profileId):Promise`**     |  starts the process of registration a fingerprint **[iOS not supported, yet**] |
+| **`deregisterFingerprintAuthenticator(profileId):Promise`**   |  starts the process of deregistration a fingerprint **[iOS not supported, yet**] |
+| **`isFingerprintAuthenticatorRegistered(profileId):Promise`** | **[iOS not supported, yet**] |
+| **`submitFingerprintAcceptAuthenticationRequest()`**          | User can return  accept authentication request **[iOS not supported, yet**] |
+| **`submitFingerprintDenyAuthenticationRequest()`**            | User can return  deny authentication request **[iOS not supported, yet**] |
+| **`submitFingerprintFallbackToPin()`**                    | User can return  fallback to authentication by pin **[iOS not supported, yet**] |
