@@ -145,7 +145,7 @@ OneginiSdk.registerUser = function (identityProvider = null) {
 };
 
 OneginiSdk.deregisterUser = function (profileId) {
-  RNOneginiSdk.deregisterUser(profileId);
+  return RNOneginiSdk.deregisterUser(profileId);
 }
 
 OneginiSdk.getUserProfiles = function () {
