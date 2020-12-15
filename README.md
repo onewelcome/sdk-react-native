@@ -198,13 +198,34 @@ OR
 # Usage
 - import OneginiSdk from 'react-native-sdk-beta';
 
+## Configuration
+### Config structure
+   {
+      customProviders: [],
+      enableMobileAuthenticationOtp: true,
+      enableFingerprint: true
+   }
+   
+   - customProviders - conteins the custom registration providers with app want to support. 
+   - enableMobileAuthenticationOtp - true if you want to use the authentication by Otp. If true then the events MOBILE_AUTH_OTP_NOTIFICATION are triggered.
+   - enableFingerprint - true if you want to use the fingerprint in-app as the Authentication method. If true then the events ONEGINI_FINGERPRINT_NOTIFICATION are triggered.
+
+### CustomProviders structure
+   [{id:"id1", isTwoStep: true}, ...]
+
+   - id - this is identity provider id. if the id provider is supported, then the events ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION are triggered.
+   - isTwoStep:
+      - true - possible actions initRegistration, initRegistration are sent by ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION
+      - false - possible actions finishRegistration are sent by ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION
+      
+
 ## Supported Methods
 
 | Method                     | Description                                                                                                                                                                               |
 | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **`setConfigModelClassName(className)`**                  |  (Android only) Sets the path to OneginiConfigModel class(e.g. `com.exampleapp.OneginiConfigModel`). By default SDK looking for config at `[RN_application_package_classpath].OneginiConfigModel`. This has to be set **before** startClient(). More information [HERE](#android-setup-config)                                                |
 | **`setSecurityControllerClassName(className)`**           |  (Android only) Sets the path to SecurityController class(e.g. `com.exampleapp.SecurityController`). By default controller brought from `com.onegini.mobile.SecurityController`. This has to be set **before** startClient(). More information [HERE](#android-setup-security-controller)
-| **`startClient():Promise`**                               |  Method init the OriginiSDK and setup configuration.                                                                |                                      |
+| **`startClient(config):Promise`**                         |  Method init the OriginiSDK and setup configuration. Config is optional. Example object is in "js/config.js". If the config is not set the app uses the js/config.js as the default.                                                             |                                      |
 | **`addEventListener(eventType, cb)`**                     |  Adds listener for certain event type(ONEGINI_PIN_NOTIFICATION, ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION).        |
 | **`removeEventListener(eventType, cb)`**                  |  Removes listener for certain event type(ONEGINI_PIN_NOTIFICATION, ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION)       |
 | **`getIdentityProviders()`**                              |  Returns the identity Providers with are registered int the lib.  |
