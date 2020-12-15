@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View, ScrollView} from 'react-native';
+import {StyleSheet, Text, View, ScrollView, Dimensions} from 'react-native';
 import AppColors from "../../constants/AppColors";
 import PropTypes from "prop-types";
 import OneginiSdk from 'react-native-sdk-beta';
+import Layout from "../../constants/Layout"
 
 const DevicesView = (props) => {
     const [isLoading, setLoading] = useState(true);
@@ -67,7 +68,7 @@ DevicesView.propTypes = {
 
 const styles = StyleSheet.create({
     container: {
-        marginTop: '15%',
+        marginTop: Layout.window.width * 0.2,
         paddingBottom:'15%',
         paddingHorizontal: '4%',
     },
