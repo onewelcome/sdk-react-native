@@ -231,6 +231,10 @@ OR
 | **`getIdentityProviders()`**                              |  Returns the identity Providers with are registered int the lib.  |
 | **`getAccessToken()`**                                    |  Returns the access token if exist. |
 | **`enrollMobileAuthentication()`**                        |  The first enrollment step. **[iOS not supported, yet**] |
+| **`submitAcceptMobileAuthOtp()`**                         |  User can return accept authentication request. **[iOS not supported, yet**] |
+| **`submitDenyMobileAuthOtp()`**                           |  User can return deny authentication request. **[iOS not supported, yet**] |
+| **`handleMobileAuthWithOtp()`**                           |  User can return otpCode. **[iOS not supported, yet**] |
+| **`getAuthenticatedUserProfile()`**                       |  Returns user who is logged in. **[iOS not supported, yet**] |
 | **`registerUser(identityProviderId):Promise`**            |  Starts the process of registration user. If success then the response contain the success = true if not then contain success = false. |
 | **`deregisterUser(profileId):Promise`**                   |  Starts the process of deregistration user. If success then the response contain the success = true if not then contain success = false. |
 | **`getRedirectUri():Promise`**                            |  Returns an object with the redirect Uri field. |
@@ -245,3 +249,12 @@ OR
 | **`submitCreatePinAction(action, pin):Promise`**          |  (Android only) Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION"). Possible actions: provide, cancel. |
 | **`authenticateUser(profileId):Promise`**                 |  (Android only) Starts the process of authentication user.  |
 | **`logout():Promise`**                                    |  Starts the process of logout user.  |
+| **`getRegisteredAuthenticators():Promise`**               |  Returns all authenticators which are registered. One of the authenticators can be set as preferred authenticator.|
+| **`getAllAuthenticators():Promise`**                      |  Returns all supported authenticators.  |
+| **`setPreferredAuthenticator(profileId, idOneginiAuthenticator):Promise`** |  sets an authenticator that is used at the process of user authentication  **[iOS not supported, yet**] |
+| **`registerFingerprintAuthenticator(profileId):Promise`**     |  starts the process of registration a fingerprint **[iOS not supported, yet**] |
+| **`deregisterFingerprintAuthenticator(profileId):Promise`**   |  starts the process of deregistration a fingerprint **[iOS not supported, yet**] |
+| **`isFingerprintAuthenticatorRegistered(profileId):Promise`** | **[iOS not supported, yet**] |
+| **`submitFingerprintAcceptAuthenticationRequest()`**          | user returns can accept authentication request **[iOS not supported, yet**] |
+| **`submitFingerprintDenyAuthenticationRequest()`**            | user returns can deny authentication request **[iOS not supported, yet**] |
+| **`submitFingerprintFallbackToPin()`**                    | user returns can fallback to authentication by pin **[iOS not supported, yet**] |
