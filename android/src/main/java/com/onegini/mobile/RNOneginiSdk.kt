@@ -262,8 +262,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         DeregistrationUtil(currentActivity!!.applicationContext).onUserDeregistered(profile)
         oneginiSDK.oneginiClient.userClient.deregisterUser(profile, object : OneginiDeregisterUserProfileHandler {
             override fun onSuccess() {
-                val result = Arguments.createMap()
-                promise.resolve(result)
+                promise.resolve(null)
             }
 
             override fun onError(oneginiDeregistrationError: OneginiDeregistrationError?) {
