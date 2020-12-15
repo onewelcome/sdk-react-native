@@ -162,7 +162,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                 }
             })
         } catch (e: OneginiError) {
-            promise.reject(e, OneginiErrorMapper.toWritableMap(e))
+            promise.reject(e.errorType.toString(), e.message)
         }
     }
 
@@ -171,7 +171,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         try {
             promise.resolve(OneginiAuthenticatorMapper.toWritableMap(authenticatorManager.getAllAuthenticators(profileId)))
         } catch (e: OneginiError) {
-            promise.reject(e, OneginiErrorMapper.toWritableMap(e))
+            promise.reject(e.errorType.toString(), e.message)
         }
     }
 
@@ -180,7 +180,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         try {
             promise.resolve(OneginiAuthenticatorMapper.toWritableMap(authenticatorManager.getRegisteredAuthenticators(profileId)))
         } catch (e: OneginiError) {
-            promise.reject(e, OneginiErrorMapper.toWritableMap(e))
+            promise.reject(e.errorType.toString(), e.message)
         }
     }
 
@@ -189,7 +189,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         try {
             promise.resolve(authenticatorManager.isFingerprintAuthenticatorRegistered(profileId))
         } catch (e: OneginiError) {
-            promise.reject(e, OneginiErrorMapper.toWritableMap(e))
+            promise.reject(e.errorType.toString(), e.message)
         }
     }
 
@@ -206,7 +206,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                 }
             })
         } catch (e: OneginiError) {
-            promise.reject(e, OneginiErrorMapper.toWritableMap(e))
+            promise.reject(e.errorType.toString(), e.message)
         }
     }
 
@@ -239,7 +239,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         try {
             authenticatorManager.setPreferredAuthenticator(profileId, idOneginiAuthenticator)
         } catch (e: OneginiError) {
-            promise.reject(e, OneginiErrorMapper.toWritableMap(e))
+            promise.reject(e.errorType.toString(), e.message)
         }
     }
 
@@ -393,7 +393,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
             }
 
             override fun onError(error: OneginiMobileAuthEnrollmentError?) {
-                promise.reject(error, OneginiErrorMapper.toWritableMap(error))
+                promise.reject(error?.errorType.toString(), error?.message)
             }
         })
     }
