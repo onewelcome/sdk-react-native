@@ -255,6 +255,6 @@ OR
 | **`registerFingerprintAuthenticator(profileId):Promise`**     |  starts the process of registration a fingerprint **[iOS not supported, yet**] |
 | **`deregisterFingerprintAuthenticator(profileId):Promise`**   |  starts the process of deregistration a fingerprint **[iOS not supported, yet**] |
 | **`isFingerprintAuthenticatorRegistered(profileId):Promise`** | **[iOS not supported, yet**] |
-| **`submitFingerprintAcceptAuthenticationRequest()`**          | user returns can accept authentication request **[iOS not supported, yet**] |
-| **`submitFingerprintDenyAuthenticationRequest()`**            | user returns can deny authentication request **[iOS not supported, yet**] |
-| **`submitFingerprintFallbackToPin()`**                    | user returns can fallback to authentication by pin **[iOS not supported, yet**] |
+| **`submitFingerprintAcceptAuthenticationRequest()`**          | User can return  accept authentication request **[iOS not supported, yet**] |
+| **`submitFingerprintDenyAuthenticationRequest()`**            | User can return  deny authentication request **[iOS not supported, yet**] |
+| **`submitFingerprintFallbackToPin()`**                    | User can return  fallback to authentication by pin **[iOS not supported, yet**] |
