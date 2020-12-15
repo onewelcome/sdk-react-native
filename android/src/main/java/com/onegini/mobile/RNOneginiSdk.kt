@@ -286,19 +286,24 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    fun submitCustomRegistrationReturnSuccess(identityProviderId: String, result: String?) {
+    fun submitCustomRegistrationReturnSuccess(identityProviderId: String, result: String?, promise: Promise) {
         val action = registrationManager.getSimpleCustomRegistrationAction(identityProviderId)
-                ?: throw Exception("The $identityProviderId was not configured ")
-
-        action.returnSuccess(result)
+        if (action == null) {
+            promise.reject(OneginReactNativeException.ID_ENTITY_PROVIDER_ID.toString(), "The $identityProviderId was not configured ")
+        } else {
+            action.returnSuccess(result)
+        }
     }
 
     @ReactMethod
-    fun submitCustomRegistrationReturnError(identityProviderId: String, errorMessage: String?) {
+    fun submitCustomRegistrationReturnError(identityProviderId: String, errorMessage: String?, promise: Promise) {
         val action = registrationManager.getSimpleCustomRegistrationAction(identityProviderId)
-                ?: throw Exception("The $identityProviderId was not configured ")
 
-        action.returnError(java.lang.Exception(errorMessage))
+        if (action == null) {
+            promise.reject(OneginReactNativeException.ID_ENTITY_PROVIDER_ID.toString(), "The $identityProviderId was not configured ")
+        } else {
+            action.returnError(java.lang.Exception(errorMessage))
+        }
     }
 
     @ReactMethod
