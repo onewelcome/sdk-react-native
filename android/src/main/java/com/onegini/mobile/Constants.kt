@@ -47,10 +47,19 @@ object Constants {
     // Pin actions for RN Bridge
     const val PIN_ACTION_CANCEL = "cancel"
     const val PIN_ACTION_PROVIDE = "provide"
-    const val PIN_ACTION_CHANGE = "change"
 
     // Custom registration
     const val CUSTOM_REGISTRATION_NOTIFICATION = "ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION"
     const val CUSTOM_REGISTRATION_NOTIFICATION_INIT_REGISTRATION = "initRegistration"
     const val CUSTOM_REGISTRATION_NOTIFICATION_FINISH_REGISTRATION = "finishRegistration"
+
+    const val MOBILE_AUTH_OTP_NOTIFICATION = "ONEGINI_MOBILE_AUTH_OTP_NOTIFICATION"
+    const val MOBILE_AUTH_OTP_START_AUTHENTICATION = "startAuthentication"
+    const val MOBILE_AUTH_OTP_FINISH_AUTHENTICATION = "finishAuthentication"
+
+    const val ONEGINI_FINGERPRINT_NOTIFICATION = "ONEGINI_FINGERPRINT_NOTIFICATION"
+    const val FINGERPRINT_NOTIFICATION_START_AUTHENTICATION = "startAuthentication"
+    const val FINGERPRINT_NOTIFICATION_ON_NEXT_AUTHENTICATION_ATTEMPT = "onNextAuthenticationAttempt"
+    const val FINGERPRINT_NOTIFICATION_ON_FINGERPRINT_CAPTURED = "onFingerprintCaptured"
+    const val FINGERPRINT_NOTIFICATION_FINISH_AUTHENTICATION = "finishAuthentication"
 }

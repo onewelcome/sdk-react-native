@@ -21,7 +21,7 @@ const DashboardActionsView = (props) => {
     <ContentContainer>
       <Text style={styles.helloText}>Hello, $userName!</Text>
       {renderButton('YOUR DEVICES')}
-      {renderButton('MOBILE AUTH WITH OTP')}
+      {renderButton('MOBILE AUTH WITH OTP', props.onMoblieAuthWithOTPPressed, false)}
       {renderButton('SINGLE SIGN-ON')}
       {renderButton('SETTINGS', props.onSettingsPressed, false)}
       {renderButton('LOGOUT', () => logout(props.onLogout), false)}
@@ -33,6 +33,7 @@ const DashboardActionsView = (props) => {
 DashboardActionsView.propTypes = {
   onLogout: PropTypes.func.isRequired,
   onSettingsPressed: PropTypes.func.isRequired,
+  onMoblieAuthWithOTPPressed: PropTypes.func.isRequired
 };
 
 const styles = StyleSheet.create({

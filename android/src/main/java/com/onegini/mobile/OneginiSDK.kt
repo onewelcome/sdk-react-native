@@ -10,11 +10,22 @@ import com.onegini.mobile.view.handlers.*
 import com.onegini.mobile.view.handlers.customregistration.CustomRegistrationObserver
 import com.onegini.mobile.view.handlers.customregistration.SimpleCustomRegistrationAction
 import com.onegini.mobile.view.handlers.customregistration.SimpleCustomRegistrationFactory
+import com.onegini.mobile.view.handlers.fingerprint.FingerprintAuthenticationObserver
+import com.onegini.mobile.view.handlers.fingerprint.FingerprintAuthenticationRequestHandler
+import com.onegini.mobile.view.handlers.mobileauthotp.MobileAuthOtpRequestHandler
+import com.onegini.mobile.view.handlers.mobileauthotp.MobileAuthOtpRequestObserver
+import com.onegini.mobile.view.handlers.pins.ChangePinHandler
+import com.onegini.mobile.view.handlers.pins.CreatePinRequestHandler
+import com.onegini.mobile.view.handlers.pins.PinAuthenticationRequestHandler
+import com.onegini.mobile.view.handlers.pins.PinNotificationObserver
 import java.lang.reflect.InvocationTargetException
 import java.util.*
 import java.util.concurrent.TimeUnit
 
 class OneginiSDK(private val appContext: Context) {
+
+    var isInitialized: Boolean = false
+
     lateinit var registrationRequestHandler: RegistrationRequestHandler
         private set
     lateinit var pinAuthenticationRequestHandler: PinAuthenticationRequestHandler
@@ -22,17 +33,21 @@ class OneginiSDK(private val appContext: Context) {
     lateinit var createPinRequestHandler: CreatePinRequestHandler
         private set
     lateinit var changePinHandler: ChangePinHandler
-        private set
-    private val registeredHandlers = ArrayList<RegisteredHandler>()
 
     val simpleCustomRegistrationActions = ArrayList<SimpleCustomRegistrationAction>()
 
-    private var config: OneginiReactNativeConfig? = null
+    var mobileAuthOtpRequestHandler: MobileAuthOtpRequestHandler? = null
+        private set
+
+    var fingerprintAuthenticationRequestHandler: FingerprintAuthenticationRequestHandler? = null
+        private set
+
+    private lateinit var config: OneginiReactNativeConfig
     private var configModelClassName: String? = null
     private var securityControllerClassName: String? = null
 
 
-    fun init(oneginiReactNativeConfig: OneginiReactNativeConfig?, configModelClassName: String?, securityControllerClassName: String?) {
+    fun init(oneginiReactNativeConfig: OneginiReactNativeConfig, configModelClassName: String?, securityControllerClassName: String?) {
         this.config = oneginiReactNativeConfig
         this.configModelClassName = configModelClassName
         this.securityControllerClassName = securityControllerClassName
@@ -51,13 +66,9 @@ class OneginiSDK(private val appContext: Context) {
     private fun buildSDK(context: Context): OneginiClient {
         val applicationContext = context.applicationContext
         registrationRequestHandler = RegistrationRequestHandler(applicationContext)
-        registeredHandlers.add(registrationRequestHandler)
         pinAuthenticationRequestHandler = PinAuthenticationRequestHandler(this)
-        registeredHandlers.add(pinAuthenticationRequestHandler)
         createPinRequestHandler = CreatePinRequestHandler(applicationContext, this)
-        registeredHandlers.add(createPinRequestHandler)
         changePinHandler = ChangePinHandler(this)
-        registeredHandlers.add(changePinHandler)
 
         //twoWayOtpIdentityProvider = TwoWayOtpIdentityProvider(context)
         val clientBuilder = OneginiClientBuilder(applicationContext, createPinRequestHandler, pinAuthenticationRequestHandler) // handlers for optional functionalities
@@ -72,20 +83,25 @@ class OneginiSDK(private val appContext: Context) {
 
         // Set security controller
         setSecurityController(clientBuilder)
+
+        if (config.enableMobileAuthenticationOtp) {
+            mobileAuthOtpRequestHandler = MobileAuthOtpRequestHandler()
+            clientBuilder.setMobileAuthWithOtpRequestHandler(mobileAuthOtpRequestHandler!!)
+        }
+
+        if (config.enableFingerprint) {
+            fingerprintAuthenticationRequestHandler = FingerprintAuthenticationRequestHandler()
+            clientBuilder.setFingerprintAuthenticationRequestHandler(fingerprintAuthenticationRequestHandler!!)
+        }
+
         return clientBuilder.build()
     }
 
     private fun setProviders(clientBuilder: OneginiClientBuilder) {
-        config?.identityProviders?.forEach {
+        config.identityProviders.forEach {
             val provider = SimpleCustomRegistrationFactory.getSimpleCustomRegistrationProvider(it)
             simpleCustomRegistrationActions.add(provider.action)
             clientBuilder.addCustomIdentityProvider(provider)
-        }
-    }
-
-    fun onStart() {
-        for (handler in registeredHandlers) {
-            handler.onStart()
         }
     }
 
@@ -99,6 +115,14 @@ class OneginiSDK(private val appContext: Context) {
         simpleCustomRegistrationActions.forEach {
             it.setCustomRegistrationObserver(observer)
         }
+    }
+
+    fun setMobileAuthOtpRequestObserver(mobileAuthOtpRequestObserver: MobileAuthOtpRequestObserver) {
+        mobileAuthOtpRequestHandler?.observer = mobileAuthOtpRequestObserver
+    }
+
+    fun setFingerprintAuthenticationObserver(observer: FingerprintAuthenticationObserver) {
+        fingerprintAuthenticationRequestHandler?.observer = observer
     }
 
     private fun setConfigModel(clientBuilder: OneginiClientBuilder) {

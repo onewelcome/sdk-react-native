@@ -6,6 +6,7 @@ import BackButton from '../../general/BackButton';
 import SettingsActionsView from './components/SettingsActionsView';
 import DashboardActionsView from './components/DashboardActionsView';
 import ChangeAuthView from './components/ChangeAuthView';
+import OtpCodeView from './components/OtpCodeView';
 import OneginiSdk, {
   ONEGINI_PIN_FLOW,
   ONEGINI_PIN_ACTIONS,
@@ -15,6 +16,7 @@ const CONTENT_VIEW = {
   DASHBOARD_ACTIONS: 'DASHBOARD_ACTIONS',
   SETTINGS_ACTIONS: 'SETTINGS_ACTIONS',
   CHANGE_AUTH: 'CHANGE_AUTH',
+  OTP_CODE: 'OTP_CODE',
 };
 
 const TITLE_BY_CONTENT_VIEW = {
@@ -29,6 +31,9 @@ const backButtonHandler = (currentContentView, setContentView) => {
       setContentView(CONTENT_VIEW.DASHBOARD_ACTIONS);
       break;
     case CONTENT_VIEW.CHANGE_AUTH:
+      setContentView(CONTENT_VIEW.SETTINGS_ACTIONS);
+      break;
+    case CONTENT_VIEW.OTP_CODE:
       setContentView(CONTENT_VIEW.SETTINGS_ACTIONS);
       break;
     default:
@@ -46,23 +51,22 @@ const renderContent = (currentContentView, setContentView, onLogout) => {
           onSettingsPressed={() =>
             setContentView(CONTENT_VIEW.SETTINGS_ACTIONS)
           }
+          onMoblieAuthWithOTPPressed={() =>
+            setContentView(CONTENT_VIEW.OTP_CODE)
+          }
         />
       );
     case CONTENT_VIEW.SETTINGS_ACTIONS:
       return (
         <SettingsActionsView
           onChangeAuthPressed={() => setContentView(CONTENT_VIEW.CHANGE_AUTH)}
-          onChangePinPressed={() =>
-            OneginiSdk.submitPinAction(
-              ONEGINI_PIN_FLOW.CHANGE,
-              ONEGINI_PIN_ACTIONS.CHANGE,
-              null,
-            )
-          }
+          onChangePinPressed={() => OneginiSdk.submitPinAction(ONEGINI_PIN_FLOW.CHANGE, ONEGINI_PIN_ACTIONS.CHANGE, null)}
         />
       );
     case CONTENT_VIEW.CHANGE_AUTH:
       return <ChangeAuthView />;
+    case CONTENT_VIEW.OTP_CODE:
+      return <OtpCodeView />;
     default:
       console.log('Unsupported CONTENT_VIEW for [renderContent]');
       break;

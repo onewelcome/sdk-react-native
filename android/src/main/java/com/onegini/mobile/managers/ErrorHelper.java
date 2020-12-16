@@ -1,4 +1,4 @@
-package com.onegini.mobile.helpers;
+package com.onegini.mobile.managers;
 
 import android.content.Context;
 

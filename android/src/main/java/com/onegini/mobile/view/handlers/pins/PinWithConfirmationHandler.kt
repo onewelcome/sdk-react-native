@@ -1,22 +1,22 @@
-package com.onegini.mobile.view.handlers
+package com.onegini.mobile.view.handlers.pins
 
 import android.content.Context
 import com.onegini.mobile.Constants
 import com.onegini.mobile.Constants.PinFlow
 import com.onegini.mobile.OneginiSDK
+import com.onegini.mobile.R
 import com.onegini.mobile.sdk.android.handlers.OneginiPinValidationHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiPinValidationError
 import com.onegini.mobile.sdk.android.handlers.error.OneginiPinValidationError.PinValidationErrorType
 import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiPinCallback
 import com.onegini.mobile.util.DeregistrationUtil
-import com.onegini.mobile.R
 import java.util.*
 
 class PinWithConfirmationHandler(private val originalHandler: OneginiPinCallback,
                                  private val oneginiSDK: OneginiSDK,
                                  private val context: Context) {
 
-    var pinNotificationObserver: PinNotificationObserver? =null
+    var pinNotificationObserver: PinNotificationObserver? = null
 
     private var pin: CharArray? = null
 
@@ -82,7 +82,7 @@ class PinWithConfirmationHandler(private val originalHandler: OneginiPinCallback
     }
 
     fun notifyOnError(errorMessage: String?) {
-        pinNotificationObserver?.onError(errorMessage)
+        pinNotificationObserver?.onError(errorMessage ?: "", lastFlow)
     }
 
     fun handlePinValidationError(oneginiPinValidationError: OneginiPinValidationError) {

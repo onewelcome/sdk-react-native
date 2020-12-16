@@ -1,4 +1,4 @@
-package com.onegini.mobile.view.handlers
+package com.onegini.mobile.view.handlers.pins
 
 import com.onegini.mobile.Constants
 import com.onegini.mobile.OneginiSDK
@@ -8,7 +8,7 @@ import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiPinCallba
 import com.onegini.mobile.sdk.android.model.entity.AuthenticationAttemptCounter
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 
-class PinAuthenticationRequestHandler(private val oneginiSDK: OneginiSDK) : OneginiPinAuthenticationRequestHandler, RegisteredHandler {
+class PinAuthenticationRequestHandler(private val oneginiSDK: OneginiSDK) : OneginiPinAuthenticationRequestHandler {
     private var callback: OneginiPinCallback? = null
     private var userProfileId: String? = null
     private var pinNotificationObserver: PinNotificationObserver? = null
@@ -27,7 +27,7 @@ class PinAuthenticationRequestHandler(private val oneginiSDK: OneginiSDK) : Oneg
 
     override fun onNextAuthenticationAttempt(attemptCounter: AuthenticationAttemptCounter) {
         if (pinNotificationObserver != null) {
-            pinNotificationObserver!!.onError(AuthenticationAttemptCounterMapper.toErrorString(attemptCounter))
+            pinNotificationObserver!!.onError(AuthenticationAttemptCounterMapper.toErrorString(attemptCounter), Constants.PinFlow.Authentication)
         }
     }
 
@@ -47,9 +47,5 @@ class PinAuthenticationRequestHandler(private val oneginiSDK: OneginiSDK) : Oneg
         if (callback != null) {
             callback!!.denyAuthenticationRequest()
         }
-    }
-
-    override fun onStart() {
-
     }
 }

@@ -8,18 +8,19 @@ import com.onegini.mobile.model.rn.ReactNativeIdentityProvider
 object OneginiReactNativeConfigMapper {
 
     fun toOneginiReactNativeConfig(rnConfig: ReadableMap): OneginiReactNativeConfig {
-        return OneginiReactNativeConfig(toReactNativeIdentityProviderList(rnConfig.getArray("customProviders")))
+        return OneginiReactNativeConfig(toReactNativeIdentityProviderList(rnConfig.getArray("customProviders")),
+                rnConfig.getBoolean("enableMobileAuthenticationOtp"), rnConfig.getBoolean("enableFingerprint"))
     }
 
     fun toReactNativeIdentityProviderList(identityProvider: ReadableArray?): List<ReactNativeIdentityProvider> {
         val list = mutableListOf<ReactNativeIdentityProvider>()
         identityProvider?.toArrayList()?.forEach {
-            list.add(toReactNativeIdentityProvider(it as HashMap<String,*>))
+            list.add(toReactNativeIdentityProvider(it as HashMap<String, *>))
         }
         return list
     }
 
-    fun toReactNativeIdentityProvider(config: HashMap<String,*>): ReactNativeIdentityProvider {
+    fun toReactNativeIdentityProvider(config: HashMap<String, *>): ReactNativeIdentityProvider {
         return ReactNativeIdentityProvider(config["id"]!! as String, config["isTwoStep"] as Boolean)
     }
 }

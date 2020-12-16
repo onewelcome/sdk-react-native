@@ -8,10 +8,12 @@ object CustomInfoMapper {
 
     const val CUSTOM_INFO = "customInfo"
 
-    fun toWritableMap(customInfo: CustomInfo): WritableMap {
+    fun toWritableMap(customInfo: CustomInfo?): WritableMap {
         val map = Arguments.createMap()
-        map.putString("data", customInfo.data)
-        map.putInt("status", customInfo.status)
+        if (customInfo != null) {
+            map.putString("data", customInfo.data)
+            map.putInt("status", customInfo.status)
+        }
         return map
     }
 
