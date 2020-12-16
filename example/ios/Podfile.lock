@@ -67,7 +67,7 @@ PODS:
     - DoubleConversion
     - glog
   - glog (0.3.5)
-  - local-react-native-sdk-beta (0.4.0):
+  - local-react-native-sdk-beta (0.5.0):
     - OneginiSDKiOS (= 9.0.0)
     - React
   - OneginiSDKiOS (9.0.0)
@@ -434,7 +434,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   local-react-native-sdk-beta:
-    :commit: c96200928fb0a26e0b35b3fce28f6ff61e724850
+    :commit: ef91bdbd150b703871e78865a57782038bf55521
     :git: file:///Users/valeriy.rumak/WebstormProjects/Develocraft/Onegini/react-native-onegini-sdk
 
 SPEC CHECKSUMS:
@@ -453,7 +453,7 @@ SPEC CHECKSUMS:
   FlipperKit: ab353d41aea8aae2ea6daaf813e67496642f3d7d
   Folly: b73c3869541e86821df3c387eb0af5f65addfab4
   glog: 40a13f7840415b9a77023fbcae0f1e6f43192af3
-  local-react-native-sdk-beta: 39deccabd5dd34be77c0369759129e08a4b1ba3e
+  local-react-native-sdk-beta: dee7b45b3acde2427d1579d070e7f6c89f77f7cc
   OneginiSDKiOS: 0d97ea0c6a311d86474d893c9dde25ae945ab58f
   OpenSSL-Universal: ff34003318d5e1163e9529b08470708e389ffcdd
   RCTRequired: 48884c74035a0b5b76dbb7a998bd93bcfc5f2047
