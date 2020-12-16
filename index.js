@@ -57,7 +57,7 @@ const OneginiSdk = {};
 
 OneginiSdk.config = {
   configModelClassName: null,
-  securityControllerClassName: "com.onegini.mobile.SecurityController",
+  securityControllerClassName: "com.rnexampleapp.SecurityController",
   customProviders: [{ id: '2-way-otp-api', isTwoStep: true }],
   enableMobileAuthenticationOtp: true,
   enableFingerprint: true
