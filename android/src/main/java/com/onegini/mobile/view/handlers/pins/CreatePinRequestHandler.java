@@ -1,5 +1,5 @@
 //@todo Later will be transferred to RN Wrapper
-package com.onegini.mobile.view.handlers;
+package com.onegini.mobile.view.handlers.pins;
 
 import android.content.Context;
 
@@ -15,7 +15,7 @@ import com.onegini.mobile.sdk.android.model.entity.UserProfile;
 
 import static com.onegini.mobile.Constants.PIN_NOTIFICATION_CLOSE_VIEW;
 
-public class CreatePinRequestHandler implements OneginiCreatePinRequestHandler, RegisteredHandler {
+public class CreatePinRequestHandler implements OneginiCreatePinRequestHandler {
 
     @NonNull
     private OneginiSDK oneginiSDK;
@@ -83,17 +83,4 @@ public class CreatePinRequestHandler implements OneginiCreatePinRequestHandler, 
             pinWithConfirmationHandler.pinCancelled(flow);
         }
     }
-
-    @Override
-    public void onStart() {
-
-    }
-
-/*  private void startLoginActivity(final String errorMessage) {
-    final Intent intent = new Intent(context, LoginActivity.class);
-    intent.putExtra(LoginActivity.ERROR_MESSAGE_EXTRA, errorMessage);
-    intent.addFlags(FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
-    context.startActivity(intent);
-  }*/
-
 }

@@ -20,7 +20,6 @@ export const ONEGINI_PIN_NOTIFICATIONS = {
   CONFIRM: 'confirm',
   CLOSE: 'close',
   ERROR: 'show_error',
-  AUTH_ATTEMPT: 'auth_attempt',
   CHANGED: 'changed'
 };
 
@@ -207,11 +206,9 @@ OneginiSdk.submitPinAction = function (flow, action, pin = null) {
   RNOneginiSdk.submitPinAction(flow, action, pin);
 }
 
-OneginiSdk.authenticateUser = function (profileId) {
-  return Platform.OS === 'ios'
-    ? Promise.reject('Unfortunately this feature is not supported, yet.')
-    : RNOneginiSdk.authenticateUser(profileId);
-}
+OneginiSdk.changePin = function () { return RNOneginiSdk.changePin(); }
+
+OneginiSdk.authenticateUser = function (profileId) { return RNOneginiSdk.authenticateUser(profileId); }
 
 OneginiSdk.getRegisteredAuthenticators = function (profileId) {
   return Platform.OS === 'ios'
