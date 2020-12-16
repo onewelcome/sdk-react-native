@@ -9,9 +9,7 @@ import com.onegini.mobile.sdk.android.handlers.error.OneginiInitializationError.
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.view.handlers.InitializationHandler
 
-class OneginiClientInitializer(private val oneginiSDK: OneginiSDK,
-                               private val configModelClassName: String?,
-                               private val securityControllerClassName: String?) {
+class OneginiClientInitializer(private val oneginiSDK: OneginiSDK) {
     fun startOneginiClient(config: OneginiReactNativeConfig, initializationHandler: InitializationHandler) {
         if (!oneginiSDK.isInitialized) {
             start(config, initializationHandler)
@@ -21,7 +19,7 @@ class OneginiClientInitializer(private val oneginiSDK: OneginiSDK,
     }
 
     private fun start(config: OneginiReactNativeConfig, initializationHandler: InitializationHandler) {
-        oneginiSDK.init(config, configModelClassName, securityControllerClassName)
+        oneginiSDK.init(config)
         val oneginiClient = oneginiSDK.oneginiClient
         oneginiClient.start(object : OneginiInitializationHandler {
             override fun onSuccess(removedUserProfiles: Set<UserProfile>) {

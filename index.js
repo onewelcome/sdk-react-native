@@ -56,6 +56,8 @@ export const FINGERPRINT_NOTIFICATION = {
 const OneginiSdk = {};
 
 OneginiSdk.config = {
+  configModelClassName: null,
+  securityControllerClassName: "com.onegini.mobile.SecurityController",
   customProviders: [{ id: '2-way-otp-api', isTwoStep: true }],
   enableMobileAuthenticationOtp: true,
   enableFingerprint: true
@@ -163,19 +165,6 @@ OneginiSdk.handleRegistrationCallback = function (uri) {
 OneginiSdk.cancelRegistration = function () {
   RNOneginiSdk.cancelRegistration();
 }
-
-OneginiSdk.setConfigModelClassName = function (className = null) {
-  Platform.OS === 'ios'
-    ? console.error('setConfigModelClassName is Android only method')
-    : RNOneginiSdk.setConfigModelClassName(className);
-}
-
-OneginiSdk.setSecurityControllerClassName = function (className = null) {
-  Platform.OS === 'ios'
-    ? console.error('setSecurityControllerClassName is Android only method')
-    : RNOneginiSdk.setSecurityControllerClassName(className);
-}
-
 
 OneginiSdk.submitCustomRegistrationReturnSuccess = function (identityProviderId, result = null) {
   Platform.OS === 'ios'
