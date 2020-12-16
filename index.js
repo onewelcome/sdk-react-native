@@ -35,7 +35,6 @@ export const MOBILE_AUTH_OTP_NOTIFICATION = {
 
 export const ONEGINI_PIN_ACTIONS = {
   PROVIDE_PIN: 'provide',
-  CHANGE: 'change',
   CANCEL: 'cancel',
 };
 

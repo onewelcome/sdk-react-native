@@ -10,6 +10,7 @@ protocol ConnectorToRNBridgeProtocol: NSObject {
 // Pin notification actions for RN Bridge
 enum OneginiBridgeEvents : String {
     case pinNotification = "ONEGINI_PIN_NOTIFICATION"
+    case fingerprintNotification = "ONEGINI_FINGERPRINT_NOTIFICATION"
     case customRegistrationNotification = "ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION"
     case authWithOtpNotification = "ONEGINI_MOBILE_AUTH_OTP_NOTIFICATION"
 }
@@ -26,7 +27,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     override func supportedEvents() -> [String]! {
-        return [OneginiBridgeEvents.pinNotification.rawValue, OneginiBridgeEvents.customRegistrationNotification.rawValue, OneginiBridgeEvents.authWithOtpNotification.rawValue]
+        return [OneginiBridgeEvents.pinNotification.rawValue, OneginiBridgeEvents.fingerprintNotification.rawValue, OneginiBridgeEvents.customRegistrationNotification.rawValue, OneginiBridgeEvents.authWithOtpNotification.rawValue]
     }
 
     @objc

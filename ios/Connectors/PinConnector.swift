@@ -63,7 +63,6 @@ enum PinNotification : String {
 // Pin actions from RN Bridge
 enum PinAction : NSString {
     case provide = "provide",
-         change = "change",
          cancel = "cancel"
 }
 
