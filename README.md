@@ -192,6 +192,26 @@ OR
     - User authentication with PIN
     - Fetch user access token
     - Logout
+### Milestone 4:
+    - Mobile authenticator enrollment
+    - Mobile authentication with OTP
+### Milestone 5:
+    - Fingerprint enrollment
+    - Fingerprint authentication
+### Milestone 6:
+    - Change PIN
+
+## Done on the iOS:
+### Milestone 1:
+    - Start
+    - Security Controls and Configuration of the SDK
+    - User registration
+       - Browser
+### Milestone 2:
+    - User deregistration
+### Milestone 3:
+    - User authentication with PIN
+    - Logout
 ### Milestone 6:
     - Change PIN
 
@@ -229,7 +249,7 @@ OR
 | **`addEventListener(eventType, cb)`**                     |  Adds listener for certain event type(ONEGINI_PIN_NOTIFICATION, ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION).        |
 | **`removeEventListener(eventType, cb)`**                  |  Removes listener for certain event type(ONEGINI_PIN_NOTIFICATION, ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION)       |
 | **`getIdentityProviders()`**                              |  Returns the identity Providers with are registered int the lib.  |
-| **`getAccessToken()`**                                    |  Returns the access token if exist. |
+| **`getAccessToken()`**                                    |  Returns the access token if exist. **[iOS not supported, yet**] |
 | **`enrollMobileAuthentication()`**                        |  The first enrollment step. **[iOS not supported, yet**] |
 | **`submitAcceptMobileAuthOtp()`**                         |  User can return accept authentication request. **[iOS not supported, yet**] |
 | **`submitDenyMobileAuthOtp()`**                           |  User can return deny authentication request. **[iOS not supported, yet**] |
@@ -253,6 +273,6 @@ OR
 | **`registerFingerprintAuthenticator(profileId):Promise`**     |  starts the process of registration a fingerprint **[iOS not supported, yet**] |
 | **`deregisterFingerprintAuthenticator(profileId):Promise`**   |  starts the process of deregistration a fingerprint **[iOS not supported, yet**] |
 | **`isFingerprintAuthenticatorRegistered(profileId):Promise`** | **[iOS not supported, yet**] |
-| **`submitFingerprintAcceptAuthenticationRequest()`**          | User can return  accept authentication request **[iOS not supported, yet**] |
-| **`submitFingerprintDenyAuthenticationRequest()`**            | User can return  deny authentication request **[iOS not supported, yet**] |
-| **`submitFingerprintFallbackToPin()`**                    | User can return  fallback to authentication by pin **[iOS not supported, yet**] |
+| **`submitFingerprintAcceptAuthenticationRequest():Promise`**          | User can return  accept authentication request **[iOS not supported, yet**] |
+| **`submitFingerprintDenyAuthenticationRequest():Promise`**            | User can return  deny authentication request **[iOS not supported, yet**] |
+| **`submitFingerprintFallbackToPin():Promise`**                    | User can return  fallback to authentication by pin **[iOS not supported, yet**] |
