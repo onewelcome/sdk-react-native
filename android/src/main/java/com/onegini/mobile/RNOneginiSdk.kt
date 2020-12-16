@@ -157,7 +157,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                 }
 
                 override fun onError(error: OneginiAuthenticatorRegistrationError?) {
-                    promise.reject(error)
+                    promise.reject(error?.errorType.toString(), error?.message)
                 }
             })
         } catch (e: OneginiError) {
@@ -383,8 +383,8 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                 promise.resolve(result)
             }
 
-            override fun onError(oneginiAuthenticationError: OneginiAuthenticationError) {
-                promise.reject(oneginiAuthenticationError)
+            override fun onError(error: OneginiAuthenticationError) {
+                promise.reject(error.errorType.toString(), error.message)
             }
         })
     }
