@@ -18,7 +18,7 @@ const CustomRegistrationChooserView = (props) => {
     <View style={styles.container}>
       {providers?.map((provider) => {
         return (
-          <View style={styles.buttonConteiner}>
+          <View key={provider.id} style={styles.buttonConteiner}>
             <Button
               name={provider.name + '(' + provider.id + ')'}
               onPress={() => {
@@ -38,10 +38,12 @@ CustomRegistrationChooserView.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
+    width: '100%',
     backgroundColor: AppColors.white,
     flex: 1,
     paddingTop: '10%',
-    marginBottom: 40,
+    marginBottom: 80,
+    overflow: 'hidden'
   },
   buttonConteiner: {
     paddingTop: 40,
