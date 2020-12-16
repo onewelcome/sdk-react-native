@@ -16,7 +16,6 @@ import com.onegini.mobile.Constants.FINGERPRINT_NOTIFICATION_START_AUTHENTICATIO
 import com.onegini.mobile.Constants.MOBILE_AUTH_OTP_FINISH_AUTHENTICATION
 import com.onegini.mobile.Constants.MOBILE_AUTH_OTP_NOTIFICATION
 import com.onegini.mobile.Constants.MOBILE_AUTH_OTP_START_AUTHENTICATION
-import com.onegini.mobile.Constants.ONEGINI_FINGERPRINT_NOTIFICATION
 import com.onegini.mobile.Constants.ONEGINI_PIN_NOTIFICATION
 import com.onegini.mobile.Constants.PinFlow
 import com.onegini.mobile.OneginiComponets.deregistrationUtil
