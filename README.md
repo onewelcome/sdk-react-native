@@ -244,10 +244,8 @@ OR
 | **`submitCustomRegistrationReturnSuccess(identityProviderId, result)`**|  Triggers the ReturnSuccess method in callback from the custom registration process.  If the identityProviderId does not exist then an error occurs. **[iOS not supported, yet**|
 | **`submitCustomRegistrationReturnError(identityProviderId, result)`** |  Triggers the ReturnError method in callback from the custom registration process.If the identityProviderId does not exist then an error occurs. **[iOS not supported, yet**|
 | **`submitPinAction(flow, action, pin):Promise`**          |  Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION"). If flow is authentication then the submitAuthenticationPinAction method is triggered. If flow is create then the submitCreatePinAction method is triggered. If flow is change then the submitChangePinAction method is triggered.  |
-| **`submitAuthenticationPinAction(action, pin)`**          |  (Android only) Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION"). Possible actions: provide, cancel. |
-| **`submitChangePinAction(action, pin)`**                  |  (Android only) Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION"). Possible actions: provide, cancel, change. |
-| **`submitCreatePinAction(action, pin):Promise`**          |  (Android only) Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION"). Possible actions: provide, cancel. |
-| **`authenticateUser(profileId):Promise`**                 |  (Android only) Starts the process of authentication user.  |
+| **`changePin():Promise`**                                 |  Starts the process of changin PIN for currently authenticated user.  |
+| **`authenticateUser(profileId):Promise`**                 |  Starts the process of authentication user.  |
 | **`logout():Promise`**                                    |  Starts the process of logout user.  |
 | **`getRegisteredAuthenticators():Promise`**               |  Returns all authenticators which are registered. One of the authenticators can be set as preferred authenticator.|
 | **`getAllAuthenticators():Promise`**                      |  Returns all supported authenticators.  |
