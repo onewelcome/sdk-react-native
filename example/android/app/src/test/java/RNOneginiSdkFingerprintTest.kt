@@ -8,6 +8,7 @@ import com.onegini.mobile.OneginiComponets
 import com.onegini.mobile.RNOneginiSdk
 import com.onegini.mobile.exception.OneginReactNativeException
 import com.onegini.mobile.sdk.android.client.OneginiClient
+import com.onegini.mobile.sdk.android.client.UserClient
 import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiFingerprintCallback
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import io.mockk.*
@@ -31,6 +32,9 @@ class RNOneginiSdkFingerprintTest {
     lateinit var appContext: Context
 
     @MockK
+    lateinit var userClient: UserClient
+
+    @MockK
     lateinit var rCTDeviceEventEmitter: DeviceEventManagerModule.RCTDeviceEventEmitter
 
     @Before
@@ -40,6 +44,58 @@ class RNOneginiSdkFingerprintTest {
         every { appContext.applicationContext } returns appContext
         every { reactApplicationContext.getJSModule<DeviceEventManagerModule.RCTDeviceEventEmitter>(any()) } returns rCTDeviceEventEmitter
         rNOneginiSdk = RNOneginiSdk(reactApplicationContext)
+    }
+
+    @Test
+    fun registerFingerprintAuthenticator_PROFILE_DOES_NOT_EXIST() {
+        val oneginiClient = setupOneginiClient()
+        every { userClient.userProfiles } returns emptySet()
+        Utils.startClient(rNOneginiSdk, oneginiClient, null, true)
+
+        val promise = mockkClass(Promise::class, relaxed = true)
+        rNOneginiSdk.registerFingerprintAuthenticator("test", promise)
+        every { promise.reject(OneginReactNativeException.PROFILE_DOES_NOT_EXIST.toString(), any<String>()) }
+    }
+
+    @Test
+    fun registerFingerprintAuthenticator_AUTHENTICATOR_DOES_NOT_EXIST() {
+        val oneginiClient = setupOneginiClient()
+
+        val profiles = HashSet<UserProfile>()
+        profiles.add(USER_PROFILE)
+        every { userClient.userProfiles } returns profiles
+        every { userClient.getNotRegisteredAuthenticators(USER_PROFILE) } returns emptySet()
+        Utils.startClient(rNOneginiSdk, oneginiClient, null, true)
+
+        val promise = mockkClass(Promise::class, relaxed = true)
+        rNOneginiSdk.registerFingerprintAuthenticator(USER_PROFILE.profileId, promise)
+        every { promise.reject(OneginReactNativeException.AUTHENTICATOR_DOES_NOT_EXIST.toString(), any<String>()) }
+    }
+
+    @Test
+    fun deregisterFingerprintAuthenticator_PROFILE_DOES_NOT_EXIST() {
+        val oneginiClient = setupOneginiClient()
+        every { userClient.userProfiles } returns emptySet()
+        Utils.startClient(rNOneginiSdk, oneginiClient, null, true)
+
+        val promise = mockkClass(Promise::class, relaxed = true)
+        rNOneginiSdk.deregisterFingerprintAuthenticator("test", promise)
+        every { promise.reject(OneginReactNativeException.PROFILE_DOES_NOT_EXIST.toString(), any<String>()) }
+    }
+
+    @Test
+    fun deregisterFingerprintAuthenticator_AUTHENTICATOR_DOES_NOT_EXIST() {
+        val oneginiClient = setupOneginiClient()
+
+        val profiles = HashSet<UserProfile>()
+        profiles.add(USER_PROFILE)
+        every { userClient.userProfiles } returns profiles
+        every { userClient.getRegisteredAuthenticators(USER_PROFILE) } returns emptySet()
+        Utils.startClient(rNOneginiSdk, oneginiClient, null, true)
+
+        val promise = mockkClass(Promise::class, relaxed = true)
+        rNOneginiSdk.deregisterFingerprintAuthenticator(USER_PROFILE.profileId, promise)
+        every { promise.reject(OneginReactNativeException.AUTHENTICATOR_DOES_NOT_EXIST.toString(), any<String>()) }
     }
 
     @Test
@@ -123,6 +179,12 @@ class RNOneginiSdkFingerprintTest {
         every { promise.reject(OneginReactNativeException.FINGERPRINT_IS_NOT_ENABLED.toString(), any<String>()) }
     }
 
+    fun setupOneginiClient(): OneginiClient {
+        val oneginiClient = mockkClass(OneginiClient::class)
+        every { oneginiClient.userClient } returns userClient
+
+        return oneginiClient
+    }
 
     fun setupStartAuthentication() {
         val returnMap = mockkClass(WritableMap::class, relaxed = true)
