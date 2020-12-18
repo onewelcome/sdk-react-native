@@ -18,9 +18,7 @@ import com.onegini.mobile.Constants.MOBILE_AUTH_OTP_NOTIFICATION
 import com.onegini.mobile.Constants.MOBILE_AUTH_OTP_START_AUTHENTICATION
 import com.onegini.mobile.Constants.ONEGINI_PIN_NOTIFICATION
 import com.onegini.mobile.Constants.PinFlow
-import com.onegini.mobile.OneginiComponets.deregistrationUtil
 import com.onegini.mobile.OneginiComponets.init
-import com.onegini.mobile.OneginiComponets.userStorage
 import com.onegini.mobile.exception.OneginReactNativeException
 import com.onegini.mobile.exception.OneginReactNativeException.Companion.AUTHENTICATE_DEVICE_ERROR
 import com.onegini.mobile.exception.OneginReactNativeException.Companion.CAN_NOT_DOWNLOAD_DEVICES
@@ -44,7 +42,6 @@ import com.onegini.mobile.sdk.android.model.OneginiAppToWebSingleSignOn
 import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 import com.onegini.mobile.sdk.android.model.entity.OneginiMobileAuthenticationRequest
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
-import com.onegini.mobile.util.DeregistrationUtil
 import com.onegini.mobile.view.handlers.InitializationHandler
 import com.onegini.mobile.view.handlers.customregistration.CustomRegistrationObserver
 import com.onegini.mobile.view.handlers.fingerprint.FingerprintAuthenticationObserver
@@ -111,9 +108,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         val oneginiClientInitializer = OneginiClientInitializer(
                 OneginiComponets.oneginiSDK,
                 configModelClassName,
-                securityControllerClassName,
-                deregistrationUtil,
-                userStorage)
+                securityControllerClassName)
 
         oneginiClientInitializer.startOneginiClient(config, object : InitializationHandler {
             override fun onSuccess() {
@@ -259,7 +254,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     @ReactMethod
     fun deregisterUser(profileId: String?, promise: Promise) {
         val profile = toUserProfile(profileId!!)
-        DeregistrationUtil(currentActivity!!.applicationContext).onUserDeregistered(profile)
         oneginiSDK.oneginiClient.userClient.deregisterUser(profile, object : OneginiDeregisterUserProfileHandler {
             override fun onSuccess() {
                 promise.resolve(null)
