@@ -221,6 +221,14 @@ OneginiSdk.getAllAuthenticators = function (profileId) {
     : RNOneginiSdk.getAllAuthenticators(profileId);
 }
 
+OneginiSdk.getRegisteredAuthenticators = function (profileId) {
+  return RNOneginiSdk.getRegisteredAuthenticators(profileId);
+}
+
+OneginiSdk.getAllAuthenticators = function (profileId) {
+  return RNOneginiSdk.getAllAuthenticators(profileId);
+}
+
 OneginiSdk.logout = function () {
   return new Promise((resolve) =>
     RNOneginiSdk.logout((response) => resolve(response)),
@@ -284,6 +292,18 @@ OneginiSdk.submitFingerprintFallbackToPin = function () {
 
 OneginiSdk.startSingleSignOn = function (url) {
   return RNOneginiSdk.startSingleSignOn(url);
+}
+
+OneginiSdk.getImplicitUserDetails = function (profileId) {
+  return RNOneginiSdk.getImplicitUserDetails(profileId);
+}
+
+OneginiSdk.authenticateDevice = function () {
+  return RNOneginiSdk.authenticateDevice();
+}
+
+OneginiSdk.getClientResource = function () {
+  return RNOneginiSdk.getClientResource();
 }
 
 export default OneginiSdk;
