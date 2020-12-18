@@ -60,8 +60,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     private val reactContext: ReactApplicationContext
     private val registrationManager: RegistrationManager
     private val authenticatorManager: AuthenticatorManager
-    private var configModelClassName: String? = null
-    private var securityControllerClassName = "com.onegini.mobile.SecurityController"
     private val pinNotificationObserver: PinNotificationObserver
     private val customRegistrationObserver: CustomRegistrationObserver
     private val mobileAuthOtpRequestObserver: MobileAuthOtpRequestObserver
@@ -90,25 +88,12 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         return "RNOneginiSdk"
     }
 
-    // React methods will be below
-    @ReactMethod
-    fun setConfigModelClassName(configModelClassName: String?) {
-        this.configModelClassName = configModelClassName
-    }
-
-    @ReactMethod
-    fun setSecurityControllerClassName(securityControllerClassName: String) {
-        this.securityControllerClassName = securityControllerClassName
-    }
-
     @ReactMethod
     fun startClient(rnConfig: ReadableMap, promise: Promise) {
         val config = OneginiReactNativeConfigMapper.toOneginiReactNativeConfig(rnConfig)
 
         val oneginiClientInitializer = OneginiClientInitializer(
-                OneginiComponets.oneginiSDK,
-                configModelClassName,
-                securityControllerClassName)
+                OneginiComponets.oneginiSDK)
 
         oneginiClientInitializer.startOneginiClient(config, object : InitializationHandler {
             override fun onSuccess() {
