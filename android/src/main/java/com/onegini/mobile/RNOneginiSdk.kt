@@ -1,6 +1,7 @@
 //@todo Later will be transferred to RN Wrapper later
 package com.onegini.mobile
 
+import android.net.Uri
 import android.util.Log
 import com.facebook.react.bridge.*
 import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter
@@ -33,6 +34,7 @@ import com.onegini.mobile.mapers.UserProfileMapper.toWritableMap
 import com.onegini.mobile.sdk.android.handlers.*
 import com.onegini.mobile.sdk.android.handlers.error.*
 import com.onegini.mobile.sdk.android.handlers.error.OneginiRegistrationError.RegistrationErrorType
+import com.onegini.mobile.sdk.android.model.OneginiAppToWebSingleSignOn
 import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 import com.onegini.mobile.sdk.android.model.entity.OneginiMobileAuthenticationRequest
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
@@ -284,6 +286,20 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
             }
         }
         )
+    }
+
+    @ReactMethod
+    fun startSingleSignOn(url: String, promise: Promise) {
+        val targetUri = Uri.parse(url)
+        oneginiSDK.oneginiClient.userClient.getAppToWebSingleSignOn(targetUri, object : OneginiAppToWebSingleSignOnHandler {
+            override fun onSuccess(oneginiAppToWebSingleSignOn: OneginiAppToWebSingleSignOn) {
+                promise.resolve(OneginiAppToWebSingleSignOnMapper.toWritableMap(oneginiAppToWebSingleSignOn))
+            }
+
+            override fun onError(error: OneginiAppToWebSingleSignOnError) {
+                promise.reject(error.errorType.toString(), error.message)
+            }
+        })
     }
 
     @ReactMethod

@@ -270,4 +270,20 @@ OneginiSdk.submitFingerprintFallbackToPin = function () {
     : RNOneginiSdk.submitFingerprintFallbackToPin();
 }
 
+OneginiSdk.submitFingerprintAcceptAuthenticationRequest = function () {
+  return RNOneginiSdk.submitFingerprintAcceptAuthenticationRequest();
+}
+
+OneginiSdk.submitFingerprintDenyAuthenticationRequest = function () {
+  return RNOneginiSdk.submitFingerprintDenyAuthenticationRequest();
+}
+
+OneginiSdk.submitFingerprintFallbackToPin = function () {
+  return RNOneginiSdk.submitFingerprintFallbackToPin();
+}
+
+OneginiSdk.startSingleSignOn = function (url) {
+  return RNOneginiSdk.startSingleSignOn(url);
+}
+
 export default OneginiSdk;
