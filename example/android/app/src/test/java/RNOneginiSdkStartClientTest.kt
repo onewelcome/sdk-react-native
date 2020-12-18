@@ -1,94 +1,93 @@
 import android.content.Context
-import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
+import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
-import com.onegini.mobile.OneginiSDK
+import com.onegini.mobile.OneginiComponets
 import com.onegini.mobile.RNOneginiSdk
 import com.onegini.mobile.sdk.android.client.OneginiClient
 import com.onegini.mobile.sdk.android.client.OneginiClientBuilder
-import com.onegini.mobile.sdk.android.handlers.request.OneginiCreatePinRequestHandler
-import com.onegini.mobile.sdk.android.handlers.request.OneginiPinAuthenticationRequestHandler
-import com.onegini.mobile.view.handlers.CreatePinRequestHandler
-import com.onegini.mobile.view.handlers.PinAuthenticationRequestHandler
-import junit.framework.Assert.assertEquals
+import com.onegini.mobile.sdk.android.handlers.OneginiInitializationHandler
+import io.mockk.*
+import io.mockk.impl.annotations.MockK
+import junit.framework.Assert.*
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers.*
-import org.mockito.Mockito.`when`
-import org.mockito.junit.MockitoJUnitRunner
-import org.powermock.api.mockito.PowerMockito
-import org.powermock.core.classloader.annotations.PrepareForTest
-import org.powermock.modules.junit4.PowerMockRunner
+import java.util.*
+import kotlin.collections.HashMap
+import kotlin.collections.emptySet
+import kotlin.collections.set
 
 
-@RunWith(PowerMockRunner::class)
-@PrepareForTest(OneginiSDK::class)
 class RNOneginiSdkStartClientTest {
 
     private lateinit var rNOneginiSdk: RNOneginiSdk
-    val reactApplicationContext = PowerMockito.mock(ReactApplicationContext::class.java)
-    val appContext = PowerMockito.mock(Context::class.java)
-    val promise = PowerMockito.mock(Promise::class.java)
-    val oneginiClientBuilder = PowerMockito.mock(OneginiClientBuilder::class.java)
+
+    @MockK
+    lateinit var reactApplicationContext: ReactApplicationContext
+
+    @MockK
+    lateinit var appContext: Context
+
+    @MockK
+    lateinit var oneginiClientBuilder: OneginiClientBuilder
 
     @Before
     fun setup() {
-        `when`(reactApplicationContext.applicationContext).thenReturn(appContext)
+        MockKAnnotations.init(this)
+        every { reactApplicationContext.applicationContext } returns appContext
+        every { appContext.applicationContext } returns appContext
         rNOneginiSdk = RNOneginiSdk(reactApplicationContext)
     }
 
     @Test
     fun startClient_Config() {
-//        val map = Arguments.createMap()
-//        map.putString("configModelClassName", "testConfigModelClassName")
-//        map.putString("securityControllerClassName", "testSecurityControllerClassName")
-//        map.putString("securityControllerClassName", "testSecurityControllerClassName")
-//        map.putBoolean("enableMobileAuthenticationOtp", true)
-//        map.putBoolean("enableFingerprint", false)
-//        val array = Arguments.createArray()
-//        array.pushMap(createProvider("idTest", true))
-//        map.putArray("customProviders", array)
-//        Mockito.spy<Class<EmpService>>(EmpService::class.java)
-        val config = PowerMockito.mock(ReadableMap::class.java)
-        PowerMockito.`when`(config.getString("configModelClassName")).thenReturn("testConfigModelClassName")
-        PowerMockito.`when`(config.getString("securityControllerClassName")).thenReturn("testSecurityControllerClassName")
-        PowerMockito.`when`(config.getBoolean("enableMobileAuthenticationOtp")).thenReturn(true)
-        PowerMockito.`when`(config.getBoolean("enableFingerprint")).thenReturn(true)
+        val config = mockkClass(ReadableMap::class)
+        val providers = mockkClass(ReadableArray::class)
 
-        val oneginiClient = PowerMockito.mock(OneginiClient::class.java)
+        val arrayProviders = ArrayList<Any>()
+        arrayProviders.add(createProvider("test", false))
+        arrayProviders.add(createProvider("testIsTwoStep", true))
+        every { providers.toArrayList() } returns arrayProviders
 
-        PowerMockito.`when`(oneginiClientBuilder.setHttpConnectTimeout(anyInt())).thenReturn(oneginiClientBuilder)
-        PowerMockito.`when`(oneginiClientBuilder.setHttpReadTimeout(anyInt())).thenReturn(oneginiClientBuilder)
-        PowerMockito.`when`(oneginiClientBuilder.build()).thenReturn(oneginiClient)
+        every { config.getString("configModelClassName") } returns "testConfigModelClassName"
+        every { config.getString("securityControllerClassName") } returns "testSecurityControllerClassName"
+        every { config.getBoolean("enableMobileAuthenticationOtp") } returns true
+        every { config.getBoolean("enableFingerprint") } returns true
+        every { config.getArray("customProviders") } returns providers
 
+        val oneginiClient = mockkClass(OneginiClient::class)
 
-//        val oneginiClient = OneginiClient()
-//        PowerMockito.spy(oneginiClient)
+        mockkConstructor(OneginiClientBuilder::class)
+        every { anyConstructed<OneginiClientBuilder>().build() } returns oneginiClient
 
-        PowerMockito.whenNew(OneginiClientBuilder::class.java)
-                //.withNoArguments()
-                .withArguments(any(Context::class.java),any(CreatePinRequestHandler::class.java), any(PinAuthenticationRequestHandler::class.java))
-                .thenReturn(oneginiClientBuilder)
+        val oneginiInitializationHandlerSlot = slot<OneginiInitializationHandler>()
+        every {
+            oneginiClient.start(capture(oneginiInitializationHandlerSlot))
+        } answers {}
 
-
+        val promise = mockk<Promise>(relaxed = true)
         rNOneginiSdk.startClient(config, promise)
+        oneginiInitializationHandlerSlot.captured.onSuccess(emptySet())
 
-        assertEquals("Karol", "gg")
+        verify { promise.resolve(any()) }
+        assertEquals("testConfigModelClassName", OneginiComponets.oneginiSDK.config.configModelClassName)
+        assertEquals("testSecurityControllerClassName", OneginiComponets.oneginiSDK.config.securityControllerClassName)
+        assertTrue(OneginiComponets.oneginiSDK.config.enableMobileAuthenticationOtp)
+        assertTrue(OneginiComponets.oneginiSDK.config.enableFingerprint)
+
+        assertEquals("test", OneginiComponets.oneginiSDK.config.identityProviders[0].id)
+        assertFalse(OneginiComponets.oneginiSDK.config.identityProviders[0].isTwoStep)
+
+        assertEquals("testIsTwoStep", OneginiComponets.oneginiSDK.config.identityProviders[1].id)
+        assertTrue(OneginiComponets.oneginiSDK.config.identityProviders[1].isTwoStep)
     }
 
-
-    fun createProvider(id: String, isTwoStep: Boolean): ReadableMap {
-        val map = Arguments.createMap()
-        map.putString("id", id)
-        map.putBoolean("isTwoStep", isTwoStep)
+    fun createProvider(id: String, isTwoStep: Boolean): HashMap<String, *> {
+        val map = HashMap<String, Any>()
+        map["id"] = id
+        map["isTwoStep"] = isTwoStep
         return map
     }
 
-//    rnConfig.getString("configModelClassName"),
-//    rnConfig.getString("securityControllerClassName"),
-//    toReactNativeIdentityProviderList(rnConfig.getArray("customProviders")),
-//    rnConfig.getBoolean("enableMobileAuthenticationOtp"),
-//    rnConfig.getBoolean("enableFingerprint")
 }

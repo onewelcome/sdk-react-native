@@ -40,7 +40,8 @@ class OneginiSDK(private val appContext: Context) {
     var fingerprintAuthenticationRequestHandler: FingerprintAuthenticationRequestHandler? = null
         private set
 
-    private lateinit var config: OneginiReactNativeConfig
+    lateinit var config: OneginiReactNativeConfig
+        private set
 
     fun init(oneginiReactNativeConfig: OneginiReactNativeConfig) {
         this.config = oneginiReactNativeConfig
