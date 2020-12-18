@@ -1,3 +1,4 @@
+import Utils.createProvider
 import android.content.Context
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
@@ -29,9 +30,6 @@ class RNOneginiSdkStartClientTest {
     @MockK
     lateinit var appContext: Context
 
-    @MockK
-    lateinit var oneginiClientBuilder: OneginiClientBuilder
-
     @Before
     fun setup() {
         MockKAnnotations.init(this)
@@ -57,6 +55,8 @@ class RNOneginiSdkStartClientTest {
         every { config.getArray("customProviders") } returns providers
 
         val oneginiClient = mockkClass(OneginiClient::class)
+        mockkStatic(OneginiClient::class)
+        every { OneginiClient.getInstance() } returns oneginiClient
 
         mockkConstructor(OneginiClientBuilder::class)
         every { anyConstructed<OneginiClientBuilder>().build() } returns oneginiClient
@@ -81,13 +81,6 @@ class RNOneginiSdkStartClientTest {
 
         assertEquals("testIsTwoStep", OneginiComponets.oneginiSDK.config.identityProviders[1].id)
         assertTrue(OneginiComponets.oneginiSDK.config.identityProviders[1].isTwoStep)
-    }
-
-    fun createProvider(id: String, isTwoStep: Boolean): HashMap<String, *> {
-        val map = HashMap<String, Any>()
-        map["id"] = id
-        map["isTwoStep"] = isTwoStep
-        return map
     }
 
 }
