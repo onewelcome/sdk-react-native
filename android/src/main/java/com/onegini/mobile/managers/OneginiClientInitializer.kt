@@ -41,7 +41,7 @@ class OneginiClientInitializer(private val oneginiSDK: OneginiSDK,
                 if (errorType == OneginiInitializationError.DEVICE_DEREGISTERED) {
                     deregistrationUtil.onDeviceDeregistered()
                 }
-                initializationHandler.onError(error.message)
+                initializationHandler.onError(error)
             }
 
             private fun removeUserProfiles(removedUserProfiles: Set<UserProfile>) {

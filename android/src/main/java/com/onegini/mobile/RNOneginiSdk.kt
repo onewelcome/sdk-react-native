@@ -106,7 +106,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    fun startClient(rnConfig: ReadableMap, callback: Callback) {
+    fun startClient(rnConfig: ReadableMap, promise: Promise) {
         val config = OneginiReactNativeConfigMapper.toOneginiReactNativeConfig(rnConfig)
 
         val oneginiClientInitializer = OneginiClientInitializer(
@@ -119,16 +119,11 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         oneginiClientInitializer.startOneginiClient(config, object : InitializationHandler {
             override fun onSuccess() {
                 oneginiSDKInitiated()
-                val result = Arguments.createMap()
-                result.putBoolean("success", true)
-                callback.invoke(result)
+                promise.resolve(null)
             }
 
-            override fun onError(errorMessage: String) {
-                val result = Arguments.createMap()
-                result.putBoolean("success", false)
-                result.putString("errorMsg", errorMessage)
-                callback.invoke(result)
+            override fun onError(error: OneginiInitializationError) {
+                promise.reject(error.errorType.toString(), error.message)
             }
         })
     }
@@ -250,33 +245,14 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    fun registerUser(identityProviderId: String?, callback: Callback) {
+    fun registerUser(identityProviderId: String?, promise: Promise) {
         registrationManager.registerUser(identityProviderId, object : OneginiRegistrationHandler {
             override fun onSuccess(userProfile: UserProfile?, customInfo: CustomInfo?) {
-                val result = Arguments.createMap()
-                result.putBoolean("success", true)
-                result.putString("profileId", userProfile?.profileId ?: "")
-                try {
-                    callback.invoke(result)
-                } catch (e: RuntimeException) {
-                    Log.w(TAG, "The" + result.toString() + "was not send")
-                }
+                promise.resolve(toWritableMap(userProfile))
             }
 
-            override fun onError(oneginiRegistrationError: OneginiRegistrationError) {
-                @RegistrationErrorType val errorType = oneginiRegistrationError.errorType
-                var errorMessage = registrationManager.getErrorMessageByCode(errorType)
-                if (errorMessage == null) {
-                    errorMessage = oneginiRegistrationError.message
-                }
-                val result = Arguments.createMap()
-                result.putBoolean("success", false)
-                result.putString("errorMsg", errorMessage)
-                try {
-                    callback.invoke(result)
-                } catch (e: RuntimeException) {
-                    Log.w(TAG, "The" + result.toString() + "was not send")
-                }
+            override fun onError(error: OneginiRegistrationError) {
+                promise.reject(error.errorType.toString(), error.message)
             }
         })
     }
@@ -287,8 +263,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         DeregistrationUtil(currentActivity!!.applicationContext).onUserDeregistered(profile)
         oneginiSDK.oneginiClient.userClient.deregisterUser(profile, object : OneginiDeregisterUserProfileHandler {
             override fun onSuccess() {
-                val result = Arguments.createMap()
-                promise.resolve(result)
+                promise.resolve(null)
             }
 
             override fun onError(oneginiDeregistrationError: OneginiDeregistrationError?) {
@@ -329,12 +304,11 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    fun getRedirectUri(callback: Callback) {
+    fun getRedirectUri(promise: Promise) {
         val uri = registrationManager.redirectUri
         val result = Arguments.createMap()
-        result.putBoolean("success", true)
         result.putString("redirectUri", uri)
-        callback.invoke(result)
+        promise.resolve(result)
     }
 
     @ReactMethod
@@ -576,23 +550,16 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    fun logout(callback: Callback) {
+    fun logout(promise: Promise) {
         val userClient = oneginiSDK.oneginiClient.userClient
-        val userProfile = userClient.authenticatedUserProfile
         userClient.logout(
                 object : OneginiLogoutHandler {
                     override fun onSuccess() {
-                        val result = Arguments.createMap()
-                        result.putBoolean("success", true)
-                        callback.invoke(result)
+                        promise.resolve(null)
                     }
 
-                    override fun onError(oneginiLogoutError: OneginiLogoutError?) {
-                        val message = ErrorHelper.handleLogoutError(oneginiLogoutError, userProfile, reactContext)
-                        val result = Arguments.createMap()
-                        result.putBoolean("success", false)
-                        result.putString("errorMsg", message)
-                        callback.invoke(result)
+                    override fun onError(error: OneginiLogoutError?) {
+                        promise.reject(error?.errorType.toString(), error?.message)
                     }
                 }
         )

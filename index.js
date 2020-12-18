@@ -90,11 +90,9 @@ OneginiSdk.removeEventListener = function (eventType) {
 };
 
 OneginiSdk.startClient = function (sdkConfig = OneginiSdk.config) {
-  return new Promise((resolve) =>
-    Platform.OS === 'ios'
-      ? RNOneginiSdk.startClient((response) => resolve(response))
-      : RNOneginiSdk.startClient(sdkConfig, (response) => resolve(response)),
-  );
+  return Platform.OS === 'ios'
+      ? RNOneginiSdk.startClient()
+      : RNOneginiSdk.startClient(sdkConfig)
 };
 
 OneginiSdk.getIdentityProviders = function () {
@@ -141,15 +139,11 @@ OneginiSdk.getAuthenticatedUserProfile = function () {
 
 //@todo will return profileId -> Later check out whole profile + don't forget to ask for userName on RN side
 OneginiSdk.registerUser = function (identityProvider = null) {
-  return new Promise((resolve) =>
-    RNOneginiSdk.registerUser(identityProvider, (response) =>
-      resolve(response),
-    ),
-  );
+  return RNOneginiSdk.registerUser(identityProvider)
 };
 
 OneginiSdk.deregisterUser = function (profileId) {
-  RNOneginiSdk.deregisterUser(profileId);
+  return RNOneginiSdk.deregisterUser(profileId);
 }
 
 OneginiSdk.getUserProfiles = function () {
@@ -157,9 +151,7 @@ OneginiSdk.getUserProfiles = function () {
 }
 
 OneginiSdk.getRedirectUri = function () {
-  return new Promise((resolve) =>
-    RNOneginiSdk.getRedirectUri((response) => resolve(response)),
-  );
+  return RNOneginiSdk.getRedirectUri()
 };
 
 OneginiSdk.handleRegistrationCallback = function (uri) {
@@ -230,9 +222,7 @@ OneginiSdk.getAllAuthenticators = function (profileId) {
 }
 
 OneginiSdk.logout = function () {
-  return new Promise((resolve) =>
-    RNOneginiSdk.logout((response) => resolve(response)),
-  );
+  return RNOneginiSdk.logout()
 };
 
 OneginiSdk.setPreferredAuthenticator = function (profileId, idOneginiAuthenticator) {
