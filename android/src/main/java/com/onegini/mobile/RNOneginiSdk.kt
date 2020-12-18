@@ -193,24 +193,27 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     fun submitFingerprintAcceptAuthenticationRequest(promise: Promise) {
         if (oneginiSDK.fingerprintAuthenticationRequestHandler == null) {
             promise.reject(FINGERPRINT_IS_NOT_ENABLED.toString(), " The fingerprint is no enabled. Please check your configuration")
+        } else {
+            oneginiSDK.fingerprintAuthenticationRequestHandler!!.acceptAuthenticationRequest()
         }
-        oneginiSDK.fingerprintAuthenticationRequestHandler!!.acceptAuthenticationRequest()
     }
 
     @ReactMethod
     fun submitFingerprintDenyAuthenticationRequest(promise: Promise) {
         if (oneginiSDK.fingerprintAuthenticationRequestHandler == null) {
             promise.reject(FINGERPRINT_IS_NOT_ENABLED.toString(), " The fingerprint is no enabled. Please check your configuration")
+        } else {
+            oneginiSDK.fingerprintAuthenticationRequestHandler!!.denyAuthenticationRequest()
         }
-        oneginiSDK.fingerprintAuthenticationRequestHandler!!.denyAuthenticationRequest()
     }
 
     @ReactMethod
     fun submitFingerprintFallbackToPin(promise: Promise) {
         if (oneginiSDK.fingerprintAuthenticationRequestHandler == null) {
             promise.reject(FINGERPRINT_IS_NOT_ENABLED.toString(), " The fingerprint is no enabled. Please check your configuration")
+        } else {
+            oneginiSDK.fingerprintAuthenticationRequestHandler!!.fallbackToPin()
         }
-        oneginiSDK.fingerprintAuthenticationRequestHandler!!.fallbackToPin()
     }
 
     @ReactMethod

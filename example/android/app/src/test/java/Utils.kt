@@ -19,8 +19,11 @@ object Utils {
         return map
     }
 
-
     fun startClient(rNOneginiSdk: RNOneginiSdk, oneginiClient: OneginiClient, arrayProviders: ArrayList<Any>?) {
+        startClient(rNOneginiSdk, oneginiClient, arrayProviders, false)
+    }
+
+    fun startClient(rNOneginiSdk: RNOneginiSdk, oneginiClient: OneginiClient, arrayProviders: ArrayList<Any>?, enableFingerprint: Boolean) {
         val config = mockkClass(ReadableMap::class)
 
         if (arrayProviders != null) {
@@ -34,7 +37,7 @@ object Utils {
         every { config.getString("configModelClassName") } returns null
         every { config.getString("securityControllerClassName") } returns null
         every { config.getBoolean("enableMobileAuthenticationOtp") } returns false
-        every { config.getBoolean("enableFingerprint") } returns false
+        every { config.getBoolean("enableFingerprint") } returns enableFingerprint
 
         mockkStatic(OneginiClient::class)
         every { OneginiClient.getInstance() } returns oneginiClient
