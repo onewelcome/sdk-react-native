@@ -1,4 +1,4 @@
-package com.onegini.mobile.view.handlers
+package com.onegini.mobile.view.handlers.pins
 
 import android.content.Context
 import com.onegini.mobile.Constants
@@ -87,7 +87,7 @@ class PinWithConfirmationHandler(private val originalHandler: OneginiPinCallback
     }
 
     fun notifyOnError(error: OneginiError?) {
-        pinNotificationObserver?.onError(error)
+        pinNotificationObserver?.onError(error, lastFlow)
     }
 
     fun handlePinValidationError(error: OneginiPinValidationError) {

@@ -8,7 +8,7 @@ import android.net.Uri;
 import com.onegini.mobile.sdk.android.handlers.request.OneginiBrowserRegistrationRequestHandler;
 import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiBrowserRegistrationCallback;
 
-public class RegistrationRequestHandler implements OneginiBrowserRegistrationRequestHandler, RegisteredHandler {
+public class RegistrationRequestHandler implements OneginiBrowserRegistrationRequestHandler {
 
     private OneginiBrowserRegistrationCallback callback;
 
@@ -48,10 +48,5 @@ public class RegistrationRequestHandler implements OneginiBrowserRegistrationReq
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 
         context.startActivity(intent);
-    }
-
-    @Override
-    public void onStart() {
-
     }
 }

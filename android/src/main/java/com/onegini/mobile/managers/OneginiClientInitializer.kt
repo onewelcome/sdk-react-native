@@ -23,7 +23,6 @@ class OneginiClientInitializer(private val oneginiSDK: OneginiSDK) {
         val oneginiClient = oneginiSDK.oneginiClient
         oneginiClient.start(object : OneginiInitializationHandler {
             override fun onSuccess(removedUserProfiles: Set<UserProfile>) {
-                oneginiSDK.onStart()
                 setInitialized()
                 initializationHandler.onSuccess()
             }

@@ -59,15 +59,11 @@ const PinView = (props) => {
         <Button
           name={'Cancel'}
           containerStyle={styles.buttonStyle}
-          onPress={() => {
-            Platform.OS === 'ios'
-              ? setError('Unfortunately this feature is not supported, yet.')
-              : OneginiSdk.submitPinAction(
+          onPress={() => OneginiSdk.submitPinAction(
               props.flow,
               ONEGINI_PIN_ACTIONS.CANCEL,
               null,
-            );
-          }}
+            )}
         />
       </View>
     </View>

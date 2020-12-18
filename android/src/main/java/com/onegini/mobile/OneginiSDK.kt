@@ -14,6 +14,10 @@ import com.onegini.mobile.view.handlers.fingerprint.FingerprintAuthenticationObs
 import com.onegini.mobile.view.handlers.fingerprint.FingerprintAuthenticationRequestHandler
 import com.onegini.mobile.view.handlers.mobileauthotp.MobileAuthOtpRequestHandler
 import com.onegini.mobile.view.handlers.mobileauthotp.MobileAuthOtpRequestObserver
+import com.onegini.mobile.view.handlers.pins.ChangePinHandler
+import com.onegini.mobile.view.handlers.pins.CreatePinRequestHandler
+import com.onegini.mobile.view.handlers.pins.PinAuthenticationRequestHandler
+import com.onegini.mobile.view.handlers.pins.PinNotificationObserver
 import java.lang.reflect.InvocationTargetException
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -29,8 +33,6 @@ class OneginiSDK(private val appContext: Context) {
     lateinit var createPinRequestHandler: CreatePinRequestHandler
         private set
     lateinit var changePinHandler: ChangePinHandler
-        private set
-    private val registeredHandlers = ArrayList<RegisteredHandler>()
 
     val simpleCustomRegistrationActions = ArrayList<SimpleCustomRegistrationAction>()
 
@@ -60,13 +62,9 @@ class OneginiSDK(private val appContext: Context) {
     private fun buildSDK(context: Context): OneginiClient {
         val applicationContext = context.applicationContext
         registrationRequestHandler = RegistrationRequestHandler(applicationContext)
-        registeredHandlers.add(registrationRequestHandler)
         pinAuthenticationRequestHandler = PinAuthenticationRequestHandler(this)
-        registeredHandlers.add(pinAuthenticationRequestHandler)
         createPinRequestHandler = CreatePinRequestHandler(applicationContext, this)
-        registeredHandlers.add(createPinRequestHandler)
         changePinHandler = ChangePinHandler(this)
-        registeredHandlers.add(changePinHandler)
 
         //twoWayOtpIdentityProvider = TwoWayOtpIdentityProvider(context)
         val clientBuilder = OneginiClientBuilder(applicationContext, createPinRequestHandler, pinAuthenticationRequestHandler)
@@ -101,12 +99,6 @@ class OneginiSDK(private val appContext: Context) {
             val provider = SimpleCustomRegistrationFactory.getSimpleCustomRegistrationProvider(it)
             simpleCustomRegistrationActions.add(provider.action)
             clientBuilder.addCustomIdentityProvider(provider)
-        }
-    }
-
-    fun onStart() {
-        for (handler in registeredHandlers) {
-            handler.onStart()
         }
     }
 

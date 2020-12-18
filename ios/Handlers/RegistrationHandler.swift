@@ -44,17 +44,6 @@ class RegistrationHandler: NSObject, BrowserHandlerToRegisterHandlerProtocol, Pi
         }
     }
 
-    // @todo Support different pinLength
-    private func presentCreatePinFlow(error: SdkError?) {
-        BridgeConnector.shared?.toPinHandlerConnector.pinHandler.setPinReciever(reciever: self)
-
-        if(error != nil){
-            BridgeConnector.shared?.toPinHandlerConnector.pinHandler.notifyOnError(error!)
-        } else {
-            BridgeConnector.shared?.toPinHandlerConnector.pinHandler.openFlow(PinFlow.create)
-        }
-    }
-
     fileprivate func mapErrorFromPinChallenge(_ challenge: ONGCreatePinChallenge) -> SdkError? {
         if let error = challenge.error {
             return ErrorMapper().mapError(error)
@@ -89,18 +78,21 @@ extension RegistrationHandler: ONGRegistrationDelegate {
     func userClient(_: ONGUserClient, didReceivePinRegistrationChallenge challenge: ONGCreatePinChallenge) {
         createPinChallenge = challenge
         let pinError = mapErrorFromPinChallenge(challenge)
-        presentCreatePinFlow(error: pinError)
+        BridgeConnector.shared?.toPinHandlerConnector.pinHandler.handleFlowUpdate(PinFlow.create, pinError, receiver: self)
     }
 
     func userClient(_: ONGUserClient, didRegisterUser userProfile: ONGUserProfile, info _: ONGCustomInfo?) {
+        createPinChallenge = nil
         signUpCompletion!(true, userProfile, nil)
         BridgeConnector.shared?.toPinHandlerConnector.pinHandler.closeFlow()
     }
 
     func userClient(_: ONGUserClient, didFailToRegisterWithError error: Error) {
+        createPinChallenge = nil
+        BridgeConnector.shared?.toPinHandlerConnector.pinHandler.closeFlow()
+
         if error.code == ONGGenericError.actionCancelled.rawValue {
             signUpCompletion!(false, nil, SdkError(errorDescription: "Registration  cancelled."))
-            BridgeConnector.shared?.toPinHandlerConnector.pinHandler.closeFlow()
         } else {
             let mappedError = ErrorMapper().mapError(error)
             signUpCompletion!(false, nil, mappedError)

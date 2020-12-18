@@ -8,6 +8,7 @@ import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEm
 import com.onegini.mobile.Constants.CUSTOM_REGISTRATION_NOTIFICATION
 import com.onegini.mobile.Constants.CUSTOM_REGISTRATION_NOTIFICATION_FINISH_REGISTRATION
 import com.onegini.mobile.Constants.CUSTOM_REGISTRATION_NOTIFICATION_INIT_REGISTRATION
+import com.onegini.mobile.Constants.ONEGINI_FINGERPRINT_NOTIFICATION
 import com.onegini.mobile.Constants.FINGERPRINT_NOTIFICATION_FINISH_AUTHENTICATION
 import com.onegini.mobile.Constants.FINGERPRINT_NOTIFICATION_ON_FINGERPRINT_CAPTURED
 import com.onegini.mobile.Constants.FINGERPRINT_NOTIFICATION_ON_NEXT_AUTHENTICATION_ATTEMPT
@@ -15,7 +16,6 @@ import com.onegini.mobile.Constants.FINGERPRINT_NOTIFICATION_START_AUTHENTICATIO
 import com.onegini.mobile.Constants.MOBILE_AUTH_OTP_FINISH_AUTHENTICATION
 import com.onegini.mobile.Constants.MOBILE_AUTH_OTP_NOTIFICATION
 import com.onegini.mobile.Constants.MOBILE_AUTH_OTP_START_AUTHENTICATION
-import com.onegini.mobile.Constants.ONEGINI_FINGERPRINT_NOTIFICATION
 import com.onegini.mobile.Constants.ONEGINI_PIN_NOTIFICATION
 import com.onegini.mobile.Constants.PinFlow
 import com.onegini.mobile.OneginiComponets.init
@@ -43,10 +43,11 @@ import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 import com.onegini.mobile.sdk.android.model.entity.OneginiMobileAuthenticationRequest
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.view.handlers.InitializationHandler
-import com.onegini.mobile.view.handlers.PinNotificationObserver
 import com.onegini.mobile.view.handlers.customregistration.CustomRegistrationObserver
 import com.onegini.mobile.view.handlers.fingerprint.FingerprintAuthenticationObserver
 import com.onegini.mobile.view.handlers.mobileauthotp.MobileAuthOtpRequestObserver
+import com.onegini.mobile.view.handlers.pins.ChangePinHandler
+import com.onegini.mobile.view.handlers.pins.PinNotificationObserver
 import io.reactivex.disposables.CompositeDisposable
 
 class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
@@ -307,6 +308,19 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
+    fun changePin(promise: Promise) {
+        oneginiSDK.changePinHandler.onStartChangePin(object : ChangePinHandler.ChangePinHandlerResponse {
+            override fun onSuccess() {
+                promise.resolve(null)
+            }
+
+            override fun onError(error: OneginiChangePinError?) {
+                promise.reject(error?.errorType.toString(), error?.message)
+            }
+        })
+    }
+
+    @ReactMethod
     @Throws(Exception::class)
     fun submitPinAction(flowString: String?, action: String, pin: String?) {
         val flow = PinFlow.parse(flowString)
@@ -326,7 +340,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         }
     }
 
-    @ReactMethod
     fun submitCreatePinAction(action: String, pin: String?) {
         when (action) {
             Constants.PIN_ACTION_PROVIDE -> oneginiSDK.createPinRequestHandler.onPinProvided(pin!!.toCharArray(), PinFlow.Create)
@@ -335,7 +348,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         }
     }
 
-    @ReactMethod
     fun submitAuthenticationPinAction(action: String, pin: String?) {
         when (action) {
             Constants.PIN_ACTION_PROVIDE -> oneginiSDK.pinAuthenticationRequestHandler.acceptAuthenticationRequest(pin!!.toCharArray())
@@ -344,10 +356,8 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         }
     }
 
-    @ReactMethod
     fun submitChangePinAction(action: String, pin: String?) {
         when (action) {
-            Constants.PIN_ACTION_CHANGE -> oneginiSDK.changePinHandler.onStartChangePin()
             Constants.PIN_ACTION_PROVIDE -> oneginiSDK.changePinHandler.onPinProvided(pin!!.toCharArray())
             Constants.PIN_ACTION_CANCEL -> oneginiSDK.changePinHandler.pinCancelled()
             else -> Log.e(LOG_TAG, "Got unsupported PIN action: $action")
@@ -516,9 +526,10 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                 }
             }
 
-            override fun onError(error: OneginiError?) {
+            override fun onError(error: OneginiError?, flow: PinFlow) {
                 val data = Arguments.createMap()
                 data.putString("action", Constants.PIN_NOTIFICATION_SHOW_ERROR)
+                data.putString("flow", flow.flowString)
                 OneginiErrorMapper.update(data, error)
                 reactApplicationContext.getJSModule(RCTDeviceEventEmitter::class.java).emit(ONEGINI_PIN_NOTIFICATION, data)
             }
