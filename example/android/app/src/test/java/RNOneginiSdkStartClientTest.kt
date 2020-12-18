@@ -1,9 +1,6 @@
 import Utils.createProvider
 import android.content.Context
-import com.facebook.react.bridge.Promise
-import com.facebook.react.bridge.ReactApplicationContext
-import com.facebook.react.bridge.ReadableArray
-import com.facebook.react.bridge.ReadableMap
+import com.facebook.react.bridge.*
 import com.onegini.mobile.OneginiComponets
 import com.onegini.mobile.RNOneginiSdk
 import com.onegini.mobile.sdk.android.client.OneginiClient

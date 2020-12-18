@@ -7,6 +7,7 @@ import com.facebook.react.bridge.WritableMap
 import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.onegini.mobile.OneginiComponets
 import com.onegini.mobile.RNOneginiSdk
+import com.onegini.mobile.exception.OneginReactNativeException
 import com.onegini.mobile.sdk.android.client.OneginiClient
 import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiCustomRegistrationCallback
 import com.onegini.mobile.sdk.android.model.entity.CustomInfo
@@ -194,50 +195,16 @@ class RNOneginiSdkCustomRegistrationTest {
     }
 
     @Test
-    fun returnError() {
-
-        val emitNameSlot = slot<String>()
-        val emitDataSlot = slot<Any>()
-        every {
-            rCTDeviceEventEmitter.emit(capture(emitNameSlot), capture(emitDataSlot))
-        } answers {}
-
-        val arrayProviders = ArrayList<Any>()
-        arrayProviders.add(createProvider(PROVIDER_ID, true))
-
-        val oneginiClient = mockkClass(OneginiClient::class)
-        Utils.startClient(rNOneginiSdk, oneginiClient, arrayProviders)
-
-        val actions = OneginiComponets.oneginiSDK.simpleCustomRegistrationActions
-        assertEquals(1, actions.size)
-        assertEquals(PROVIDER_ID, actions[0].getIdProvider())
-        assertEquals(true, actions[0] is SimpleCustomTwoStepRegistrationActionImpl)
-
-        val returnMap = mockkClass(WritableMap::class, relaxed = true)
-        val customInfoSlot = slot<WritableMap>()
-        every {
-            returnMap.putMap("customInfo", capture(customInfoSlot))
-        } answers {}
-
-        mockkStatic(Arguments::class)
-        every { Arguments.createMap() } returns returnMap
-
-        val calback = mockkClass(OneginiCustomRegistrationCallback::class, relaxed = true)
-        val customInfo = CustomInfo(10, "data")
-        (actions[0] as SimpleCustomTwoStepRegistrationActionImpl).finishRegistration(calback, customInfo)
-
-        assertEquals("ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION", emitNameSlot.captured)
-        assertEquals(returnMap, emitDataSlot.captured)
-        verify { returnMap.putString("identityProviderId", PROVIDER_ID) }
-        verify { returnMap.putString("action", "finishRegistration") }
-        verify { customInfoSlot.captured.putString("data", customInfo.data) }
-        verify { customInfoSlot.captured.putInt("status", customInfo.status) }
-
+    fun submitCustomRegistrationReturnSuccess_returnError() {
         val promise = mockkClass(Promise::class, relaxed = true)
         rNOneginiSdk.submitCustomRegistrationReturnSuccess(PROVIDER_ID, RESULT, promise)
-        verify { calback.returnSuccess(RESULT) }
+        verify { promise.reject(OneginReactNativeException.ID_ENTITY_PROVIDER_ID.toString(), any<String>()) }
+    }
 
-        rNOneginiSdk.submitCustomRegistrationReturnError(PROVIDER_ID, ERROR_MESSAGE, promise)
-        verify { calback.returnError(any()) }
+    @Test
+    fun submitCustomRegistrationReturnError_returnError() {
+        val promise = mockkClass(Promise::class, relaxed = true)
+        rNOneginiSdk.submitCustomRegistrationReturnSuccess(PROVIDER_ID, RESULT, promise)
+        verify { promise.reject(OneginReactNativeException.ID_ENTITY_PROVIDER_ID.toString(), any<String>()) }
     }
 }
