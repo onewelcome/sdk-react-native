@@ -21,6 +21,7 @@
 		C7AA00A12558E70E0001AB19 /* GenericErrorDomainMapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AA00A02558E70E0001AB19 /* GenericErrorDomainMapping.swift */; };
 		C7AA00A42558E71F0001AB19 /* PinValidationErrorDomainMapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AA00A32558E71F0001AB19 /* PinValidationErrorDomainMapping.swift */; };
 		C7AA0205255925FA0001AB19 /* RNOneginiSdk.m in Sources */ = {isa = PBXBuildFile; fileRef = C7AA0204255925FA0001AB19 /* RNOneginiSdk.m */; };
+		F0622594258CD03F00527A7D /* AppToWebHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0622593258CD03F00527A7D /* AppToWebHandler.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -52,6 +53,7 @@
 		C7AA00A02558E70E0001AB19 /* GenericErrorDomainMapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericErrorDomainMapping.swift; sourceTree = "<group>"; };
 		C7AA00A32558E71F0001AB19 /* PinValidationErrorDomainMapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinValidationErrorDomainMapping.swift; sourceTree = "<group>"; };
 		C7AA0204255925FA0001AB19 /* RNOneginiSdk.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNOneginiSdk.m; sourceTree = "<group>"; };
+		F0622593258CD03F00527A7D /* AppToWebHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppToWebHandler.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +102,7 @@
 		C7AA006A2558E5730001AB19 /* Handlers */ = {
 			isa = PBXGroup;
 			children = (
+				F0622593258CD03F00527A7D /* AppToWebHandler.swift */,
 				C7AA006B2558E5920001AB19 /* RegistrationHandler.swift */,
 				C7AA006E2558E59D0001AB19 /* PinHandler.swift */,
 				C7AA00712558E5A80001AB19 /* BrowserHandler.swift */,
@@ -209,6 +212,7 @@
 				C7AA00982558E6D40001AB19 /* ErrorExtension.swift in Sources */,
 				C7AA006F2558E59D0001AB19 /* PinHandler.swift in Sources */,
 				C7AA00722558E5A80001AB19 /* BrowserHandler.swift in Sources */,
+				F0622594258CD03F00527A7D /* AppToWebHandler.swift in Sources */,
 				C7AA00652558E55B0001AB19 /* BridgeConnector.swift in Sources */,
 				C7AA0205255925FA0001AB19 /* RNOneginiSdk.m in Sources */,
 				C7AA005E2558E4B80001AB19 /* RNOneginiSdk.swift in Sources */,
