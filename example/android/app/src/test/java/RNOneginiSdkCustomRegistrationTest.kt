@@ -66,7 +66,12 @@ class RNOneginiSdkCustomRegistrationTest {
         assertEquals(true, actions[0] is SimpleCustomRegistrationActionImpl)
 
         val returnMap = mockkClass(WritableMap::class, relaxed = true)
-        mockkStatic(Arguments::class,)
+        val customInfoSlot = slot<WritableMap>()
+        every {
+            returnMap.putMap("customInfo", capture(customInfoSlot))
+        } answers {}
+
+        mockkStatic(Arguments::class)
         every { Arguments.createMap() } returns returnMap
 
         val calback = mockkClass(OneginiCustomRegistrationCallback::class)
@@ -75,6 +80,8 @@ class RNOneginiSdkCustomRegistrationTest {
 
         assertEquals("ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION", emitNameSlot.captured)
         assertEquals(returnMap, emitDataSlot.captured)
-
+        verify { returnMap.putString("action", "finishRegistration") }
+        verify { customInfoSlot.captured.putString("data", customInfo.data) }
+        verify { customInfoSlot.captured.putInt("status", customInfo.status) }
     }
 }
