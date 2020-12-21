@@ -266,23 +266,20 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    fun submitCustomRegistrationReturnSuccess(identityProviderId: String, result: String?, promise: Promise) {
+    fun submitCustomRegistrationAction(customAction: String, identityProviderId: String, token: String?) {
         val action = registrationManager.getSimpleCustomRegistrationAction(identityProviderId)
-        if (action == null) {
-            promise.reject(OneginReactNativeException.ID_ENTITY_PROVIDER_ID.toString(), "The $identityProviderId was not configured ")
-        } else {
-            action.returnSuccess(result)
+
+        if(action == null) {
+            Log.e(LOG_TAG, "The $identityProviderId was not configured.")
+            return
         }
-    }
 
-    @ReactMethod
-    fun submitCustomRegistrationReturnError(identityProviderId: String, errorMessage: String?, promise: Promise) {
-        val action = registrationManager.getSimpleCustomRegistrationAction(identityProviderId)
-
-        if (action == null) {
-            promise.reject(OneginReactNativeException.ID_ENTITY_PROVIDER_ID.toString(), "The $identityProviderId was not configured ")
-        } else {
-            action.returnError(java.lang.Exception(errorMessage))
+        when (customAction) {
+            Constants.CUSTOM_REGISTRATION_ACTION_PROVIDE -> action.returnSuccess(token)
+            Constants.CUSTOM_REGISTRATION_ACTION_CANCEL -> action.returnError(java.lang.Exception(token))
+            else -> {
+                Log.e(LOG_TAG, "Got unsupported custom registration action: $customAction.")
+            }
         }
     }
 
