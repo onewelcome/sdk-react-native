@@ -66,6 +66,18 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     @objc
+    func getIdentityProviders(_ resolve: RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
+        let profiles = ONGClient.sharedInstance().userClient.identityProviders()
+        var result: NSMutableArray  = []
+
+        for profile in profiles {
+            result.add(["id": profile.value(forKey: "identifier"), "name": profile.value(forKey: "name")])
+        }
+
+        resolve(result)
+    }
+
+    @objc
     func registerUser(_ identityProviderId: (NSString?), callback: @escaping (RCTResponseSenderBlock)) -> Void {
         bridgeConnector.toRegistrationHandler.signUp {
           (_, userProfile, error) -> Void in
