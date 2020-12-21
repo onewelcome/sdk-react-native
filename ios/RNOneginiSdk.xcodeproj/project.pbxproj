@@ -21,6 +21,7 @@
 		C7AA00A12558E70E0001AB19 /* GenericErrorDomainMapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AA00A02558E70E0001AB19 /* GenericErrorDomainMapping.swift */; };
 		C7AA00A42558E71F0001AB19 /* PinValidationErrorDomainMapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AA00A32558E71F0001AB19 /* PinValidationErrorDomainMapping.swift */; };
 		C7AA0205255925FA0001AB19 /* RNOneginiSdk.m in Sources */ = {isa = PBXBuildFile; fileRef = C7AA0204255925FA0001AB19 /* RNOneginiSdk.m */; };
+		C7EF09982590C55400D14892 /* RegistrationConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7EF09972590C55400D14892 /* RegistrationConnector.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -52,6 +53,7 @@
 		C7AA00A02558E70E0001AB19 /* GenericErrorDomainMapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericErrorDomainMapping.swift; sourceTree = "<group>"; };
 		C7AA00A32558E71F0001AB19 /* PinValidationErrorDomainMapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinValidationErrorDomainMapping.swift; sourceTree = "<group>"; };
 		C7AA0204255925FA0001AB19 /* RNOneginiSdk.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNOneginiSdk.m; sourceTree = "<group>"; };
+		C7EF09972590C55400D14892 /* RegistrationConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationConnector.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +95,7 @@
 			children = (
 				C7AA00642558E55B0001AB19 /* BridgeConnector.swift */,
 				C7AA00672558E5660001AB19 /* PinConnector.swift */,
+				C7EF09972590C55400D14892 /* RegistrationConnector.swift */,
 			);
 			path = Connectors;
 			sourceTree = "<group>";
@@ -216,6 +219,7 @@
 				C7AA009D2558E6FA0001AB19 /* ErrorMapper.swift in Sources */,
 				C7AA00A12558E70E0001AB19 /* GenericErrorDomainMapping.swift in Sources */,
 				C7AA00612558E5430001AB19 /* SdkError.swift in Sources */,
+				C7EF09982590C55400D14892 /* RegistrationConnector.swift in Sources */,
 				C7AA00A42558E71F0001AB19 /* PinValidationErrorDomainMapping.swift in Sources */,
 				C78992E8258162A7002CA5AF /* AuthenticationErrorDomainMapping.swift in Sources */,
 				C78992E525816243002CA5AF /* LoginHandler.swift in Sources */,

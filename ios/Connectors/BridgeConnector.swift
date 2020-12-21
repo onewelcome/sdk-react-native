@@ -3,14 +3,14 @@ protocol BridgeConnectorProtocol: AnyObject {
 }
 
 class BridgeConnector : BridgeConnectorProtocol {
-    let toRegistrationHandler: BridgeToRegisterHandlerProtocol = RegistrationHandler()
+    var toRegistrationConnector: BridgeToRegistrationConnectorProtocol = RegistrationConnector()
+    var toPinHandlerConnector: BridgeToPinConnectorProtocol = PinConnector()
     let toLoginHandler: BridgeToLoginHandlerProtocol = LoginHandler()
-    var toPinHandlerConnector: BridgeToPinConnectorProtocol
     unowned var bridge: ConnectorToRNBridgeProtocol?
     public static var shared:BridgeConnector?
 
     init() {
-        self.toPinHandlerConnector = PinConnector()
+        self.toRegistrationConnector.bridgeConnector = self
         self.toPinHandlerConnector.bridgeConnector = self
         BridgeConnector.shared = self
     }

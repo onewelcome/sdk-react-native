@@ -78,10 +78,16 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     @objc
-    func registerUser(_ identityProviderId: (NSString),
+    func registerUser(_ identityProviderId: (NSString)?,
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        bridgeConnector.toRegistrationHandler.signUp {
+        var provider: ONGIdentityProvider? = nil
+
+        if(identityProviderId != nil) {
+            provider =         ONGClient.sharedInstance().userClient.identityProviders().first(where: { $0.value(forKey: "identifier") as? NSString == identityProviderId })!;
+        }
+
+        bridgeConnector.toRegistrationConnector.registrationHandler.signUp(identityProvider: provider) {
           (_, userProfile, error) -> Void in
 
             if let userProfile = userProfile {
@@ -91,6 +97,11 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
             }
 
         }
+    }
+
+    @objc
+    func submitCustomRegistrationAction(_ action: (NSString), identityProviderId: (NSString), token: (NSString)?) -> Void {
+        bridgeConnector.toRegistrationConnector.handleCustomRegistrationAction(action, identityProviderId, token)
     }
 
     @objc
@@ -113,12 +124,12 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
     @objc
     func handleRegistrationCallback(_ url: (NSString)) -> Void {
-        bridgeConnector.toRegistrationHandler.processRedirectURL(url: URL(string: url as String)!)
+        bridgeConnector.toRegistrationConnector.registrationHandler.processRedirectURL(url: URL(string: url as String)!)
     }
 
     @objc
     func cancelRegistration() -> Void {
-        bridgeConnector.toRegistrationHandler.cancelRegistration()
+        bridgeConnector.toRegistrationConnector.registrationHandler.cancelRegistration()
     }
 
     @objc

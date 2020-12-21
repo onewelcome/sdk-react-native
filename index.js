@@ -23,16 +23,6 @@ export const ONEGINI_PIN_NOTIFICATIONS = {
   CHANGED: 'changed'
 };
 
-export const CUSTOM_REGISTRATION_NOTIFICATIONS = {
-  INIT_REGISTRATION : 'initRegistration',
-  FINISH_REGISTRATION: 'finishRegistration',
-};
-
-export const MOBILE_AUTH_OTP_NOTIFICATION = {
-  START_AUTHENTICATION: 'startAuthentication',
-  FINISH_AUTHENTICATION: 'finishAuthentication',
-};
-
 export const ONEGINI_PIN_ACTIONS = {
   PROVIDE_PIN: 'provide',
   CANCEL: 'cancel',
@@ -42,6 +32,21 @@ export const ONEGINI_PIN_FLOW = {
   AUTHENTICATION: 'authentication',
   CREATE: 'create',
   CHANGE: 'change',
+};
+
+export const CUSTOM_REGISTRATION_NOTIFICATIONS = {
+  INIT_REGISTRATION : 'initRegistration',
+  FINISH_REGISTRATION: 'finishRegistration',
+};
+
+export const CUSTOM_REGISTRATION_ACTIONS = {
+  PROVIDE_TOKEN: 'provide',
+  CANCEL: 'cancel',
+};
+
+export const MOBILE_AUTH_OTP_NOTIFICATION = {
+  START_AUTHENTICATION: 'startAuthentication',
+  FINISH_AUTHENTICATION: 'finishAuthentication',
 };
 
 export const FINGERPRINT_NOTIFICATION = {
@@ -162,22 +167,9 @@ OneginiSdk.cancelRegistration = function () {
   RNOneginiSdk.cancelRegistration();
 }
 
-OneginiSdk.submitCustomRegistrationReturnSuccess = function (identityProviderId, result = null) {
-  Platform.OS === 'ios'
-    ? Promise.reject('Unfortunately this feature is not supported, yet.')
-    : RNOneginiSdk.submitCustomRegistrationReturnSuccess(
-    identityProviderId,
-    result,
-  );
-}
-
-OneginiSdk.submitCustomRegistrationReturnError = function (identityProviderId, result = null) {
-  return Platform.OS === 'ios'
-    ? Promise.reject('Unfortunately this feature is not supported, yet.')
-    : RNOneginiSdk.submitCustomRegistrationReturnError(
-    identityProviderId,
-    result,
-  );
+//@todo implement this on Android side
+OneginiSdk.submitCustomRegistrationAction = function (action, identityProviderId, token = null) {
+  return RNOneginiSdk.submitCustomRegistrationAction(action, identityProviderId, token);
 }
 
 OneginiSdk.submitPinAction = function (flow, action, pin = null) {
