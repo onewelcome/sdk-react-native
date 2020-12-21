@@ -192,6 +192,26 @@ OR
     - User authentication with PIN
     - Fetch user access token
     - Logout
+### Milestone 4:
+    - Mobile authenticator enrollment
+    - Mobile authentication with OTP
+### Milestone 5:
+    - Fingerprint enrollment
+    - Fingerprint authentication
+### Milestone 6:
+    - Change PIN
+
+## Done on the iOS:
+### Milestone 1:
+    - Start
+    - Security Controls and Configuration of the SDK
+    - User registration
+       - Browser
+### Milestone 2:
+    - User deregistration
+### Milestone 3:
+    - User authentication with PIN
+    - Logout
 ### Milestone 6:
     - Change PIN
 
@@ -225,11 +245,11 @@ OR
 | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **`setConfigModelClassName(className)`**                  |  (Android only) Sets the path to OneginiConfigModel class(e.g. `com.exampleapp.OneginiConfigModel`). By default SDK looking for config at `[RN_application_package_classpath].OneginiConfigModel`. This has to be set **before** startClient(). More information [HERE](#android-setup-config)                                                |
 | **`setSecurityControllerClassName(className)`**           |  (Android only) Sets the path to SecurityController class(e.g. `com.exampleapp.SecurityController`). By default controller brought from `com.onegini.mobile.SecurityController`. This has to be set **before** startClient(). More information [HERE](#android-setup-security-controller)
-| **`startClient(config):Promise`**                         |  Method init the OriginiSDK. Config is optional. Example object is in "js/config.js". See structure [HERE](#config-structure). If the config is not set the app uses the js/config.js as the default.                                                             |                                      |
+| **`startClient(config):Promise`**                         |  Method init the OriginiSDK. Config is optional. Example object is in "js/config.js". See structure [HERE](#config-structure). If the config is not set the app uses the "js/config.js" as the default.                                                             |                                      |
 | **`addEventListener(eventType, cb)`**                     |  Adds listener for certain event type(ONEGINI_PIN_NOTIFICATION, ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION).        |
 | **`removeEventListener(eventType, cb)`**                  |  Removes listener for certain event type(ONEGINI_PIN_NOTIFICATION, ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION)       |
 | **`getIdentityProviders()`**                              |  Returns the identity Providers with are registered int the lib.  |
-| **`getAccessToken()`**                                    |  Returns the access token if exist. |
+| **`getAccessToken()`**                                    |  Returns the access token if exist. **[iOS not supported, yet**] |
 | **`enrollMobileAuthentication()`**                        |  The first enrollment step. **[iOS not supported, yet**] |
 | **`submitAcceptMobileAuthOtp()`**                         |  User can return accept authentication request. **[iOS not supported, yet**] |
 | **`submitDenyMobileAuthOtp()`**                           |  User can return deny authentication request. **[iOS not supported, yet**] |
@@ -243,11 +263,9 @@ OR
 | **`cancelRegistration():Promise`**                        |  Interrupts process of registration. |
 | **`submitCustomRegistrationReturnSuccess(identityProviderId, result)`**|  Triggers the ReturnSuccess method in callback from the custom registration process.  If the identityProviderId does not exist then an error occurs. **[iOS not supported, yet**|
 | **`submitCustomRegistrationReturnError(identityProviderId, result)`** |  Triggers the ReturnError method in callback from the custom registration process.If the identityProviderId does not exist then an error occurs. **[iOS not supported, yet**|
-| **`submitPinAction(flow, action, pin):Promise`**          |  Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION"). If flow is authentication then the submitAuthenticationPinAction method is triggered. If flow is create then the submitCreatePinAction method is triggered. If flow is change then the submitChangePinAction method is triggered.  |
-| **`submitAuthenticationPinAction(action, pin)`**          |  (Android only) Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION"). Possible actions: provide, cancel. |
-| **`submitChangePinAction(action, pin)`**                  |  (Android only) Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION"). Possible actions: provide, cancel, change. |
-| **`submitCreatePinAction(action, pin):Promise`**          |  (Android only) Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION"). Possible actions: provide, cancel. |
-| **`authenticateUser(profileId):Promise`**                 |  (Android only) Starts the process of authentication user.  |
+| **`submitPinAction(flow, action, pin):Promise`**          |  Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION"). |
+| **`changePin():Promise`**                                 |  Starts the process of changin PIN for currently authenticated user.  |
+| **`authenticateUser(profileId):Promise`**                 |  Starts the process of authentication user.  |
 | **`logout():Promise`**                                    |  Starts the process of logout user.  |
 | **`getRegisteredAuthenticators():Promise`**               |  Returns all authenticators which are registered. One of the authenticators can be set as preferred authenticator.|
 | **`getAllAuthenticators():Promise`**                      |  Returns all supported authenticators.  |
@@ -255,6 +273,6 @@ OR
 | **`registerFingerprintAuthenticator(profileId):Promise`**     |  starts the process of registration a fingerprint **[iOS not supported, yet**] |
 | **`deregisterFingerprintAuthenticator(profileId):Promise`**   |  starts the process of deregistration a fingerprint **[iOS not supported, yet**] |
 | **`isFingerprintAuthenticatorRegistered(profileId):Promise`** | **[iOS not supported, yet**] |
-| **`submitFingerprintAcceptAuthenticationRequest()`**          | User can return  accept authentication request **[iOS not supported, yet**] |
-| **`submitFingerprintDenyAuthenticationRequest()`**            | User can return  deny authentication request **[iOS not supported, yet**] |
-| **`submitFingerprintFallbackToPin()`**                    | User can return  fallback to authentication by pin **[iOS not supported, yet**] |
+| **`submitFingerprintAcceptAuthenticationRequest():Promise`**          | User can return  accept authentication request **[iOS not supported, yet**] |
+| **`submitFingerprintDenyAuthenticationRequest():Promise`**            | User can return  deny authentication request **[iOS not supported, yet**] |
+| **`submitFingerprintFallbackToPin():Promise`**                    | User can return  fallback to authentication by pin **[iOS not supported, yet**] |

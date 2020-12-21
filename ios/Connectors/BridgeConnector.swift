@@ -6,6 +6,7 @@ class BridgeConnector : BridgeConnectorProtocol {
     var toRegistrationConnector: BridgeToRegistrationConnectorProtocol = RegistrationConnector()
     var toPinHandlerConnector: BridgeToPinConnectorProtocol = PinConnector()
     let toLoginHandler: BridgeToLoginHandlerProtocol = LoginHandler()
+    var toAppToWebHandler: AppToWebHandlerProtocol = AppToWebHandler()
     unowned var bridge: ConnectorToRNBridgeProtocol?
     public static var shared:BridgeConnector?
 

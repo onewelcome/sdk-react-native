@@ -194,4 +194,18 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
             }
         }
     }
+    
+    @objc
+    func startSingleSignOn(_ url: (NSString),
+                        resolver resolve: @escaping RCTPromiseResolveBlock,
+                        rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        let _url = URL(string: url)
+        bridgeConnector.toAppToWebHandler.signInAppToWeb(targetURL: _url, completion: { (result, error) in
+            if let error = error {
+                reject(nil, error.errorDescription, nil)
+            } else {
+                resolve(result)
+            }
+        })
+    }
 }
