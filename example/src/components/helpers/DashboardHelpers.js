@@ -4,26 +4,24 @@ const logout = async (onLogoutSuccess) => {
   try {
     await OneginiSdk.logout();
     onLogoutSuccess();
-  } catch (e) {
-    alert(result.errorMsg ? result.errorMsg : 'Something strange happened.');
+  } catch (err) {
+    alert(err || 'Something strange happened.');
   }
 };
 
 const deregisterUser = async (onDeregisterSuccess) => {
-  const result = await OneginiSdk.getUserProfiles()
-    .then((profiles) => {
-      if (profiles[0] != null) {
-        return OneginiSdk.deregisterUser(profiles[0].profileId);
-      } else {
-        throw new Error('No one user logged in.');
-      }
-    })
-    .then(() => {
+  try {
+    const profiles = await OneginiSdk.getUserProfiles();
+
+    if(profiles[0]) {
+      await OneginiSdk.deregisterUser(profiles[0].profileId);
       onDeregisterSuccess();
-    })
-    .catch((error) => {
-      alert(error);
-    });
+    } else {
+      alert('Not found logged in user.')
+    }
+  } catch (err) {
+    alert(err);
+  }
 };
 
 export {logout, deregisterUser};
