@@ -98,9 +98,7 @@ OneginiSdk.startClient = function (sdkConfig = OneginiSdk.config) {
 };
 
 OneginiSdk.getIdentityProviders = function () {
-  return Platform.OS === 'ios'
-    ? Promise.reject('Unfortunately this feature is not supported, yet.')
-    : RNOneginiSdk.getIdentityProviders();
+  return RNOneginiSdk.getIdentityProviders();
 };
 
 OneginiSdk.getAccessToken = function () {

@@ -36,21 +36,21 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     @objc
-    func startClient(_ callback: @escaping (RCTResponseSenderBlock)) -> Void {
+    func startClient(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         self.oneginiSDKStartup { _, error in
             if let error = error {
-                callback([["success": false, "errorMsg": error.errorDescription]])
+                reject(nil, error.errorDescription, nil)
             } else {
-                callback([["success": true]])
+                resolve(true)
             }
         }
     }
 
     @objc
-    func getRedirectUri(_ callback: (RCTResponseSenderBlock)) -> Void {
+    func getRedirectUri(_ resolve: RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
         let redirectUri = ONGClient.sharedInstance().configModel.redirectURL;
 
-        callback([["success" : true, "redirectUri" : redirectUri!]])
+        resolve([ "redirectUri" : redirectUri!])
     }
 
     @objc
@@ -78,14 +78,16 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     @objc
-    func registerUser(_ identityProviderId: (NSString?), callback: @escaping (RCTResponseSenderBlock)) -> Void {
+    func registerUser(_ identityProviderId: (NSString),
+                        resolver resolve: @escaping RCTPromiseResolveBlock,
+                        rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         bridgeConnector.toRegistrationHandler.signUp {
           (_, userProfile, error) -> Void in
 
             if let userProfile = userProfile {
-                callback([["success" : true, "profileId" : userProfile.profileId!]])
+                resolve(["profileId" : userProfile.profileId!])
             } else {
-                callback([["success" : false, "errorMsg" : error?.errorDescription ?? "Unexpected Error."]])
+                reject(nil, error?.errorDescription ?? "Unexpected Error.", nil)
             }
 
         }
@@ -155,13 +157,13 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     @objc
-    func logout(_ callback: @escaping (RCTResponseSenderBlock)) -> Void {
+    func logout(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         ONGClient.sharedInstance().userClient.logoutUser { _, error in
             if let error = error {
                 let mappedError = ErrorMapper().mapError(error);
-                callback([["success" : false, "errorMsg" : mappedError.errorDescription]])
+                reject(nil, mappedError.errorDescription, nil)
               } else {
-                callback([["success" : true]])
+                resolve(true)
               }
         }
     }
