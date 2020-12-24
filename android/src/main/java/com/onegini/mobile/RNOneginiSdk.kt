@@ -547,7 +547,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    private fun getImplicitUserDetails(profileId: String?, promise: Promise) {
+    private fun getImplicitDataResource(profileId: String?, promise: Promise) {
         val userProfile = authenticatorManager.getUserProfile(profileId)
         if (userProfile == null) {
             promise.reject(OneginReactNativeException.PROFILE_DOES_NOT_EXIST.toString(), "The profileId $profileId does not exist")
@@ -572,7 +572,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    private fun authenticateDevice(promise: Promise) {
+    private fun getAppDetailsResource(promise: Promise) {
         oneginiSDK.oneginiClient.deviceClient.authenticateDevice(arrayOf("application-details"), object : OneginiDeviceAuthenticationHandler {
             override fun onSuccess() {
                 disposables.add(
@@ -592,7 +592,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    private fun getClientResource(promise: Promise) {
+    private fun getDeviceListResource(promise: Promise) {
         disposables.add(UserService.getInstance().devices.subscribe({
             promise.resolve(DevicesResponseMapper.toWritableMap(it))
         }, { promise.reject(CAN_NOT_DOWNLOAD_DEVICES.toString(), it.message) }))

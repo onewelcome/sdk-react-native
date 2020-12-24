@@ -20,14 +20,14 @@ const InfoView = (props) => {
             var profile = it[0]
             if (profile != null) {
                 setProfileId(profile.profileId)
-                OneginiSdk.getImplicitUserDetails(profile.profileId).then((details) => {
+                OneginiSdk.getImplicitDataResource(profile.profileId).then((details) => {
                     setImplicitDetails(details)
                 }).catch((e) => {
                     setImplicitDetails(e.message)
                 })
             }
         })
-        OneginiSdk.authenticateDevice()
+        OneginiSdk.getAppDetailsResource()
             .then((it) => {
                 setApplicationDetails(it)
             }).catch((e) => {

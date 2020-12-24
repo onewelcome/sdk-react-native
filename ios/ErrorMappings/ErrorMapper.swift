@@ -13,6 +13,9 @@ class ErrorMapper {
                 } else {
                     return AuthenticationErrorDomainMapping().mapError(error)
                 }
+            case ONGFetchImplicitResourceErrorDomain:
+                return FetchImplicitResourceErrorDomainMapping().mapError(error)
+                
             default:
                 return SdkError(errorDescription: "Something went wrong.")
             }

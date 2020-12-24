@@ -3,10 +3,11 @@ protocol BridgeConnectorProtocol: AnyObject {
 }
 
 class BridgeConnector : BridgeConnectorProtocol {
-    var toRegistrationConnector: BridgeToRegistrationConnectorProtocol = RegistrationConnector()
-    var toPinHandlerConnector: BridgeToPinConnectorProtocol = PinConnector()
+    let toRegistrationConnector: BridgeToRegistrationConnectorProtocol = RegistrationConnector()
+    let toPinHandlerConnector: BridgeToPinConnectorProtocol = PinConnector()
     let toLoginHandler: BridgeToLoginHandlerProtocol = LoginHandler()
-    var toAppToWebHandler: AppToWebHandlerProtocol = AppToWebHandler()
+    let toAppToWebHandler: AppToWebHandlerProtocol = AppToWebHandler()
+    let toResourceFetchHandler: BridgeToResourceFetchHandlerProtocol = ResourceFetchHandler()
     unowned var bridge: ConnectorToRNBridgeProtocol?
     public static var shared:BridgeConnector?
 
