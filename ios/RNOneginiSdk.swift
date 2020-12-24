@@ -29,6 +29,10 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     override func supportedEvents() -> [String]! {
         return [OneginiBridgeEvents.pinNotification.rawValue, OneginiBridgeEvents.fingerprintNotification.rawValue, OneginiBridgeEvents.customRegistrationNotification.rawValue, OneginiBridgeEvents.authWithOtpNotification.rawValue]
     }
+    
+    func sendBridgeEvent(eventName: OneginiBridgeEvents, data: Any!) -> Void {
+      self.sendEvent(withName: eventName.rawValue, body: data)
+    }
 
     @objc
     override static func requiresMainQueueSetup() -> Bool {
@@ -51,6 +55,13 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
         let redirectUri = ONGClient.sharedInstance().configModel.redirectURL;
 
         resolve([ "redirectUri" : redirectUri!])
+    }
+    
+    @objc
+    func getAccessToken(_ resolve: RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
+        let accessToken = ONGClient.sharedInstance().userClient.accessToken;
+
+        resolve(accessToken ?? nil)
     }
 
     @objc
@@ -179,22 +190,6 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
         }
     }
 
-    func sendBridgeEvent(eventName: OneginiBridgeEvents, data: Any!) -> Void {
-      self.sendEvent(withName: eventName.rawValue, body: data)
-    }
-
-    private func oneginiSDKStartup(completion: @escaping (Bool, SdkError?) -> Void) {
-        ONGClientBuilder().build()
-        ONGClient.sharedInstance().start { result, error in
-            if let error = error {
-                let mappedError = ErrorMapper().mapError(error)
-                completion(result, mappedError)
-            } else {
-                completion(result, nil)
-            }
-        }
-    }
-
     @objc
     func startSingleSignOn(_ url: (NSString),
                         resolver resolve: @escaping RCTPromiseResolveBlock,
@@ -208,5 +203,68 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                 resolve(result)
             }
         })
+    }
+    
+    @objc
+    func getImplicitDataResource(_ profileId: (NSString),
+                        resolver resolve: @escaping RCTPromiseResolveBlock,
+                        rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        let profile: ONGUserProfile = ONGClient.sharedInstance().userClient.userProfiles().first(where: { $0.value(forKey: "profileId") as! NSObject == profileId })!;
+
+        bridgeConnector.toResourceFetchHandler.getImplicitData(profile) {
+            (result: String?, error) -> Void in
+
+            if let error = error {
+                reject(nil, error.errorDescription, nil)
+              } else {
+                resolve(result)
+              }
+        }
+    }
+    
+    @objc
+    func getAppDetailsResource(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        
+        bridgeConnector.toResourceFetchHandler.getAppDetails() {
+            (result: ApplicationDetails?, error) -> Void in
+
+            if let error = error {
+                reject(nil, error.errorDescription, nil)
+              } else {
+                resolve(["applicationIdentifier": result?.applicationIdentifier, "applicationVersion": result?.applicationVersion,
+                         "applicationPlatform": result?.applicationPlatform,])
+              }
+        }
+    }
+    
+    @objc
+    func getDeviceListResource(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        
+        bridgeConnector.toResourceFetchHandler.getDeviceList() {
+            (fetchResult: Devices?, error) -> Void in
+
+            if let error = error {
+                reject(nil, error.errorDescription, nil)
+              } else {
+                var result: NSMutableArray  = []
+
+                for device in fetchResult?.devices ?? [] {
+                    result.add(["id" : device.id, "name" : device.name, "application" : device.application, "platform" : device.platform])
+                }
+                resolve(["devices" : result])
+              }
+        }
+    }
+    
+    private func oneginiSDKStartup(completion: @escaping (Bool, SdkError?) -> Void) {
+        ONGClientBuilder().build()
+        ONGClient.sharedInstance().start { result, error in
+            if let error = error {
+                let mappedError = ErrorMapper().mapError(error)
+                completion(result, mappedError)
+            } else {
+                completion(result, nil)
+            }
+        }
     }
 }

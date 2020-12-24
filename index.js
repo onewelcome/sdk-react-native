@@ -107,9 +107,7 @@ OneginiSdk.getIdentityProviders = function () {
 };
 
 OneginiSdk.getAccessToken = function () {
-  return Platform.OS === 'ios'
-    ? Promise.reject('Unfortunately this feature is not supported, yet.')
-    : RNOneginiSdk.getAccessToken();
+  return RNOneginiSdk.getAccessToken();
 };
 
 OneginiSdk.enrollMobileAuthentication = function () {
@@ -263,16 +261,16 @@ OneginiSdk.startSingleSignOn = function (url) {
   return RNOneginiSdk.startSingleSignOn(url);
 }
 
-OneginiSdk.getImplicitUserDetails = function (profileId) {
-  return RNOneginiSdk.getImplicitUserDetails(profileId);
+OneginiSdk.getImplicitDataResource = function (profileId) {
+  return RNOneginiSdk.getImplicitDataResource(profileId);
 }
 
-OneginiSdk.authenticateDevice = function () {
-  return RNOneginiSdk.authenticateDevice();
+OneginiSdk.getAppDetailsResource = function () {
+  return RNOneginiSdk.getAppDetailsResource();
 }
 
-OneginiSdk.getClientResource = function () {
-  return RNOneginiSdk.getClientResource();
+OneginiSdk.getDeviceListResource = function () {
+  return RNOneginiSdk.getDeviceListResource();
 }
 
 export default OneginiSdk;

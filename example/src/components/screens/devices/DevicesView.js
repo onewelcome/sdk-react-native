@@ -18,7 +18,7 @@ const DevicesView = (props) => {
     });
 
     useEffect(() => {
-        OneginiSdk.getClientResource()
+        OneginiSdk.getDeviceListResource()
             .then((it) => {
                 setDevices(it)
                 setLoading(false)
@@ -43,7 +43,7 @@ const DevicesView = (props) => {
                 <View style={styles.scrollViewContainer}>
                     {devices.devices.map(it => {
                         return (
-                            <View style={styles.row}>
+                            <View key={it.id} style={styles.row}>
                                 <Text style={styles.info}>{"name: " + it.name}</Text>
                                 <Text style={styles.info}>{"application: " + it.application}</Text>
                                 <Text style={styles.info}>{"platform: " + it.platform}</Text>
