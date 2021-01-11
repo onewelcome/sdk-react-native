@@ -21,6 +21,9 @@
 		C7AA00A12558E70E0001AB19 /* GenericErrorDomainMapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AA00A02558E70E0001AB19 /* GenericErrorDomainMapping.swift */; };
 		C7AA00A42558E71F0001AB19 /* PinValidationErrorDomainMapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AA00A32558E71F0001AB19 /* PinValidationErrorDomainMapping.swift */; };
 		C7AA0205255925FA0001AB19 /* RNOneginiSdk.m in Sources */ = {isa = PBXBuildFile; fileRef = C7AA0204255925FA0001AB19 /* RNOneginiSdk.m */; };
+		C7BD310E25AC5DC80057440C /* MobileAuthConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7BD310D25AC5DC80057440C /* MobileAuthConnector.swift */; };
+		C7BD311125AC5DF10057440C /* MobileAuthHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7BD311025AC5DF10057440C /* MobileAuthHandler.swift */; };
+		C7BD311425AC5E970057440C /* MobileAuthEnrollmentErrorDomainMapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7BD311325AC5E970057440C /* MobileAuthEnrollmentErrorDomainMapping.swift */; };
 		C7EF09982590C55400D14892 /* RegistrationConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7EF09972590C55400D14892 /* RegistrationConnector.swift */; };
 		C7EF0ACF2594389600D14892 /* AppDetailsFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7EF0ACE2594389600D14892 /* AppDetailsFetcher.swift */; };
 		C7EF0AD2259438A700D14892 /* DeviceListFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7EF0AD1259438A700D14892 /* DeviceListFetcher.swift */; };
@@ -59,6 +62,9 @@
 		C7AA00A02558E70E0001AB19 /* GenericErrorDomainMapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericErrorDomainMapping.swift; sourceTree = "<group>"; };
 		C7AA00A32558E71F0001AB19 /* PinValidationErrorDomainMapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinValidationErrorDomainMapping.swift; sourceTree = "<group>"; };
 		C7AA0204255925FA0001AB19 /* RNOneginiSdk.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNOneginiSdk.m; sourceTree = "<group>"; };
+		C7BD310D25AC5DC80057440C /* MobileAuthConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAuthConnector.swift; sourceTree = "<group>"; };
+		C7BD311025AC5DF10057440C /* MobileAuthHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAuthHandler.swift; sourceTree = "<group>"; };
+		C7BD311325AC5E970057440C /* MobileAuthEnrollmentErrorDomainMapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAuthEnrollmentErrorDomainMapping.swift; sourceTree = "<group>"; };
 		C7EF09972590C55400D14892 /* RegistrationConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationConnector.swift; sourceTree = "<group>"; };
 		C7EF0ACE2594389600D14892 /* AppDetailsFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDetailsFetcher.swift; sourceTree = "<group>"; };
 		C7EF0AD1259438A700D14892 /* DeviceListFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceListFetcher.swift; sourceTree = "<group>"; };
@@ -109,6 +115,7 @@
 				C7AA00642558E55B0001AB19 /* BridgeConnector.swift */,
 				C7AA00672558E5660001AB19 /* PinConnector.swift */,
 				C7EF09972590C55400D14892 /* RegistrationConnector.swift */,
+				C7BD310D25AC5DC80057440C /* MobileAuthConnector.swift */,
 			);
 			path = Connectors;
 			sourceTree = "<group>";
@@ -122,6 +129,7 @@
 				C7AA00712558E5A80001AB19 /* BrowserHandler.swift */,
 				C78992E425816243002CA5AF /* LoginHandler.swift */,
 				C7EF0BCA259443AA00D14892 /* ResourcesFetchHandler.swift */,
+				C7BD311025AC5DF10057440C /* MobileAuthHandler.swift */,
 			);
 			path = Handlers;
 			sourceTree = "<group>";
@@ -142,6 +150,7 @@
 				C7AA00A32558E71F0001AB19 /* PinValidationErrorDomainMapping.swift */,
 				C78992E7258162A7002CA5AF /* AuthenticationErrorDomainMapping.swift */,
 				C7EF0BC7259442EA00D14892 /* FetchImplicitResourceErrorDomainMapping.swift */,
+				C7BD311325AC5E970057440C /* MobileAuthEnrollmentErrorDomainMapping.swift */,
 			);
 			path = ErrorMappings;
 			sourceTree = "<group>";
@@ -240,14 +249,17 @@
 				C7AA006F2558E59D0001AB19 /* PinHandler.swift in Sources */,
 				C7AA00722558E5A80001AB19 /* BrowserHandler.swift in Sources */,
 				F0622594258CD03F00527A7D /* AppToWebHandler.swift in Sources */,
+				C7BD311125AC5DF10057440C /* MobileAuthHandler.swift in Sources */,
 				C7AA00652558E55B0001AB19 /* BridgeConnector.swift in Sources */,
 				C7AA0205255925FA0001AB19 /* RNOneginiSdk.m in Sources */,
+				C7BD310E25AC5DC80057440C /* MobileAuthConnector.swift in Sources */,
 				C7EF0ACF2594389600D14892 /* AppDetailsFetcher.swift in Sources */,
 				C7EF0AD2259438A700D14892 /* DeviceListFetcher.swift in Sources */,
 				C7EF0AD5259438BB00D14892 /* ImplicitDataFetcher.swift in Sources */,
 				C7AA005E2558E4B80001AB19 /* RNOneginiSdk.swift in Sources */,
 				C7AA00682558E5660001AB19 /* PinConnector.swift in Sources */,
 				C7AA009D2558E6FA0001AB19 /* ErrorMapper.swift in Sources */,
+				C7BD311425AC5E970057440C /* MobileAuthEnrollmentErrorDomainMapping.swift in Sources */,
 				C7AA00A12558E70E0001AB19 /* GenericErrorDomainMapping.swift in Sources */,
 				C7AA00612558E5430001AB19 /* SdkError.swift in Sources */,
 				C7EF09982590C55400D14892 /* RegistrationConnector.swift in Sources */,

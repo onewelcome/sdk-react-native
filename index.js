@@ -111,27 +111,26 @@ OneginiSdk.getAccessToken = function () {
 };
 
 OneginiSdk.enrollMobileAuthentication = function () {
-  return Platform.OS === 'ios'
-    ? Promise.reject({ message: 'Unfortunately this feature is not supported, yet.' })
-    : RNOneginiSdk.enrollMobileAuthentication()
+  return RNOneginiSdk.enrollMobileAuthentication()
 };
 
+//@todo use iOS naming
 OneginiSdk.submitAcceptMobileAuthOtp = function () {
   return Platform.OS === 'ios'
-    ? Promise.reject('Unfortunately this feature is not supported, yet.')
+    ? RNOneginiSdk.acceptMobileAuthConfirmation()
     : RNOneginiSdk.submitAcceptMobileAuthOtp()
 }
 
+//@todo use iOS naming
 OneginiSdk.submitDenyMobileAuthOtp = function () {
   return Platform.OS === 'ios'
-    ? Promise.reject('Unfortunately this feature is not supported, yet.')
+    ? RNOneginiSdk.denyMobileAuthConfirmation()
     : RNOneginiSdk.submitDenyMobileAuthOtp()
 }
 
+//@todo think about naming
 OneginiSdk.handleMobileAuthWithOtp = function (otpCode) {
-  return Platform.OS === 'ios'
-    ? Promise.reject({ message: 'Unfortunately this feature is not supported, yet.' })
-    : RNOneginiSdk.handleMobileAuthWithOtp(otpCode)
+  return RNOneginiSdk.handleMobileAuthWithOtp(otpCode)
 }
 
 OneginiSdk.getAuthenticatedUserProfile = function () {

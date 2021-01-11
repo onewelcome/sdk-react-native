@@ -5,6 +5,7 @@ protocol BridgeConnectorProtocol: AnyObject {
 class BridgeConnector : BridgeConnectorProtocol {
     let toRegistrationConnector: BridgeToRegistrationConnectorProtocol = RegistrationConnector()
     let toPinHandlerConnector: BridgeToPinConnectorProtocol = PinConnector()
+    let toMobileAuthConnector: BridgeToMobileAuthConnectorProtocol = MobileAuthConnector()
     let toLoginHandler: BridgeToLoginHandlerProtocol = LoginHandler()
     let toAppToWebHandler: AppToWebHandlerProtocol = AppToWebHandler()
     let toResourceFetchHandler: BridgeToResourceFetchHandlerProtocol = ResourceFetchHandler()
@@ -14,6 +15,7 @@ class BridgeConnector : BridgeConnectorProtocol {
     init() {
         self.toRegistrationConnector.bridgeConnector = self
         self.toPinHandlerConnector.bridgeConnector = self
+        self.toMobileAuthConnector.bridgeConnector = self
         BridgeConnector.shared = self
     }
 

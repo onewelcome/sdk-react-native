@@ -212,12 +212,14 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
         let profile: ONGUserProfile = ONGClient.sharedInstance().userClient.userProfiles().first(where: { $0.value(forKey: "profileId") as! NSObject == profileId })!;
 
         bridgeConnector.toResourceFetchHandler.getImplicitData(profile) {
-            (result: String?, error) -> Void in
+            (result: UserIplicitData?, error) -> Void in
+            
+            let userIdDecorated = result?.userIdDecorated
 
             if let error = error {
                 reject(nil, error.errorDescription, nil)
               } else {
-                resolve(result)
+                resolve(userIdDecorated)
               }
         }
     }
@@ -254,6 +256,46 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                 resolve(["devices" : result])
               }
         }
+    }
+    
+    @objc
+    func enrollMobileAuthentication(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        bridgeConnector.toMobileAuthConnector.mobileAuthHandler.enrollForMobileAuth { _, error in
+            if let error = error {
+                reject(nil, error.errorDescription, nil)
+              } else {
+                resolve(true)
+              }
+        }
+    }
+    
+    @objc
+    func handleMobileAuthWithOtp(_ otpCode: (NSString),
+                        resolver resolve: @escaping RCTPromiseResolveBlock,
+                        rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        bridgeConnector.toMobileAuthConnector.mobileAuthHandler.handleOTPMobileAuth(otpCode as String) {
+            (_ , error) -> Void in
+
+            if let error = error {
+                reject(nil, error.errorDescription, nil)
+              } else {
+                resolve(true)
+              }
+        }
+    }
+    
+    @objc
+    func acceptMobileAuthConfirmation(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        //@todo reject if called when not in the correct state
+        bridgeConnector.toMobileAuthConnector.mobileAuthHandler.handleMobileAuthConfirmation(cancelled: false)
+        resolve(true)
+    }
+    
+    @objc
+    func denyMobileAuthConfirmation(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        //@todo reject if called when not in the correct state
+        bridgeConnector.toMobileAuthConnector.mobileAuthHandler.handleMobileAuthConfirmation(cancelled: true)
+        resolve(true)
     }
     
     private func oneginiSDKStartup(completion: @escaping (Bool, SdkError?) -> Void) {
