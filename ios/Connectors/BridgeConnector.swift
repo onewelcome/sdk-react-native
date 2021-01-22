@@ -7,6 +7,7 @@ class BridgeConnector : BridgeConnectorProtocol {
     let toPinHandlerConnector: BridgeToPinConnectorProtocol = PinConnector()
     let toMobileAuthConnector: BridgeToMobileAuthConnectorProtocol = MobileAuthConnector()
     let toLoginHandler: BridgeToLoginHandlerProtocol = LoginHandler()
+    let toAuthenticatorsHandler: BridgeToAuthenticatorsHandlerProtocol = AuthenticatorsHandler()
     let toAppToWebHandler: AppToWebHandlerProtocol = AppToWebHandler()
     let toResourceFetchHandler: BridgeToResourceFetchHandlerProtocol = ResourceFetchHandler()
     unowned var bridge: ConnectorToRNBridgeProtocol?

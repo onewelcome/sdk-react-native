@@ -42,7 +42,7 @@ const FingerprintModal = (props) => {
 
     return () => {
       OneginiSdk.removeEventListener(
-        ONEGINI_SDK_EVENTS.ONEGINI_MOBILE_AUTH_OTP_NOTIFICATION,
+        ONEGINI_SDK_EVENTS.ONEGINI_FINGERPRINT_NOTIFICATION,
       );
     };
   }, []);

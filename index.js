@@ -134,132 +134,82 @@ OneginiSdk.handleMobileAuthWithOtp = function (otpCode) {
 }
 
 OneginiSdk.getAuthenticatedUserProfile = function () {
-  return Platform.OS === 'ios'
-    ? Promise.reject({ message: 'Unfortunately this feature is not supported, yet.' })
-    : RNOneginiSdk.getAuthenticatedUserProfile()
+  return RNOneginiSdk.getAuthenticatedUserProfile()
 }
 
 //@todo will return profileId -> Later check out whole profile + don't forget to ask for userName on RN side
-OneginiSdk.registerUser = function (identityProvider = null) {
-  return RNOneginiSdk.registerUser(identityProvider)
-};
+OneginiSdk.registerUser = function (identityProvider = null) { return RNOneginiSdk.registerUser(identityProvider) };
 
-OneginiSdk.deregisterUser = function (profileId) {
-  return RNOneginiSdk.deregisterUser(profileId);
-}
+OneginiSdk.deregisterUser = function (profileId) { return RNOneginiSdk.deregisterUser(profileId) }
 
-OneginiSdk.getUserProfiles = function () {
-  return RNOneginiSdk.getUserProfiles();
-}
+OneginiSdk.getUserProfiles = function () { return RNOneginiSdk.getUserProfiles() }
 
-OneginiSdk.getRedirectUri = function () {
-  return RNOneginiSdk.getRedirectUri()
-};
+OneginiSdk.getRedirectUri = function () { return RNOneginiSdk.getRedirectUri() }
 
-OneginiSdk.handleRegistrationCallback = function (uri) {
-  RNOneginiSdk.handleRegistrationCallback(uri);
-}
+OneginiSdk.handleRegistrationCallback = function (uri) { RNOneginiSdk.handleRegistrationCallback(uri) }
 
-OneginiSdk.cancelRegistration = function () {
-  RNOneginiSdk.cancelRegistration();
-}
+OneginiSdk.cancelRegistration = function () { RNOneginiSdk.cancelRegistration() }
 
 //@todo implement this on Android side
 OneginiSdk.submitCustomRegistrationAction = function (action, identityProviderId, token = null) {
   return RNOneginiSdk.submitCustomRegistrationAction(action, identityProviderId, token);
 }
 
-OneginiSdk.submitPinAction = function (flow, action, pin = null) {
-  RNOneginiSdk.submitPinAction(flow, action, pin);
-}
+OneginiSdk.submitPinAction = function (flow, action, pin = null) { RNOneginiSdk.submitPinAction(flow, action, pin); }
 
 OneginiSdk.changePin = function () { return RNOneginiSdk.changePin(); }
 
 OneginiSdk.authenticateUser = function (profileId) { return RNOneginiSdk.authenticateUser(profileId); }
 
-OneginiSdk.getRegisteredAuthenticators = function (profileId) {
-  return Platform.OS === 'ios'
-    ? Promise.reject('Unfortunately this feature is not supported, yet.')
-    : RNOneginiSdk.getRegisteredAuthenticators(profileId);
-}
+OneginiSdk.startSingleSignOn = function (url) { return RNOneginiSdk.startSingleSignOn(url); }
 
+OneginiSdk.logout = function () { return RNOneginiSdk.logout() };
+
+// Authenticators management
 OneginiSdk.getAllAuthenticators = function (profileId) {
-  return Platform.OS === 'ios'
-    ? Promise.reject('Unfortunately this feature is not supported, yet.')
-    : RNOneginiSdk.getAllAuthenticators(profileId);
+  return RNOneginiSdk.getAllAuthenticators(profileId)
 }
 
 OneginiSdk.getRegisteredAuthenticators = function (profileId) {
-  return RNOneginiSdk.getRegisteredAuthenticators(profileId);
+  return RNOneginiSdk.getRegisteredAuthenticators(profileId)
 }
-
-OneginiSdk.getAllAuthenticators = function (profileId) {
-  return RNOneginiSdk.getAllAuthenticators(profileId);
-}
-
-OneginiSdk.logout = function () {
-  return RNOneginiSdk.logout()
-};
 
 OneginiSdk.setPreferredAuthenticator = function (profileId, idOneginiAuthenticator) {
-  return Platform.OS === 'ios'
-    ? Promise.reject({ message: 'Unfortunately this feature is not supported, yet.' })
-    : RNOneginiSdk.setPreferredAuthenticator(profileId, idOneginiAuthenticator);
+  return RNOneginiSdk.setPreferredAuthenticator(profileId, idOneginiAuthenticator);
 }
 
 //Fingerprint
 OneginiSdk.registerFingerprintAuthenticator = function (profileId) {
-  return Platform.OS === 'ios'
-    ? Promise.reject({ message: 'Unfortunately this feature is not supported, yet.' })
-    : RNOneginiSdk.registerFingerprintAuthenticator(profileId);
+  return RNOneginiSdk.registerFingerprintAuthenticator(profileId);
 }
 
 OneginiSdk.deregisterFingerprintAuthenticator = function (profileId) {
-  return Platform.OS === 'ios'
-    ? Promise.reject('Unfortunately this feature is not supported, yet.')
-    : RNOneginiSdk.deregisterFingerprintAuthenticator(profileId);
+  return RNOneginiSdk.deregisterFingerprintAuthenticator(profileId);
 }
 
 OneginiSdk.isFingerprintAuthenticatorRegistered = function (profileId) {
-  return Platform.OS === 'ios'
-    ? Promise.reject('Unfortunately this feature is not supported, yet.')
-    : RNOneginiSdk.isFingerprintAuthenticatorRegistered(profileId);
+  return RNOneginiSdk.isFingerprintAuthenticatorRegistered(profileId);
 }
 
 OneginiSdk.submitFingerprintAcceptAuthenticationRequest = function () {
   return Platform.OS === 'ios'
-    ? Promise.reject('Unfortunately this feature is not supported, yet.')
+    ? Promise.reject('This method is Android only')
     : RNOneginiSdk.submitFingerprintAcceptAuthenticationRequest();
 }
 
 OneginiSdk.submitFingerprintDenyAuthenticationRequest = function () {
   return Platform.OS === 'ios'
-    ? Promise.reject('Unfortunately this feature is not supported, yet.')
+    ? Promise.reject('This method is Android only')
     : RNOneginiSdk.submitFingerprintDenyAuthenticationRequest();
 }
 
 OneginiSdk.submitFingerprintFallbackToPin = function () {
   return Platform.OS === 'ios'
-    ? Promise.reject('Unfortunately this feature is not supported, yet.')
+    ? Promise.reject('This method is Android only')
     : RNOneginiSdk.submitFingerprintFallbackToPin();
 }
 
-OneginiSdk.submitFingerprintAcceptAuthenticationRequest = function () {
-  return RNOneginiSdk.submitFingerprintAcceptAuthenticationRequest();
-}
-
-OneginiSdk.submitFingerprintDenyAuthenticationRequest = function () {
-  return RNOneginiSdk.submitFingerprintDenyAuthenticationRequest();
-}
-
-OneginiSdk.submitFingerprintFallbackToPin = function () {
-  return RNOneginiSdk.submitFingerprintFallbackToPin();
-}
-
-OneginiSdk.startSingleSignOn = function (url) {
-  return RNOneginiSdk.startSingleSignOn(url);
-}
-
+// Fetching resources
 OneginiSdk.getImplicitDataResource = function (profileId) {
   return RNOneginiSdk.getImplicitDataResource(profileId);
 }

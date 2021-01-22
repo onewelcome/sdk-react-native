@@ -49,9 +49,11 @@ const ChangeAuthView = (props) => {
         <ModalSelector
           data={registeredAuthenticators}
           initValue={preferred.name}
+          selectedKey={preferred.id}
           keyExtractor={item => item.id}
           labelExtractor={item => item.name}
-          onChange={(option) => { onPreferredChanged(option, setMessage, setPreferred) }}
+          selectedItemTextStyle={{fontWeight: '700'}}
+          onChange={(option) => { onPreferredChanged(option, setMessage, setPreferred, setRegisteredAuthenticators) }}
         >
         </ModalSelector>
       </Row>
@@ -81,7 +83,7 @@ const ChangeAuthView = (props) => {
   );
 };
 
-const onPreferredChanged = (preferred, setMessage, setPreferred) => {
+const onPreferredChanged = (preferred, setMessage, setPreferred, setRegisteredAuthenticators) => {
   setPreferredAuthenticator(preferred, (successful) => {
     getRegisteredAuthenticators(setRegisteredAuthenticators, setPreferred)
   }, setMessage)
