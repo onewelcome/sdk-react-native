@@ -178,7 +178,6 @@ OR
     ```
 
 # Functional scope
-## Done on the Android:
 ### Milestone 1:
     - Start
     - Security Controls and Configuration of the SDK
@@ -200,20 +199,10 @@ OR
     - Fingerprint authentication
 ### Milestone 6:
     - Change PIN
-
-## Done on the iOS:
-### Milestone 1:
-    - Start
-    - Security Controls and Configuration of the SDK
-    - User registration
-       - Browser
-### Milestone 2:
-    - User deregistration
-### Milestone 3:
-    - User authentication with PIN
-    - Logout
-### Milestone 6:
-    - Change PIN
+### Milestone 7:
+    - App2Web
+### Milestone 8:
+    - Secure resource access
 
 # Usage
 - import OneginiSdk from 'react-native-sdk-beta';
