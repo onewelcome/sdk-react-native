@@ -7,10 +7,11 @@
 
 const path = require('path');
 const rnProjectRoot =  path.join(__dirname, '/example');
+const nodeModulesRoot =  path.join(__dirname, '/js');
 
 module.exports = {
   projectRoot: rnProjectRoot,
-  watchFolders: [rnProjectRoot, __dirname],
+  watchFolders: [rnProjectRoot, nodeModulesRoot, __dirname],
   transformer: {
     getTransformOptions: async () => ({
       transform: {
