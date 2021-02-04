@@ -140,6 +140,13 @@ OR
 
 7. Add `SecurityController.h` and `SecurityController.m` as described [HERE](https://docs.onegini.com/msp/stable/ios-sdk/reference/security-controls.html)
 
+8. **Optional** In order to support FaceID or ToucID add next to `ios/<project-name>/info.plist:
+    ```
+    <key>NSFaceIDUsageDescription</key>
+	<string>Application needs access to support authentication with Face/Touch ID</string>
+    ```
+    **!!!NOTE**: Biometrics will not work in iOS simulator, only on the real devices 
+
 ## Linking Native Code
 
 ### RN >= 60.0
