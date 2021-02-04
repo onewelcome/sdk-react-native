@@ -177,6 +177,11 @@ OR
       compile project(':react-native-sdk-beta')
     ```
 
+# How to run Example App
+- `yarn` or `npm install`
+- **iOS**: `yarn ios` or `npm run ios`
+- **Android**: `yarn android` or `npm run android`
+
 # Functional scope
 ### Milestone 1:
     - Start
