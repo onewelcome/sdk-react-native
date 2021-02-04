@@ -21,6 +21,17 @@
 		C7AA00A12558E70E0001AB19 /* GenericErrorDomainMapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AA00A02558E70E0001AB19 /* GenericErrorDomainMapping.swift */; };
 		C7AA00A42558E71F0001AB19 /* PinValidationErrorDomainMapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AA00A32558E71F0001AB19 /* PinValidationErrorDomainMapping.swift */; };
 		C7AA0205255925FA0001AB19 /* RNOneginiSdk.m in Sources */ = {isa = PBXBuildFile; fileRef = C7AA0204255925FA0001AB19 /* RNOneginiSdk.m */; };
+		C7BD310E25AC5DC80057440C /* MobileAuthConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7BD310D25AC5DC80057440C /* MobileAuthConnector.swift */; };
+		C7BD311125AC5DF10057440C /* MobileAuthHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7BD311025AC5DF10057440C /* MobileAuthHandler.swift */; };
+		C7BD311425AC5E970057440C /* MobileAuthEnrollmentErrorDomainMapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7BD311325AC5E970057440C /* MobileAuthEnrollmentErrorDomainMapping.swift */; };
+		C7BD315925B838190057440C /* AuthenticatorsHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7BD315825B838190057440C /* AuthenticatorsHandler.swift */; };
+		C7EF09982590C55400D14892 /* RegistrationConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7EF09972590C55400D14892 /* RegistrationConnector.swift */; };
+		C7EF0ACF2594389600D14892 /* AppDetailsFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7EF0ACE2594389600D14892 /* AppDetailsFetcher.swift */; };
+		C7EF0AD2259438A700D14892 /* DeviceListFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7EF0AD1259438A700D14892 /* DeviceListFetcher.swift */; };
+		C7EF0AD5259438BB00D14892 /* ImplicitDataFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7EF0AD4259438BB00D14892 /* ImplicitDataFetcher.swift */; };
+		C7EF0BC8259442EA00D14892 /* FetchImplicitResourceErrorDomainMapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7EF0BC7259442EA00D14892 /* FetchImplicitResourceErrorDomainMapping.swift */; };
+		C7EF0BCB259443AA00D14892 /* ResourcesFetchHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7EF0BCA259443AA00D14892 /* ResourcesFetchHandler.swift */; };
+		F0622594258CD03F00527A7D /* AppToWebHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0622593258CD03F00527A7D /* AppToWebHandler.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -52,6 +63,17 @@
 		C7AA00A02558E70E0001AB19 /* GenericErrorDomainMapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericErrorDomainMapping.swift; sourceTree = "<group>"; };
 		C7AA00A32558E71F0001AB19 /* PinValidationErrorDomainMapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinValidationErrorDomainMapping.swift; sourceTree = "<group>"; };
 		C7AA0204255925FA0001AB19 /* RNOneginiSdk.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNOneginiSdk.m; sourceTree = "<group>"; };
+		C7BD310D25AC5DC80057440C /* MobileAuthConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAuthConnector.swift; sourceTree = "<group>"; };
+		C7BD311025AC5DF10057440C /* MobileAuthHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAuthHandler.swift; sourceTree = "<group>"; };
+		C7BD311325AC5E970057440C /* MobileAuthEnrollmentErrorDomainMapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAuthEnrollmentErrorDomainMapping.swift; sourceTree = "<group>"; };
+		C7BD315825B838190057440C /* AuthenticatorsHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatorsHandler.swift; sourceTree = "<group>"; };
+		C7EF09972590C55400D14892 /* RegistrationConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationConnector.swift; sourceTree = "<group>"; };
+		C7EF0ACE2594389600D14892 /* AppDetailsFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDetailsFetcher.swift; sourceTree = "<group>"; };
+		C7EF0AD1259438A700D14892 /* DeviceListFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceListFetcher.swift; sourceTree = "<group>"; };
+		C7EF0AD4259438BB00D14892 /* ImplicitDataFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImplicitDataFetcher.swift; sourceTree = "<group>"; };
+		C7EF0BC7259442EA00D14892 /* FetchImplicitResourceErrorDomainMapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchImplicitResourceErrorDomainMapping.swift; sourceTree = "<group>"; };
+		C7EF0BCA259443AA00D14892 /* ResourcesFetchHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourcesFetchHandler.swift; sourceTree = "<group>"; };
+		F0622593258CD03F00527A7D /* AppToWebHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppToWebHandler.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,6 +98,7 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
+				C7EF0ACD2594380D00D14892 /* ResourceFetchers */,
 				C7AA009B2558E6E90001AB19 /* ErrorMappings */,
 				C7AA00962558E6C10001AB19 /* Extensions */,
 				C7AA006A2558E5730001AB19 /* Handlers */,
@@ -93,6 +116,8 @@
 			children = (
 				C7AA00642558E55B0001AB19 /* BridgeConnector.swift */,
 				C7AA00672558E5660001AB19 /* PinConnector.swift */,
+				C7EF09972590C55400D14892 /* RegistrationConnector.swift */,
+				C7BD310D25AC5DC80057440C /* MobileAuthConnector.swift */,
 			);
 			path = Connectors;
 			sourceTree = "<group>";
@@ -100,10 +125,14 @@
 		C7AA006A2558E5730001AB19 /* Handlers */ = {
 			isa = PBXGroup;
 			children = (
+				F0622593258CD03F00527A7D /* AppToWebHandler.swift */,
 				C7AA006B2558E5920001AB19 /* RegistrationHandler.swift */,
 				C7AA006E2558E59D0001AB19 /* PinHandler.swift */,
 				C7AA00712558E5A80001AB19 /* BrowserHandler.swift */,
 				C78992E425816243002CA5AF /* LoginHandler.swift */,
+				C7EF0BCA259443AA00D14892 /* ResourcesFetchHandler.swift */,
+				C7BD311025AC5DF10057440C /* MobileAuthHandler.swift */,
+				C7BD315825B838190057440C /* AuthenticatorsHandler.swift */,
 			);
 			path = Handlers;
 			sourceTree = "<group>";
@@ -123,8 +152,20 @@
 				C7AA00A02558E70E0001AB19 /* GenericErrorDomainMapping.swift */,
 				C7AA00A32558E71F0001AB19 /* PinValidationErrorDomainMapping.swift */,
 				C78992E7258162A7002CA5AF /* AuthenticationErrorDomainMapping.swift */,
+				C7EF0BC7259442EA00D14892 /* FetchImplicitResourceErrorDomainMapping.swift */,
+				C7BD311325AC5E970057440C /* MobileAuthEnrollmentErrorDomainMapping.swift */,
 			);
 			path = ErrorMappings;
+			sourceTree = "<group>";
+		};
+		C7EF0ACD2594380D00D14892 /* ResourceFetchers */ = {
+			isa = PBXGroup;
+			children = (
+				C7EF0ACE2594389600D14892 /* AppDetailsFetcher.swift */,
+				C7EF0AD1259438A700D14892 /* DeviceListFetcher.swift */,
+				C7EF0AD4259438BB00D14892 /* ImplicitDataFetcher.swift */,
+			);
+			path = ResourceFetchers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -207,19 +248,30 @@
 			buildActionMask = 2147483647;
 			files = (
 				C7AA00982558E6D40001AB19 /* ErrorExtension.swift in Sources */,
+				C7EF0BCB259443AA00D14892 /* ResourcesFetchHandler.swift in Sources */,
 				C7AA006F2558E59D0001AB19 /* PinHandler.swift in Sources */,
 				C7AA00722558E5A80001AB19 /* BrowserHandler.swift in Sources */,
+				F0622594258CD03F00527A7D /* AppToWebHandler.swift in Sources */,
+				C7BD311125AC5DF10057440C /* MobileAuthHandler.swift in Sources */,
 				C7AA00652558E55B0001AB19 /* BridgeConnector.swift in Sources */,
 				C7AA0205255925FA0001AB19 /* RNOneginiSdk.m in Sources */,
+				C7BD310E25AC5DC80057440C /* MobileAuthConnector.swift in Sources */,
+				C7EF0ACF2594389600D14892 /* AppDetailsFetcher.swift in Sources */,
+				C7EF0AD2259438A700D14892 /* DeviceListFetcher.swift in Sources */,
+				C7EF0AD5259438BB00D14892 /* ImplicitDataFetcher.swift in Sources */,
 				C7AA005E2558E4B80001AB19 /* RNOneginiSdk.swift in Sources */,
 				C7AA00682558E5660001AB19 /* PinConnector.swift in Sources */,
 				C7AA009D2558E6FA0001AB19 /* ErrorMapper.swift in Sources */,
+				C7BD311425AC5E970057440C /* MobileAuthEnrollmentErrorDomainMapping.swift in Sources */,
+				C7BD315925B838190057440C /* AuthenticatorsHandler.swift in Sources */,
 				C7AA00A12558E70E0001AB19 /* GenericErrorDomainMapping.swift in Sources */,
 				C7AA00612558E5430001AB19 /* SdkError.swift in Sources */,
+				C7EF09982590C55400D14892 /* RegistrationConnector.swift in Sources */,
 				C7AA00A42558E71F0001AB19 /* PinValidationErrorDomainMapping.swift in Sources */,
 				C78992E8258162A7002CA5AF /* AuthenticationErrorDomainMapping.swift in Sources */,
 				C78992E525816243002CA5AF /* LoginHandler.swift in Sources */,
 				C7AA006C2558E5920001AB19 /* RegistrationHandler.swift in Sources */,
+				C7EF0BC8259442EA00D14892 /* FetchImplicitResourceErrorDomainMapping.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -19,7 +19,8 @@ class ChangePinHandler(private val oneginiSDK: OneginiSDK) : OneginiChangePinHan
     }
 
     override fun onError(error: OneginiChangePinError?) {
-        pinNotificationObserver?.onError(error?.message ?: "", PinFlow.Change);
+        //todo Fix error message
+        pinNotificationObserver?.onError(error, PinFlow.Change);
         oneginiSDK.createPinRequestHandler.setPinFlow(PinFlow.Create)
         response?.onError(error)
     }

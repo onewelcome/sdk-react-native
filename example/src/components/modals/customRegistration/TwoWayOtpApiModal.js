@@ -2,11 +2,13 @@ import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Modal, Text, TextInput} from 'react-native';
 import OneginiSdk, {
   CUSTOM_REGISTRATION_NOTIFICATIONS,
+  CUSTOM_REGISTRATION_ACTIONS
 } from 'react-native-sdk-beta';
 import RegistrationManager from '../../managers/RegistrationManager';
 import ObjectIDHelper from '../../helpers/ObjectIdHelper';
 import AppColors from '../../constants/AppColors';
 import Button from '../../general/Button';
+
 
 const TwoWayOtpApiModal = (props) => {
   const idProvier = '2-way-otp-api';
@@ -20,7 +22,8 @@ const TwoWayOtpApiModal = (props) => {
       if (event.identityProviderId === idProvier) {
         switch (event.action) {
           case CUSTOM_REGISTRATION_NOTIFICATIONS.INIT_REGISTRATION:
-            OneginiSdk.submitCustomRegistrationReturnSuccess(
+            OneginiSdk.submitCustomRegistrationAction(
+              CUSTOM_REGISTRATION_ACTIONS.PROVIDE_TOKEN,
               event.identityProviderId,
               null,
             );
@@ -61,7 +64,8 @@ const TwoWayOtpApiModal = (props) => {
           <Button
             name={'OK'}
             onPress={() => {
-              OneginiSdk.submitCustomRegistrationReturnSuccess(
+              OneginiSdk.submitCustomRegistrationAction(
+                CUSTOM_REGISTRATION_ACTIONS.PROVIDE_TOKEN,
                 idProvier,
                 responseCode,
               );
@@ -73,7 +77,8 @@ const TwoWayOtpApiModal = (props) => {
           <Button
             name={'CANCEL'}
             onPress={() => {
-              OneginiSdk.submitCustomRegistrationReturnError(
+              OneginiSdk.submitCustomRegistrationAction(
+                CUSTOM_REGISTRATION_ACTIONS.CANCEL,
                 idProvier,
                 'Cancelled by user',
               );
