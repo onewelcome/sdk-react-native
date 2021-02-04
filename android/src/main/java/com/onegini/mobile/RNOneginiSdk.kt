@@ -389,7 +389,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    fun submitAcceptMobileAuthOtp(promise: Promise) {
+    fun acceptMobileAuthConfirmation(promise: Promise) {
         val handler = oneginiSDK.mobileAuthOtpRequestHandler
         if (handler == null) {
             promise.reject(MOBILE_AUTH_OTP_IS_DISABLED.toString(), "The Mobile auth Otp is disabled")
@@ -398,7 +398,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    fun submitDenyMobileAuthOtp(promise: Promise) {
+    fun denyMobileAuthConfirmation(promise: Promise) {
         val handler = oneginiSDK.mobileAuthOtpRequestHandler
         if (handler == null) {
             promise.reject(MOBILE_AUTH_OTP_IS_DISABLED.toString(), "The Mobile auth Otp is disabled")
