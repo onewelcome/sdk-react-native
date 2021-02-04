@@ -13,6 +13,10 @@ class ErrorMapper {
                 } else {
                     return AuthenticationErrorDomainMapping().mapError(error)
                 }
+            case ONGFetchImplicitResourceErrorDomain:
+                return FetchImplicitResourceErrorDomainMapping().mapError(error)
+            case ONGMobileAuthEnrollmentErrorDomain:
+                return MobileAuthEnrollmentErrorDomainMapping().mapError(error)
             default:
                 return SdkError(errorDescription: "Something went wrong.")
             }

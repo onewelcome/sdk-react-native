@@ -13,6 +13,20 @@ class GenericErrorDomainMapping {
             return SdkError(title: "Application error", errorDescription: "Your application version is outdated.", recoverySuggestion: "Please try to update your application.")
         case ONGGenericError.unrecoverableDataState.rawValue:
             return SdkError(title: "Data storage error", errorDescription: "The data storage is corrupted and cannot be recovered or cleared.", recoverySuggestion: "Please remove the application manually and reinstall.")
+            
+            
+        case ONGGenericError.unknown.rawValue:
+            return SdkError(title: "Token server error", errorDescription: "The Token Server configuration is invalid.", recoverySuggestion: "Contact token server maintainer.")
+        case ONGGenericError.configurationInvalid.rawValue:
+            return SdkError(title: "Token server error", errorDescription: "The request to the Token Server was invalid. Please verify that the Token Server configuration is correct and that no reverse proxy is interfering with the connection.", recoverySuggestion: "Contact token server maintainer.")
+        case ONGGenericError.requestInvalid.rawValue:
+            return SdkError(title: "Token server error", errorDescription: "The device could not be registered with the Token Server, verify that the SDK configuration, Token Server configuration and security features are correctly configured.", recoverySuggestion: "Contact token server or SDK  maintainer.")
+        case ONGGenericError.deviceRegistrationFailure.rawValue:
+            return SdkError(title: "Token server error", errorDescription: "Updating the device registration with the Token Server failed. Verify that the SDK configuration, Token Server configuration and security features are correctly configured.", recoverySuggestion: "Contact token server or SDK  maintainer.")
+        case ONGGenericError.deviceRegistrationUpdateFailure.rawValue:
+            return SdkError(title: "Data storage error", errorDescription: "The data storage could not be accessed.", recoverySuggestion: "Contact SDK  maintainer.")
+        case ONGGenericError.dataStorageNotAvailable.rawValue:
+            return SdkError(title: "Data storage error", errorDescription: "The data storage is corrupted and cannot be recovered or cleared.", recoverySuggestion: "Contact SDK  maintainer.")
         default:
             return SdkError(errorDescription: "Something went wrong.")
         }

@@ -54,13 +54,13 @@ const MobileAuthOTPModal = (props) => {
         </Text>
         <View style={styles.buttonContainer}>
           <Button name={"OK"} onPress={() => {
-            OneginiSdk.submitAcceptMobileAuthOtp()
+            OneginiSdk.acceptMobileAuthConfirmation()
             setVisible(false)
           }} />
         </View>
         <View style={styles.buttonContainer}>
           <Button name={"CANCEL"} onPress={() => {
-            OneginiSdk.submitDenyMobileAuthOtp()
+            OneginiSdk.denyMobileAuthConfirmation()
             setVisible(false)
           }} />
         </View>

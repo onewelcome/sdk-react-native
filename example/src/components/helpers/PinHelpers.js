@@ -4,8 +4,8 @@ import OneginiSdk, {
   ONEGINI_PIN_FLOW,
 } from 'react-native-sdk-beta';
 
-const onPinPress = (flow, newKey, pin, setPin, setError) => {
-  setError(null);
+const onPinPress = (flow, newKey, pin, setPin, resetError) => {
+  resetError();
 
   if (newKey === '<' && pin.length > 0) {
     setPin(pin.substring(0, pin.length - 1));

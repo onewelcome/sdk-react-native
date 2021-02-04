@@ -4,12 +4,12 @@ import android.content.Context
 import com.onegini.mobile.Constants
 import com.onegini.mobile.Constants.PinFlow
 import com.onegini.mobile.OneginiSDK
-import com.onegini.mobile.R
+import com.onegini.mobile.exception.EmptyOneginiErrorDetails
+import com.onegini.mobile.exception.OneginReactNativeException
 import com.onegini.mobile.sdk.android.handlers.OneginiPinValidationHandler
+import com.onegini.mobile.sdk.android.handlers.error.OneginiError
 import com.onegini.mobile.sdk.android.handlers.error.OneginiPinValidationError
-import com.onegini.mobile.sdk.android.handlers.error.OneginiPinValidationError.PinValidationErrorType
 import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiPinCallback
-import com.onegini.mobile.util.DeregistrationUtil
 import java.util.*
 
 class PinWithConfirmationHandler(private val originalHandler: OneginiPinCallback,
@@ -50,7 +50,12 @@ class PinWithConfirmationHandler(private val originalHandler: OneginiPinCallback
         if (pinsEqual) {
             originalHandler.acceptAuthenticationRequest(pin)
         } else {
-            notifyOnError(context.getString(R.string.pin_error_not_equal))
+            notifyOnError(OneginReactNativeException(
+                    OneginReactNativeException.PIN_ERROR_NOT_EQUAL,
+                    EmptyOneginiErrorDetails(),
+                    "PIN was not the same, choose PIN",
+                    null
+            ))
         }
     }
 
@@ -81,20 +86,11 @@ class PinWithConfirmationHandler(private val originalHandler: OneginiPinCallback
         pinNotificationObserver?.onNotify(Constants.PIN_NOTIFICATION_OPEN_VIEW, lastFlow)
     }
 
-    fun notifyOnError(errorMessage: String?) {
-        pinNotificationObserver?.onError(errorMessage ?: "", lastFlow)
+    fun notifyOnError(error: OneginiError?) {
+        pinNotificationObserver?.onError(error, lastFlow)
     }
 
-    fun handlePinValidationError(oneginiPinValidationError: OneginiPinValidationError) {
-        @PinValidationErrorType val errorType = oneginiPinValidationError.errorType
-        when (errorType) {
-            OneginiPinValidationError.WRONG_PIN_LENGTH -> notifyOnError(context!!.getString(R.string.pin_error_invalid_length))
-            OneginiPinValidationError.PIN_BLACKLISTED -> notifyOnError(context!!.getString(R.string.pin_error_blacklisted))
-            OneginiPinValidationError.PIN_IS_A_SEQUENCE -> notifyOnError(context!!.getString(R.string.pin_error_sequence))
-            OneginiPinValidationError.PIN_USES_SIMILAR_DIGITS -> notifyOnError(context!!.getString(R.string.pin_error_similar))
-            OneginiPinValidationError.DEVICE_DEREGISTERED -> DeregistrationUtil(context).onDeviceDeregistered()
-            OneginiPinValidationError.GENERAL_ERROR -> notifyOnError(oneginiPinValidationError.message)
-            else -> notifyOnError(oneginiPinValidationError.message)
-        }
+    fun handlePinValidationError(error: OneginiPinValidationError) {
+        notifyOnError(error)
     }
 }

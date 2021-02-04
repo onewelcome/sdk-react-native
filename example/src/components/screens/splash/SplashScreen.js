@@ -5,34 +5,21 @@ import OneginiSdk from 'react-native-sdk-beta';
 import {Assets} from '../../../../assets';
 
 const startSdk = async (onStarted = () => null) => {
-  const startResult = await OneginiSdk.startClient(OneginiSdk.config);
+    try {
+        await OneginiSdk.startClient(OneginiSdk.config);
 
-  if (startResult.success) {
-    const linkUriResult = await OneginiSdk.getRedirectUri();
-
-    if (linkUriResult.success) {
-      await AsyncStorage.setItem(
-        '@redirectUri',
-        linkUriResult.redirectUri.substr(
-          0,
-          linkUriResult.redirectUri.indexOf(':'),
-        ),
-      );
-      onStarted();
-    } else {
-      alert(
-        linkUriResult.errorMsg
-          ? linkUriResult.errorMsg
-          : 'Failed to get redirect URL.',
-      );
+        const linkUriResult = await OneginiSdk.getRedirectUri();
+        await AsyncStorage.setItem(
+            '@redirectUri',
+            linkUriResult.redirectUri.substr(
+                0,
+                linkUriResult.redirectUri.indexOf(':'),
+            ),
+        );
+        onStarted()
+    } catch (e) {
+        alert(e);
     }
-  } else {
-    alert(
-      startResult.errorMsg
-        ? startResult.errorMsg
-        : 'Something strange happened.',
-    );
-  }
 };
 
 const SplashScreen = (props) => {
