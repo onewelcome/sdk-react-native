@@ -28,13 +28,6 @@ export const MOBILE_AUTH_OTP_NOTIFICATION = {
   FINISH_AUTHENTICATION: 'finishAuthentication',
 };
 
-export const FINGERPRINT_NOTIFICATION = {
-  START_AUTHENTICATION : "startAuthentication",
-  ON_NEXT_AUTHENTICATION_ATTEMPT : "onNextAuthenticationAttempt",
-  ON_FINGERPRINT_CAPTURED : "onFingerprintCaptured",
-  FINISH_AUTHENTICATION : "finishAuthentication"
-}
-
 const OneginiSdk = {
   config: {
     configModelClassName: null,
