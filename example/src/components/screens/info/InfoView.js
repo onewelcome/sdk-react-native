@@ -5,48 +5,59 @@ import ContentContainer from "../dashboard/components/ContentContainer";
 import AppColors from "../../constants/AppColors";
 import PropTypes from "prop-types";
 import OneginiSdk from 'react-native-sdk-beta';
+import { useResource, DEFAULT_RESOURCE_DETAILS, useImplicitResource } from "../../../../../js/resource";
+
+const handleImplicitData = async (setProfileError, profileId, setProfileId) => {
+    try {
+        const profiles = await OneginiSdk.getUserProfiles();
+
+        if (profiles[0]) {
+            if(profileId !== profiles[0]?.profileId) {
+                setProfileId(profiles[0].profileId);
+            }
+        } else {
+            setProfileError('No profiles registered.')
+        }
+    } catch (e) {
+        setProfileError(e);
+    }
+};
 
 const InfoView = (props) => {
-    const [profileId, setProfileId] = useState("");
-    const [implicitDetails, setImplicitDetails] = useState("");
-    const [applicationDetails, setApplicationDetails] = useState({
-        "applicationIdentifier": "",
-        "applicationVersion": "",
-        "applicationPlatform": ""
-    });
+    const [profileError, setProfileError] = useState(null);
+    const [implicitLoading, implicitData, implicitError, profileId, setProfileId] = useImplicitResource(
+      {...DEFAULT_RESOURCE_DETAILS, path: 'user-id-decorated'}
+    );
+    const [loading, data, error] = useResource(
+      {...DEFAULT_RESOURCE_DETAILS, path: 'application-details'},
+      true
+    );
 
     useEffect(() => {
-        OneginiSdk.getUserProfiles().then((it) => {
-            var profile = it[0]
-            if (profile != null) {
-                setProfileId(profile.profileId)
-                OneginiSdk.getImplicitDataResource(profile.profileId).then((details) => {
-                    setImplicitDetails(details)
-                }).catch((e) => {
-                    setImplicitDetails(e.message)
-                })
-            }
-        })
-        OneginiSdk.getAppDetailsResource()
-            .then((it) => {
-                setApplicationDetails(it)
-            }).catch((e) => {
-            alert(e)
-        })
+        handleImplicitData(setProfileError, profileId, setProfileId);
     }, []);
 
     return (
         <ContentContainer containerStyle={styles.container}>
             <View style={styles.row}>
                 <Text style={styles.label}>User Info</Text>
-                <Text style={styles.info}>{"Profile id:  " + profileId}</Text>
-                <Text style={styles.info}>{"Implicit details: " + implicitDetails}</Text>
+                {implicitLoading && <Text style={styles.info}>{'Loading...'}</Text>}
+                {profileError && <Text style={styles.infoError}>{'Error:  ' + profileError}</Text>}
+                {implicitError && <Text style={styles.infoError}>{'Implicit Error:  ' + implicitError}</Text>}
+                {profileId && <Text style={styles.info}>{"Profile id:  " + profileId}</Text>}
+                {implicitData && <Text style={styles.info}>{"Implicit details: " + implicitData["decorated_user_id"]}</Text>}
             </View>
             <View style={styles.row}>
                 <Text style={styles.label}>Device details</Text>
-                <Text style={styles.info}>{"Application ID: " + applicationDetails.applicationIdentifier}</Text>
-                <Text style={styles.info}>{"Application Version: " + applicationDetails.applicationVersion}</Text>
-                <Text style={styles.info}>{"Platform: " + applicationDetails.applicationPlatform}</Text>
+                {loading && <Text style={styles.info}>{'Loading...'}</Text>}
+                {error && <Text style={styles.infoError}>{'Resource Error:  ' + error}</Text>}
+                {data && (
+                  <>
+                      <Text style={styles.info}>{"Application ID: " + data}</Text>
+                      <Text style={styles.info}>{"Application Version: " + data}</Text>
+                      <Text style={styles.info}>{"Platform: " + data}</Text>
+                  </>
+                )}
             </View>
             <View style={styles.cancelButton}>
                 <Button name={"CANCEL"} onPress={props.onFinished}/>
@@ -78,6 +89,13 @@ const styles = StyleSheet.create({
     info: {
         justifyContent: 'center',
         color: AppColors.black,
+        fontSize: 12,
+        fontWeight: '500',
+        padding: 6,
+    },
+    infoError: {
+        justifyContent: 'center',
+        color: AppColors.red,
         fontSize: 12,
         fontWeight: '500',
         padding: 6,

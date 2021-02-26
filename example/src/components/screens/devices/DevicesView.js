@@ -1,69 +1,41 @@
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View, ScrollView, Dimensions} from 'react-native';
-import AppColors from "../../constants/AppColors";
+import React from 'react';
 import PropTypes from "prop-types";
-import OneginiSdk from 'react-native-sdk-beta';
+import {StyleSheet, Text, View, ScrollView} from 'react-native';
+import { DEFAULT_RESOURCE_DETAILS, useResource } from "../../../../../js/resource";
+import AppColors from "../../constants/AppColors";
 import Layout from "../../constants/Layout"
 
+const renderDevice = (device) => {
+    return (
+      <View key={device['id']} style={styles.row}>
+          <Text style={styles.info}>{"name: " + device['name']}</Text>
+          <Text style={styles.info}>{"application: " + device['application']}</Text>
+          <Text style={styles.info}>{"platform: " + device['platform']}</Text>
+      </View>
+    )
+}
+
 const DevicesView = (props) => {
-    const [isLoading, setLoading] = useState(true);
-    const [devices, setDevices] = useState({
-        devices: [{
-            "id": "",
-            name: "",
-            "application": "",
-            "platform": "",
-            "mobileAuthenticationEnabled": false
-        }]
-    });
-
-    useEffect(() => {
-        OneginiSdk.getDeviceListResource()
-            .then((it) => {
-                setDevices(it)
-                setLoading(false)
-            })
-            .catch((e) => {
-                alert(e.message)
-                setLoading(false)
-            })
-    }, []);
-
-    const renderLoading = () => {
-        return (
-            <View style={styles.container}>
-                <Text style={styles.loading}>loading ... .</Text>
-            </View>
-        );
-    };
-
-    const base = () => {
-        return (
-            <ScrollView style={styles.container}>
-                <View style={styles.scrollViewContainer}>
-                    {devices.devices.map(it => {
-                        return (
-                            <View key={it.id} style={styles.row}>
-                                <Text style={styles.info}>{"name: " + it.name}</Text>
-                                <Text style={styles.info}>{"application: " + it.application}</Text>
-                                <Text style={styles.info}>{"platform: " + it.platform}</Text>
-                            </View>
-                        )
-                    })}
-                </View>
-            </ScrollView>
-        );
-    };
-
-    return isLoading ? (
-        renderLoading()
-    ) : (
-        base()
+    const [loading, data, error] = useResource(
+      {...DEFAULT_RESOURCE_DETAILS, path: 'devices'},
+      true
     );
+
+    return (
+      <ScrollView style={styles.container}>
+          {loading && <Text style={styles.loading}>{'loading ...'}</Text>}
+          {error && <Text style={[styles.loading, { color: AppColors.red }]}>{error}</Text>}
+          {data && !loading && !error && (
+            <View style={styles.scrollViewContainer}>
+                {data['devices']?.map(device => renderDevice(device))}
+            </View>
+          )}
+      </ScrollView>
+    )
 };
 
 DevicesView.propTypes = {
-    onFinished: PropTypes.func.isRequired,
+    onFinished: PropTypes.func,
 };
 
 const styles = StyleSheet.create({
@@ -102,7 +74,6 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: '500',
     },
-
     loadingContainer: {
         top: '10%',
         alignItems: 'center',
