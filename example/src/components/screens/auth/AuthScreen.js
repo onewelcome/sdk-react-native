@@ -6,6 +6,9 @@ import RegisterButton from './components/RegisterButton';
 import AuthButton from './components/AuthButton';
 import Button from "../../general/Button";
 import InfoView from "../info/InfoView";
+import { tsTest } from "react-native-sdk-beta/ts/index_ts";
+
+tsTest(3, 4);
 
 const AuthScreen = (props) => {
     const [isInfoVisible, setIsInfoVisible] = useState(false);
