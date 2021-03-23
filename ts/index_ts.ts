@@ -127,6 +127,28 @@ namespace OneginiSdkTs {
   }
 
   //
+  // User register/deregister
+  //
+
+  export function registerUser(identityProviderId: string): Promise<Profile> {
+    //@todo return whole user + pass userName from RN
+    return RNOneginiSdk.registerUser(identityProviderId);
+  }
+
+  export function deregisterUser(profileId: string): Promise<any> {
+    return RNOneginiSdk.deregisterUser(profileId);
+  }
+
+  // TODO: I think it should be moved "behind" SDK - dev should not know about it
+  export function handleRegistrationCallback(uri: string) {
+    RNOneginiSdk.handleRegistrationCallback(uri);
+  }
+
+  export function cancelRegistration() {
+    RNOneginiSdk.cancelRegistration();
+  }
+
+  //
   //
   //
 }

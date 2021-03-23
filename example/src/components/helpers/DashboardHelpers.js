@@ -1,4 +1,6 @@
 import OneginiSdk from 'react-native-sdk-beta';
+import OneginiSdkTs from "react-native-sdk-beta/ts/index_ts";
+
 
 const logout = async (onLogoutSuccess) => {
   try {
@@ -11,10 +13,10 @@ const logout = async (onLogoutSuccess) => {
 
 const deregisterUser = async (onDeregisterSuccess) => {
   try {
-    const profiles = await OneginiSdk.getUserProfiles();
+    const profiles = await OneginiSdkTs.getUserProfiles();
 
     if(profiles[0]) {
-      await OneginiSdk.deregisterUser(profiles[0].profileId);
+      await OneginiSdkTs.deregisterUser(profiles[0].profileId);
       onDeregisterSuccess();
     } else {
       alert('Not found logged in user.')

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Button from '../../../general/Button';
 import Switch from '../../../general/Switch';
-import OneginiSdk from 'react-native-sdk-beta';
+import OneginiSdkTs from "react-native-sdk-beta/ts/index_ts";
 import CustomRegistrationChooserView from '../CustomRegistrationChooserView';
 
 const startRegister = async (
@@ -17,7 +17,7 @@ const startRegister = async (
     setRegistering(true);
 
     try {
-        await OneginiSdk.registerUser(providerId);
+        await OneginiSdkTs.registerUser(providerId);
         setRegistering(false);
         onRegisterSuccess();
     } catch (e) {
@@ -39,7 +39,7 @@ const RegisterButton = (props) => {
   useEffect(() => {
     const handleOpenURL = (event) => {
       if (event.url.substr(0, event.url.indexOf(':')) === linkUri) {
-        OneginiSdk.handleRegistrationCallback(event.url);
+        OneginiSdkTs.handleRegistrationCallback(event.url);
       }
     };
 
@@ -83,7 +83,7 @@ const RegisterButton = (props) => {
         }
         onPress={() =>
           isRegistering
-            ? OneginiSdk.cancelRegistration() : isDefaultProvider
+            ? OneginiSdkTs.cancelRegistration() : isDefaultProvider
             ? startRegister(null, setRegistering, setError, props.onRegistered)
             : setShowCustomRegistration(!isShownCustomRegistration)
         }
