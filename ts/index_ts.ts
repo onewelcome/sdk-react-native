@@ -59,6 +59,28 @@ interface SDK {
   submitPinAction(flowString: string, action: string, pin: string | null): void;
   changePin(): Promise<any>;
 
+  // OTP
+  // TODO: check paths
+  enrollMobileAuthentication(): Promise<any>;
+  acceptMobileAuthConfirmation(): Promise<any>;
+  denyMobileAuthConfirmation(): Promise<any>;
+  handleMobileAuthWithOtp(otpCode: string): Promise<any>;
+  submitCustomRegistrationAction(
+    customAction: string,
+    identityProviderId: string,
+    token: string | null,
+  ): void;
+
+  // Fingerprint
+  registerFingerprintAuthenticator(profileId: string): Promise<any>;
+  deregisterFingerprintAuthenticator(profileId: string): Promise<any>;
+  isFingerprintAuthenticatorRegistered(profileId: string): Promise<boolean>;
+  submitFingerprintAcceptAuthenticationRequest(): Promise<any>;
+  submitFingerprintDenyAuthenticationRequest(): Promise<any>;
+  submitFingerprintFallbackToPin(): Promise<any>;
+
+  // App to Web
+  // startSingleSignOn: (url) => RNOneginiSdk.startSingleSignOn(url),
 }
 
 //
@@ -75,19 +97,40 @@ export const DefaultConfig: Types.Config = {
 
 const OneginiSdkTs: SDK = {
   ...(RNOneginiSdk as SDK),
+
   //
   // override methods if needed
   //
+
   startClient: (
     sdkConfig: Types.Config = DefaultConfig,
   ): Promise<string | null> => {
-    console.log('START CLIENT!');
-
     if (isIOS) {
       return RNOneginiSdk.startClient();
-    } else {
-      return RNOneginiSdk.startClient(sdkConfig);
     }
+
+    return RNOneginiSdk.startClient(sdkConfig);
+  },
+
+  submitFingerprintAcceptAuthenticationRequest: (): Promise<any> => {
+    if (isIOS) {
+      return Promise.reject('This method is Android only');
+    }
+    return RNOneginiSdk.submitFingerprintAcceptAuthenticationRequest();
+  },
+
+  submitFingerprintDenyAuthenticationRequest: (): Promise<any> => {
+    if (isIOS) {
+      return Promise.reject('This method is Android only');
+    }
+    return RNOneginiSdk.submitFingerprintDenyAuthenticationRequest();
+  },
+
+  submitFingerprintFallbackToPin: (): Promise<any> => {
+    if (isIOS) {
+      return Promise.reject('This method is Android only');
+    }
+    return RNOneginiSdk.submitFingerprintFallbackToPin();
   },
 };
 

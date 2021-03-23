@@ -1,7 +1,7 @@
-import OneginiSdk from 'react-native-sdk-beta';
+import OneginiSdkTs from "react-native-sdk-beta/ts/index_ts";
 
 const enrollMobileAuthentication = (setSuccessful, setError) => {
-    OneginiSdk.enrollMobileAuthentication()
+  OneginiSdkTs.enrollMobileAuthentication()
         .then(() => {
             setSuccessful("Mobile Authentication enabled")
         })
@@ -11,7 +11,7 @@ const enrollMobileAuthentication = (setSuccessful, setError) => {
 };
 
 const handleMobileAuthWithOtp = (otpCode, setSuccessful, setError) => {
-    OneginiSdk.handleMobileAuthWithOtp(otpCode)
+  OneginiSdkTs.handleMobileAuthWithOtp(otpCode)
         .then(() => {
             setSuccessful?.("Authentication successful")
         })

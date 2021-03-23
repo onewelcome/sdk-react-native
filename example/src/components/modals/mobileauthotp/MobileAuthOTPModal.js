@@ -9,6 +9,7 @@ import RegistrationManager from '../../managers/RegistrationManager';
 import ObjectIdHelper from '../../../components/helpers/ObjectIdHelper';
 import AppColors from '../../constants/AppColors'
 import Button from '../../general/Button'
+import OneginiSdkTs from "react-native-sdk-beta/ts/index_ts";
 
 const MobileAuthOTPModal = (props) => {
   const [id, setId] = useState(ObjectIdHelper.getNewID("MobileAuthOTPModal"));
@@ -54,13 +55,13 @@ const MobileAuthOTPModal = (props) => {
         </Text>
         <View style={styles.buttonContainer}>
           <Button name={"OK"} onPress={() => {
-            OneginiSdk.acceptMobileAuthConfirmation()
+            OneginiSdkTs.acceptMobileAuthConfirmation()
             setVisible(false)
           }} />
         </View>
         <View style={styles.buttonContainer}>
           <Button name={"CANCEL"} onPress={() => {
-            OneginiSdk.denyMobileAuthConfirmation()
+            OneginiSdkTs.denyMobileAuthConfirmation()
             setVisible(false)
           }} />
         </View>

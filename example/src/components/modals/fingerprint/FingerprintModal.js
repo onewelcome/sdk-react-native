@@ -6,6 +6,7 @@ import OneginiSdk, {
   MOBILE_AUTH_OTP_NOTIFICATION,
   FINGERPRINT_NOTIFICATION
 } from 'react-native-sdk-beta';
+import OneginiSdkTs from "react-native-sdk-beta/ts/index_ts";
 import RegistrationManager from '../../managers/RegistrationManager';
 import ObjectIdHelper from '../../../components/helpers/ObjectIdHelper';
 import AppColors from '../../constants/AppColors'
@@ -24,7 +25,7 @@ const FingerprintModal = (props) => {
         switch (event.action) {
           case FINGERPRINT_NOTIFICATION.START_AUTHENTICATION:
             setVisible(true)
-            OneginiSdk.submitFingerprintAcceptAuthenticationRequest()
+            OneginiSdkTs.submitFingerprintAcceptAuthenticationRequest()
             setMessage("Touch sensor")
             break;
           case FINGERPRINT_NOTIFICATION.ON_NEXT_AUTHENTICATION_ATTEMPT:
@@ -62,13 +63,13 @@ const FingerprintModal = (props) => {
         </Text>
         <View style={styles.buttonContainer}>
           <Button name={"USE PIN CODE"} onPress={() => {
-            OneginiSdk.submitFingerprintFallbackToPin()
+            OneginiSdkTs.submitFingerprintFallbackToPin()
             setVisible(false)
           }} />
         </View>
         <View style={styles.buttonContainer}>
           <Button name={"CANCEL"} onPress={() => {
-            OneginiSdk.submitFingerprintDenyAuthenticationRequest()
+            OneginiSdkTs.submitFingerprintDenyAuthenticationRequest()
             setVisible(false)
           }} />
         </View>

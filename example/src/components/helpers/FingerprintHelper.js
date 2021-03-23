@@ -1,10 +1,9 @@
-import OneginiSdk from 'react-native-sdk-beta';
 import OneginiSdkTs from "react-native-sdk-beta/ts/index_ts";
 
 const registerFingerprintAuthenticator = async (successful, message) => {
   try {
     const profile = await OneginiSdkTs.getAuthenticatedUserProfile();
-    await OneginiSdk.registerFingerprintAuthenticator(profile.profileId)
+    await OneginiSdkTs.registerFingerprintAuthenticator(profile.profileId)
     message("Fingerprint is enabled")
     successful(true)
   } catch (error) {
@@ -16,7 +15,7 @@ const registerFingerprintAuthenticator = async (successful, message) => {
 const deregisterFingerprintAuthenticator = async (successful, message) => {
   try {
     const profile = await OneginiSdkTs.getAuthenticatedUserProfile();
-    await OneginiSdk.deregisterFingerprintAuthenticator(profile.profileId)
+    await OneginiSdkTs.deregisterFingerprintAuthenticator(profile.profileId)
     message("Fingerprint is disabled")
     successful(true)
   } catch (error) {
@@ -39,7 +38,7 @@ const getRegisteredAuthenticators = async (registeredAuthenticators, preferred) 
 
 const isFingerprintAuthenticatorRegistered = async (returnEnable) => {
   const profile = await OneginiSdkTs.getAuthenticatedUserProfile();
-  const registered = await OneginiSdk.isFingerprintAuthenticatorRegistered(profile.profileId);
+  const registered = await OneginiSdkTs.isFingerprintAuthenticatorRegistered(profile.profileId);
   returnEnable(registered)
 };
 
