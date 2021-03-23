@@ -80,7 +80,7 @@ interface SDK {
   submitFingerprintFallbackToPin(): Promise<any>;
 
   // App to Web
-  // startSingleSignOn: (url) => RNOneginiSdk.startSingleSignOn(url),
+  startSingleSignOn(url: string): Promise<Types.SingleSignOnData>;
 }
 
 //

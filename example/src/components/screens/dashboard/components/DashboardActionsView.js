@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 import ContentContainer from './ContentContainer';
 import Button from '../../../general/Button';
 import { logout, deregisterUser } from '../../../helpers/DashboardHelpers';
-import OneginiSdk from 'react-native-sdk-beta';
+import OneginiSdkTs from "react-native-sdk-beta/ts/index_ts";
 
 const onSingleSingOn = () => {
-  OneginiSdk.startSingleSignOn("https://login-mobile.test.onegini.com/personal/dashboard")
+  OneginiSdkTs.startSingleSignOn("https://login-mobile.test.onegini.com/personal/dashboard")
     .then((it) => { Linking.openURL(it.url) })
     .catch((error) => { alert(error) })
 }

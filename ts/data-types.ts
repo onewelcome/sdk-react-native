@@ -55,3 +55,8 @@ export interface Authenticator {
   isRegistered: boolean;
   userProfile: Profile;
 }
+
+export interface SingleSignOnData {
+  token: string;
+  url: string;
+}
