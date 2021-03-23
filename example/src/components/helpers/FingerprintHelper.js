@@ -1,8 +1,9 @@
 import OneginiSdk from 'react-native-sdk-beta';
+import OneginiSdkTs from "react-native-sdk-beta/ts/index_ts";
 
 const registerFingerprintAuthenticator = async (successful, message) => {
   try {
-    const profile = await OneginiSdk.getAuthenticatedUserProfile();
+    const profile = await OneginiSdkTs.getAuthenticatedUserProfile();
     await OneginiSdk.registerFingerprintAuthenticator(profile.profileId)
     message("Fingerprint is enabled")
     successful(true)
@@ -14,7 +15,7 @@ const registerFingerprintAuthenticator = async (successful, message) => {
 
 const deregisterFingerprintAuthenticator = async (successful, message) => {
   try {
-    const profile = await OneginiSdk.getAuthenticatedUserProfile();
+    const profile = await OneginiSdkTs.getAuthenticatedUserProfile();
     await OneginiSdk.deregisterFingerprintAuthenticator(profile.profileId)
     message("Fingerprint is disabled")
     successful(true)
@@ -25,8 +26,9 @@ const deregisterFingerprintAuthenticator = async (successful, message) => {
 };
 
 const getRegisteredAuthenticators = async (registeredAuthenticators, preferred) => {
-  const profile = await OneginiSdk.getAuthenticatedUserProfile();
-  const authenticators = await OneginiSdk.getRegisteredAuthenticators(profile.profileId);
+  const profile = await OneginiSdkTs.getAuthenticatedUserProfile();
+  const authenticators = await OneginiSdkTs.getRegisteredAuthenticators(profile.profileId);
+  console.log("authenticators: ", JSON.stringify(authenticators));
   authenticators.forEach(it => {
     if (it.isPreferred) {
       preferred(it)
@@ -36,7 +38,7 @@ const getRegisteredAuthenticators = async (registeredAuthenticators, preferred) 
 }
 
 const isFingerprintAuthenticatorRegistered = async (returnEnable) => {
-  const profile = await OneginiSdk.getAuthenticatedUserProfile();
+  const profile = await OneginiSdkTs.getAuthenticatedUserProfile();
   const registered = await OneginiSdk.isFingerprintAuthenticatorRegistered(profile.profileId);
   returnEnable(registered)
 };
@@ -45,8 +47,8 @@ const setPreferredAuthenticator = async (preferred, successful, message) => {
   console.log("preferred")
   console.log(preferred)
   try {
-    const profile = await OneginiSdk.getAuthenticatedUserProfile();
-    await OneginiSdk.setPreferredAuthenticator(profile.profileId, preferred.id);
+    const profile = await OneginiSdkTs.getAuthenticatedUserProfile();
+    await OneginiSdkTs.setPreferredAuthenticator(profile.profileId, preferred.id);
     successful(true)
     message("The " + preferred.name + " is set")
   } catch (error) {

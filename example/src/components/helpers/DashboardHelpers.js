@@ -1,10 +1,9 @@
-import OneginiSdk from 'react-native-sdk-beta';
 import OneginiSdkTs from "react-native-sdk-beta/ts/index_ts";
 
 
 const logout = async (onLogoutSuccess) => {
   try {
-    await OneginiSdk.logout();
+    await OneginiSdkTs.logout();
     onLogoutSuccess();
   } catch (err) {
     alert(err || 'Something strange happened.');
