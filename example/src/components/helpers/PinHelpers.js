@@ -1,8 +1,9 @@
-import OneginiSdk, {
+import {
   ONEGINI_PIN_ACTIONS,
   ONEGINI_PIN_NOTIFICATIONS,
   ONEGINI_PIN_FLOW,
 } from 'react-native-sdk-beta';
+import OneginiSdkTs from "react-native-sdk-beta/ts/index_ts";
 
 const onPinPress = (flow, newKey, pin, setPin, resetError) => {
   resetError();
@@ -13,7 +14,7 @@ const onPinPress = (flow, newKey, pin, setPin, resetError) => {
     const newValue = pin + newKey;
     setPin(newValue);
     if (newValue.length === 5) {
-      OneginiSdk.submitPinAction(
+      OneginiSdkTs.submitPinAction(
         flow,
         ONEGINI_PIN_ACTIONS.PROVIDE_PIN,
         newValue,

@@ -7,10 +7,11 @@ import SettingsActionsView from './components/SettingsActionsView';
 import DashboardActionsView from './components/DashboardActionsView';
 import ChangeAuthView from './components/ChangeAuthView';
 import OtpCodeView from './components/OtpCodeView';
-import OneginiSdk, {
+import {
   ONEGINI_PIN_FLOW,
   ONEGINI_PIN_ACTIONS,
 } from 'react-native-sdk-beta';
+import OneginiSdkTs from "react-native-sdk-beta/ts/index_ts";
 import DevicesView from "../devices/DevicesView";
 
 const CONTENT_VIEW = {
@@ -68,7 +69,7 @@ const renderContent = (currentContentView, setContentView, onLogout) => {
       return (
         <SettingsActionsView
           onChangeAuthPressed={() => setContentView(CONTENT_VIEW.CHANGE_AUTH)}
-          onChangePinPressed={() => OneginiSdk.submitPinAction(ONEGINI_PIN_FLOW.CHANGE, ONEGINI_PIN_ACTIONS.CHANGE, null)}
+          onChangePinPressed={() => OneginiSdkTs.submitPinAction(ONEGINI_PIN_FLOW.CHANGE, ONEGINI_PIN_ACTIONS.CHANGE, null)}
         />
       );
     case CONTENT_VIEW.CHANGE_AUTH:

@@ -1,14 +1,14 @@
 import React, {useState} from 'react';
 import {Text, StyleSheet} from 'react-native';
 import PropTypes from 'prop-types';
-import OneginiSdk from 'react-native-sdk-beta';
 import ContentContainer from './ContentContainer';
 import Button from '../../../general/Button';
 import { enrollMobileAuthentication } from '../../../helpers/MobileAuthenticationHelper';
+import OneginiSdkTs from "react-native-sdk-beta/ts/index_ts";
 
 const onChangePinPressed = () => {
   //@todo handle deregistration error when codes will be presented
-  OneginiSdk.changePin()
+  OneginiSdkTs.changePin()
     .then(() => alert('Success'))
     .catch((error) => alert(error))
 }

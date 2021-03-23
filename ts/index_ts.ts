@@ -54,6 +54,11 @@ interface SDK {
     profileId: string,
     idOneginiAuthenticator: string,
   ): Promise<any>; // TODO: check this path and check if resolve is called on Native side
+
+  // PIN
+  submitPinAction(flowString: string, action: string, pin: string | null): void;
+  changePin(): Promise<any>;
+
 }
 
 //
