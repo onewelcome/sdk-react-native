@@ -1,16 +1,15 @@
 import React, {useEffect} from 'react';
 import {StyleSheet, View, Image} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import OneginiSdk from 'react-native-sdk-beta';
 import OneginiSdkTs from "react-native-sdk-beta/ts/index_ts";
 import {Assets} from '../../../../assets';
 
 const startSdk = async (onStarted = () => null) => {
     try {
-        // await OneginiSdk.startClient(OneginiSdk.config);
         await OneginiSdkTs.startClient();
 
-        const linkUriResult = await OneginiSdk.getRedirectUri();
+        const linkUriResult = await OneginiSdkTs.getRedirectUri();
+        
         await AsyncStorage.setItem(
             '@redirectUri',
             linkUriResult.redirectUri.substr(

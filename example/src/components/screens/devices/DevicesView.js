@@ -2,8 +2,8 @@ import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View, ScrollView, Dimensions} from 'react-native';
 import AppColors from "../../constants/AppColors";
 import PropTypes from "prop-types";
-import OneginiSdk from 'react-native-sdk-beta';
 import Layout from "../../constants/Layout"
+import OneginiSdkTs from "react-native-sdk-beta/ts/index_ts";
 
 const DevicesView = (props) => {
     const [isLoading, setLoading] = useState(true);
@@ -13,12 +13,12 @@ const DevicesView = (props) => {
             name: "",
             "application": "",
             "platform": "",
-            "mobileAuthenticationEnabled": false
+            "isMobileAuthenticationEnabled": false
         }]
     });
 
     useEffect(() => {
-        OneginiSdk.getDeviceListResource()
+      OneginiSdkTs.getDeviceListResource()
             .then((it) => {
                 setDevices(it)
                 setLoading(false)

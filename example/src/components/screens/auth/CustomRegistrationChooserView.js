@@ -2,16 +2,18 @@ import React, {useState, useEffect} from 'react';
 import {StyleSheet, View} from 'react-native';
 import PropTypes from 'prop-types';
 import Button from '../../general/Button';
-import OneginiSdk from 'react-native-sdk-beta';
+import OneginiSdkTs from "react-native-sdk-beta/ts/index_ts";
 import AppColors from '../../constants/AppColors';
 
 const CustomRegistrationChooserView = (props) => {
   const [providers, setProviders] = useState(null);
 
   useEffect(() => {
-    OneginiSdk.getIdentityProviders().then((identityProviders) => {
+    OneginiSdkTs.getIdentityProviders().then((identityProviders) => {
       setProviders(identityProviders);
     });
+    
+    
   }, []);
 
   return (

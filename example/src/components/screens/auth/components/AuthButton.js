@@ -3,6 +3,7 @@ import {StyleSheet, Text, View} from 'react-native';
 import PropTypes from 'prop-types';
 import Button from '../../../general/Button';
 import OneginiSdk from 'react-native-sdk-beta';
+import OneginiSdkTs from "react-native-sdk-beta/ts/index_ts";
 
 const AuthButton = (props) => {
   const [isDefaultProvider, setIsDefaultProvider] = useState(true);
@@ -28,7 +29,7 @@ const AuthButton = (props) => {
 };
 
 function onPressClicked(onAuthorized, setError) {
-  OneginiSdk.getUserProfiles().then((profiles) =>
+  OneginiSdkTs.getUserProfiles().then((profiles) =>
     OneginiSdk.authenticateUser(profiles[0].profileId)
       .then((result) => {
         onAuthorized(true);
@@ -41,8 +42,9 @@ function onPressClicked(onAuthorized, setError) {
 
 function hasProfile() {
   return new Promise((resolve, reject) =>
-    OneginiSdk.getUserProfiles()
+    OneginiSdkTs.getUserProfiles()
       .then((profiles) => {
+        console.log("Profiles: ", profiles);
         resolve(profiles.length === 0);
       })
       .catch((err) => {

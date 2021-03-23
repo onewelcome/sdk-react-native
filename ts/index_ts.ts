@@ -1,5 +1,6 @@
 // TODO: rename as index.ts (main index)
-// TODO: separate modules?
+// TODO: separate modules? Start, Resources, ...
+// TODO: test and unify errors (plain string)
 
 import {
   NativeModules,
@@ -48,6 +49,81 @@ namespace OneginiSdkTs {
     return isIOS
       ? RNOneginiSdk.startClient() // why there is no default config on iOS?
       : RNOneginiSdk.startClient(sdkConfig);
+  }
+
+  //
+  // Resources
+  //
+
+  export interface IdentityProvider {
+    id: string;
+    name: string;
+  }
+
+  export interface Profile {
+    profileId: string;
+  }
+
+  export interface ImplicitUserDetails {
+    decoratedUserId: string;
+  }
+
+  export interface RedirectUri {
+    redirectUri: string;
+  }
+
+  export interface AppDetailsResources {
+    applicationIdentifier: string;
+    applicationPlatform: string;
+    applicationVersion: string;
+  }
+
+  export interface Device {
+    id: string;
+    name: string;
+    application: string;
+    platform: string;
+    isMobileAuthenticationEnabled: boolean;
+  }
+
+  //
+
+  export function getIdentityProviders(): Promise<IdentityProvider> {
+    return RNOneginiSdk.getIdentityProviders();
+  }
+
+  // TODO: use it in ExampleApp
+  // Does it return string or object map?
+  export function getAccessToken(): Promise<string> {
+    return RNOneginiSdk.getAccessToken();
+  }
+
+  // TODO: use it in ExampleApp
+  export function getAuthenticatedUserProfile(): Promise<Profile> {
+    return RNOneginiSdk.getAuthenticatedUserProfile();
+  }
+
+  export function getUserProfiles(): Promise<Profile[]> {
+    return RNOneginiSdk.getUserProfiles();
+  }
+
+  // TODO: I think it should be moved "behind" SDK - dev should not know about it
+  export function getRedirectUri(): Promise<RedirectUri> {
+    return RNOneginiSdk.getRedirectUri();
+  }
+
+  export function getImplicitDataResource(
+    profileId: string,
+  ): Promise<ImplicitUserDetails> {
+    return RNOneginiSdk.getImplicitDataResource(profileId);
+  }
+
+  export function getAppDetailsResource(): Promise<AppDetailsResources> {
+    return RNOneginiSdk.getAppDetailsResource();
+  }
+
+  export function getDeviceListResource(): Promise<Device[]> {
+    return RNOneginiSdk.getDeviceListResource();
   }
 
   //

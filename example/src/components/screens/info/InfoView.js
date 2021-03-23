@@ -4,7 +4,7 @@ import Button from "../../general/Button";
 import ContentContainer from "../dashboard/components/ContentContainer";
 import AppColors from "../../constants/AppColors";
 import PropTypes from "prop-types";
-import OneginiSdk from 'react-native-sdk-beta';
+import OneginiSdkTs from "react-native-sdk-beta/ts/index_ts";
 
 const InfoView = (props) => {
     const [profileId, setProfileId] = useState("");
@@ -16,18 +16,19 @@ const InfoView = (props) => {
     });
 
     useEffect(() => {
-        OneginiSdk.getUserProfiles().then((it) => {
-            var profile = it[0]
-            if (profile != null) {
-                setProfileId(profile.profileId)
-                OneginiSdk.getImplicitDataResource(profile.profileId).then((details) => {
-                    setImplicitDetails(details)
-                }).catch((e) => {
-                    setImplicitDetails(e.message)
-                })
-            }
+        OneginiSdkTs.getUserProfiles().then((profiles) => {
+          var profile = profiles[0]
+          if (profile != null) {
+              setProfileId(profile.profileId)
+              OneginiSdkTs.getImplicitDataResource(profile.profileId).then((details) => {
+                setImplicitDetails(JSON.stringify(details))
+              }).catch((e) => {
+                  setImplicitDetails(e.message)
+              })
+          }
         })
-        OneginiSdk.getAppDetailsResource()
+
+        OneginiSdkTs.getAppDetailsResource()
             .then((it) => {
                 setApplicationDetails(it)
             }).catch((e) => {
