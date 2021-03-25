@@ -4,12 +4,21 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "isolatedModules": true,
-    "jsx": "react",
-    "lib": ["es6"],
+    "jsx": "react-native",
+    "module": "commonjs" /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */,
+    "lib": [
+      "es6",
+      "es2017",
+      "es2018.promise"
+    ],
     "moduleResolution": "node",
     "noEmit": true,
     "strict": true,
-    "target": "esnext"
+    "target": "esnext",
+    "baseUrl": "./",
+    "paths": {
+      "react-native-sdk-beta": ["ts/index"]
+    },
   },
   "exclude": [
     "node_modules",

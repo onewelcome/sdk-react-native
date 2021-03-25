@@ -53,7 +53,7 @@ export interface Authenticator {
   type: string;
   isPreferred: boolean;
   isRegistered: boolean;
-  userProfile: Profile;
+  userProfile?: Profile;
 }
 
 export interface SingleSignOnData {

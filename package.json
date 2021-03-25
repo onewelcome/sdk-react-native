@@ -3,20 +3,18 @@
   "title": "React Native SDK",
   "version": "0.5.1",
   "description": "Onegini SDK component for React Native (iOS and Android)",
-  "main": "js/index.js",
+  "main": "ts/index.ts",
   "files": [
     "README.md",
     "android/src",
     "android/build.gradle",
     "ios/",
-    "js/index.js",
-    "js/pin.js",
-    "js/config.js",
+    "ts/index.ts",
     "react-native-sdk-beta.podspec"
   ],
   "scripts": {
     "android": "tsc && react-native run-android",
-    "ios": "react-native run-ios --project-path './example/ios' --scheme 'RNExampleApp'",
+    "ios": "tsc && react-native run-ios --project-path './example/ios' --scheme 'RNExampleApp'",
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint ."
