@@ -7,7 +7,7 @@
 
 const path = require('path');
 const rnProjectRoot =  path.join(__dirname, '/example');
-const nodeModulesRoot =  path.join(__dirname, '/js');
+const nodeModulesRoot =  path.join(__dirname, '/ts');
 
 module.exports = {
   projectRoot: rnProjectRoot,
