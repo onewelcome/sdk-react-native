@@ -20,7 +20,7 @@ import com.google.gson.JsonObject
 import com.onegini.mobile.OneginiComponets
 import com.onegini.mobile.model.ApplicationDetails
 import com.onegini.mobile.model.ResourceRequestDetails
-import com.onegini.mobile.network.client.AnonymousClient
+import com.onegini.mobile.network.client.ResourcesClient
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -28,8 +28,8 @@ import org.json.JSONObject
 
 class AnonymousService private constructor() {
 
-    private val applicationDetailsRetrofitClient: AnonymousClient
-            = OneginiComponets.secureResourceClient.prepareSecuredAnonymousRetrofitClient(AnonymousClient::class.java)
+    private val applicationDetailsRetrofitClient: ResourcesClient
+            = OneginiComponets.secureResourceClient.prepareSecuredAnonymousRetrofitClient(ResourcesClient::class.java)
 
     fun getResource(requestDetails: ResourceRequestDetails): Single<JsonObject> {
         val apiCall = when(requestDetails.method) {

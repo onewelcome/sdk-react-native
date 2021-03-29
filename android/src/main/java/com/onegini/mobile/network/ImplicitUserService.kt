@@ -19,8 +19,7 @@ import com.google.gson.JsonObject
 import com.onegini.mobile.OneginiComponets
 import com.onegini.mobile.model.ImplicitUserDetails
 import com.onegini.mobile.model.ResourceRequestDetails
-import com.onegini.mobile.network.client.AnonymousClient
-import com.onegini.mobile.network.client.ImplicitUserClient
+import com.onegini.mobile.network.client.ResourcesClient
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -28,8 +27,8 @@ import okhttp3.ResponseBody
 
 class ImplicitUserService private constructor() {
 
-    private val applicationDetailsRetrofitClient: ImplicitUserClient
-            = OneginiComponets.secureResourceClient.prepareSecuredImplicitUserRetrofitClient(ImplicitUserClient::class.java)
+    private val applicationDetailsRetrofitClient: ResourcesClient
+            = OneginiComponets.secureResourceClient.prepareSecuredImplicitUserRetrofitClient(ResourcesClient::class.java)
 
     fun getResource(requestDetails: ResourceRequestDetails): Single<JsonObject> {
         val apiCall = when(requestDetails.method) {

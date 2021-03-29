@@ -34,7 +34,7 @@ import retrofit2.http.PUT;
 import retrofit2.http.PartMap;
 import retrofit2.http.Url;
 
-public interface AnonymousClient {
+public interface ResourcesClient {
 
   @GET
   Single<JsonObject> getResourcesDetails(@Url String url, @HeaderMap Map<String, String> headers);
