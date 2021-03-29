@@ -18,13 +18,33 @@ package com.onegini.mobile.network.client;
 
 
 
+import com.google.gson.JsonObject;
 import com.onegini.mobile.model.ApplicationDetails;
 
+
+import java.util.Map;
+
 import io.reactivex.Single;
+import retrofit2.http.DELETE;
+import retrofit2.http.FieldMap;
 import retrofit2.http.GET;
+import retrofit2.http.HeaderMap;
+import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.PartMap;
+import retrofit2.http.Url;
 
 public interface AnonymousClient {
 
-  @GET("application-details")
-  Single<ApplicationDetails> getApplicationDetails();
+  @GET
+  Single<JsonObject> getResourcesDetails(@Url String url, @HeaderMap Map<String, String> headers);
+
+  @POST
+  Single<JsonObject> postResourcesDetails(@Url String url, @HeaderMap Map<String, String> headers, @FieldMap Map<String, String> params);
+
+  @PUT
+  Single<JsonObject> putResourcesDetails(@Url String url, @HeaderMap Map<String, String> headers, @FieldMap Map<String, String> params);
+
+  @DELETE
+  Single<JsonObject> deleteResourcesDetails(@Url String url, @HeaderMap Map<String, String> headers, @FieldMap Map<String, String> params);
 }

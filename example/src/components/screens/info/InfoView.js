@@ -53,9 +53,9 @@ const InfoView = (props) => {
                 {error && <Text style={styles.infoError}>{'Resource Error:  ' + error}</Text>}
                 {data && (
                   <>
-                      <Text style={styles.info}>{"Application ID: " + data}</Text>
-                      <Text style={styles.info}>{"Application Version: " + data}</Text>
-                      <Text style={styles.info}>{"Platform: " + data}</Text>
+                      <Text style={styles.info}>{"Application ID: " + data["application_identifier"]}</Text>
+                      <Text style={styles.info}>{"Application Version: " + data["application_platform"]}</Text>
+                      <Text style={styles.info}>{"Platform: " + data["application_version"]}</Text>
                   </>
                 )}
             </View>

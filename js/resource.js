@@ -4,9 +4,9 @@ import OneginiSdk  from "./index";
 const DEFAULT_RESOURCE_DETAILS = {
   path: 'test',
   method: 'GET',
-  parameters: null,
+  parameters: {"custom-param1" : "p1", "custom-param2" : "p2"},
   encoding: 'application/json',
-  headers: null,
+  headers: {"custom-header1" : "val1", "custom-header2" : "val2"},
 };
 
 const fetchResource = async (setLoading, setError, setData, shouldAuthenticate, isImplicit, resourceDetails, profileId = null) => {
@@ -18,6 +18,8 @@ const fetchResource = async (setLoading, setError, setData, shouldAuthenticate, 
     }
     const data = await OneginiSdk.resourceRequest(isImplicit, resourceDetails);
 
+    console.log("FETCH DATA = ", data)
+    
     setData(data);
     setLoading(false);
   } catch (e) {
