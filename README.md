@@ -255,6 +255,80 @@ Where:
 - **provideNewPinKey**: func. Function to supply next PIN char. Supply '<' key to remove last PIN char.
 - **cancelPinFlow**: func. Helper function to set error to `null`.
 
+### `useFingerprintFlow`. For easiest Fingerprint flow implementation. Example:
+```
+import { useFingerprintFlow } from "react-native-sdk-beta";
+const {active, stage, fallbackToPin, cancelFlow} = useFingerprintFlow();
+```
+Where:
+- **active**:  boolean. Defines wheather Fingerprint recognication process active or not.
+- **stage**: ONEGINI_FINGERPRINT_STAGE(One of ['idle', 'started', 'nextAttempt', 'captured', 'finished']). Current stage of Fingerprint flow.
+- **fallbackToPin**: func. Helper function to trigger fallback to PIN flow.
+- **cancelFlow**: func. Helper function to trigger cancelling Fingerprint flow
+
+### `useResource` and `useImplicitResource`. For easiest resources access(API calls). Examples:
+
+##### `useResource(requestDetails: object, shouldAuthenticate: boolean)`:
+Where params:
+- **requestDetails**:  object. Details which will specify how to build request, example(`DEFAULT_RESOURCE_DETAILS`)
+- **shouldAuthenticate**: boolean. Defines wheather API request should be completed with authentication or not
+
+```
+const DEFAULT_RESOURCE_DETAILS = {
+  path: 'test',
+  method: 'GET',
+  parameters: {"custom-param1" : "p1", "custom-param2" : "p2"},
+  encoding: 'application/json',
+  headers: {"custom-header1" : "val1", "custom-header2" : "val2"},
+};
+```
+
+Usage example:
+```
+import { useResource } from "react-native-sdk-beta";
+  const {loading, data, error} = useResource(
+    {...DEFAULT_RESOURCE_DETAILS, path: 'devices'},
+    true
+  );
+```
+
+Where:
+- **loading**:  boolean. Defines wheather request is still processing or not.
+- **data**: object. Data object which was returned by API server.
+- **error**: object. Contains errors which accured for API request.
+
+
+##### `useImplicitResource(requestDetails: object, shouldAuthenticate: boolean)`:
+Where params:
+- **requestDetails**:  object. Details which will specify how to build request, example(`DEFAULT_RESOURCE_DETAILS`)
+- **shouldAuthenticate**: boolean. Defines wheather API request should be completed with authentication or not
+
+```
+const DEFAULT_RESOURCE_DETAILS = {
+  path: 'test',
+  method: 'GET',
+  parameters: {"custom-param1" : "p1", "custom-param2" : "p2"},
+  encoding: 'application/json',
+  headers: {"custom-header1" : "val1", "custom-header2" : "val2"},
+};
+```
+
+Usage example:
+```
+import { useImplicitResource } from "react-native-sdk-beta";
+  const {loading, data, error, profileId, setProfileId} = useImplicitResource(
+    {...DEFAULT_RESOURCE_DETAILS, path: 'user-id-decorated'},
+    true
+  );
+```
+
+Where:
+- **loading**:  boolean. Defines wheather request is still processing or not.
+- **data**: object. Data object which was returned by API server.
+- **error**: object. Contains errors which accured for API request.
+- **profileId**: string. Profile id returned by SDK. Implicit request dependant on this value, so it should be set.
+- **setProfileId**: func. Setter function, always should be specified. Exposed to grant more control for wrapper users.
+
 
 ## Supported Methods
 
@@ -274,8 +348,9 @@ Where:
 | **`getAuthenticatedUserProfile()`**                       |  Returns user who is logged in. |
 |                                                           |
 | **=== Resource getters ===**                              |
-| **`getAppDetailsResource()`**                             |  Returns an object with app details(fetched from the server).  |
-| **`getDeviceListResource()`**                             |  Returns an array with device objects witch registered by this user(fetched from the server).  |
+| **`authenticateUserImplicitly(profileId: string)`**       |  Returns Promise. In success scenario will be resolved with **true** value, in error scenario - will be rejected with error info.  |
+| **`authenticateDeviceForResource()`**                     |  Returns Promise. In success scenario will be resolved with **true** value, in error scenario - will be rejected with error info.  |
+| **`resourceRequest(isImplicit: boolean, details: object)`**. |  Returns Promise. In success scenario will be resolved with **object** value, in error scenario - will be rejected with error info. |
 |                                                           |
 | **=== User register/deregister ===**                      |
 | **`registerUser(identityProviderId):Promise`**            |  Starts the process of registration user. If success then the response contain the success = true if not then contain success = false. |
