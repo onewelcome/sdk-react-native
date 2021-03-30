@@ -1,5 +1,5 @@
 protocol RegistrationConnectorToHandlerProtocol: AnyObject {
-    func signUp(identityProvider: ONGIdentityProvider?, completion: @escaping (Bool, ONGUserProfile?, SdkError?) -> Void)
+    func signUp(identityProvider: ONGIdentityProvider?, completion: @escaping (Bool, ONGUserProfile?, NSError?) -> Void)
     func processRedirectURL(url: URL)
     func processOTPCode(code: String?)
     func cancelRegistration()
@@ -12,7 +12,7 @@ class RegistrationHandler: NSObject, BrowserHandlerToRegisterHandlerProtocol, Pi
     var browserRegistrationChallenge: ONGBrowserRegistrationChallenge?
     var customRegistrationChallenge: ONGCustomRegistrationChallenge?
     var browserConntroller: BrowserHandlerProtocol?
-    var signUpCompletion: ((Bool, ONGUserProfile?, SdkError?) -> Void)?
+    var signUpCompletion: ((Bool, ONGUserProfile?, NSError?) -> Void)?
 
     func presentBrowserUserRegistrationView(registrationUserURL: URL) {
         if(browserConntroller != nil) {
@@ -56,9 +56,9 @@ class RegistrationHandler: NSObject, BrowserHandlerToRegisterHandlerProtocol, Pi
         customRegistrationChallenge.sender.respond(withData: code, challenge: customRegistrationChallenge)
     }
 
-    fileprivate func mapErrorFromPinChallenge(_ challenge: ONGCreatePinChallenge) -> SdkError? {
+    fileprivate func mapErrorFromPinChallenge(_ challenge: ONGCreatePinChallenge) -> NSError? {
         if let error = challenge.error {
-            return ErrorMapper().mapError(error)
+            return error as NSError
         } else {
             return nil
         }
@@ -70,7 +70,7 @@ class RegistrationHandler: NSObject, BrowserHandlerToRegisterHandlerProtocol, Pi
 }
 
 extension RegistrationHandler : RegistrationConnectorToHandlerProtocol {
-    func signUp(identityProvider: ONGIdentityProvider? = nil, completion: @escaping (Bool, ONGUserProfile?, SdkError?) -> Void) {
+    func signUp(identityProvider: ONGIdentityProvider? = nil, completion: @escaping (Bool, ONGUserProfile?, NSError?) -> Void) {
         signUpCompletion = completion
         ONGUserClient.sharedInstance().registerUser(with: identityProvider, scopes: ["read"], delegate: self)
     }
@@ -142,11 +142,6 @@ extension RegistrationHandler: ONGRegistrationDelegate {
         customRegistrationChallenge = nil
         BridgeConnector.shared?.toPinHandlerConnector.pinHandler.closeFlow()
 
-        if error.code == ONGGenericError.actionCancelled.rawValue {
-            signUpCompletion!(false, nil, SdkError(errorDescription: "Registration  cancelled."))
-        } else {
-            let mappedError = ErrorMapper().mapError(error)
-            signUpCompletion!(false, nil, mappedError)
-        }
+        signUpCompletion!(false, nil, error as NSError)
     }
 }
