@@ -9,7 +9,7 @@ class BridgeConnector : BridgeConnectorProtocol {
     let toLoginHandler: BridgeToLoginHandlerProtocol = LoginHandler()
     let toAuthenticatorsHandler: BridgeToAuthenticatorsHandlerProtocol = AuthenticatorsHandler()
     let toAppToWebHandler: AppToWebHandlerProtocol = AppToWebHandler()
-    let toResourceFetchHandler: BridgeToResourceFetchHandlerProtocol = ResourceFetchHandler()
+    let toResourceHandler: BridgeToResourceHandlerProtocol = ResourceHandler()
     unowned var bridge: ConnectorToRNBridgeProtocol?
     public static var shared:BridgeConnector?
 

@@ -1,12 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Modal, Text, TextInput} from 'react-native';
-import ObjectIdHelper from '../../helpers/ObjectIdHelper';
 import AppColors from '../../constants/AppColors';
 import Button from '../../general/Button';
 import OneginiSdk, {Events} from 'react-native-sdk-beta';
 
 const MobileAuthOTPModal: React.FC<{}> = () => {
-  const [id, setId] = useState(ObjectIdHelper.getNewID('MobileAuthOTPModal')); // Not used. Then why is it here?
   const [message, setMessage] = useState('');
   const [visible, setVisible] = useState(false);
 

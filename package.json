@@ -1,7 +1,7 @@
 {
   "name": "react-native-sdk-beta",
   "title": "React Native SDK",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "Onegini SDK component for React Native (iOS and Android)",
   "main": "ts/index.ts",
   "files": [
@@ -9,7 +9,7 @@
     "android/src",
     "android/build.gradle",
     "ios/",
-    "ts/index.ts",
+    "ts/",
     "react-native-sdk-beta.podspec"
   ],
   "scripts": {

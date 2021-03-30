@@ -3,7 +3,7 @@ protocol BridgeToPinConnectorProtocol: AnyObject {
     var pinHandler: PinConnectorToPinHandler { get }
 
     func handlePinAction(_ flow: (NSString), _ action: (NSString), _ pin: (NSString)) -> Void
-    func sendNotification(event: PinNotification, flow: PinFlow?, error: SdkError?) -> Void
+    func sendNotification(event: PinNotification, flow: PinFlow?, error: NSError?) -> Void
 }
 
 //@todo handle change and auth flows
@@ -29,7 +29,7 @@ class PinConnector : BridgeToPinConnectorProtocol {
         }
     }
 
-    func sendNotification(event: PinNotification, flow: PinFlow?, error: SdkError?) {
+    func sendNotification(event: PinNotification, flow: PinFlow?, error: NSError?) {
         switch (event){
             case .open:
                 sendEvent(data: ["flow": flow?.rawValue, "action": PinNotification.open.rawValue])
@@ -41,7 +41,7 @@ class PinConnector : BridgeToPinConnectorProtocol {
                 sendEvent(data: ["flow": flow?.rawValue, "action": PinNotification.close.rawValue])
                 break;
             case .showError:
-                sendEvent(data: ["flow": flow?.rawValue, "action": PinNotification.showError.rawValue, "errorMsg": error?.errorDescription])
+                sendEvent(data: ["flow": flow?.rawValue, "action": PinNotification.showError.rawValue, "errorMsg": error?.localizedDescription])
                 break
         }
     }

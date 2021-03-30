@@ -43,7 +43,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func startClient(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         self.oneginiSDKStartup { _, error in
             if let error = error {
-                reject(nil, error.errorDescription, nil)
+                reject("\(error.code)", error.localizedDescription, error)
             } else {
                 resolve(true)
             }
@@ -79,7 +79,8 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     @objc
     func getAuthenticatedUserProfile(_ resolve: RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
         guard let authenticatedProfile = ONGClient.sharedInstance().userClient.authenticatedUserProfile() else {
-            reject(nil, "No authenticated user profiles found.", nil);
+            let error = NSError(domain: ONGGenericErrorDomain, code: ONGGenericError.serverNotReachable.rawValue, userInfo: [NSLocalizedDescriptionKey : "No authenticated user profiles found."])
+            reject("\(error.code)", error.localizedDescription, error);
             return;
         }
 
@@ -111,10 +112,10 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
         bridgeConnector.toRegistrationConnector.registrationHandler.signUp(identityProvider: provider) {
           (_, userProfile, error) -> Void in
 
-            if let userProfile = userProfile {
-                resolve(["profileId" : userProfile.profileId!])
+            if let error = error {
+                reject("\(error.code)", error.localizedDescription, error)
             } else {
-                reject(nil, error?.errorDescription ?? "Unexpected Error.", nil)
+                resolve(["profileId" : userProfile?.profileId!])
             }
 
         }
@@ -135,8 +136,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
             (result: Bool, error) -> Void in
 
             if let error = error {
-                let mappedError = ErrorMapper().mapError(error);
-                reject(nil, mappedError.errorDescription, nil)
+                reject("\(error.code)", error.localizedDescription, error)
               } else {
                 resolve(true)
               }
@@ -164,7 +164,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
             (_, error) -> Void in
 
             if let error = error {
-                reject(nil, error.errorDescription, nil)
+                reject("\(error.code)", error.localizedDescription, error)
             } else {
                 resolve(true)
             }
@@ -181,7 +181,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
             (userProfile, error) -> Void in
 
             if let error = error {
-                reject(nil, error.errorDescription, nil)
+                reject("\(error.code)", error.localizedDescription, error)
               } else {
                 resolve(true)
               }
@@ -192,8 +192,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func logout(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         ONGClient.sharedInstance().userClient.logoutUser { _, error in
             if let error = error {
-                let mappedError = ErrorMapper().mapError(error);
-                reject(nil, mappedError.errorDescription, nil)
+                reject("\(error.code)", error.localizedDescription, error)
               } else {
                 resolve(true)
               }
@@ -208,7 +207,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
         bridgeConnector.toAppToWebHandler.signInAppToWeb(targetURL: _url, completion: { (result, error) in
             if let error = error {
-                reject(nil, error.errorDescription, nil)
+                reject("\(error.code)", error.localizedDescription, error)
             } else {
                 resolve(result)
             }
@@ -216,52 +215,47 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     @objc
-    func getImplicitDataResource(_ profileId: (NSString),
+    func authenticateUserImplicitly(_ profileId: (NSString),
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         let profile: ONGUserProfile = ONGClient.sharedInstance().userClient.userProfiles().first(where: { $0.value(forKey: "profileId") as! NSObject == profileId })!;
 
-        bridgeConnector.toResourceFetchHandler.getImplicitData(profile) {
-            (userIdDecorated: String?, error) -> Void in
-
+        bridgeConnector.toResourceHandler.authenticateImplicitly(profile) {
+            (success, error) -> Void in
             if let error = error {
-                reject(nil, error.errorDescription, nil)
+                reject("\(error.code)", error.localizedDescription, error)
               } else {
-                resolve(userIdDecorated)
+                resolve(true)
               }
         }
     }
 
     @objc
-    func getAppDetailsResource(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-
-        bridgeConnector.toResourceFetchHandler.getAppDetails() {
-            (result: ApplicationDetails?, error) -> Void in
-
+    func authenticateDeviceForResource(_ resourcePath: (NSString),
+                        resolver resolve: @escaping RCTPromiseResolveBlock,
+                        rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        bridgeConnector.toResourceHandler.authenticateDevice(resourcePath) {
+            (success, error) -> Void in
             if let error = error {
-                reject(nil, error.errorDescription, nil)
+                reject("\(error.code)", error.localizedDescription, error)
               } else {
-                resolve(["applicationIdentifier": result?.applicationIdentifier, "applicationVersion": result?.applicationVersion,
-                         "applicationPlatform": result?.applicationPlatform,])
+                resolve(true)
               }
         }
     }
 
     @objc
-    func getDeviceListResource(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+    func resourceRequest(_ isImplicit: (Bool), details: (NSDictionary),
+                        resolver resolve: @escaping RCTPromiseResolveBlock,
+                        rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
 
-        bridgeConnector.toResourceFetchHandler.getDeviceList() {
-            (fetchResult: Devices?, error) -> Void in
+        bridgeConnector.toResourceHandler.resourceRequest(isImplicit, details) {
+            (data: [String: Any]?, error) -> Void in
 
             if let error = error {
-                reject(nil, error.errorDescription, nil)
+                reject("\(error.code)", error.localizedDescription, error)
               } else {
-                var result: NSMutableArray  = []
-
-                for device in fetchResult?.devices ?? [] {
-                    result.add(["id" : device.id, "name" : device.name, "application" : device.application, "platform" : device.platform])
-                }
-                resolve(["devices" : result])
+                resolve(data)
               }
         }
     }
@@ -270,7 +264,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func enrollMobileAuthentication(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         bridgeConnector.toMobileAuthConnector.mobileAuthHandler.enrollForMobileAuth { _, error in
             if let error = error {
-                reject(nil, error.errorDescription, nil)
+                reject("\(error.code)", error.localizedDescription, error)
               } else {
                 resolve(true)
               }
@@ -285,7 +279,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
             (_ , error) -> Void in
 
             if let error = error {
-                reject(nil, error.errorDescription, nil)
+                reject("\(error.code)", error.localizedDescription, error)
               } else {
                 resolve(true)
               }
@@ -349,7 +343,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
             (_ , error) -> Void in
 
             if let error = error {
-                reject(nil, error.errorDescription, nil)
+                reject("\(error.code)", error.localizedDescription, error)
               } else {
                 resolve(true)
               }
@@ -369,7 +363,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
             (_ , error) -> Void in
 
             if let error = error {
-                reject(nil, error.errorDescription, nil)
+                reject("\(error.code)", error.localizedDescription, error)
               } else {
                 resolve(true)
               }
@@ -386,7 +380,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
             (_ , error) -> Void in
 
             if let error = error {
-                reject(nil, error.errorDescription, nil)
+                reject("\(error.code)", error.localizedDescription, error)
               } else {
                 resolve(true)
               }
@@ -404,12 +398,11 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     // Service methods
-    private func oneginiSDKStartup(completion: @escaping (Bool, SdkError?) -> Void) {
+    private func oneginiSDKStartup(completion: @escaping (Bool, NSError?) -> Void) {
         ONGClientBuilder().build()
         ONGClient.sharedInstance().start { result, error in
             if let error = error {
-                let mappedError = ErrorMapper().mapError(error)
-                completion(result, mappedError)
+                completion(result, error as NSError)
             } else {
                 completion(result, nil)
             }

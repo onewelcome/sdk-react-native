@@ -40,6 +40,14 @@ export enum FingerprintNotification {
   FinishAuthentication = 'finishAuthentication',
 }
 
+export enum FingerprintStage {
+  Idle = 'idle',
+  Started = 'started',
+  NextAttempt = 'nextAttempt',
+  Captured = 'captured',
+  Finished = 'finished',
+}
+
 export enum MobileAuthOtpNotification {
   StartAuthentication = 'startAuthentication',
   FinishAuthentication = 'finishAuthentication',

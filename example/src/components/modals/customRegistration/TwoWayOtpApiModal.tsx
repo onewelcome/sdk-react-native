@@ -1,7 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Modal, Text, TextInput} from 'react-native';
-
-import ObjectIDHelper from '../../helpers/ObjectIdHelper';
 import AppColors from '../../constants/AppColors';
 import Button from '../../general/Button';
 import OneginiSdk, {Events} from 'react-native-sdk-beta';
@@ -9,13 +7,12 @@ import OneginiSdk, {Events} from 'react-native-sdk-beta';
 const IdProvider = '2-way-otp-api';
 
 const TwoWayOtpApiModal: React.FC<{}> = ({}) => {
-  const [id] = useState(ObjectIDHelper.getNewID('TwoWayOtpApiModal'));
   const [codeFromOnegini, setCodeFromOnegini] = useState<string | null>(null);
   const [responseCode, setResponseCode] = useState<string | null>(null);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const listener = OneginiSdk.addEventListener(id, (event: any) => {
+    const listener = OneginiSdk.addEventListener(Events.SdkNotification.CustomRegistration, (event: any) => {
       if (event.identityProviderId === IdProvider) {
         switch (event.action) {
           case Events.CustomRegistrationNotification.InitRegistration:
@@ -36,7 +33,7 @@ const TwoWayOtpApiModal: React.FC<{}> = ({}) => {
     return () => {
       listener.remove();
     };
-  }, [id]);
+  }, []);
 
   return (
     <Modal
