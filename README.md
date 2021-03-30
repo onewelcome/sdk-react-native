@@ -140,6 +140,13 @@ OR
 
 7. Add `SecurityController.h` and `SecurityController.m` as described [HERE](https://docs.onegini.com/msp/stable/ios-sdk/reference/security-controls.html)
 
+8. **Optional** In order to support FaceID or ToucID add next to `ios/<project-name>/info.plist:
+    ```
+    <key>NSFaceIDUsageDescription</key>
+	<string>Application needs access to support authentication with Face/Touch ID</string>
+    ```
+    **!!!NOTE**: Biometrics will not work in iOS simulator, only on the real devices 
+
 ## Linking Native Code
 
 ### RN >= 60.0
@@ -177,8 +184,12 @@ OR
       compile project(':react-native-sdk-beta')
     ```
 
+# How to run Example App
+- `yarn` or `npm install`
+- **iOS**: `yarn ios` or `npm run ios`
+- **Android**: `yarn android` or `npm run android`
+
 # Functional scope
-## Done on the Android:
 ### Milestone 1:
     - Start
     - Security Controls and Configuration of the SDK
@@ -200,20 +211,10 @@ OR
     - Fingerprint authentication
 ### Milestone 6:
     - Change PIN
-
-## Done on the iOS:
-### Milestone 1:
-    - Start
-    - Security Controls and Configuration of the SDK
-    - User registration
-       - Browser
-### Milestone 2:
-    - User deregistration
-### Milestone 3:
-    - User authentication with PIN
-    - Logout
-### Milestone 6:
-    - Change PIN
+### Milestone 7:
+    - App2Web
+### Milestone 8:
+    - Secure resource access
 
 # Usage
 - import OneginiSdk from 'react-native-sdk-beta';
@@ -239,40 +240,149 @@ OR
       - false - possible actions finishRegistration are sent by ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION
       
 
+## Hooks
+### `usePinFlow`. For easiest PIN flow implementation. Example:
+```
+import { usePinFlow, ONEGINI_PIN_FLOW } from "react-native-sdk-beta/pin";
+const [ flow, pin, visible, isConfirmMode, error, provideNewPinKey, cancelPinFlow] = usePinFlow();
+```
+Where:
+- **flow**: ONEGINI_PIN_FLOW(On of ['authentication', 'create', 'change']).
+- **pin**: string. Current pin value.
+- **visible**: boolean. Defines wheather show PIN flow or not.
+- **isConfirmMode**: boolean. For `create` and `change` user should confirm inserted PIN, this boolean helps to know current state.
+- **error**: string || null. Contains error or empty if no error.
+- **provideNewPinKey**: func. Function to supply next PIN char. Supply '<' key to remove last PIN char.
+- **cancelPinFlow**: func. Helper function to set error to `null`.
+
+### `useFingerprintFlow`. For easiest Fingerprint flow implementation. Example:
+```
+import { useFingerprintFlow } from "react-native-sdk-beta";
+const {active, stage, fallbackToPin, cancelFlow} = useFingerprintFlow();
+```
+Where:
+- **active**:  boolean. Defines wheather Fingerprint recognication process active or not.
+- **stage**: ONEGINI_FINGERPRINT_STAGE(One of ['idle', 'started', 'nextAttempt', 'captured', 'finished']). Current stage of Fingerprint flow.
+- **fallbackToPin**: func. Helper function to trigger fallback to PIN flow.
+- **cancelFlow**: func. Helper function to trigger cancelling Fingerprint flow
+
+### `useResource` and `useImplicitResource`. For easiest resources access(API calls). Examples:
+
+##### `useResource(requestDetails: object, shouldAuthenticate: boolean)`:
+Where params:
+- **requestDetails**:  object. Details which will specify how to build request, example(`DEFAULT_RESOURCE_DETAILS`)
+- **shouldAuthenticate**: boolean. Defines wheather API request should be completed with authentication or not
+
+```
+const DEFAULT_RESOURCE_DETAILS = {
+  path: 'test',
+  method: 'GET',
+  parameters: {"custom-param1" : "p1", "custom-param2" : "p2"},
+  encoding: 'application/json',
+  headers: {"custom-header1" : "val1", "custom-header2" : "val2"},
+};
+```
+
+Usage example:
+```
+import { useResource } from "react-native-sdk-beta";
+  const {loading, data, error} = useResource(
+    {...DEFAULT_RESOURCE_DETAILS, path: 'devices'},
+    true
+  );
+```
+
+Where:
+- **loading**:  boolean. Defines wheather request is still processing or not.
+- **data**: object. Data object which was returned by API server.
+- **error**: object. Contains errors which accured for API request.
+
+
+##### `useImplicitResource(requestDetails: object, shouldAuthenticate: boolean)`:
+Where params:
+- **requestDetails**:  object. Details which will specify how to build request, example(`DEFAULT_RESOURCE_DETAILS`)
+- **shouldAuthenticate**: boolean. Defines wheather API request should be completed with authentication or not
+
+```
+const DEFAULT_RESOURCE_DETAILS = {
+  path: 'test',
+  method: 'GET',
+  parameters: {"custom-param1" : "p1", "custom-param2" : "p2"},
+  encoding: 'application/json',
+  headers: {"custom-header1" : "val1", "custom-header2" : "val2"},
+};
+```
+
+Usage example:
+```
+import { useImplicitResource } from "react-native-sdk-beta";
+  const {loading, data, error, profileId, setProfileId} = useImplicitResource(
+    {...DEFAULT_RESOURCE_DETAILS, path: 'user-id-decorated'},
+    true
+  );
+```
+
+Where:
+- **loading**:  boolean. Defines wheather request is still processing or not.
+- **data**: object. Data object which was returned by API server.
+- **error**: object. Contains errors which accured for API request.
+- **profileId**: string. Profile id returned by SDK. Implicit request dependant on this value, so it should be set.
+- **setProfileId**: func. Setter function, always should be specified. Exposed to grant more control for wrapper users.
+
+
 ## Supported Methods
 
-| Method                     | Description                                                                                                                                                                               |
+| Methods                     | Description                                                                                                                                                                               |
 | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **`setConfigModelClassName(className)`**                  |  (Android only) Sets the path to OneginiConfigModel class(e.g. `com.exampleapp.OneginiConfigModel`). By default SDK looking for config at `[RN_application_package_classpath].OneginiConfigModel`. This has to be set **before** startClient(). More information [HERE](#android-setup-config)                                                |
 | **`setSecurityControllerClassName(className)`**           |  (Android only) Sets the path to SecurityController class(e.g. `com.exampleapp.SecurityController`). By default controller brought from `com.onegini.mobile.SecurityController`. This has to be set **before** startClient(). More information [HERE](#android-setup-security-controller)
 | **`startClient(config):Promise`**                         |  Method init the OriginiSDK. Config is optional. Example object is in "js/config.js". See structure [HERE](#config-structure). If the config is not set the app uses the "js/config.js" as the default.                                                             |                                      |
 | **`addEventListener(eventType, cb)`**                     |  Adds listener for certain event type(ONEGINI_PIN_NOTIFICATION, ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION).        |
 | **`removeEventListener(eventType, cb)`**                  |  Removes listener for certain event type(ONEGINI_PIN_NOTIFICATION, ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION)       |
+|                                                           |
+| **=== Data getters ===**                                  |
 | **`getIdentityProviders()`**                              |  Returns the identity Providers with are registered int the lib.  |
-| **`getAccessToken()`**                                    |  Returns the access token if exist. **[iOS not supported, yet**] |
-| **`enrollMobileAuthentication()`**                        |  The first enrollment step. **[iOS not supported, yet**] |
-| **`submitAcceptMobileAuthOtp()`**                         |  User can return accept authentication request. **[iOS not supported, yet**] |
-| **`submitDenyMobileAuthOtp()`**                           |  User can return deny authentication request. **[iOS not supported, yet**] |
-| **`handleMobileAuthWithOtp()`**                           |  User can return otpCode. **[iOS not supported, yet**] |
-| **`getAuthenticatedUserProfile()`**                       |  Returns user who is logged in. **[iOS not supported, yet**] |
-| **`registerUser(identityProviderId):Promise`**            |  Starts the process of registration user. If success then the response contain the success = true if not then contain success = false. |
-| **`deregisterUser(profileId):Promise`**                   |  Starts the process of deregistration user. If success then the response contain the success = true if not then contain success = false. |
+| **`getAccessToken()`**                                    |  Returns the access token if exist. |
 | **`getRedirectUri():Promise`**                            |  Returns an object with the redirect Uri field. |
 | **`getUserProfiles():Promise`**                           |  Returns all registered profiles id. |
+| **`getAuthenticatedUserProfile()`**                       |  Returns user who is logged in. |
+|                                                           |
+| **=== Resource getters ===**                              |
+| **`authenticateUserImplicitly(profileId: string)`**       |  Returns Promise. In success scenario will be resolved with **true** value, in error scenario - will be rejected with error info.  |
+| **`authenticateDeviceForResource()`**                     |  Returns Promise. In success scenario will be resolved with **true** value, in error scenario - will be rejected with error info.  |
+| **`resourceRequest(isImplicit: boolean, details: object)`**. |  Returns Promise. In success scenario will be resolved with **object** value, in error scenario - will be rejected with error info. |
+|                                                           |
+| **=== User register/deregister ===**                      |
+| **`registerUser(identityProviderId):Promise`**            |  Starts the process of registration user. If success then the response contain the success = true if not then contain success = false. |
+| **`deregisterUser(profileId):Promise`**                   |  Starts the process of deregistration user. If success then the response contain the success = true if not then contain success = false. |
 | **`handleRegistrationCallback(uri)`**                     |  Pass a url for the registration process which obtained from browser redirect action. |
 | **`cancelRegistration():Promise`**                        |  Interrupts process of registration. |
-| **`submitCustomRegistrationReturnSuccess(identityProviderId, result)`**|  Triggers the ReturnSuccess method in callback from the custom registration process.  If the identityProviderId does not exist then an error occurs. **[iOS not supported, yet**|
-| **`submitCustomRegistrationReturnError(identityProviderId, result)`** |  Triggers the ReturnError method in callback from the custom registration process.If the identityProviderId does not exist then an error occurs. **[iOS not supported, yet**|
-| **`submitPinAction(flow, action, pin):Promise`**          |  Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION"). |
-| **`changePin():Promise`**                                 |  Starts the process of changin PIN for currently authenticated user.  |
+|                                                           |
+| **=== Authentication ===**                                |
 | **`authenticateUser(profileId):Promise`**                 |  Starts the process of authentication user.  |
 | **`logout():Promise`**                                    |  Starts the process of logout user.  |
-| **`getRegisteredAuthenticators():Promise`**               |  Returns all authenticators which are registered. One of the authenticators can be set as preferred authenticator.|
 | **`getAllAuthenticators():Promise`**                      |  Returns all supported authenticators.  |
-| **`setPreferredAuthenticator(profileId, idOneginiAuthenticator):Promise`** |  sets an authenticator that is used at the process of user authentication  **[iOS not supported, yet**] |
-| **`registerFingerprintAuthenticator(profileId):Promise`**     |  starts the process of registration a fingerprint **[iOS not supported, yet**] |
-| **`deregisterFingerprintAuthenticator(profileId):Promise`**   |  starts the process of deregistration a fingerprint **[iOS not supported, yet**] |
-| **`isFingerprintAuthenticatorRegistered(profileId):Promise`** | **[iOS not supported, yet**] |
-| **`submitFingerprintAcceptAuthenticationRequest():Promise`**          | User can return  accept authentication request **[iOS not supported, yet**] |
-| **`submitFingerprintDenyAuthenticationRequest():Promise`**            | User can return  deny authentication request **[iOS not supported, yet**] |
-| **`submitFingerprintFallbackToPin():Promise`**                    | User can return  fallback to authentication by pin **[iOS not supported, yet**] |
+| **`getRegisteredAuthenticators():Promise`**               |  Returns all authenticators which are registered. One of the authenticators can be set as preferred authenticator.|
+| **`setPreferredAuthenticator(profileId, idOneginiAuthenticator):Promise`** |  Sets an authenticator that is used at the process of user authentication |
+|                                                           |
+| **=== PIN ===**                                           |
+| **`submitPinAction(flow, action, pin):Promise`**          |  Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION"). |
+| **`changePin():Promise`**                                 |  Starts the process of changin PIN for currently authenticated user.  |
+|                                                           |
+| **=== Fingerprint ===**                                   |
+| **`registerFingerprintAuthenticator(profileId):Promise`**     | Starts the process of registration a fingerprint |
+| **`deregisterFingerprintAuthenticator(profileId):Promise`**   | Starts the process of deregistration a fingerprint |
+| **`isFingerprintAuthenticatorRegistered(profileId):Promise`** | Returns boolean value which defines weather fingerprint authenticator already registered |
+| **`submitFingerprintAcceptAuthenticationRequest():Promise`**  | (Android only) User can return  accept authentication request |
+| **`submitFingerprintDenyAuthenticationRequest():Promise`**    | (Android only) User can return  deny authentication request |
+| **`submitFingerprintFallbackToPin():Promise`**                | (Android only) User can return  fallback to authentication by pin |
+|                                                           |
+| **=== OTP ===**                                           |
+| **`enrollMobileAuthentication()`**                        |  The first enrollment step. |
+| **`acceptMobileAuthConfirmation()`**                      |  User can return accept authentication request. |
+| **`denyMobileAuthConfirmation()`**                        |  User can return deny authentication request. |
+| **`handleMobileAuthWithOtp()`**                           |  User can return otpCode. |
+| **`submitCustomRegistrationAction(action, identityProviderId, token)`**|  Triggers the process of the custom registration. Where **action** = CUSTOM_REGISTRATION_ACTIONS and **token** = obtained from the server. If the identityProviderId does not exist then an error occurs. |
+|                                                           |
+| **=== App2Web ===**                                       |
+| **`startSingleSignOn()`**                                 |  Redirects user to Web app with loggin in user. |
