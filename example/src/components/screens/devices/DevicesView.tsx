@@ -1,62 +1,45 @@
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View, ScrollView, Alert} from 'react-native';
+import React from 'react';
+import {StyleSheet, Text, View, ScrollView} from 'react-native';
 import AppColors from '../../constants/AppColors';
 import Layout from '../../constants/Layout';
-import OneginiSdk, {Types} from 'react-native-sdk-beta';
+import { DEFAULT_RESOURCE_DETAILS, useResource} from 'react-native-sdk-beta';
+
+const renderDevice = (device: any) => {
+  return (
+    <View key={device['id']} style={styles.row}>
+      <Text style={styles.info}>{"name: " + device['name']}</Text>
+      <Text style={styles.info}>{"application: " + device['application']}</Text>
+      <Text style={styles.info}>{"platform: " + device['platform']}</Text>
+    </View>
+  )
+}
+
+//@todo resolve this with more types for resources
+const getData = (data: any, key: string) => {
+  if(data[key]) {
+    return data[key];
+  } else {
+    return `No data for key: ${key}`;
+  }
+}
 
 const DevicesView: React.FC<{}> = () => {
-  const [isLoading, setLoading] = useState(true);
-  const [devices, setDevices] = useState<Types.Device[]>([
-    {
-      id: '',
-      name: '',
-      application: '',
-      platform: '',
-      isMobileAuthenticationEnabled: false,
-    },
-  ]);
+  const {loading, data, error} = useResource(
+    {...DEFAULT_RESOURCE_DETAILS, path: 'devices'},
+    true
+  );
 
-  useEffect(() => {
-    OneginiSdk.getDeviceListResource()
-      .then((it) => {
-        setDevices(it);
-        setLoading(false);
-      })
-      .catch((e) => {
-        Alert.alert('msg', e.message);
-        setLoading(false);
-      });
-  }, []);
-
-  const renderLoading = () => {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.loading}>loading ... .</Text>
-      </View>
-    );
-  };
-
-  const base = () => {
-    return (
-      <ScrollView style={styles.container}>
+  return (
+    <ScrollView style={styles.container}>
+      {loading && <Text style={styles.loading}>{'loading ...'}</Text>}
+      {error && <Text style={[styles.loading, { color: AppColors.red }]}>{getData(error, 'message')}</Text>}
+      {data && !loading && !error && (
         <View style={styles.scrollViewContainer}>
-          {devices.map((it) => {
-            return (
-              <View key={it.id} style={styles.row}>
-                <Text style={styles.info}>{'name: ' + it.name}</Text>
-                <Text style={styles.info}>
-                  {'application: ' + it.application}
-                </Text>
-                <Text style={styles.info}>{'platform: ' + it.platform}</Text>
-              </View>
-            );
-          })}
+          {getData(data, 'devices')?.map((device: any) => renderDevice(device))}
         </View>
-      </ScrollView>
-    );
-  };
-
-  return isLoading ? renderLoading() : base();
+      )}
+    </ScrollView>
+  )
 };
 
 const styles = StyleSheet.create({

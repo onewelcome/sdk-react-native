@@ -9,6 +9,7 @@ import * as Types from './data-types';
 import * as Events from './events';
 import {usePinFlow} from './pin-flow';
 import {useFingerprintFlow} from './fingerprint-flow';
+import {useResource, useImplicitResource, DEFAULT_RESOURCE_DETAILS} from './resource';
 
 //
 
@@ -43,11 +44,10 @@ interface NativeMethods {
   getRedirectUri(): Promise<Types.RedirectUri>; // TODO: I think it should be moved "behind" SDK - dev should not know about it
 
   // Resource getters
-  getImplicitDataResource(
-    profileId: string,
-  ): Promise<Types.ImplicitUserDetails>;
-  getAppDetailsResource(): Promise<Types.AppDetailsResources>;
-  getDeviceListResource(): Promise<Types.Device[]>;
+  //@todo extend types for details and responses
+  authenticateUserImplicitly(profileId: string): Promise<any>;
+  authenticateDeviceForResource(resourcePath: string): Promise<any>;
+  resourceRequest(isImplicit: boolean, details: any): Promise<any>;
 
   // User register/deregister
   registerUser(identityProviderId: string | null): Promise<Types.Profile>;
@@ -165,6 +165,6 @@ const OneginiSdk = {
   ...nativeMethods,
 };
 
-export {Events, Types, usePinFlow, useFingerprintFlow};
+export {Events, Types, usePinFlow, useFingerprintFlow, useResource, useImplicitResource, DEFAULT_RESOURCE_DETAILS};
 
 export default OneginiSdk;
