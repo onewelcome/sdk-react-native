@@ -76,9 +76,10 @@ const OneginiSdk = {
   authenticateDeviceForResource: (resourcePath) => RNOneginiSdk.authenticateDeviceForResource(resourcePath),
   resourceRequest: (isImplicit = false, details = {}) => RNOneginiSdk.resourceRequest(isImplicit, details),
 
-  getImplicitDataResource: (profileId) => RNOneginiSdk.getImplicitDataResource(profileId),
-  getAppDetailsResource: () => RNOneginiSdk.getAppDetailsResource(),
-  getDeviceListResource: () => RNOneginiSdk.getDeviceListResource(),
+  // this was replaced by methods above
+  // getImplicitDataResource: (profileId) => RNOneginiSdk.getImplicitDataResource(profileId),
+  // getAppDetailsResource: () => RNOneginiSdk.getAppDetailsResource(),
+  // getDeviceListResource: () => RNOneginiSdk.getDeviceListResource(),
 
   // User register/deregister
   registerUser: (identityProvider) => RNOneginiSdk.registerUser(identityProvider), //@todo return whole user + pass userName from RN
