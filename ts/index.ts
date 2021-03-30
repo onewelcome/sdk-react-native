@@ -8,6 +8,7 @@ import {
 import * as Types from './data-types';
 import * as Events from './events';
 import {usePinFlow} from './pin-flow';
+import {useFingerprintFlow} from './fingerprint-flow';
 
 //
 
@@ -164,6 +165,6 @@ const OneginiSdk = {
   ...nativeMethods,
 };
 
-export {Events, Types, usePinFlow};
+export {Events, Types, usePinFlow, useFingerprintFlow};
 
 export default OneginiSdk;
