@@ -45,7 +45,7 @@ const usePinFlow = () => {
 
   const handleNotification = useCallback(
     (event: any) => {
-      console.log('handleNotification: ', event);
+      console.log('handle PIN notification event: ', event);
 
       switch (event.action) {
         case Events.PinNotification.Open:

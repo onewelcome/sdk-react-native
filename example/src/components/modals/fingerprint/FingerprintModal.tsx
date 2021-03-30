@@ -1,69 +1,39 @@
-import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Modal, Text, TextInput} from 'react-native';
-import OneginiSdk, {Types, Events} from 'react-native-sdk-beta';
-import ObjectIdHelper from '../../helpers/ObjectIdHelper';
+import React from 'react';
+import {StyleSheet, View, Modal, Text} from 'react-native';
+import {Events, useFingerprintFlow} from 'react-native-sdk-beta';
 import AppColors from '../../constants/AppColors';
 import Button from '../../general/Button';
 
+const MESSAGE_BY_STAGE: Map<Events.FingerprintStage, string> = new Map ([
+  [Events.FingerprintStage.Idle, 'Waiting for fingerprint flow trigger...'],
+  [Events.FingerprintStage.Started, 'Use Fingerprint Sensor'],
+  [Events.FingerprintStage.NextAttempt, 'Try again...'],
+  [Events.FingerprintStage.Captured, 'Verifying...'],
+  [Events.FingerprintStage.Finished, 'Done'],
+]);
+
 const FingerprintModal: React.FC<{}> = () => {
-  const [id, setId] = useState(ObjectIdHelper.getNewID('FingerprintModal')); // Not used. Then why is it here?
-  const [message, setMessage] = useState('Touch sensor');
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const listener = OneginiSdk.addEventListener(
-      Events.SdkNotification.Fingerprint,
-      (event: any) => {
-        switch (event.action) {
-          case Events.FingerprintNotification.StartAuthentication:
-            setVisible(true);
-            OneginiSdk.submitFingerprintAcceptAuthenticationRequest();
-            setMessage('Touch sensor');
-            break;
-          case Events.FingerprintNotification.OnNextAuthenticationAttempt:
-            setMessage('Try again…');
-            break;
-          case Events.FingerprintNotification.OnFingerprintCaptured:
-            setMessage('Verifying…');
-            break;
-          case Events.FingerprintNotification.FinishAuthentication:
-            setVisible(false);
-            break;
-        }
-      },
-    );
-
-    return () => {
-      listener.remove();
-    };
-  }, []);
+  const {active, stage, fallbackToPin, cancelFlow} = useFingerprintFlow();
+  const message = MESSAGE_BY_STAGE.get(stage);
 
   return (
     <Modal
       transparent={false}
       animationType="fade"
-      visible={visible}
-      onRequestClose={() => setVisible(false)}>
+      visible={active}
+      onRequestClose={() => null}>
       <View style={styles.container}>
-        <Text style={styles.title}>{'Confirm with fingerprint'}</Text>
-        <Text style={styles.message}>{message}</Text>
+        <Text style={styles.title}>
+          {"Confirm with fingerprint"}
+        </Text>
+        <Text style={styles.message}>
+          {message}
+        </Text>
         <View style={styles.buttonContainer}>
-          <Button
-            name={'USE PIN CODE'}
-            onPress={() => {
-              OneginiSdk.submitFingerprintFallbackToPin();
-              setVisible(false);
-            }}
-          />
+          <Button name={"USE PIN CODE"} onPress={() => fallbackToPin()} />
         </View>
         <View style={styles.buttonContainer}>
-          <Button
-            name={'CANCEL'}
-            onPress={() => {
-              OneginiSdk.submitFingerprintDenyAuthenticationRequest();
-              setVisible(false);
-            }}
-          />
+          <Button name={"CANCEL"} onPress={() => cancelFlow()} />
         </View>
       </View>
     </Modal>

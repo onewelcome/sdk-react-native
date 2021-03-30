@@ -67,7 +67,7 @@ PODS:
     - DoubleConversion
     - glog
   - glog (0.3.5)
-  - local-react-native-sdk-beta (0.5.1):
+  - local-react-native-sdk-beta (0.6.0):
     - OneginiSDKiOS (= 9.6.0)
     - React
   - OneginiSDKiOS (9.6.0)
@@ -300,8 +300,8 @@ PODS:
     - React-Core (= 0.63.3)
     - React-cxxreact (= 0.63.3)
     - React-jsi (= 0.63.3)
-  - RNCAsyncStorage (1.13.2):
-    - React
+  - RNCAsyncStorage (1.13.4):
+    - React-Core
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
     - Yoga (~> 1.14)
@@ -434,7 +434,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   local-react-native-sdk-beta:
-    :commit: 1b8fa231e5bf6a2b9f2a5b8b1751c21d1ab86a7e
+    :commit: c47099f9d74e9b3911c30cf3f27de01c2c4162af
     :git: file:///Users/valeriy.rumak/WebstormProjects/Develocraft/Onegini/react-native-onegini-sdk
 
 SPEC CHECKSUMS:
@@ -453,7 +453,7 @@ SPEC CHECKSUMS:
   FlipperKit: ab353d41aea8aae2ea6daaf813e67496642f3d7d
   Folly: b73c3869541e86821df3c387eb0af5f65addfab4
   glog: 40a13f7840415b9a77023fbcae0f1e6f43192af3
-  local-react-native-sdk-beta: 61a828791ef6d66cd73a5f9dba5550982bacc2e0
+  local-react-native-sdk-beta: 93072f9e5c48b29e9d1977ca280e94480350d1d9
   OneginiSDKiOS: 407d6cfc8eeb4c8b76c2662dacef514153cc29eb
   OpenSSL-Universal: ff34003318d5e1163e9529b08470708e389ffcdd
   RCTRequired: 48884c74035a0b5b76dbb7a998bd93bcfc5f2047
@@ -476,7 +476,7 @@ SPEC CHECKSUMS:
   React-RCTText: 65a6de06a7389098ce24340d1d3556015c38f746
   React-RCTVibration: 8e9fb25724a0805107fc1acc9075e26f814df454
   ReactCommon: 4167844018c9ed375cc01a843e9ee564399e53c3
-  RNCAsyncStorage: 05bae7ecfab1cbd5441993f1ca098f7c3b3f8d0e
+  RNCAsyncStorage: 0701cb7395f06d744184641241888a0eec0e2f2a
   Yoga: 7d13633d129fd179e01b8953d38d47be90db185a
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 

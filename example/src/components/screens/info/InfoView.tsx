@@ -1,70 +1,77 @@
-import React, {useEffect, useState} from 'react';
-import {Alert, StyleSheet, Text, View} from 'react-native';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import {StyleSheet, Text, View} from 'react-native';
 import Button from '../../general/Button';
 import ContentContainer from '../dashboard/components/ContentContainer';
 import AppColors from '../../constants/AppColors';
-import OneginiSdk from 'react-native-sdk-beta';
+import OneginiSdk, { DEFAULT_RESOURCE_DETAILS, useImplicitResource, useResource } from 'react-native-sdk-beta';
 
 interface Props {
   onFinished?: () => void;
 }
 
+const handleImplicitData = async (setProfileError: Dispatch<SetStateAction<any>>, profileId: string | null, setProfileId: Dispatch<SetStateAction<any>>) => {
+  try {
+    const profiles = await OneginiSdk.getUserProfiles();
+
+    if (profiles[0]) {
+      if(profileId !== profiles[0]?.profileId) {
+        setProfileId(profiles[0].profileId);
+      }
+    } else {
+      setProfileError('No profiles registered.')
+    }
+  } catch (e) {
+    setProfileError(e);
+  }
+};
+
+//@todo resolve this with more types for resources
+const getData = (data: any, key: string) => {
+  if(data[key]) {
+    return data[key];
+  } else {
+    return `No data for key: ${key}`;
+  }
+}
+
 const InfoView: React.FC<Props> = (props) => {
-  const [profileId, setProfileId] = useState('');
-  const [implicitDetails, setImplicitDetails] = useState('');
-  const [applicationDetails, setApplicationDetails] = useState({
-    applicationIdentifier: '',
-    applicationVersion: '',
-    applicationPlatform: '',
-  });
+  const [profileError, setProfileError] = useState(null);
+  const implicitResource = useImplicitResource(
+    {...DEFAULT_RESOURCE_DETAILS, path: 'user-id-decorated'}
+  );
+  const resource = useResource(
+    {...DEFAULT_RESOURCE_DETAILS, path: 'application-details'},
+    true
+  );
 
   useEffect(() => {
-    OneginiSdk.getUserProfiles().then((profiles) => {
-      var profile = profiles[0];
-      if (profile != null) {
-        setProfileId(profile.profileId);
-        OneginiSdk.getImplicitDataResource(profile.profileId)
-          .then((details) => {
-            setImplicitDetails(JSON.stringify(details));
-          })
-          .catch((e) => {
-            setImplicitDetails(e.message);
-          });
-      }
-    });
-
-    OneginiSdk.getAppDetailsResource()
-      .then((it) => {
-        setApplicationDetails(it);
-      })
-      .catch((e) => {
-        Alert.alert('error', e);
-      });
+    handleImplicitData(setProfileError, implicitResource.profileId, implicitResource.setProfileId);
   }, []);
 
   return (
     <ContentContainer containerStyle={styles.container}>
       <View style={styles.row}>
         <Text style={styles.label}>User Info</Text>
-        <Text style={styles.info}>{'Profile id:  ' + profileId}</Text>
-        <Text style={styles.info}>
-          {'Implicit details: ' + implicitDetails}
-        </Text>
+        {implicitResource.loading && <Text style={styles.info}>{'Loading...'}</Text>}
+        {profileError && <Text style={styles.infoError}>{'Error:  ' + profileError}</Text>}
+        {implicitResource.error && <Text style={styles.infoError}>{'Implicit Error:  ' + implicitResource.error}</Text>}
+        {implicitResource.profileId && <Text style={styles.info}>{"Profile id:  " + implicitResource.profileId}</Text>}
+        {implicitResource.data && <Text style={styles.info}>{`Implicit details: ${getData(implicitResource.data, 'decorated_user_id')}`}</Text>}
       </View>
       <View style={styles.row}>
         <Text style={styles.label}>Device details</Text>
-        <Text style={styles.info}>
-          {'Application ID: ' + applicationDetails.applicationIdentifier}
-        </Text>
-        <Text style={styles.info}>
-          {'Application Version: ' + applicationDetails.applicationVersion}
-        </Text>
-        <Text style={styles.info}>
-          {'Platform: ' + applicationDetails.applicationPlatform}
-        </Text>
+        {resource.loading && <Text style={styles.info}>{'Loading...'}</Text>}
+        {resource.error && <Text style={styles.infoError}>{'Resource Error:  ' + resource.error}</Text>}
+        {resource.data && (
+          <>
+            <Text style={styles.info}>{`Application ID: ${getData(resource.data, 'application_identifier')}`}</Text>
+            <Text style={styles.info}>{`Application Version: ${getData(resource.data, 'application_platform')}`}</Text>
+            <Text style={styles.info}>{`Platform: ${getData(resource.data, 'application_version')}`}</Text>
+          </>
+        )}
       </View>
       <View style={styles.cancelButton}>
-        <Button name={'CANCEL'} onPress={props.onFinished} />
+        <Button name={"CANCEL"} onPress={props.onFinished}/>
       </View>
     </ContentContainer>
   );
@@ -78,7 +85,7 @@ const styles = StyleSheet.create({
   row: {
     paddingHorizontal: '10%',
     justifyContent: 'flex-start',
-    alignItems: 'flex-start',
+    alignItems: 'flex-start'
   },
   label: {
     justifyContent: 'center',
@@ -89,6 +96,13 @@ const styles = StyleSheet.create({
   info: {
     justifyContent: 'center',
     color: AppColors.black,
+    fontSize: 12,
+    fontWeight: '500',
+    padding: 6,
+  },
+  infoError: {
+    justifyContent: 'center',
+    color: AppColors.red,
     fontSize: 12,
     fontWeight: '500',
     padding: 6,
