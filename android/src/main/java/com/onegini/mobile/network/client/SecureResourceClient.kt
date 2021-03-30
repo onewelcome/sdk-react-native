@@ -16,8 +16,14 @@
 package com.onegini.mobile.network.client
 
 import com.onegini.mobile.OneginiSDK
+import com.onegini.mobile.model.ResourceRequestDetails
 import com.onegini.mobile.sdk.android.client.OneginiClient
+import okhttp3.Headers
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Response
+import okhttp3.internal.Util.toHeaders
+import okhttp3.internal.http2.Header
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -34,18 +40,20 @@ class SecureResourceClient(val oneginiSDK: OneginiSDK) {
     }
 
     fun <T> prepareSecuredAnonymousRetrofitClient(clazz: Class<T>): T {
-        val okHttpClient: OkHttpClient = oneginiSDK.oneginiClient.deviceClient.anonymousResourceOkHttpClient
+        var okHttpClient: OkHttpClient = oneginiSDK.oneginiClient.deviceClient.anonymousResourceOkHttpClient
         return prepareSecuredRetrofitClient(clazz, okHttpClient)
     }
 
     private fun <T> prepareSecuredRetrofitClient(clazz: Class<T>, okHttpClient: OkHttpClient): T {
         val oneginiClient: OneginiClient = oneginiSDK.oneginiClient
+
         val retrofit = Retrofit.Builder()
                 .client(okHttpClient)
                 .baseUrl(oneginiClient.configModel.resourceBaseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build()
+
         return retrofit.create(clazz)
     }
 }

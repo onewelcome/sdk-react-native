@@ -2,7 +2,7 @@ protocol BridgeToMobileAuthConnectorProtocol: AnyObject {
     var bridgeConnector: BridgeConnectorProtocol? { get set }
     var mobileAuthHandler: MobileAuthConnectorToHandlerProtocol { get }
 
-    func sendNotification(event: MobileAuthNotification, requestMessage: String?, error: SdkError?) -> Void
+    func sendNotification(event: MobileAuthNotification, requestMessage: String?, error: NSError?) -> Void
 }
 
 class MobileAuthConnector : BridgeToMobileAuthConnectorProtocol {
@@ -13,7 +13,7 @@ class MobileAuthConnector : BridgeToMobileAuthConnectorProtocol {
         mobileAuthHandler = MobileAuthHandler()
     }
 
-    func sendNotification(event: MobileAuthNotification, requestMessage: String?, error: SdkError?) {
+    func sendNotification(event: MobileAuthNotification, requestMessage: String?, error: NSError?) {
         switch (event){
             case .startAuthentication:
                 sendEvent(data: ["mobileAuthenticationRequest": ["message": requestMessage], "action": MobileAuthNotification.startAuthentication.rawValue])

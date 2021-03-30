@@ -3,14 +3,15 @@ import OneginiSDKiOS
 import OneginiCrypto
 
 protocol AppToWebHandlerProtocol: AnyObject {
-    func signInAppToWeb(targetURL: URL?, completion: @escaping (NSMutableDictionary?, SdkError?) -> Void)
+    func signInAppToWeb(targetURL: URL?, completion: @escaping (NSMutableDictionary?, NSError?) -> Void)
 }
 
 class AppToWebHandler: AppToWebHandlerProtocol {
 
-    func signInAppToWeb(targetURL: URL?, completion: @escaping (NSMutableDictionary?, SdkError?) -> Void) {
+    func signInAppToWeb(targetURL: URL?, completion: @escaping (NSMutableDictionary?, NSError?) -> Void) {
         guard let _targetURL = targetURL else {
-            completion(nil, SdkError.init(errorDescription: "Provided url is incorrect."))
+            let error = NSError(domain: ONGAppToWebSingleSignOnErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey : "Provided url is incorrect."])
+            completion(nil, error)
             return
         }
 
@@ -18,11 +19,7 @@ class AppToWebHandler: AppToWebHandlerProtocol {
             if let _url = url, let _token = token {
                 completion(["token": _token, "url": _url.absoluteString ], nil)
             } else if let _error = error {
-                // Handle error
-                debugPrint(_error)
-
-                let sdkError = SdkError(errorDescription: _error.localizedDescription)
-                completion(nil, sdkError)
+                completion(nil, _error as NSError)
             }
         }
     }

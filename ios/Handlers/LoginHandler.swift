@@ -1,11 +1,11 @@
 protocol BridgeToLoginHandlerProtocol: AnyObject {
-    func authenticateUser(_ profile: ONGUserProfile, completion: @escaping (ONGUserProfile?, SdkError?) -> Void)
+    func authenticateUser(_ profile: ONGUserProfile, completion: @escaping (ONGUserProfile?, NSError?) -> Void)
 }
 
 
 class LoginHandler: NSObject, PinHandlerToReceiverProtocol {
     var pinChallenge: ONGPinChallenge?
-    var loginCompletion: ((ONGUserProfile?, SdkError?) -> Void)?
+    var loginCompletion: ((ONGUserProfile?, NSError?) -> Void)?
 
 
     func handlePin(pin: String?) {
@@ -19,9 +19,9 @@ class LoginHandler: NSObject, PinHandlerToReceiverProtocol {
         }
     }
 
-    fileprivate func mapErrorFromPinChallenge(_ challenge: ONGPinChallenge) -> SdkError? {
+    fileprivate func mapErrorFromPinChallenge(_ challenge: ONGPinChallenge) -> NSError? {
         if let error = challenge.error, error.code != ONGAuthenticationError.touchIDAuthenticatorFailure.rawValue {
-            return ErrorMapper().mapError(error, pinChallenge: challenge)
+            return error as NSError
         } else {
             return nil
         }
@@ -30,7 +30,7 @@ class LoginHandler: NSObject, PinHandlerToReceiverProtocol {
 
 extension LoginHandler : BridgeToLoginHandlerProtocol {
     //@todo add support for multiple authenticators in the future
-    func authenticateUser(_ profile: ONGUserProfile, completion: @escaping (ONGUserProfile?, SdkError?) -> Void) {
+    func authenticateUser(_ profile: ONGUserProfile, completion: @escaping (ONGUserProfile?, NSError?) -> Void) {
         loginCompletion = completion
         ONGUserClient.sharedInstance().authenticateUser(profile, delegate: self)
     }
@@ -46,7 +46,7 @@ extension LoginHandler: ONGAuthenticationDelegate {
     func userClient(_: ONGUserClient, didReceive challenge: ONGCustomAuthFinishAuthenticationChallenge) {
         // Will need this in the future
     }
-    
+
     func userClient(_: ONGUserClient, didReceive challenge: ONGBiometricChallenge) {
         challenge.sender.respondWithDefaultPrompt(for: challenge)
     }
@@ -60,12 +60,6 @@ extension LoginHandler: ONGAuthenticationDelegate {
     func userClient(_: ONGUserClient, didFailToAuthenticateUser profile: ONGUserProfile, error: Error) {
         pinChallenge = nil
         BridgeConnector.shared?.toPinHandlerConnector.pinHandler.closeFlow()
-
-        if error.code == ONGGenericError.actionCancelled.rawValue {
-            loginCompletion!(nil, SdkError(errorDescription: "Login cancelled."))
-        } else {
-            let mappedError = ErrorMapper().mapError(error)
-            loginCompletion!(nil, mappedError)
-        }
+        loginCompletion!(nil, error as NSError)
     }
 }

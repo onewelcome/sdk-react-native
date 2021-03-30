@@ -15,29 +15,42 @@
  */
 package com.onegini.mobile.network
 
+import com.google.gson.JsonObject
 import com.onegini.mobile.OneginiComponets
 import com.onegini.mobile.model.ImplicitUserDetails
-import com.onegini.mobile.network.client.ImplicitUserClient
+import com.onegini.mobile.model.ResourceRequestDetails
+import com.onegini.mobile.network.client.ResourcesClient
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import okhttp3.ResponseBody
 
 class ImplicitUserService private constructor() {
-    private val applicationDetailsRetrofitClient: ImplicitUserClient = OneginiComponets.secureResourceClient.prepareSecuredImplicitUserRetrofitClient(ImplicitUserClient::class.java)
-    val implicitUserDetails: Single<ImplicitUserDetails>
-        get() = applicationDetailsRetrofitClient.implicitUserDetails
+
+    private val applicationDetailsRetrofitClient: ResourcesClient
+            = OneginiComponets.secureResourceClient.prepareSecuredImplicitUserRetrofitClient(ResourcesClient::class.java)
+
+    fun getResource(requestDetails: ResourceRequestDetails): Single<JsonObject> {
+        val apiCall = when(requestDetails.method) {
+            ApiCall.GET -> applicationDetailsRetrofitClient.getResourcesDetails(requestDetails.path, requestDetails.headers)
+            ApiCall.POST -> applicationDetailsRetrofitClient.postResourcesDetails(requestDetails.path, requestDetails.headers, requestDetails.parameters)
+            ApiCall.PUT -> applicationDetailsRetrofitClient.putResourcesDetails(requestDetails.path, requestDetails.headers, requestDetails.parameters)
+            ApiCall.DELETE -> applicationDetailsRetrofitClient.deleteResourcesDetails(requestDetails.path, requestDetails.headers, requestDetails.parameters)
+        }
+
+        return apiCall
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+    }
 
     companion object {
         private var INSTANCE: ImplicitUserService? = null
-        val instance: ImplicitUserService
-            get() {
-                if (INSTANCE == null) {
-                    INSTANCE = ImplicitUserService()
-                }
-                return INSTANCE!!
+        fun getInstance(): ImplicitUserService {
+            if (INSTANCE == null) {
+                INSTANCE = ImplicitUserService()
             }
+            return INSTANCE!!
+        }
     }
 
 }
