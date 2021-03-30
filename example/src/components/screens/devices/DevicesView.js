@@ -24,7 +24,7 @@ const DevicesView = (props) => {
     return (
       <ScrollView style={styles.container}>
           {loading && <Text style={styles.loading}>{'loading ...'}</Text>}
-          {error && <Text style={[styles.loading, { color: AppColors.red }]}>{error}</Text>}
+          {error && <Text style={[styles.loading, { color: AppColors.red }]}>{error.message}</Text>}
           {data && !loading && !error && (
             <View style={styles.scrollViewContainer}>
                 {data['devices']?.map(device => renderDevice(device))}
