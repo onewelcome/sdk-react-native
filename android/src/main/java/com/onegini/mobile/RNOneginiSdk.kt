@@ -554,6 +554,8 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     private fun authenticateUserImplicitly(profileId: String?, promise: Promise) {
+        Log.d(LOG_TAG, "authenticateUserImplicitly profileId: $profileId");
+
         val userProfile = authenticatorManager.getUserProfile(profileId)
         if (userProfile == null) {
             promise.reject(OneginReactNativeException.PROFILE_DOES_NOT_EXIST.toString(), "The profileId $profileId does not exist")
@@ -573,6 +575,8 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     private fun authenticateDeviceForResource(resourcePath: String, promise: Promise) {
+        Log.d(LOG_TAG, "authenticateDeviceForResource resourcePath: $resourcePath");
+
         oneginiSDK.oneginiClient.deviceClient.authenticateDevice(arrayOf(resourcePath), object : OneginiDeviceAuthenticationHandler {
             override fun onSuccess() {
                 promise.resolve(null)
@@ -584,28 +588,41 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         })
     }
 
+    // type: User, ImplicitUser, Anonymous
     @ReactMethod
-    private fun resourceRequest(isImplicit: Boolean, details: ReadableMap, promise: Promise) {
-        Log.d(LOG_TAG, "resourceRequest [isImplicit: $isImplicit] call with $details");
+    private fun resourceRequest(type: String, details: ReadableMap, promise: Promise) {
+        Log.d(LOG_TAG, "resourceRequest [type: $type] call with $details");
 
         val requestDetails = ResourceRequestDetailsMapper.toResourceRequestDetails(details)
 
-        if (isImplicit) {
-            disposables.add(
-                    ImplicitUserService.getInstance()
-                            .getResource(requestDetails)
-                            .subscribe({
-                                promise.resolve(JsonMapper.toWritableMap(it))
-                            }) { throwable -> promise.reject(OneginReactNativeException.IMPLICIT_USER_DETAILS_ERROR.toString(), throwable.message) }
-            )
-        } else {
-            disposables.add(
-                    AnonymousService.getInstance()
-                            .getResource(requestDetails)
-                            .subscribe({
-                                promise.resolve(JsonMapper.toWritableMap(it))
-                            }) { throwable -> promise.reject(AUTHENTICATE_DEVICE_ERROR.toString(), throwable.message) }
-            )
+        when(type) {
+            "User" -> {
+                disposables.add(
+                        UserService.getInstance()
+                                .getResource(requestDetails)
+                                .subscribe({
+                                    promise.resolve(JsonMapper.toWritableMap(it))
+                                }) { throwable -> promise.reject(OneginReactNativeException.IMPLICIT_USER_DETAILS_ERROR.toString(), throwable.message) }
+                )
+            }
+            "ImplicitUser" -> {
+                disposables.add(
+                        ImplicitUserService.getInstance()
+                                .getResource(requestDetails)
+                                .subscribe({
+                                    promise.resolve(JsonMapper.toWritableMap(it))
+                                }) { throwable -> promise.reject(OneginReactNativeException.IMPLICIT_USER_DETAILS_ERROR.toString(), throwable.message) }
+                )
+            }
+            "Anonymous" -> {
+                disposables.add(
+                        AnonymousService.getInstance()
+                                .getResource(requestDetails)
+                                .subscribe({
+                                    promise.resolve(JsonMapper.toWritableMap(it))
+                                }) { throwable -> promise.reject(AUTHENTICATE_DEVICE_ERROR.toString(), throwable.message) }
+                )
+            }
         }
     }
 

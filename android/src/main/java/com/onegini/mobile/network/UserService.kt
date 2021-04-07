@@ -15,7 +15,10 @@
  */
 package com.onegini.mobile.network
 
+import com.google.gson.JsonObject
 import com.onegini.mobile.OneginiComponets
+import com.onegini.mobile.model.ResourceRequestDetails
+import com.onegini.mobile.network.client.ResourcesClient
 import com.onegini.mobile.network.client.UserClient
 import com.onegini.mobile.network.response.DevicesResponse
 import io.reactivex.Single
@@ -23,11 +26,21 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
 class UserService {
-    private val userRetrofitClient: UserClient = OneginiComponets.secureResourceClient.prepareSecuredUserRetrofitClient(UserClient::class.java)
-    val devices: Single<DevicesResponse>
-        get() = userRetrofitClient.devices
+    private val applicationDetailsRetrofitClient: ResourcesClient
+            = OneginiComponets.secureResourceClient.prepareSecuredUserRetrofitClient(ResourcesClient::class.java)
+
+    fun getResource(requestDetails: ResourceRequestDetails): Single<JsonObject> {
+        val apiCall = when(requestDetails.method) {
+            ApiCall.GET -> applicationDetailsRetrofitClient.getResourcesDetails(requestDetails.path, requestDetails.headers)
+            ApiCall.POST -> applicationDetailsRetrofitClient.postResourcesDetails(requestDetails.path, requestDetails.headers, requestDetails.parameters)
+            ApiCall.PUT -> applicationDetailsRetrofitClient.putResourcesDetails(requestDetails.path, requestDetails.headers, requestDetails.parameters)
+            ApiCall.DELETE -> applicationDetailsRetrofitClient.deleteResourcesDetails(requestDetails.path, requestDetails.headers, requestDetails.parameters)
+        }
+
+        return apiCall
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+    }
 
     companion object {
         private var INSTANCE: UserService? = null
