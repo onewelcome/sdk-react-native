@@ -245,11 +245,13 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     @objc
-    func resourceRequest(_ isImplicit: (Bool), details: (NSDictionary),
+    func resourceRequest(_ type: (String), details: (NSDictionary),
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
 
-        bridgeConnector.toResourceHandler.resourceRequest(isImplicit, details) {
+        let type = ResourceRequestType(rawValue: type) ?? .Anonymous
+
+        bridgeConnector.toResourceHandler.resourceRequest(type, details) {
             (data: [String: Any]?, error) -> Void in
 
             if let error = error {

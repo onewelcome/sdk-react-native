@@ -60,3 +60,21 @@ export interface SingleSignOnData {
   token: string;
   url: string;
 }
+
+export enum ResourceRequestType {
+  User = 'User',
+  Implicit = 'ImplicitUser',
+  Anonymous = 'Anonymous',
+}
+
+export interface StringMap {
+  [key: string]: string;
+}
+
+export interface ResourcesDetails {
+  path: string;
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  parameters: StringMap;
+  encoding: 'application/json' | 'none';
+  headers: StringMap;
+}

@@ -9,7 +9,7 @@ import * as Types from './data-types';
 import * as Events from './events';
 import {usePinFlow} from './pin-flow';
 import {useFingerprintFlow} from './fingerprint-flow';
-import {useResource, useImplicitResource, DEFAULT_RESOURCE_DETAILS} from './resource';
+import {useResources, DefaultResourcesDetails} from './resource';
 
 //
 
@@ -47,7 +47,10 @@ interface NativeMethods {
   //@todo extend types for details and responses
   authenticateUserImplicitly(profileId: string): Promise<any>;
   authenticateDeviceForResource(resourcePath: string): Promise<any>;
-  resourceRequest(isImplicit: boolean, details: any): Promise<any>;
+  resourceRequest(
+    type: Types.ResourceRequestType,
+    details: Types.ResourcesDetails,
+  ): Promise<any>;
 
   // User register/deregister
   registerUser(identityProviderId: string | null): Promise<Types.Profile>;
@@ -157,6 +160,20 @@ const nativeMethods: NativeMethods = {
     }
     return RNOneginiSdk.submitFingerprintFallbackToPin();
   },
+  //
+  resourceRequest: (
+    type: Types.ResourceRequestType,
+    details: Types.ResourcesDetails,
+  ): Promise<any> => {
+    return new Promise((resolve, reject) => {
+      RNOneginiSdk.resourceRequest(type, details)
+        .then(
+          (results: string) =>
+            isAndroid ? resolve(JSON.parse(results)) : resolve(results), // on Android we send string - we need to parse it
+        )
+        .catch(reject);
+    });
+  },
 };
 
 //
@@ -165,6 +182,13 @@ const OneginiSdk = {
   ...nativeMethods,
 };
 
-export {Events, Types, usePinFlow, useFingerprintFlow, useResource, useImplicitResource, DEFAULT_RESOURCE_DETAILS};
+export {
+  Events,
+  Types,
+  usePinFlow,
+  useFingerprintFlow,
+  useResources,
+  DefaultResourcesDetails,
+};
 
 export default OneginiSdk;

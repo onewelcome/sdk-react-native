@@ -2,44 +2,56 @@ import React from 'react';
 import {StyleSheet, Text, View, ScrollView} from 'react-native';
 import AppColors from '../../constants/AppColors';
 import Layout from '../../constants/Layout';
-import { DEFAULT_RESOURCE_DETAILS, useResource} from 'react-native-sdk-beta';
+import {
+  DefaultResourcesDetails,
+  useResources,
+  Types,
+} from 'react-native-sdk-beta';
 
 const renderDevice = (device: any) => {
   return (
     <View key={device['id']} style={styles.row}>
-      <Text style={styles.info}>{"name: " + device['name']}</Text>
-      <Text style={styles.info}>{"application: " + device['application']}</Text>
-      <Text style={styles.info}>{"platform: " + device['platform']}</Text>
+      <Text style={styles.info}>{'name: ' + device['name']}</Text>
+      <Text style={styles.info}>{'application: ' + device['application']}</Text>
+      <Text style={styles.info}>{'platform: ' + device['platform']}</Text>
     </View>
-  )
-}
+  );
+};
 
 //@todo resolve this with more types for resources
 const getData = (data: any, key: string) => {
-  if(data[key]) {
+  if (data[key]) {
     return data[key];
   } else {
     return `No data for key: ${key}`;
   }
-}
+};
 
 const DevicesView: React.FC<{}> = () => {
-  const {loading, data, error} = useResource(
-    {...DEFAULT_RESOURCE_DETAILS, path: 'devices'},
-    true
+  const {loading, data, error} = useResources(
+    Types.ResourceRequestType.User,
+    {
+      ...DefaultResourcesDetails,
+      path: 'devices',
+    },
+    false,
   );
 
   return (
     <ScrollView style={styles.container}>
       {loading && <Text style={styles.loading}>{'loading ...'}</Text>}
-      {error && <Text style={[styles.loading, { color: AppColors.red }]}>{getData(error, 'message')}</Text>}
+      {error && (
+        <Text style={[styles.loading, {color: AppColors.red}]}>
+          {getData(error, 'message')}
+        </Text>
+      )}
       {data && !loading && !error && (
         <View style={styles.scrollViewContainer}>
           {getData(data, 'devices')?.map((device: any) => renderDevice(device))}
         </View>
       )}
     </ScrollView>
-  )
+  );
 };
 
 const styles = StyleSheet.create({

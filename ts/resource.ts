@@ -1,32 +1,43 @@
-import { useState, useEffect, Dispatch, SetStateAction } from 'react';
-import OneginiSdk  from "./index";
+import {useState, useEffect, Dispatch, SetStateAction} from 'react';
+import OneginiSdk from './index';
+import {ResourceRequestType, ResourcesDetails} from './data-types';
 
-const DEFAULT_RESOURCE_DETAILS = {
+const DefaultResourcesDetails: ResourcesDetails = {
   path: 'test',
   method: 'GET',
-  parameters: {"custom-param1" : "p1", "custom-param2" : "p2"},
+  parameters: {'custom-param1': 'p1', 'custom-param2': 'p2'},
   encoding: 'application/json',
-  headers: {"custom-header1" : "val1", "custom-header2" : "val2"},
+  headers: {'custom-header1': 'val1', 'custom-header2': 'val2'},
 };
+
+//
 
 const fetchResource = async (
   setLoading: Dispatch<SetStateAction<boolean>>,
   setError: Dispatch<SetStateAction<any>>,
   setData: Dispatch<SetStateAction<any>>,
   shouldAuthenticate: boolean,
-  isImplicit: boolean,
-  resourceDetails: any,
-  profileId: string | null = null
+  type: ResourceRequestType,
+  resourceDetails: ResourcesDetails,
+  profileId: string | null = null,
 ) => {
-  try {
-    if (shouldAuthenticate && profileId) {
-      isImplicit
-        ? await OneginiSdk.authenticateUserImplicitly(profileId)
-        : await OneginiSdk.authenticateDeviceForResource(resourceDetails.path);
-    }
-    const data = await OneginiSdk.resourceRequest(isImplicit, resourceDetails);
+  // when type is ResourceRequestType.Implicit we require profileId
+  if (type === ResourceRequestType.Implicit && !profileId) {
+    return;
+  }
 
-    console.log("FETCH DATA = ", data)
+  try {
+    if (shouldAuthenticate) {
+      if (type === ResourceRequestType.Implicit && profileId) {
+        await OneginiSdk.authenticateUserImplicitly(profileId);
+      } else if (type === ResourceRequestType.Anonymous) {
+        await OneginiSdk.authenticateDeviceForResource(resourceDetails.path);
+      }
+    }
+
+    const data = await OneginiSdk.resourceRequest(type, resourceDetails);
+
+    console.log('fetchResource = ', data);
 
     setData(data);
     setLoading(false);
@@ -36,41 +47,45 @@ const fetchResource = async (
   }
 };
 
-const useResource = (resourceDetails = DEFAULT_RESOURCE_DETAILS, shouldAuthenticate = false) => {
+//
+
+function useResources(
+  type: ResourceRequestType,
+  details: ResourcesDetails,
+  shouldAuthenticate: boolean,
+  profileId?: string | null,
+) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [data, setData] = useState(null);
 
+  // get initial details - to prevent from rerender
+  const [currentDetails, setCurrentDetails] = useState(details);
+
+  // if details has changed
   useEffect(() => {
-    fetchResource(setLoading, setError, setData, shouldAuthenticate, false, resourceDetails);
-  }, []);
-
-  return {
-    loading,
-    data,
-    error
-  }
-};
-
-const useImplicitResource = (resourceDetails = DEFAULT_RESOURCE_DETAILS, shouldAuthenticate = true) => {
-  const [profileId, setProfileId] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-  const [data, setData] = useState(null);
-
-  useEffect(() => {
-    if(profileId) {
-      fetchResource(setLoading, setError, setData, shouldAuthenticate, true, resourceDetails, profileId);
+    if (JSON.stringify(details) !== JSON.stringify(currentDetails)) {
+      setCurrentDetails(details);
     }
-  }, [profileId]);
+  }, [details, currentDetails]);
+
+  useEffect(() => {
+    fetchResource(
+      setLoading,
+      setError,
+      setData,
+      shouldAuthenticate,
+      type,
+      currentDetails,
+      profileId,
+    );
+  }, [type, shouldAuthenticate, profileId, currentDetails]);
 
   return {
     loading,
     data,
     error,
-    profileId,
-    setProfileId,
-  }
+  };
 }
 
-export { useResource, useImplicitResource, DEFAULT_RESOURCE_DETAILS }
+export {useResources, DefaultResourcesDetails};
