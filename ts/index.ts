@@ -21,8 +21,8 @@ const OneginiEventEmitter =
     : DeviceEventEmitter;
 
 // helpers
-const isIOS = Platform.OS === 'ios';
-const isAndroid = Platform.OS === 'android';
+const isIOS = () => Platform.OS === 'ios';
+const isAndroid = () => Platform.OS === 'android';
 
 //
 
@@ -133,7 +133,7 @@ const nativeMethods: NativeMethods = {
   startClient: (
     sdkConfig: Types.Config = DefaultConfig,
   ): Promise<string | null> => {
-    if (isIOS) {
+    if (isIOS()) {
       return RNOneginiSdk.startClient();
     }
 
@@ -141,21 +141,21 @@ const nativeMethods: NativeMethods = {
   },
 
   submitFingerprintAcceptAuthenticationRequest: (): Promise<any> => {
-    if (isIOS) {
+    if (isIOS()) {
       return Promise.reject('This method is Android only');
     }
     return RNOneginiSdk.submitFingerprintAcceptAuthenticationRequest();
   },
 
   submitFingerprintDenyAuthenticationRequest: (): Promise<any> => {
-    if (isIOS) {
+    if (isIOS()) {
       return Promise.reject('This method is Android only');
     }
     return RNOneginiSdk.submitFingerprintDenyAuthenticationRequest();
   },
 
   submitFingerprintFallbackToPin: (): Promise<any> => {
-    if (isIOS) {
+    if (isIOS()) {
       return Promise.reject('This method is Android only');
     }
     return RNOneginiSdk.submitFingerprintFallbackToPin();
@@ -169,7 +169,7 @@ const nativeMethods: NativeMethods = {
       RNOneginiSdk.resourceRequest(type, details)
         .then(
           (results: string) =>
-            isAndroid ? resolve(JSON.parse(results)) : resolve(results), // on Android we send string - we need to parse it
+            isAndroid() ? resolve(JSON.parse(results)) : resolve(results), // on Android we send string - we need to parse it
         )
         .catch(reject);
     });
@@ -189,6 +189,7 @@ export {
   useFingerprintFlow,
   useResources,
   DefaultResourcesDetails,
+  DefaultConfig,
 };
 
 export default OneginiSdk;

@@ -42,6 +42,8 @@ const fetchResource = async (
     setData(data);
     setLoading(false);
   } catch (e) {
+    console.error('fetchResource error = ', e);
+
     setError(e);
     setLoading(false);
   }
