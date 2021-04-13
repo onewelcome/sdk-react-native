@@ -4,9 +4,11 @@ import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
 import com.onegini.mobile.model.rn.OneginiReactNativeConfig
 import com.onegini.mobile.model.rn.ReactNativeIdentityProvider
+import java.lang.NullPointerException
 
 object OneginiReactNativeConfigMapper {
 
+    @Throws(NullPointerException::class)
     fun toOneginiReactNativeConfig(rnConfig: ReadableMap): OneginiReactNativeConfig {
         return OneginiReactNativeConfig(
                 rnConfig.getString("configModelClassName"),

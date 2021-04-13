@@ -19,6 +19,8 @@ import com.onegini.mobile.Constants.MOBILE_AUTH_OTP_START_AUTHENTICATION
 import com.onegini.mobile.Constants.ONEGINI_PIN_NOTIFICATION
 import com.onegini.mobile.Constants.PinFlow
 import com.onegini.mobile.OneginiComponets.init
+import com.onegini.mobile.clean.wrapper.IOneginiSdkWrapper
+import com.onegini.mobile.clean.wrapper.OneginiSdkWrapper
 import com.onegini.mobile.exception.OneginReactNativeException
 import com.onegini.mobile.exception.OneginReactNativeException.Companion.AUTHENTICATE_DEVICE_ERROR
 import com.onegini.mobile.exception.OneginReactNativeException.Companion.FINGERPRINT_IS_NOT_ENABLED
@@ -63,6 +65,8 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         private const val TAG = "RNOneginiSdk"
     }
 
+    private val sdkWrapper: IOneginiSdkWrapper
+
     private val reactContext: ReactApplicationContext
     private val registrationManager: RegistrationManager
     private val authenticatorManager: AuthenticatorManager
@@ -76,6 +80,8 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     private val disposables = CompositeDisposable()
 
     init {
+        sdkWrapper = OneginiSdkWrapper()
+
         init(reactContext.applicationContext)
         this.reactContext = reactContext
         registrationManager = RegistrationManager(oneginiSDK)
@@ -96,23 +102,10 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     fun startClient(rnConfig: ReadableMap, promise: Promise) {
-        val config = OneginiReactNativeConfigMapper.toOneginiReactNativeConfig(rnConfig)
-
-        val oneginiClientInitializer = OneginiClientInitializer(
-                OneginiComponets.oneginiSDK)
-
-        oneginiClientInitializer.startOneginiClient(config, object : InitializationHandler {
-            override fun onSuccess() {
-                oneginiSDKInitiated()
-                promise.resolve(null)
-            }
-
-            override fun onError(error: OneginiInitializationError) {
-                promise.reject(error.errorType.toString(), error.message)
-            }
-        })
+        sdkWrapper.startClient(rnConfig, promise) { oneginiSDKInitiated() }
     }
 
+    // TODO: remove from here to Wrapper/UseCase
     private fun oneginiSDKInitiated() {
         oneginiSDK.setPinNotificationObserver(pinNotificationObserver)
         oneginiSDK.setCustomRegistrationObserver(customRegistrationObserver)
@@ -122,7 +115,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     fun getIdentityProviders(promise: Promise) {
-        promise.resolve(OneginiIdentityProviderMapper.toWritableMap(oneginiSDK.oneginiClient.userClient.identityProviders))
+        sdkWrapper.getIdentityProviders(promise)
     }
 
     @ReactMethod
@@ -133,23 +126,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     @ReactMethod
     fun getAuthenticatedUserProfile(promise: Promise) {
         promise.resolve(toWritableMap(oneginiSDK.oneginiClient.userClient.authenticatedUserProfile))
-    }
-
-    @ReactMethod
-    fun registerFingerprintAuthenticator(profileId: String, promise: Promise) {
-        try {
-            authenticatorManager.registerFingerprintAuthenticator(profileId, object : OneginiAuthenticatorRegistrationHandler {
-                override fun onSuccess(info: CustomInfo?) {
-                    promise.resolve(CustomInfoMapper.toWritableMap(info))
-                }
-
-                override fun onError(error: OneginiAuthenticatorRegistrationError?) {
-                    promise.reject(error?.errorType.toString(), error?.message)
-                }
-            })
-        } catch (e: OneginiError) {
-            promise.reject(e.errorType.toString(), e.message)
-        }
     }
 
     @ReactMethod
@@ -169,6 +145,24 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
             promise.reject(e.errorType.toString(), e.message)
         }
     }
+
+    @ReactMethod
+    fun registerFingerprintAuthenticator(profileId: String, promise: Promise) {
+        try {
+            authenticatorManager.registerFingerprintAuthenticator(profileId, object : OneginiAuthenticatorRegistrationHandler {
+                override fun onSuccess(info: CustomInfo?) {
+                    promise.resolve(CustomInfoMapper.toWritableMap(info))
+                }
+
+                override fun onError(error: OneginiAuthenticatorRegistrationError?) {
+                    promise.reject(error?.errorType.toString(), error?.message)
+                }
+            })
+        } catch (e: OneginiError) {
+            promise.reject(e.errorType.toString(), e.message)
+        }
+    }
+
 
     @ReactMethod
     fun isFingerprintAuthenticatorRegistered(profileId: String, promise: Promise) {
@@ -340,7 +334,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         }
     }
 
-    fun submitCreatePinAction(action: String, pin: String?) {
+    private fun submitCreatePinAction(action: String, pin: String?) {
         when (action) {
             Constants.PIN_ACTION_PROVIDE -> oneginiSDK.createPinRequestHandler.onPinProvided(pin!!.toCharArray(), PinFlow.Create)
             Constants.PIN_ACTION_CANCEL -> oneginiSDK.createPinRequestHandler.pinCancelled(PinFlow.Create)
@@ -348,7 +342,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         }
     }
 
-    fun submitAuthenticationPinAction(action: String, pin: String?) {
+    private fun submitAuthenticationPinAction(action: String, pin: String?) {
         when (action) {
             Constants.PIN_ACTION_PROVIDE -> oneginiSDK.pinAuthenticationRequestHandler.acceptAuthenticationRequest(pin!!.toCharArray())
             Constants.PIN_ACTION_CANCEL -> oneginiSDK.pinAuthenticationRequestHandler.denyAuthenticationRequest()
@@ -356,7 +350,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         }
     }
 
-    fun submitChangePinAction(action: String, pin: String?) {
+    private fun submitChangePinAction(action: String, pin: String?) {
         when (action) {
             Constants.PIN_ACTION_PROVIDE -> oneginiSDK.changePinHandler.onPinProvided(pin!!.toCharArray())
             Constants.PIN_ACTION_CANCEL -> oneginiSDK.changePinHandler.pinCancelled()
