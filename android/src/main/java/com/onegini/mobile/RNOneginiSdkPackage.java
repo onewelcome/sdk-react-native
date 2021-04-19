@@ -1,4 +1,3 @@
-//@todo Later will be transferred to RN Wrapper
 package com.onegini.mobile;
 
 import java.util.Arrays;
@@ -14,7 +13,7 @@ import com.facebook.react.bridge.JavaScriptModule;
 public class RNOneginiSdkPackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
-      return Arrays.<NativeModule>asList(new RNOneginiSdk(reactContext));
+      return Arrays.<NativeModule>asList(new RNOneginiSdkModule(reactContext));
     }
 
     // Deprecated from RN 0.47
