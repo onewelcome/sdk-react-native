@@ -1,5 +1,6 @@
 package com.onegini.mobile.clean.use_cases
 
+import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.WritableArray
 import com.facebook.react.bridge.WritableMap
 import com.onegini.mobile.OneginiComponets
@@ -9,8 +10,8 @@ import com.onegini.mobile.mapers.OneginiIdentityProviderMapper
 
 class GetIdentityProvidersUseCase {
 
-    operator fun invoke(onFinished: (providers: WritableArray) -> Unit) {
+    operator fun invoke(promise: Promise) {
         val providers = OneginiComponets.oneginiSDK.oneginiClient.userClient.identityProviders
-        onFinished(OneginiIdentityProviderMapper.toWritableMap(providers))
+        promise.resolve(OneginiIdentityProviderMapper.toWritableMap(providers))
     }
 }

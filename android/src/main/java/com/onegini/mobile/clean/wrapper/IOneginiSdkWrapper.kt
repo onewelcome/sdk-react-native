@@ -11,7 +11,7 @@ interface IOneginiSdkWrapper {
     // Configuration
     //
 
-    fun startClient(rnConfig: ReadableMap, promise: Promise, onSuccess: () -> Unit)
+    fun startClient(rnConfig: ReadableMap, promise: Promise)
 
     //
     // Session
