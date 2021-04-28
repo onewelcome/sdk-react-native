@@ -46,6 +46,7 @@ class OneginiSDK(private val appContext: Context) {
 
     fun init(oneginiReactNativeConfig: OneginiReactNativeConfig) {
         this.config = oneginiReactNativeConfig
+
         buildSDK(appContext)
     }
 
