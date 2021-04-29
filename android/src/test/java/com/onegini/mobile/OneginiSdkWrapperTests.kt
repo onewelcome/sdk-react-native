@@ -2,6 +2,7 @@ package com.onegini.mobile
 
 import android.content.Context
 import com.facebook.react.bridge.*
+import com.onegini.mobile.clean.use_cases.GetAccessTokenUseCase
 import com.onegini.mobile.clean.use_cases.GetIdentityProvidersUseCase
 import com.onegini.mobile.clean.use_cases.StartClientUseCase
 import com.onegini.mobile.clean.wrapper.OneginiSdkWrapper
@@ -36,6 +37,9 @@ class OneginiSdkWrapperTests {
     @Mock
     lateinit var getIdentityProvidersUseCase: GetIdentityProvidersUseCase
 
+    @Mock
+    lateinit var getAccessTokenUseCase: GetAccessTokenUseCase
+
     @Before
     fun setup() {
         clearAllMocks()
@@ -47,7 +51,7 @@ class OneginiSdkWrapperTests {
 
     @Test
     fun `when startClient method is called calls startClientUseCase with proper params`() {
-        val wrapper = OneginiSdkWrapper(oneginiSdk, reactApplicationContext, startClientUseCase, getIdentityProvidersUseCase)
+        val wrapper = OneginiSdkWrapper(oneginiSdk, reactApplicationContext, startClientUseCase, getIdentityProvidersUseCase, getAccessTokenUseCase)
 
         wrapper.startClient(JavaOnlyMap(), promiseMock)
 
@@ -56,11 +60,20 @@ class OneginiSdkWrapperTests {
 
     @Test
     fun `when getIdentityProviders method is called calls getIdentityProvidersUseCase with proper params`() {
-        val wrapper = OneginiSdkWrapper(oneginiSdk, reactApplicationContext, startClientUseCase, getIdentityProvidersUseCase)
+        val wrapper = OneginiSdkWrapper(oneginiSdk, reactApplicationContext, startClientUseCase, getIdentityProvidersUseCase, getAccessTokenUseCase)
 
         wrapper.getIdentityProviders(promiseMock)
 
         verify(getIdentityProvidersUseCase).invoke(promiseMock)
+    }
+
+    @Test
+    fun `when getAccessToken method is called calls getAccessTokenUseCase with proper params`() {
+        val wrapper = OneginiSdkWrapper(oneginiSdk, reactApplicationContext, startClientUseCase, getIdentityProvidersUseCase, getAccessTokenUseCase)
+
+        wrapper.getAccessToken(promiseMock)
+
+        verify(getAccessTokenUseCase).invoke(promiseMock)
     }
 
 }
