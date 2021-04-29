@@ -75,9 +75,10 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     private val disposables = CompositeDisposable()
 
     init {
+        init(reactContext.applicationContext)
+
         sdkWrapper = OneginiSdkWrapper(oneginiSDK, reactApplicationContext)
 
-        init(reactContext.applicationContext)
         this.reactContext = reactContext
         registrationManager = RegistrationManager(oneginiSDK)
         authenticatorManager = AuthenticatorManager(oneginiSDK)
