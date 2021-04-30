@@ -2,10 +2,9 @@ package com.onegini.mobile.exception
 
 import com.onegini.mobile.sdk.android.handlers.error.OneginiError
 import com.onegini.mobile.sdk.android.handlers.error.OneginiErrorDetails
-import org.bouncycastle.util.Fingerprint
 
 class OneginReactNativeException(errorType: Int, errorDetails: OneginiErrorDetails, message: String, throwable: Throwable?) :
-        OneginiError(errorType, errorDetails, message, throwable) {
+    OneginiError(errorType, errorDetails, message, throwable) {
 
     companion object {
         const val PROFILE_DOES_NOT_EXIST = 8001

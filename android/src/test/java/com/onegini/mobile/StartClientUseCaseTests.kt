@@ -4,16 +4,12 @@ import android.content.Context
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
-import com.onegini.mobile.clean.SecurityController
-import com.onegini.mobile.clean.model.SdkError
 import com.onegini.mobile.clean.use_cases.StartClientUseCase
 import com.onegini.mobile.sdk.android.client.OneginiClient
 import com.onegini.mobile.sdk.android.handlers.OneginiInitializationHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiInitializationError
 import io.mockk.clearAllMocks
-import io.mockk.clearMocks
 import io.mockk.verify
-import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -62,7 +58,6 @@ class StartClientUseCaseTests {
 
         verify(promiseMock).resolve(null)
     }
-
 
     @Test
     fun `fails with wrong configs`() {
@@ -116,6 +111,4 @@ class StartClientUseCaseTests {
         verify(oneginiSdk).setMobileAuthOtpRequestObserver(any())
         verify(oneginiSdk).setFingerprintAuthenticationObserver(any())
     }
-
-
 }

@@ -1,4 +1,4 @@
-//@todo Later will be transferred to RN Wrapper
+// @todo Later will be transferred to RN Wrapper
 package com.onegini.mobile.managers
 
 import com.onegini.mobile.OneginiSDK

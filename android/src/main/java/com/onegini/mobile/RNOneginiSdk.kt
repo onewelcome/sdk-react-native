@@ -1,22 +1,9 @@
-//@todo Later will be transferred to RN Wrapper later
+// @todo Later will be transferred to RN Wrapper later
 package com.onegini.mobile
 
 import android.net.Uri
 import android.util.Log
 import com.facebook.react.bridge.*
-import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter
-import com.onegini.mobile.Constants.CUSTOM_REGISTRATION_NOTIFICATION
-import com.onegini.mobile.Constants.CUSTOM_REGISTRATION_NOTIFICATION_FINISH_REGISTRATION
-import com.onegini.mobile.Constants.CUSTOM_REGISTRATION_NOTIFICATION_INIT_REGISTRATION
-import com.onegini.mobile.Constants.ONEGINI_FINGERPRINT_NOTIFICATION
-import com.onegini.mobile.Constants.FINGERPRINT_NOTIFICATION_FINISH_AUTHENTICATION
-import com.onegini.mobile.Constants.FINGERPRINT_NOTIFICATION_ON_FINGERPRINT_CAPTURED
-import com.onegini.mobile.Constants.FINGERPRINT_NOTIFICATION_ON_NEXT_AUTHENTICATION_ATTEMPT
-import com.onegini.mobile.Constants.FINGERPRINT_NOTIFICATION_START_AUTHENTICATION
-import com.onegini.mobile.Constants.MOBILE_AUTH_OTP_FINISH_AUTHENTICATION
-import com.onegini.mobile.Constants.MOBILE_AUTH_OTP_NOTIFICATION
-import com.onegini.mobile.Constants.MOBILE_AUTH_OTP_START_AUTHENTICATION
-import com.onegini.mobile.Constants.ONEGINI_PIN_NOTIFICATION
 import com.onegini.mobile.Constants.PinFlow
 import com.onegini.mobile.OneginiComponets.init
 import com.onegini.mobile.clean.wrapper.IOneginiSdkWrapper
@@ -26,15 +13,12 @@ import com.onegini.mobile.exception.OneginReactNativeException.Companion.AUTHENT
 import com.onegini.mobile.exception.OneginReactNativeException.Companion.FINGERPRINT_IS_NOT_ENABLED
 import com.onegini.mobile.exception.OneginReactNativeException.Companion.MOBILE_AUTH_OTP_IS_DISABLED
 import com.onegini.mobile.managers.AuthenticatorManager
-import com.onegini.mobile.managers.OneginiClientInitializer
 import com.onegini.mobile.managers.RegistrationManager
 import com.onegini.mobile.mapers.*
 import com.onegini.mobile.mapers.CustomInfoMapper.add
 import com.onegini.mobile.mapers.UserProfileMapper.add
 import com.onegini.mobile.mapers.UserProfileMapper.toUserProfile
 import com.onegini.mobile.mapers.UserProfileMapper.toWritableMap
-import com.onegini.mobile.model.ApplicationDetails
-import com.onegini.mobile.model.ImplicitUserDetails
 import com.onegini.mobile.network.AnonymousService
 import com.onegini.mobile.network.ImplicitUserService
 import com.onegini.mobile.network.UserService
@@ -42,14 +26,8 @@ import com.onegini.mobile.sdk.android.handlers.*
 import com.onegini.mobile.sdk.android.handlers.error.*
 import com.onegini.mobile.sdk.android.model.OneginiAppToWebSingleSignOn
 import com.onegini.mobile.sdk.android.model.entity.CustomInfo
-import com.onegini.mobile.sdk.android.model.entity.OneginiMobileAuthenticationRequest
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
-import com.onegini.mobile.view.handlers.InitializationHandler
-import com.onegini.mobile.view.handlers.customregistration.CustomRegistrationObserver
-import com.onegini.mobile.view.handlers.fingerprint.FingerprintAuthenticationObserver
-import com.onegini.mobile.view.handlers.mobileauthotp.MobileAuthOtpRequestObserver
 import com.onegini.mobile.view.handlers.pins.ChangePinHandler
-import com.onegini.mobile.view.handlers.pins.PinNotificationObserver
 import io.reactivex.disposables.CompositeDisposable
 
 //
@@ -75,9 +53,10 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     private val disposables = CompositeDisposable()
 
     init {
+        init(reactContext.applicationContext)
+
         sdkWrapper = OneginiSdkWrapper(oneginiSDK, reactApplicationContext)
 
-        init(reactContext.applicationContext)
         this.reactContext = reactContext
         registrationManager = RegistrationManager(oneginiSDK)
         authenticatorManager = AuthenticatorManager(oneginiSDK)
@@ -132,20 +111,22 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     @ReactMethod
     fun registerFingerprintAuthenticator(profileId: String, promise: Promise) {
         try {
-            authenticatorManager.registerFingerprintAuthenticator(profileId, object : OneginiAuthenticatorRegistrationHandler {
-                override fun onSuccess(info: CustomInfo?) {
-                    promise.resolve(CustomInfoMapper.toWritableMap(info))
-                }
+            authenticatorManager.registerFingerprintAuthenticator(
+                profileId,
+                object : OneginiAuthenticatorRegistrationHandler {
+                    override fun onSuccess(info: CustomInfo?) {
+                        promise.resolve(CustomInfoMapper.toWritableMap(info))
+                    }
 
-                override fun onError(error: OneginiAuthenticatorRegistrationError?) {
-                    promise.reject(error?.errorType.toString(), error?.message)
+                    override fun onError(error: OneginiAuthenticatorRegistrationError?) {
+                        promise.reject(error?.errorType.toString(), error?.message)
+                    }
                 }
-            })
+            )
         } catch (e: OneginiError) {
             promise.reject(e.errorType.toString(), e.message)
         }
     }
-
 
     @ReactMethod
     fun isFingerprintAuthenticatorRegistered(profileId: String, promise: Promise) {
@@ -159,15 +140,18 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     @ReactMethod
     fun deregisterFingerprintAuthenticator(profileId: String, promise: Promise) {
         try {
-            authenticatorManager.deregisterFingerprintAuthenticator(profileId, object : OneginiAuthenticatorDeregistrationHandler {
-                override fun onSuccess() {
-                    promise.resolve(null)
-                }
+            authenticatorManager.deregisterFingerprintAuthenticator(
+                profileId,
+                object : OneginiAuthenticatorDeregistrationHandler {
+                    override fun onSuccess() {
+                        promise.resolve(null)
+                    }
 
-                override fun onError(error: OneginiAuthenticatorDeregistrationError?) {
-                    promise.reject(error?.errorType.toString(), error?.message)
+                    override fun onError(error: OneginiAuthenticatorDeregistrationError?) {
+                        promise.reject(error?.errorType.toString(), error?.message)
+                    }
                 }
-            })
+            )
         } catch (e: OneginiError) {
             promise.reject(e.errorType.toString(), e.message)
         }
@@ -208,51 +192,59 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     fun registerUser(identityProviderId: String?, promise: Promise) {
-        registrationManager.registerUser(identityProviderId, object : OneginiRegistrationHandler {
-            override fun onSuccess(userProfile: UserProfile?, customInfo: CustomInfo?) {
-                promise.resolve(toWritableMap(userProfile))
-            }
+        registrationManager.registerUser(
+            identityProviderId,
+            object : OneginiRegistrationHandler {
+                override fun onSuccess(userProfile: UserProfile?, customInfo: CustomInfo?) {
+                    promise.resolve(toWritableMap(userProfile))
+                }
 
-            override fun onError(error: OneginiRegistrationError) {
-                promise.reject(error.errorType.toString(), error.message)
+                override fun onError(error: OneginiRegistrationError) {
+                    promise.reject(error.errorType.toString(), error.message)
+                }
             }
-        })
+        )
     }
 
     @ReactMethod
     fun deregisterUser(profileId: String?, promise: Promise) {
         val profile = toUserProfile(profileId!!)
-        oneginiSDK.oneginiClient.userClient.deregisterUser(profile, object : OneginiDeregisterUserProfileHandler {
-            override fun onSuccess() {
-                promise.resolve(null)
-            }
+        oneginiSDK.oneginiClient.userClient.deregisterUser(
+            profile,
+            object : OneginiDeregisterUserProfileHandler {
+                override fun onSuccess() {
+                    promise.resolve(null)
+                }
 
-            override fun onError(error: OneginiDeregistrationError?) {
-                promise.reject(error?.errorType.toString(), error?.message)
+                override fun onError(error: OneginiDeregistrationError?) {
+                    promise.reject(error?.errorType.toString(), error?.message)
+                }
             }
-        }
         )
     }
 
     @ReactMethod
     fun startSingleSignOn(url: String, promise: Promise) {
         val targetUri = Uri.parse(url)
-        oneginiSDK.oneginiClient.userClient.getAppToWebSingleSignOn(targetUri, object : OneginiAppToWebSingleSignOnHandler {
-            override fun onSuccess(oneginiAppToWebSingleSignOn: OneginiAppToWebSingleSignOn) {
-                promise.resolve(OneginiAppToWebSingleSignOnMapper.toWritableMap(oneginiAppToWebSingleSignOn))
-            }
+        oneginiSDK.oneginiClient.userClient.getAppToWebSingleSignOn(
+            targetUri,
+            object : OneginiAppToWebSingleSignOnHandler {
+                override fun onSuccess(oneginiAppToWebSingleSignOn: OneginiAppToWebSingleSignOn) {
+                    promise.resolve(OneginiAppToWebSingleSignOnMapper.toWritableMap(oneginiAppToWebSingleSignOn))
+                }
 
-            override fun onError(error: OneginiAppToWebSingleSignOnError) {
-                promise.reject(error.errorType.toString(), error.message)
+                override fun onError(error: OneginiAppToWebSingleSignOnError) {
+                    promise.reject(error.errorType.toString(), error.message)
+                }
             }
-        })
+        )
     }
 
     @ReactMethod
     fun submitCustomRegistrationAction(customAction: String, identityProviderId: String, token: String?) {
         val action = registrationManager.getSimpleCustomRegistrationAction(identityProviderId)
 
-        if(action == null) {
+        if (action == null) {
             Log.e(LOG_TAG, "The $identityProviderId was not configured.")
             return
         }
@@ -344,18 +336,21 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     @ReactMethod
     fun authenticateUser(profileId: String?, promise: Promise) {
         val userProfile = UserProfile(profileId)
-        oneginiSDK.oneginiClient.userClient.authenticateUser(userProfile, object : OneginiAuthenticationHandler {
-            override fun onSuccess(userProfile: UserProfile?, customInfo: CustomInfo?) {
-                val result = Arguments.createMap()
-                add(result, userProfile)
-                add(result, customInfo)
-                promise.resolve(result)
-            }
+        oneginiSDK.oneginiClient.userClient.authenticateUser(
+            userProfile,
+            object : OneginiAuthenticationHandler {
+                override fun onSuccess(userProfile: UserProfile?, customInfo: CustomInfo?) {
+                    val result = Arguments.createMap()
+                    add(result, userProfile)
+                    add(result, customInfo)
+                    promise.resolve(result)
+                }
 
-            override fun onError(error: OneginiAuthenticationError) {
-                promise.reject(error.errorType.toString(), error.message)
+                override fun onError(error: OneginiAuthenticationError) {
+                    promise.reject(error.errorType.toString(), error.message)
+                }
             }
-        })
+        )
     }
 
     @ReactMethod
@@ -391,15 +386,18 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     fun handleMobileAuthWithOtp(otpCode: String, promise: Promise) {
-        oneginiSDK.oneginiClient.userClient.handleMobileAuthWithOtp(otpCode, object : OneginiMobileAuthWithOtpHandler {
-            override fun onSuccess() {
-                promise.resolve(null)
-            }
+        oneginiSDK.oneginiClient.userClient.handleMobileAuthWithOtp(
+            otpCode,
+            object : OneginiMobileAuthWithOtpHandler {
+                override fun onSuccess() {
+                    promise.resolve(null)
+                }
 
-            override fun onError(error: OneginiMobileAuthWithOtpError?) {
-                promise.reject(error?.errorType.toString(), error?.message)
+                override fun onError(error: OneginiMobileAuthWithOtpError?) {
+                    promise.reject(error?.errorType.toString(), error?.message)
+                }
             }
-        })
+        )
     }
 
     @ReactMethod
@@ -412,28 +410,30 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     fun logout(promise: Promise) {
         val userClient = oneginiSDK.oneginiClient.userClient
         userClient.logout(
-                object : OneginiLogoutHandler {
-                    override fun onSuccess() {
-                        promise.resolve(null)
-                    }
-
-                    override fun onError(error: OneginiLogoutError?) {
-                        promise.reject(error?.errorType.toString(), error?.message)
-                    }
+            object : OneginiLogoutHandler {
+                override fun onSuccess() {
+                    promise.resolve(null)
                 }
+
+                override fun onError(error: OneginiLogoutError?) {
+                    promise.reject(error?.errorType.toString(), error?.message)
+                }
+            }
         )
     }
 
     @ReactMethod
     private fun authenticateUserImplicitly(profileId: String?, promise: Promise) {
-        Log.d(LOG_TAG, "authenticateUserImplicitly profileId: $profileId");
+        Log.d(LOG_TAG, "authenticateUserImplicitly profileId: $profileId")
 
         val userProfile = authenticatorManager.getUserProfile(profileId)
         if (userProfile == null) {
             promise.reject(OneginReactNativeException.PROFILE_DOES_NOT_EXIST.toString(), "The profileId $profileId does not exist")
         } else {
             oneginiSDK.oneginiClient.userClient
-                    .authenticateUserImplicitly(userProfile, arrayOf("read"), object : OneginiImplicitAuthenticationHandler {
+                .authenticateUserImplicitly(
+                    userProfile, arrayOf("read"),
+                    object : OneginiImplicitAuthenticationHandler {
                         override fun onSuccess(profile: UserProfile) {
                             promise.resolve(null)
                         }
@@ -441,64 +441,66 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                         override fun onError(error: OneginiImplicitTokenRequestError) {
                             promise.reject(error.errorType.toString(), error.message)
                         }
-                    })
+                    }
+                )
         }
     }
 
     @ReactMethod
     private fun authenticateDeviceForResource(resourcePath: String, promise: Promise) {
-        Log.d(LOG_TAG, "authenticateDeviceForResource resourcePath: $resourcePath");
+        Log.d(LOG_TAG, "authenticateDeviceForResource resourcePath: $resourcePath")
 
-        oneginiSDK.oneginiClient.deviceClient.authenticateDevice(arrayOf(resourcePath), object : OneginiDeviceAuthenticationHandler {
-            override fun onSuccess() {
-                promise.resolve(null)
-            }
+        oneginiSDK.oneginiClient.deviceClient.authenticateDevice(
+            arrayOf(resourcePath),
+            object : OneginiDeviceAuthenticationHandler {
+                override fun onSuccess() {
+                    promise.resolve(null)
+                }
 
-            override fun onError(error: OneginiDeviceAuthenticationError) {
-                promise.reject(error.errorType.toString(), error.message)
+                override fun onError(error: OneginiDeviceAuthenticationError) {
+                    promise.reject(error.errorType.toString(), error.message)
+                }
             }
-        })
+        )
     }
 
     // type: User, ImplicitUser, Anonymous
     @ReactMethod
     private fun resourceRequest(type: String, details: ReadableMap, promise: Promise) {
-        Log.d(LOG_TAG, "resourceRequest [type: $type] call with $details");
+        Log.d(LOG_TAG, "resourceRequest [type: $type] call with $details")
 
         val requestDetails = ResourceRequestDetailsMapper.toResourceRequestDetails(details)
 
-        when(type) {
+        when (type) {
             "User" -> {
                 disposables.add(
-                        UserService.getInstance()
-                                .getResource(requestDetails)
-                                .subscribe({
-                                    promise.resolve(JsonMapper.toWritableMap(it))
-                                }) { throwable -> promise.reject(OneginReactNativeException.IMPLICIT_USER_DETAILS_ERROR.toString(), throwable.message) }
+                    UserService.getInstance()
+                        .getResource(requestDetails)
+                        .subscribe({
+                            promise.resolve(JsonMapper.toWritableMap(it))
+                        }) { throwable -> promise.reject(OneginReactNativeException.IMPLICIT_USER_DETAILS_ERROR.toString(), throwable.message) }
                 )
             }
             "ImplicitUser" -> {
                 disposables.add(
-                        ImplicitUserService.getInstance()
-                                .getResource(requestDetails)
-                                .subscribe({
-                                    promise.resolve(JsonMapper.toWritableMap(it))
-                                }) { throwable -> promise.reject(OneginReactNativeException.IMPLICIT_USER_DETAILS_ERROR.toString(), throwable.message) }
+                    ImplicitUserService.getInstance()
+                        .getResource(requestDetails)
+                        .subscribe({
+                            promise.resolve(JsonMapper.toWritableMap(it))
+                        }) { throwable -> promise.reject(OneginReactNativeException.IMPLICIT_USER_DETAILS_ERROR.toString(), throwable.message) }
                 )
             }
             "Anonymous" -> {
                 disposables.add(
-                        AnonymousService.getInstance()
-                                .getResource(requestDetails)
-                                .subscribe({
-                                    promise.resolve(JsonMapper.toWritableMap(it))
-                                }) { throwable -> promise.reject(AUTHENTICATE_DEVICE_ERROR.toString(), throwable.message) }
+                    AnonymousService.getInstance()
+                        .getResource(requestDetails)
+                        .subscribe({
+                            promise.resolve(JsonMapper.toWritableMap(it))
+                        }) { throwable -> promise.reject(AUTHENTICATE_DEVICE_ERROR.toString(), throwable.message) }
                 )
             }
         }
     }
-
-
 
     //
 

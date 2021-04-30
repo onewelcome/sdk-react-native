@@ -19,9 +19,6 @@ import android.net.Uri
 import com.onegini.mobile.Constants.DEFAULT_SCOPES
 import com.onegini.mobile.OneginiSDK
 import com.onegini.mobile.sdk.android.handlers.OneginiRegistrationHandler
-import com.onegini.mobile.sdk.android.handlers.error.OneginiAuthenticationError
-import com.onegini.mobile.sdk.android.handlers.error.OneginiRegistrationError
-import com.onegini.mobile.sdk.android.handlers.error.OneginiRegistrationError.RegistrationErrorType
 import com.onegini.mobile.sdk.android.model.OneginiIdentityProvider
 import com.onegini.mobile.view.handlers.customregistration.SimpleCustomRegistrationAction
 

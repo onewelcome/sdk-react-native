@@ -5,7 +5,6 @@ import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReadableMap
 import com.onegini.mobile.OneginiComponets
 import com.onegini.mobile.OneginiSDK
-import com.onegini.mobile.clean.model.SdkError
 import com.onegini.mobile.managers.OneginiClientInitializer
 import com.onegini.mobile.mapers.OneginiReactNativeConfigMapper
 import com.onegini.mobile.sdk.android.handlers.error.OneginiInitializationError
@@ -16,7 +15,6 @@ import com.onegini.mobile.view.handlers.mobileauthotp.MobileAuthOtpRequestObserv
 import com.onegini.mobile.view.handlers.pins.PinNotificationObserver
 import java.lang.Exception
 
-
 class StartClientUseCase(val oneginiSDK: OneginiSDK, val reactApplicationContext: ReactApplicationContext) {
 
     operator fun invoke(rnConfig: ReadableMap, promise: Promise) {
@@ -24,20 +22,27 @@ class StartClientUseCase(val oneginiSDK: OneginiSDK, val reactApplicationContext
             val config = OneginiReactNativeConfigMapper.toOneginiReactNativeConfig(rnConfig)
 
             val oneginiClientInitializer = OneginiClientInitializer(
-                    OneginiComponets.oneginiSDK)
+                OneginiComponets.oneginiSDK
+            )
 
-            oneginiClientInitializer.startOneginiClient(config, object : InitializationHandler {
-                override fun onSuccess() {
-                    oneginiSDKInitiated()
+            oneginiClientInitializer.startOneginiClient(
+                config,
+                object : InitializationHandler {
+                    override fun onSuccess() {
+                        oneginiSDKInitiated()
 
-                    promise.resolve(null)
+                        promise.resolve(null)
+                    }
+
+                    override fun onError(error: OneginiInitializationError) {
+                        promise.reject(
+                            error.errorType.toString(),
+                            error.message
+                                ?: "no message"
+                        )
+                    }
                 }
-
-                override fun onError(error: OneginiInitializationError) {
-                    promise.reject(error.errorType.toString(), error.message
-                            ?: "no message")
-                }
-            })
+            )
         } catch (e: Exception) {
             promise.reject("Exception", "")
         }

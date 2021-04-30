@@ -11,11 +11,12 @@ object OneginiReactNativeConfigMapper {
     @Throws(NullPointerException::class)
     fun toOneginiReactNativeConfig(rnConfig: ReadableMap): OneginiReactNativeConfig {
         return OneginiReactNativeConfig(
-                rnConfig.getString("configModelClassName"),
-                rnConfig.getString("securityControllerClassName"),
-                toReactNativeIdentityProviderList(rnConfig.getArray("customProviders")),
-                rnConfig.getBoolean("enableMobileAuthenticationOtp"),
-                rnConfig.getBoolean("enableFingerprint"))
+            rnConfig.getString("configModelClassName"),
+            rnConfig.getString("securityControllerClassName"),
+            toReactNativeIdentityProviderList(rnConfig.getArray("customProviders")),
+            rnConfig.getBoolean("enableMobileAuthenticationOtp"),
+            rnConfig.getBoolean("enableFingerprint")
+        )
     }
 
     fun toReactNativeIdentityProviderList(identityProvider: ReadableArray?): List<ReactNativeIdentityProvider> {

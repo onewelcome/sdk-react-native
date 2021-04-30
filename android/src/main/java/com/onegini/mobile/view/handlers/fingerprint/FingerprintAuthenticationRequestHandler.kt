@@ -26,15 +26,15 @@ class FingerprintAuthenticationRequestHandler : OneginiFingerprintAuthentication
         observer?.finishAuthentication()
     }
 
-    fun acceptAuthenticationRequest(){
+    fun acceptAuthenticationRequest() {
         callback?.acceptAuthenticationRequest()
     }
 
-    fun denyAuthenticationRequest(){
+    fun denyAuthenticationRequest() {
         callback?.denyAuthenticationRequest()
     }
 
-    fun fallbackToPin(){
+    fun fallbackToPin() {
         callback?.fallbackToPin()
     }
 }

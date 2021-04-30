@@ -1,13 +1,10 @@
 package com.onegini.mobile
 
-import android.content.Context
 import com.facebook.react.bridge.*
 import com.onegini.mobile.clean.use_cases.GetAccessTokenUseCase
 import com.onegini.mobile.clean.use_cases.GetIdentityProvidersUseCase
 import com.onegini.mobile.clean.use_cases.StartClientUseCase
 import com.onegini.mobile.clean.wrapper.OneginiSdkWrapper
-import com.onegini.mobile.sdk.android.client.OneginiClient
-import com.onegini.mobile.sdk.android.client.UserClient
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockkStatic
@@ -15,7 +12,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.verify
 
@@ -75,5 +71,4 @@ class OneginiSdkWrapperTests {
 
         verify(getAccessTokenUseCase).invoke(promiseMock)
     }
-
 }

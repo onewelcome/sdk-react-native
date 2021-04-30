@@ -15,24 +15,20 @@
  */
 package com.onegini.mobile.network
 
-import android.content.Context
 import com.google.gson.JsonObject
 import com.onegini.mobile.OneginiComponets
-import com.onegini.mobile.model.ApplicationDetails
 import com.onegini.mobile.model.ResourceRequestDetails
 import com.onegini.mobile.network.client.ResourcesClient
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import org.json.JSONObject
 
 class AnonymousService private constructor() {
 
-    private val applicationDetailsRetrofitClient: ResourcesClient
-            = OneginiComponets.secureResourceClient.prepareSecuredAnonymousRetrofitClient(ResourcesClient::class.java)
+    private val applicationDetailsRetrofitClient: ResourcesClient = OneginiComponets.secureResourceClient.prepareSecuredAnonymousRetrofitClient(ResourcesClient::class.java)
 
     fun getResource(requestDetails: ResourceRequestDetails): Single<JsonObject> {
-        val apiCall = when(requestDetails.method) {
+        val apiCall = when (requestDetails.method) {
             ApiCall.GET -> applicationDetailsRetrofitClient.getResourcesDetails(requestDetails.path, requestDetails.headers)
             ApiCall.POST -> applicationDetailsRetrofitClient.postResourcesDetails(requestDetails.path, requestDetails.headers, requestDetails.parameters)
             ApiCall.PUT -> applicationDetailsRetrofitClient.putResourcesDetails(requestDetails.path, requestDetails.headers, requestDetails.parameters)
@@ -40,8 +36,8 @@ class AnonymousService private constructor() {
         }
 
         return apiCall
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 
     companion object {
@@ -53,5 +49,4 @@ class AnonymousService private constructor() {
             return INSTANCE!!
         }
     }
-
 }
