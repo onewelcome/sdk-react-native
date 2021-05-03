@@ -5,10 +5,13 @@ import com.onegini.mobile.clean.use_cases.GetAuthenticatedUserProfileUseCase
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import org.junit.Assert
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.Mockito
+import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.verify
 
+@RunWith(MockitoJUnitRunner::class)
 class GetAuthenticatedUserProfileUseCaseTests : BaseTests() {
 
     @Test

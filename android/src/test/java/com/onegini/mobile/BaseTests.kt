@@ -9,13 +9,9 @@ import io.mockk.every
 import io.mockk.mockkStatic
 import org.junit.After
 import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.lenient
-import org.mockito.junit.MockitoJUnitRunner
 
-@RunWith(MockitoJUnitRunner::class)
 open class BaseTests {
 
     @Mock
@@ -52,10 +48,5 @@ open class BaseTests {
     @After
     fun clear() {
         clearAllMocks()
-    }
-
-    @Test
-    fun test() {
-        //
     }
 }

@@ -5,7 +5,7 @@ import com.onegini.mobile.OneginiComponets
 import com.onegini.mobile.exception.OneginiWrapperErrors
 import com.onegini.mobile.mapers.OneginiAuthenticatorMapper
 
-class GetAllAuthenticatorsUseCase(val getUserProfileUseCase: GetUserProfileUseCase = GetUserProfileUseCase()) {
+class GetRegisteredAuthenticatorsUseCase(val getUserProfileUseCase: GetUserProfileUseCase = GetUserProfileUseCase()) {
 
     operator fun invoke(profileId: String, promise: Promise) {
         val userProfile = getUserProfileUseCase(profileId)
@@ -15,7 +15,7 @@ class GetAllAuthenticatorsUseCase(val getUserProfileUseCase: GetUserProfileUseCa
             return
         }
 
-        val authenticators = OneginiComponets.oneginiSDK.oneginiClient.userClient.getAllAuthenticators(userProfile)
+        val authenticators = OneginiComponets.oneginiSDK.oneginiClient.userClient.getRegisteredAuthenticators(userProfile)
 
         promise.resolve(OneginiAuthenticatorMapper.toWritableMap(authenticators))
     }
