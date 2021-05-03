@@ -92,11 +92,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     fun getAllAuthenticators(profileId: String, promise: Promise) {
-        try {
-            promise.resolve(OneginiAuthenticatorMapper.toWritableMap(authenticatorManager.getAllAuthenticators(profileId)))
-        } catch (e: OneginiError) {
-            promise.reject(e.errorType.toString(), e.message)
-        }
+        sdkWrapper.getAllAuthenticators(profileId, promise)
     }
 
     @ReactMethod
