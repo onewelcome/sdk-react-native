@@ -57,7 +57,7 @@ class OneginiSdkWrapperTests {
             getIdentityProvidersUseCase,
             getAccessTokenUseCase,
             registerUserUseCase,
-                getAuthenticatedUserProfileUseCase
+            getAuthenticatedUserProfileUseCase
         )
     }
 
