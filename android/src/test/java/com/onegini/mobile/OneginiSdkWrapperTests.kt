@@ -46,6 +46,9 @@ class OneginiSdkWrapperTests {
     @Mock
     lateinit var getRegisteredAuthenticatorsUseCase: GetRegisteredAuthenticatorsUseCase
 
+    @Mock
+    lateinit var getUserProfilesUseCase: GetUserProfilesUseCase
+
     //
 
     lateinit var wrapper: OneginiSdkWrapper
@@ -67,7 +70,8 @@ class OneginiSdkWrapperTests {
             registerUserUseCase,
             getAuthenticatedUserProfileUseCase,
             getAllAuthenticatorsUseCase,
-            getRegisteredAuthenticatorsUseCase
+            getRegisteredAuthenticatorsUseCase,
+            getUserProfilesUseCase
         )
     }
 
@@ -118,5 +122,12 @@ class OneginiSdkWrapperTests {
         wrapper.getRegisteredAuthenticators("123456", promiseMock)
 
         verify(getRegisteredAuthenticatorsUseCase).invoke("123456", promiseMock)
+    }
+
+    @Test
+    fun `when getUserProfiles method is called calls getUserProfilesUseCase with proper params`() {
+        wrapper.getUserProfiles(promiseMock)
+
+        verify(getUserProfilesUseCase).invoke(promiseMock)
     }
 }

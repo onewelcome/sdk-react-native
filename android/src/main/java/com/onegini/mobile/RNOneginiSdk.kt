@@ -1,4 +1,3 @@
-// @todo Later will be transferred to RN Wrapper later
 package com.onegini.mobile
 
 import android.net.Uri
@@ -29,10 +28,6 @@ import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.view.handlers.pins.ChangePinHandler
 import io.reactivex.disposables.CompositeDisposable
-
-//
-// TODO: codeStyle will by applied in next PR
-//
 
 class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
 
@@ -383,8 +378,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     fun getUserProfiles(promise: Promise) {
-        val profiles = oneginiSDK.oneginiClient.userClient.userProfiles
-        promise.resolve(toWritableMap(profiles))
+        sdkWrapper.getUserProfiles(promise)
     }
 
     @ReactMethod
