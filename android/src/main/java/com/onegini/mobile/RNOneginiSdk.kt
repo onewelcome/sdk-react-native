@@ -192,18 +192,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     fun registerUser(identityProviderId: String?, promise: Promise) {
-        registrationManager.registerUser(
-            identityProviderId,
-            object : OneginiRegistrationHandler {
-                override fun onSuccess(userProfile: UserProfile?, customInfo: CustomInfo?) {
-                    promise.resolve(toWritableMap(userProfile))
-                }
-
-                override fun onError(error: OneginiRegistrationError) {
-                    promise.reject(error.errorType.toString(), error.message)
-                }
-            }
-        )
+        sdkWrapper.registerUser(identityProviderId, promise)
     }
 
     @ReactMethod

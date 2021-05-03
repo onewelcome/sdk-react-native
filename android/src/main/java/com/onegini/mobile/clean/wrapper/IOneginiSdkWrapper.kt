@@ -25,5 +25,9 @@ interface IOneginiSdkWrapper {
 
     fun getRegisteredAuthenticators(profileId: String, promise: Promise)
 
+    //
+
+    fun registerUser(identityProviderId: String?, promise: Promise)
+
     // TODO: all other methods
 }
