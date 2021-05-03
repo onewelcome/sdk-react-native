@@ -16,7 +16,6 @@ import com.onegini.mobile.managers.RegistrationManager
 import com.onegini.mobile.mapers.*
 import com.onegini.mobile.mapers.CustomInfoMapper.add
 import com.onegini.mobile.mapers.UserProfileMapper.add
-import com.onegini.mobile.mapers.UserProfileMapper.toUserProfile
 import com.onegini.mobile.mapers.UserProfileMapper.toWritableMap
 import com.onegini.mobile.network.AnonymousService
 import com.onegini.mobile.network.ImplicitUserService
@@ -184,19 +183,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     fun deregisterUser(profileId: String?, promise: Promise) {
-        val profile = toUserProfile(profileId!!)
-        oneginiSDK.oneginiClient.userClient.deregisterUser(
-            profile,
-            object : OneginiDeregisterUserProfileHandler {
-                override fun onSuccess() {
-                    promise.resolve(null)
-                }
-
-                override fun onError(error: OneginiDeregistrationError?) {
-                    promise.reject(error?.errorType.toString(), error?.message)
-                }
-            }
-        )
+        sdkWrapper.deregisterUser(profileId, promise)
     }
 
     @ReactMethod
