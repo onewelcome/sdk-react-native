@@ -41,7 +41,7 @@ open class BaseTests {
     fun setup() {
         OneginiComponets.init(context)
         OneginiComponets.oneginiSDK = oneginiSdk
-        
+
         lenient().`when`(oneginiSdk.oneginiClient).thenReturn(oneginiClient)
         lenient().`when`(oneginiSdk.oneginiClient.userClient).thenReturn(userClient)
 

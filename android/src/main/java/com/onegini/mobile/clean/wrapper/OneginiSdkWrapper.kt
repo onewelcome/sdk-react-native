@@ -4,10 +4,8 @@ import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReadableMap
 import com.onegini.mobile.OneginiSDK
-import com.onegini.mobile.clean.use_cases.GetAccessTokenUseCase
-import com.onegini.mobile.clean.use_cases.GetIdentityProvidersUseCase
-import com.onegini.mobile.clean.use_cases.RegisterUserUseCase
-import com.onegini.mobile.clean.use_cases.StartClientUseCase
+import com.onegini.mobile.clean.use_cases.*
+import com.onegini.mobile.mapers.UserProfileMapper
 
 class OneginiSdkWrapper(
     private val oneginiSDK: OneginiSDK,
@@ -15,7 +13,8 @@ class OneginiSdkWrapper(
     val startClientUseCase: StartClientUseCase = StartClientUseCase(oneginiSDK, reactApplicationContext),
     val getIdentityProvidersUseCase: GetIdentityProvidersUseCase = GetIdentityProvidersUseCase(),
     val getAccessTokenUseCase: GetAccessTokenUseCase = GetAccessTokenUseCase(),
-    val registerUserUseCase: RegisterUserUseCase = RegisterUserUseCase()
+    val registerUserUseCase: RegisterUserUseCase = RegisterUserUseCase(),
+    val getAuthenticatedUserProfileUseCase: GetAuthenticatedUserProfileUseCase = GetAuthenticatedUserProfileUseCase()
 ) : IOneginiSdkWrapper {
 
     //
@@ -39,7 +38,7 @@ class OneginiSdkWrapper(
     }
 
     override fun getAuthenticatedUserProfile(promise: Promise) {
-        TODO("Not yet implemented")
+        getAuthenticatedUserProfileUseCase(promise)
     }
 
     override fun getAllAuthenticators(profileId: String, promise: Promise) {

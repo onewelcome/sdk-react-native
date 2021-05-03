@@ -1,10 +1,7 @@
 package com.onegini.mobile
 
 import com.facebook.react.bridge.*
-import com.onegini.mobile.clean.use_cases.GetAccessTokenUseCase
-import com.onegini.mobile.clean.use_cases.GetIdentityProvidersUseCase
-import com.onegini.mobile.clean.use_cases.RegisterUserUseCase
-import com.onegini.mobile.clean.use_cases.StartClientUseCase
+import com.onegini.mobile.clean.use_cases.*
 import com.onegini.mobile.clean.wrapper.OneginiSdkWrapper
 import io.mockk.clearAllMocks
 import io.mockk.every
@@ -40,6 +37,9 @@ class OneginiSdkWrapperTests {
     @Mock
     lateinit var registerUserUseCase: RegisterUserUseCase
 
+    @Mock
+    lateinit var getAuthenticatedUserProfileUseCase: GetAuthenticatedUserProfileUseCase
+
     lateinit var wrapper: OneginiSdkWrapper
 
     @Before
@@ -56,7 +56,8 @@ class OneginiSdkWrapperTests {
             startClientUseCase,
             getIdentityProvidersUseCase,
             getAccessTokenUseCase,
-            registerUserUseCase
+            registerUserUseCase,
+                getAuthenticatedUserProfileUseCase
         )
     }
 
@@ -86,5 +87,12 @@ class OneginiSdkWrapperTests {
         wrapper.registerUser("id1", promiseMock)
 
         verify(registerUserUseCase).invoke("id1", promiseMock)
+    }
+
+    @Test
+    fun `when getAuthenticatedUserProfile method is called calls getAuthenticatedUserProfileUseCase with proper params`() {
+        wrapper.getAuthenticatedUserProfileUseCase(promiseMock)
+
+        verify(getAuthenticatedUserProfileUseCase).invoke(promiseMock)
     }
 }
