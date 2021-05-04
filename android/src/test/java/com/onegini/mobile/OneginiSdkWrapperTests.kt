@@ -76,6 +76,9 @@ class OneginiSdkWrapperTests {
     @Mock
     lateinit var startSingleSignOnUseCase: StartSingleSignOnUseCase
 
+    @Mock
+    lateinit var enrollMobileAuthenticationUseCase: EnrollMobileAuthenticationUseCase
+
     //
 
     lateinit var wrapper: OneginiSdkWrapper
@@ -107,7 +110,8 @@ class OneginiSdkWrapperTests {
             logoutUseCase,
             resourceRequestUseCase,
             handleMobileAuthWithOtpUseCase,
-            startSingleSignOnUseCase
+            startSingleSignOnUseCase,
+            enrollMobileAuthenticationUseCase
         )
     }
 
@@ -228,5 +232,12 @@ class OneginiSdkWrapperTests {
         wrapper.startSingleSignOn("http://url.pl", promiseMock)
 
         verify(startSingleSignOnUseCase).invoke("http://url.pl", promiseMock)
+    }
+
+    @Test
+    fun `when enrollMobileAuthentication method is called calls enrollMobileAuthenticationUseCase with proper params`() {
+        wrapper.enrollMobileAuthentication(promiseMock)
+
+        verify(enrollMobileAuthenticationUseCase).invoke(promiseMock)
     }
 }
