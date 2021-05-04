@@ -58,6 +58,9 @@ class OneginiSdkWrapperTests {
     @Mock
     lateinit var authenticateUserUseCase: AuthenticateUserUseCase
 
+    @Mock
+    lateinit var authenticateUserImplicitlyUseCase: AuthenticateUserImplicitlyUseCase
+
     //
 
     lateinit var wrapper: OneginiSdkWrapper
@@ -83,7 +86,8 @@ class OneginiSdkWrapperTests {
             getUserProfilesUseCase,
             getRedirectUriUseCase,
             deregisterUserUseCase,
-            authenticateUserUseCase
+            authenticateUserUseCase,
+            authenticateUserImplicitlyUseCase
         )
     }
 
@@ -162,5 +166,12 @@ class OneginiSdkWrapperTests {
         wrapper.authenticateUser("123456", promiseMock)
 
         verify(authenticateUserUseCase).invoke("123456", promiseMock)
+    }
+
+    @Test
+    fun `when authenticateUserImplicitly method is called calls authenticateUserImplicitlyUseCase with proper params`() {
+        wrapper.authenticateUserImplicitly("123456", promiseMock)
+
+        verify(authenticateUserImplicitlyUseCase).invoke("123456", promiseMock)
     }
 }

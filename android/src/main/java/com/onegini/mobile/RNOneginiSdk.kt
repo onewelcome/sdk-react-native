@@ -24,7 +24,6 @@ import com.onegini.mobile.sdk.android.handlers.*
 import com.onegini.mobile.sdk.android.handlers.error.*
 import com.onegini.mobile.sdk.android.model.OneginiAppToWebSingleSignOn
 import com.onegini.mobile.sdk.android.model.entity.CustomInfo
-import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.view.handlers.pins.ChangePinHandler
 import io.reactivex.disposables.CompositeDisposable
 
@@ -368,26 +367,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     override fun authenticateUserImplicitly(profileId: String?, promise: Promise) {
-        Log.d(LOG_TAG, "authenticateUserImplicitly profileId: $profileId")
-
-        val userProfile = authenticatorManager.getUserProfile(profileId)
-        if (userProfile == null) {
-            promise.reject(OneginReactNativeException.PROFILE_DOES_NOT_EXIST.toString(), "The profileId $profileId does not exist")
-        } else {
-            oneginiSDK.oneginiClient.userClient
-                .authenticateUserImplicitly(
-                    userProfile, arrayOf("read"),
-                    object : OneginiImplicitAuthenticationHandler {
-                        override fun onSuccess(profile: UserProfile) {
-                            promise.resolve(null)
-                        }
-
-                        override fun onError(error: OneginiImplicitTokenRequestError) {
-                            promise.reject(error.errorType.toString(), error.message)
-                        }
-                    }
-                )
-        }
+        sdkWrapper.authenticateUserImplicitly(profileId, promise)
     }
 
     @ReactMethod
