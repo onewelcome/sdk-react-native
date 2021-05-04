@@ -294,26 +294,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    override fun authenticateUser(profileId: String?, promise: Promise) {
-        val userProfile = UserProfile(profileId)
-        oneginiSDK.oneginiClient.userClient.authenticateUser(
-            userProfile,
-            object : OneginiAuthenticationHandler {
-                override fun onSuccess(userProfile: UserProfile?, customInfo: CustomInfo?) {
-                    val result = Arguments.createMap()
-                    add(result, userProfile)
-                    add(result, customInfo)
-                    promise.resolve(result)
-                }
-
-                override fun onError(error: OneginiAuthenticationError) {
-                    promise.reject(error.errorType.toString(), error.message)
-                }
-            }
-        )
-    }
-
-    @ReactMethod
     override fun enrollMobileAuthentication(promise: Promise) {
         oneginiSDK.oneginiClient.userClient.enrollUserForMobileAuth(object : OneginiMobileAuthEnrollmentHandler {
             override fun onSuccess() {
@@ -379,6 +359,11 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                 }
             }
         )
+    }
+
+    @ReactMethod
+    override fun authenticateUser(profileId: String?, promise: Promise) {
+        sdkWrapper.authenticateUser(profileId, promise)
     }
 
     @ReactMethod
