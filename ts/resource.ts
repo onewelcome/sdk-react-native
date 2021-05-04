@@ -5,7 +5,7 @@ import {ResourceRequestType, ResourcesDetails} from './data-types';
 const DefaultResourcesDetails: ResourcesDetails = {
   path: 'test',
   method: 'GET',
-  parameters: {'custom-param1': 'p1', 'custom-param2': 'p2'},
+  body: '',
   encoding: 'application/json',
   headers: {'custom-header1': 'val1', 'custom-header2': 'val2'},
 };

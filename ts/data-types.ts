@@ -74,7 +74,7 @@ export interface StringMap {
 export interface ResourcesDetails {
   path: string;
   method: 'GET' | 'POST' | 'PUT' | 'DELETE';
-  parameters: StringMap;
+  body: String;
   encoding: 'application/json' | 'none';
   headers: StringMap;
 }

@@ -67,6 +67,9 @@ class OneginiSdkWrapperTests {
     @Mock
     lateinit var logoutUseCase: LogoutUseCase
 
+    @Mock
+    lateinit var resourceRequestUseCase: ResourceRequestUseCase
+
     //
 
     lateinit var wrapper: OneginiSdkWrapper
@@ -95,7 +98,8 @@ class OneginiSdkWrapperTests {
             authenticateUserUseCase,
             authenticateUserImplicitlyUseCase,
             authenticateDeviceForResourceUseCase,
-            logoutUseCase
+            logoutUseCase,
+            resourceRequestUseCase
         )
     }
 
@@ -195,5 +199,12 @@ class OneginiSdkWrapperTests {
         wrapper.logout(promiseMock)
 
         verify(logoutUseCase).invoke(promiseMock)
+    }
+
+    @Test
+    fun `when resourceRequest method is called calls resourceRequestUseCase with proper params`() {
+        wrapper.resourceRequest("type", JavaOnlyMap(), promiseMock)
+
+        verify(resourceRequestUseCase).invoke("type", JavaOnlyMap(), promiseMock)
     }
 }

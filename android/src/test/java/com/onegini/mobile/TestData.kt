@@ -125,11 +125,11 @@ object TestData {
         }
 
         override fun getBaseUrl(): String {
-            return "google.pl"
+            return "http://google.pl"
         }
 
         override fun getResourceBaseUrl(): String {
-            return "resources.pl"
+            return "https://resources.pl"
         }
 
         override fun getCertificatePinningKeyStore(): Int {

@@ -22,7 +22,8 @@ class OneginiSdkWrapper(
     val authenticateUserUseCase: AuthenticateUserUseCase = AuthenticateUserUseCase(),
     val authenticateUserImplicitlyUseCase: AuthenticateUserImplicitlyUseCase = AuthenticateUserImplicitlyUseCase(),
     val authenticateDeviceForResourceUseCase: AuthenticateDeviceForResourceUseCase = AuthenticateDeviceForResourceUseCase(),
-    val logoutUseCase: LogoutUseCase = LogoutUseCase()
+    val logoutUseCase: LogoutUseCase = LogoutUseCase(),
+    val resourceRequestUseCase: ResourceRequestUseCase = ResourceRequestUseCase()
 ) : IOneginiSdkWrapper {
 
     override fun startClient(rnConfig: ReadableMap, promise: Promise) {
@@ -146,10 +147,16 @@ class OneginiSdkWrapper(
     }
 
     override fun resourceRequest(type: String, details: ReadableMap, promise: Promise) {
-        TODO("Not yet implemented")
+        resourceRequestUseCase(type, details, promise)
     }
 
     override fun startSingleSignOn(url: String, promise: Promise) {
         TODO("Not yet implemented")
+    }
+
+    //
+
+    fun clear() {
+        resourceRequestUseCase.dispose()
     }
 }

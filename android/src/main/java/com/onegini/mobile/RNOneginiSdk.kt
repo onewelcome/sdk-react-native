@@ -7,25 +7,16 @@ import com.onegini.mobile.Constants.PinFlow
 import com.onegini.mobile.OneginiComponets.init
 import com.onegini.mobile.clean.wrapper.IOneginiSdkWrapper
 import com.onegini.mobile.clean.wrapper.OneginiSdkWrapper
-import com.onegini.mobile.exception.OneginReactNativeException
-import com.onegini.mobile.exception.OneginReactNativeException.Companion.AUTHENTICATE_DEVICE_ERROR
 import com.onegini.mobile.exception.OneginReactNativeException.Companion.FINGERPRINT_IS_NOT_ENABLED
 import com.onegini.mobile.exception.OneginReactNativeException.Companion.MOBILE_AUTH_OTP_IS_DISABLED
 import com.onegini.mobile.managers.AuthenticatorManager
 import com.onegini.mobile.managers.RegistrationManager
 import com.onegini.mobile.mapers.*
-import com.onegini.mobile.mapers.CustomInfoMapper.add
-import com.onegini.mobile.mapers.UserProfileMapper.add
-import com.onegini.mobile.mapers.UserProfileMapper.toWritableMap
-import com.onegini.mobile.network.AnonymousService
-import com.onegini.mobile.network.ImplicitUserService
-import com.onegini.mobile.network.UserService
 import com.onegini.mobile.sdk.android.handlers.*
 import com.onegini.mobile.sdk.android.handlers.error.*
 import com.onegini.mobile.sdk.android.model.OneginiAppToWebSingleSignOn
 import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 import com.onegini.mobile.view.handlers.pins.ChangePinHandler
-import io.reactivex.disposables.CompositeDisposable
 
 class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext), IOneginiSdkWrapper {
 
@@ -34,7 +25,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         private const val TAG = "RNOneginiSdk"
     }
 
-    private val sdkWrapper: IOneginiSdkWrapper
+    private val sdkWrapper: OneginiSdkWrapper
 
     private val reactContext: ReactApplicationContext
     private val registrationManager: RegistrationManager
@@ -42,8 +33,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     private val oneginiSDK: OneginiSDK
         private get() = OneginiComponets.oneginiSDK
-
-    private val disposables = CompositeDisposable()
 
     init {
         init(reactContext.applicationContext)
@@ -364,48 +353,16 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         sdkWrapper.authenticateDeviceForResource(resourcePath, promise)
     }
 
-    // type: User, ImplicitUser, Anonymous
     @ReactMethod
     override fun resourceRequest(type: String, details: ReadableMap, promise: Promise) {
-        Log.d(LOG_TAG, "resourceRequest [type: $type] call with $details")
-
-        val requestDetails = ResourceRequestDetailsMapper.toResourceRequestDetails(details)
-
-        when (type) {
-            "User" -> {
-                disposables.add(
-                    UserService.getInstance()
-                        .getResource(requestDetails)
-                        .subscribe({
-                            promise.resolve(JsonMapper.toWritableMap(it))
-                        }) { throwable -> promise.reject(OneginReactNativeException.IMPLICIT_USER_DETAILS_ERROR.toString(), throwable.message) }
-                )
-            }
-            "ImplicitUser" -> {
-                disposables.add(
-                    ImplicitUserService.getInstance()
-                        .getResource(requestDetails)
-                        .subscribe({
-                            promise.resolve(JsonMapper.toWritableMap(it))
-                        }) { throwable -> promise.reject(OneginReactNativeException.IMPLICIT_USER_DETAILS_ERROR.toString(), throwable.message) }
-                )
-            }
-            "Anonymous" -> {
-                disposables.add(
-                    AnonymousService.getInstance()
-                        .getResource(requestDetails)
-                        .subscribe({
-                            promise.resolve(JsonMapper.toWritableMap(it))
-                        }) { throwable -> promise.reject(AUTHENTICATE_DEVICE_ERROR.toString(), throwable.message) }
-                )
-            }
-        }
+        sdkWrapper.resourceRequest(type, details, promise)
     }
 
     //
 
     override fun onCatalystInstanceDestroy() {
-        disposables.clear()
+        sdkWrapper.clear()
+
         super.onCatalystInstanceDestroy()
     }
 }

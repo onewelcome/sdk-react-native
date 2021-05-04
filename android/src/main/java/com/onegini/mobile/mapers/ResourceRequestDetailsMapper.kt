@@ -9,14 +9,9 @@ object ResourceRequestDetailsMapper {
     fun toResourceRequestDetails(map: ReadableMap): ResourceRequestDetails {
 
         val headers: MutableMap<String, String> = mutableMapOf()
-        val parameters: MutableMap<String, String> = mutableMapOf()
 
         map.getMap("headers")?.entryIterator?.forEach {
             headers[it.key] = it.value.toString()
-        }
-
-        map.getMap("parameters")?.entryIterator?.forEach {
-            parameters[it.key] = it.value.toString()
         }
 
         val method = try {
@@ -30,7 +25,7 @@ object ResourceRequestDetailsMapper {
             method = method,
             encoding = map.getString("encoding") ?: "application/json",
             headers = headers,
-            parameters = parameters
+            body = map.getString("body") ?: "",
         )
     }
 }
