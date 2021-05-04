@@ -346,18 +346,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     override fun logout(promise: Promise) {
-        val userClient = oneginiSDK.oneginiClient.userClient
-        userClient.logout(
-            object : OneginiLogoutHandler {
-                override fun onSuccess() {
-                    promise.resolve(null)
-                }
-
-                override fun onError(error: OneginiLogoutError?) {
-                    promise.reject(error?.errorType.toString(), error?.message)
-                }
-            }
-        )
+        sdkWrapper.logout(promise)
     }
 
     @ReactMethod

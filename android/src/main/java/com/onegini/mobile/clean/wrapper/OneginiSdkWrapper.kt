@@ -21,7 +21,8 @@ class OneginiSdkWrapper(
     val deregisterUserUseCase: DeregisterUserUseCase = DeregisterUserUseCase(),
     val authenticateUserUseCase: AuthenticateUserUseCase = AuthenticateUserUseCase(),
     val authenticateUserImplicitlyUseCase: AuthenticateUserImplicitlyUseCase = AuthenticateUserImplicitlyUseCase(),
-    val authenticateDeviceForResourceUseCase: AuthenticateDeviceForResourceUseCase = AuthenticateDeviceForResourceUseCase()
+    val authenticateDeviceForResourceUseCase: AuthenticateDeviceForResourceUseCase = AuthenticateDeviceForResourceUseCase(),
+    val logoutUseCase: LogoutUseCase = LogoutUseCase()
 ) : IOneginiSdkWrapper {
 
     override fun startClient(rnConfig: ReadableMap, promise: Promise) {
@@ -45,7 +46,7 @@ class OneginiSdkWrapper(
     }
 
     override fun logout(promise: Promise) {
-        TODO("Not yet implemented")
+        logoutUseCase(promise)
     }
 
     override fun getAccessToken(promise: Promise) {

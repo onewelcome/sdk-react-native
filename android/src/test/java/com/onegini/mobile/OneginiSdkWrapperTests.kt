@@ -64,6 +64,9 @@ class OneginiSdkWrapperTests {
     @Mock
     lateinit var authenticateDeviceForResourceUseCase: AuthenticateDeviceForResourceUseCase
 
+    @Mock
+    lateinit var logoutUseCase: LogoutUseCase
+
     //
 
     lateinit var wrapper: OneginiSdkWrapper
@@ -91,7 +94,8 @@ class OneginiSdkWrapperTests {
             deregisterUserUseCase,
             authenticateUserUseCase,
             authenticateUserImplicitlyUseCase,
-            authenticateDeviceForResourceUseCase
+            authenticateDeviceForResourceUseCase,
+            logoutUseCase
         )
     }
 
@@ -184,5 +188,12 @@ class OneginiSdkWrapperTests {
         wrapper.authenticateDeviceForResource("path", promiseMock)
 
         verify(authenticateDeviceForResourceUseCase).invoke("path", promiseMock)
+    }
+
+    @Test
+    fun `when logout method is called calls logoutUseCase with proper params`() {
+        wrapper.logout(promiseMock)
+
+        verify(logoutUseCase).invoke(promiseMock)
     }
 }
