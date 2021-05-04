@@ -1,6 +1,5 @@
 package com.onegini.mobile
 
-import android.net.Uri
 import android.util.Log
 import com.facebook.react.bridge.*
 import com.onegini.mobile.Constants.PinFlow
@@ -14,7 +13,6 @@ import com.onegini.mobile.managers.RegistrationManager
 import com.onegini.mobile.mapers.*
 import com.onegini.mobile.sdk.android.handlers.*
 import com.onegini.mobile.sdk.android.handlers.error.*
-import com.onegini.mobile.sdk.android.model.OneginiAppToWebSingleSignOn
 import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 import com.onegini.mobile.view.handlers.pins.ChangePinHandler
 
@@ -176,19 +174,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     override fun startSingleSignOn(url: String, promise: Promise) {
-        val targetUri = Uri.parse(url)
-        oneginiSDK.oneginiClient.userClient.getAppToWebSingleSignOn(
-            targetUri,
-            object : OneginiAppToWebSingleSignOnHandler {
-                override fun onSuccess(oneginiAppToWebSingleSignOn: OneginiAppToWebSingleSignOn) {
-                    promise.resolve(OneginiAppToWebSingleSignOnMapper.toWritableMap(oneginiAppToWebSingleSignOn))
-                }
-
-                override fun onError(error: OneginiAppToWebSingleSignOnError) {
-                    promise.reject(error.errorType.toString(), error.message)
-                }
-            }
-        )
+        sdkWrapper.startSingleSignOn(url, promise)
     }
 
     @ReactMethod
