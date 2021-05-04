@@ -314,18 +314,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     override fun handleMobileAuthWithOtp(otpCode: String, promise: Promise) {
-        oneginiSDK.oneginiClient.userClient.handleMobileAuthWithOtp(
-            otpCode,
-            object : OneginiMobileAuthWithOtpHandler {
-                override fun onSuccess() {
-                    promise.resolve(null)
-                }
-
-                override fun onError(error: OneginiMobileAuthWithOtpError?) {
-                    promise.reject(error?.errorType.toString(), error?.message)
-                }
-            }
-        )
+        sdkWrapper.handleMobileAuthWithOtp(otpCode, promise)
     }
 
     @ReactMethod

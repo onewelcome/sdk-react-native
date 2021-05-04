@@ -70,6 +70,9 @@ class OneginiSdkWrapperTests {
     @Mock
     lateinit var resourceRequestUseCase: ResourceRequestUseCase
 
+    @Mock
+    lateinit var handleMobileAuthWithOtpUseCase: HandleMobileAuthWithOtpUseCase
+
     //
 
     lateinit var wrapper: OneginiSdkWrapper
@@ -99,7 +102,8 @@ class OneginiSdkWrapperTests {
             authenticateUserImplicitlyUseCase,
             authenticateDeviceForResourceUseCase,
             logoutUseCase,
-            resourceRequestUseCase
+            resourceRequestUseCase,
+            handleMobileAuthWithOtpUseCase
         )
     }
 
@@ -206,5 +210,12 @@ class OneginiSdkWrapperTests {
         wrapper.resourceRequest("type", JavaOnlyMap(), promiseMock)
 
         verify(resourceRequestUseCase).invoke("type", JavaOnlyMap(), promiseMock)
+    }
+
+    @Test
+    fun `when handleMobileAuthWithOtp method is called calls handleMobileAuthWithOtpUseCase with proper params`() {
+        wrapper.handleMobileAuthWithOtp("code123", promiseMock)
+
+        verify(handleMobileAuthWithOtpUseCase).invoke("code123", promiseMock)
     }
 }
