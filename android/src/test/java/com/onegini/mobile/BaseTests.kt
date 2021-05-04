@@ -2,6 +2,7 @@ package com.onegini.mobile
 
 import android.content.Context
 import com.facebook.react.bridge.*
+import com.onegini.mobile.sdk.android.client.DeviceClient
 import com.onegini.mobile.sdk.android.client.OneginiClient
 import com.onegini.mobile.sdk.android.client.UserClient
 import io.mockk.clearAllMocks
@@ -27,6 +28,9 @@ open class BaseTests {
     lateinit var userClient: UserClient
 
     @Mock
+    lateinit var deviceClient: DeviceClient
+
+    @Mock
     lateinit var reactApplicationContext: ReactApplicationContext
 
     @Mock
@@ -38,6 +42,7 @@ open class BaseTests {
         OneginiComponets.oneginiSDK = oneginiSdk
 
         lenient().`when`(oneginiSdk.oneginiClient).thenReturn(oneginiClient)
+        lenient().`when`(oneginiSdk.oneginiClient.deviceClient).thenReturn(deviceClient)
         lenient().`when`(oneginiSdk.oneginiClient.userClient).thenReturn(userClient)
 
         mockkStatic(Arguments::class)

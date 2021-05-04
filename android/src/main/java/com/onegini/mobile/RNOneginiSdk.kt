@@ -372,20 +372,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     override fun authenticateDeviceForResource(resourcePath: String, promise: Promise) {
-        Log.d(LOG_TAG, "authenticateDeviceForResource resourcePath: $resourcePath")
-
-        oneginiSDK.oneginiClient.deviceClient.authenticateDevice(
-            arrayOf(resourcePath),
-            object : OneginiDeviceAuthenticationHandler {
-                override fun onSuccess() {
-                    promise.resolve(null)
-                }
-
-                override fun onError(error: OneginiDeviceAuthenticationError) {
-                    promise.reject(error.errorType.toString(), error.message)
-                }
-            }
-        )
+        sdkWrapper.authenticateDeviceForResource(resourcePath, promise)
     }
 
     // type: User, ImplicitUser, Anonymous
