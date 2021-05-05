@@ -13,7 +13,6 @@ import com.onegini.mobile.managers.RegistrationManager
 import com.onegini.mobile.mapers.*
 import com.onegini.mobile.sdk.android.handlers.*
 import com.onegini.mobile.sdk.android.handlers.error.*
-import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 import com.onegini.mobile.view.handlers.pins.ChangePinHandler
 
 class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext), IOneginiSdkWrapper {
@@ -81,23 +80,24 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    override fun registerFingerprintAuthenticator(profileId: String, promise: Promise) {
-        try {
-            authenticatorManager.registerFingerprintAuthenticator(
-                profileId,
-                object : OneginiAuthenticatorRegistrationHandler {
-                    override fun onSuccess(info: CustomInfo?) {
-                        promise.resolve(CustomInfoMapper.toWritableMap(info))
-                    }
+    override fun registerAuthenticator(profileId: String, type: String, promise: Promise) {
+        sdkWrapper.registerAuthenticatorUseCase(profileId, type, promise)
+    }
 
-                    override fun onError(error: OneginiAuthenticatorRegistrationError?) {
-                        promise.reject(error?.errorType.toString(), error?.message)
-                    }
-                }
-            )
-        } catch (e: OneginiError) {
-            promise.reject(e.errorType.toString(), e.message)
-        }
+    @ReactMethod
+    override fun isAuthenticatorRegistered(profileId: String, type: String, promise: Promise) {
+        TODO("Not yet implemented")
+    }
+
+    @ReactMethod
+    override fun deregisterAuthenticator(profileId: String, type: String, promise: Promise) {
+        TODO("Not yet implemented")
+    }
+
+    // TODO: temporary not to change RN SDK
+    @ReactMethod
+    override fun registerFingerprintAuthenticator(profileId: String, promise: Promise) {
+        sdkWrapper.registerAuthenticatorUseCase(profileId, "Fingerprint", promise)
     }
 
     @ReactMethod

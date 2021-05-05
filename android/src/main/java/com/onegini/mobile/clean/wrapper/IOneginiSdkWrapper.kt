@@ -60,6 +60,12 @@ interface IOneginiSdkWrapper {
     // Fingerprint
     //
 
+    fun registerAuthenticator(profileId: String, type: String, promise: Promise)
+
+    fun isAuthenticatorRegistered(profileId: String, type: String, promise: Promise)
+
+    fun deregisterAuthenticator(profileId: String, type: String, promise: Promise)
+
     fun registerFingerprintAuthenticator(profileId: String, promise: Promise)
 
     fun isFingerprintAuthenticatorRegistered(profileId: String, promise: Promise)

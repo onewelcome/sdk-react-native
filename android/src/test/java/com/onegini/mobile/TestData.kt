@@ -105,6 +105,32 @@ object TestData {
         }
     }
 
+    val fingerprintAuthenticator: OneginiAuthenticator = object : OneginiAuthenticator {
+        override fun getId(): String {
+            return "id3"
+        }
+
+        override fun getType(): Int {
+            return OneginiAuthenticator.FINGERPRINT
+        }
+
+        override fun getName(): String {
+            return "name1"
+        }
+
+        override fun isRegistered(): Boolean {
+            return true
+        }
+
+        override fun isPreferred(): Boolean {
+            return true
+        }
+
+        override fun getUserProfile(): UserProfile {
+            return UserProfile("123456")
+        }
+    }
+
     //
 
     val configModel = object : OneginiClientConfigModel {

@@ -26,7 +26,8 @@ class OneginiSdkWrapper(
     val resourceRequestUseCase: ResourceRequestUseCase = ResourceRequestUseCase(),
     val handleMobileAuthWithOtpUseCase: HandleMobileAuthWithOtpUseCase = HandleMobileAuthWithOtpUseCase(),
     val startSingleSignOnUseCase: StartSingleSignOnUseCase = StartSingleSignOnUseCase(),
-    val enrollMobileAuthenticationUseCase: EnrollMobileAuthenticationUseCase = EnrollMobileAuthenticationUseCase()
+    val enrollMobileAuthenticationUseCase: EnrollMobileAuthenticationUseCase = EnrollMobileAuthenticationUseCase(),
+    val registerAuthenticatorUseCase: RegisterAuthenticatorUseCase = RegisterAuthenticatorUseCase()
 ) : IOneginiSdkWrapper {
 
     override fun startClient(rnConfig: ReadableMap, promise: Promise) {
@@ -101,16 +102,28 @@ class OneginiSdkWrapper(
         getIdentityProvidersUseCase(promise)
     }
 
-    override fun registerFingerprintAuthenticator(profileId: String, promise: Promise) {
+    override fun registerAuthenticator(profileId: String, type: String, promise: Promise) {
+        registerAuthenticatorUseCase(profileId, type, promise)
+    }
+
+    override fun isAuthenticatorRegistered(profileId: String, type: String, promise: Promise) {
         TODO("Not yet implemented")
+    }
+
+    override fun deregisterAuthenticator(profileId: String, type: String, promise: Promise) {
+        TODO("Not yet implemented")
+    }
+
+    override fun registerFingerprintAuthenticator(profileId: String, promise: Promise) {
+        // TODO: to remove
     }
 
     override fun isFingerprintAuthenticatorRegistered(profileId: String, promise: Promise) {
-        TODO("Not yet implemented")
+        // TODO: to remove
     }
 
     override fun deregisterFingerprintAuthenticator(profileId: String, promise: Promise) {
-        TODO("Not yet implemented")
+        // TODO: to remove
     }
 
     override fun submitFingerprintAcceptAuthenticationRequest(promise: Promise) {
