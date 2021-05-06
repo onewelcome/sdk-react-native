@@ -40,14 +40,14 @@ class AcceptAuthenticationRequestUseCaseTests : BaseTests() {
     }
 
     @Test
-    fun `when called with Fingerprint type should call Fingerprint handler with value as pin`() {
+    fun `when called with Fingerprint type should call Fingerprint handler`() {
         AcceptAuthenticationRequestUseCase()("Fingerprint", null)
 
         verify(fingerprintAuthenticationRequestHandler).acceptAuthenticationRequest()
     }
 
     @Test
-    fun `when called with MobileAuthOtp type should call MobileAuthOtp handler with value as pin`() {
+    fun `when called with MobileAuthOtp type should call MobileAuthOtp handler`() {
         AcceptAuthenticationRequestUseCase()("MobileAuthOtp", null)
 
         verify(mobileAuthOtpRequestHandler).acceptAuthenticationRequest()
