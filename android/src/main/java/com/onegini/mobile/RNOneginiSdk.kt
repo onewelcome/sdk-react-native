@@ -91,38 +91,25 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     override fun deregisterAuthenticator(profileId: String, type: String, promise: Promise) {
-        TODO("Not yet implemented")
+        sdkWrapper.deregisterAuthenticator(profileId, type, promise)
     }
 
     // TODO: temporary not to change RN SDK
     @ReactMethod
-    override fun registerFingerprintAuthenticator(profileId: String, promise: Promise) {
+    fun registerFingerprintAuthenticator(profileId: String, promise: Promise) {
         sdkWrapper.registerAuthenticatorUseCase(profileId, "Fingerprint", promise)
     }
 
+    // TODO: temporary not to change RN SDK
     @ReactMethod
-    override fun isFingerprintAuthenticatorRegistered(profileId: String, promise: Promise) {
+    fun isFingerprintAuthenticatorRegistered(profileId: String, promise: Promise) {
         sdkWrapper.isAuthenticatorRegistered(profileId, "Fingerprint", promise)
     }
 
+    // TODO: temporary not to change RN SDK
     @ReactMethod
-    override fun deregisterFingerprintAuthenticator(profileId: String, promise: Promise) {
-        try {
-            authenticatorManager.deregisterFingerprintAuthenticator(
-                profileId,
-                object : OneginiAuthenticatorDeregistrationHandler {
-                    override fun onSuccess() {
-                        promise.resolve(null)
-                    }
-
-                    override fun onError(error: OneginiAuthenticatorDeregistrationError?) {
-                        promise.reject(error?.errorType.toString(), error?.message)
-                    }
-                }
-            )
-        } catch (e: OneginiError) {
-            promise.reject(e.errorType.toString(), e.message)
-        }
+    fun deregisterFingerprintAuthenticator(profileId: String, promise: Promise) {
+        sdkWrapper.deregisterAuthenticator(profileId, "Fingerprint", promise)
     }
 
     @ReactMethod

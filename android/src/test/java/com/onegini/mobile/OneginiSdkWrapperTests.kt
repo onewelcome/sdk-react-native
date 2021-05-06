@@ -85,6 +85,9 @@ class OneginiSdkWrapperTests {
     @Mock
     lateinit var isAuthenticatorRegisteredUseCase: IsAuthenticatorRegisteredUseCase
 
+    @Mock
+    lateinit var deregisterAuthenticatorUseCase: DeregisterAuthenticatorUseCase
+
     //
 
     lateinit var wrapper: OneginiSdkWrapper
@@ -119,7 +122,8 @@ class OneginiSdkWrapperTests {
             startSingleSignOnUseCase,
             enrollMobileAuthenticationUseCase,
             registerAuthenticatorUseCase,
-            isAuthenticatorRegisteredUseCase
+            isAuthenticatorRegisteredUseCase,
+            deregisterAuthenticatorUseCase
         )
     }
 
@@ -261,5 +265,12 @@ class OneginiSdkWrapperTests {
         wrapper.isAuthenticatorRegistered("profileId", "Fingerprint", promiseMock)
 
         verify(isAuthenticatorRegisteredUseCase).invoke("profileId", "Fingerprint", promiseMock)
+    }
+
+    @Test
+    fun `when deregisterAuthenticator method is called calls deregisterAuthenticatorUseCase with proper params`() {
+        wrapper.deregisterAuthenticator("profileId", "Fingerprint", promiseMock)
+
+        verify(deregisterAuthenticatorUseCase).invoke("profileId", "Fingerprint", promiseMock)
     }
 }
