@@ -82,6 +82,9 @@ class OneginiSdkWrapperTests {
     @Mock
     lateinit var registerAuthenticatorUseCase: RegisterAuthenticatorUseCase
 
+    @Mock
+    lateinit var isAuthenticatorRegisteredUseCase: IsAuthenticatorRegisteredUseCase
+
     //
 
     lateinit var wrapper: OneginiSdkWrapper
@@ -115,7 +118,8 @@ class OneginiSdkWrapperTests {
             handleMobileAuthWithOtpUseCase,
             startSingleSignOnUseCase,
             enrollMobileAuthenticationUseCase,
-            registerAuthenticatorUseCase
+            registerAuthenticatorUseCase,
+            isAuthenticatorRegisteredUseCase
         )
     }
 
@@ -250,5 +254,12 @@ class OneginiSdkWrapperTests {
         wrapper.registerAuthenticator("profileId", "Fingerprint", promiseMock)
 
         verify(registerAuthenticatorUseCase).invoke("profileId", "Fingerprint", promiseMock)
+    }
+
+    @Test
+    fun `when isAuthenticatorRegistered method is called calls isAuthenticatorRegisteredUseCase with proper params`() {
+        wrapper.isAuthenticatorRegistered("profileId", "Fingerprint", promiseMock)
+
+        verify(isAuthenticatorRegisteredUseCase).invoke("profileId", "Fingerprint", promiseMock)
     }
 }

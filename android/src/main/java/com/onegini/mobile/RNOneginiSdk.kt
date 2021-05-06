@@ -86,7 +86,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     override fun isAuthenticatorRegistered(profileId: String, type: String, promise: Promise) {
-        TODO("Not yet implemented")
+        sdkWrapper.isAuthenticatorRegistered(profileId, type, promise)
     }
 
     @ReactMethod
@@ -102,11 +102,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     override fun isFingerprintAuthenticatorRegistered(profileId: String, promise: Promise) {
-        try {
-            promise.resolve(authenticatorManager.isFingerprintAuthenticatorRegistered(profileId))
-        } catch (e: OneginiError) {
-            promise.reject(e.errorType.toString(), e.message)
-        }
+        sdkWrapper.isAuthenticatorRegistered(profileId, "Fingerprint", promise)
     }
 
     @ReactMethod

@@ -27,7 +27,9 @@ class OneginiSdkWrapper(
     val handleMobileAuthWithOtpUseCase: HandleMobileAuthWithOtpUseCase = HandleMobileAuthWithOtpUseCase(),
     val startSingleSignOnUseCase: StartSingleSignOnUseCase = StartSingleSignOnUseCase(),
     val enrollMobileAuthenticationUseCase: EnrollMobileAuthenticationUseCase = EnrollMobileAuthenticationUseCase(),
-    val registerAuthenticatorUseCase: RegisterAuthenticatorUseCase = RegisterAuthenticatorUseCase()
+    val registerAuthenticatorUseCase: RegisterAuthenticatorUseCase = RegisterAuthenticatorUseCase(),
+    val isAuthenticatorRegisteredUseCase: IsAuthenticatorRegisteredUseCase = IsAuthenticatorRegisteredUseCase(),
+
 ) : IOneginiSdkWrapper {
 
     override fun startClient(rnConfig: ReadableMap, promise: Promise) {
@@ -107,7 +109,7 @@ class OneginiSdkWrapper(
     }
 
     override fun isAuthenticatorRegistered(profileId: String, type: String, promise: Promise) {
-        TODO("Not yet implemented")
+        isAuthenticatorRegisteredUseCase(profileId, type, promise)
     }
 
     override fun deregisterAuthenticator(profileId: String, type: String, promise: Promise) {
