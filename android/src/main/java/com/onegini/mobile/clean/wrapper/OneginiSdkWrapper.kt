@@ -33,6 +33,7 @@ class OneginiSdkWrapper(
     val setPreferredAuthenticatorUseCase: SetPreferredAuthenticatorUseCase = SetPreferredAuthenticatorUseCase(),
     val handleRegistrationCallbackUseCase: HandleRegistrationCallbackUseCase = HandleRegistrationCallbackUseCase(),
     val cancelRegistrationUseCase: CancelRegistrationUseCase = CancelRegistrationUseCase(),
+    val submitCustomRegistrationActionUseCase: SubmitCustomRegistrationActionUseCase = SubmitCustomRegistrationActionUseCase(),
 
 ) : IOneginiSdkWrapper {
 
@@ -101,7 +102,7 @@ class OneginiSdkWrapper(
     }
 
     override fun submitCustomRegistrationAction(customAction: String, identityProviderId: String, token: String?) {
-        TODO("Not yet implemented")
+        submitCustomRegistrationActionUseCase(customAction, identityProviderId, token)
     }
 
     override fun getIdentityProviders(promise: Promise) {

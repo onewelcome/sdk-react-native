@@ -97,6 +97,9 @@ class OneginiSdkWrapperTests {
     @Mock
     lateinit var cancelRegistrationUseCase: CancelRegistrationUseCase
 
+    @Mock
+    lateinit var submitCustomRegistrationActionUseCase: SubmitCustomRegistrationActionUseCase
+
     //
 
     lateinit var wrapper: OneginiSdkWrapper
@@ -135,7 +138,8 @@ class OneginiSdkWrapperTests {
             deregisterAuthenticatorUseCase,
             setPreferredAuthenticatorUseCase,
             handleRegistrationCallbackUseCase,
-            cancelRegistrationUseCase
+            cancelRegistrationUseCase,
+            submitCustomRegistrationActionUseCase
         )
     }
 
@@ -305,5 +309,12 @@ class OneginiSdkWrapperTests {
         wrapper.cancelRegistration()
 
         verify(cancelRegistrationUseCase).invoke()
+    }
+
+    @Test
+    fun `when submitCustomRegistrationAction method is called calls submitCustomRegistrationActionUseCase with proper params`() {
+        wrapper.submitCustomRegistrationAction("action", "id1", "token")
+
+        verify(submitCustomRegistrationActionUseCase).invoke("action", "id1", "token")
     }
 }

@@ -1,6 +1,5 @@
 package com.onegini.mobile
 
-import android.util.Log
 import com.facebook.react.bridge.*
 import com.onegini.mobile.Constants.PinFlow
 import com.onegini.mobile.OneginiComponets.init
@@ -8,7 +7,6 @@ import com.onegini.mobile.clean.wrapper.IOneginiSdkWrapper
 import com.onegini.mobile.clean.wrapper.OneginiSdkWrapper
 import com.onegini.mobile.exception.OneginReactNativeException.Companion.FINGERPRINT_IS_NOT_ENABLED
 import com.onegini.mobile.exception.OneginReactNativeException.Companion.MOBILE_AUTH_OTP_IS_DISABLED
-import com.onegini.mobile.managers.RegistrationManager
 import com.onegini.mobile.mapers.*
 import com.onegini.mobile.sdk.android.handlers.*
 import com.onegini.mobile.sdk.android.handlers.error.*
@@ -16,15 +14,7 @@ import com.onegini.mobile.view.handlers.pins.ChangePinHandler
 
 class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext), IOneginiSdkWrapper {
 
-    companion object {
-        private const val LOG_TAG = "RNOneginiSdk"
-        private const val TAG = "RNOneginiSdk"
-    }
-
     private val sdkWrapper: OneginiSdkWrapper
-
-    private val reactContext: ReactApplicationContext
-    private val registrationManager: RegistrationManager
 
     private val oneginiSDK: OneginiSDK
         private get() = OneginiComponets.oneginiSDK
@@ -33,9 +23,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         init(reactContext.applicationContext)
 
         sdkWrapper = OneginiSdkWrapper(oneginiSDK, reactApplicationContext)
-
-        this.reactContext = reactContext
-        registrationManager = RegistrationManager(oneginiSDK)
     }
 
     override fun canOverrideExistingModule(): Boolean {
@@ -155,20 +142,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     override fun submitCustomRegistrationAction(customAction: String, identityProviderId: String, token: String?) {
-        val action = registrationManager.getSimpleCustomRegistrationAction(identityProviderId)
-
-        if (action == null) {
-            Log.e(LOG_TAG, "The $identityProviderId was not configured.")
-            return
-        }
-
-        when (customAction) {
-            Constants.CUSTOM_REGISTRATION_ACTION_PROVIDE -> action.returnSuccess(token)
-            Constants.CUSTOM_REGISTRATION_ACTION_CANCEL -> action.returnError(java.lang.Exception(token))
-            else -> {
-                Log.e(LOG_TAG, "Got unsupported custom registration action: $customAction.")
-            }
-        }
+        sdkWrapper.submitCustomRegistrationAction(customAction, identityProviderId, token)
     }
 
     @ReactMethod
@@ -223,7 +197,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         when (action) {
             Constants.PIN_ACTION_PROVIDE -> oneginiSDK.createPinRequestHandler.onPinProvided(pin!!.toCharArray(), PinFlow.Create)
             Constants.PIN_ACTION_CANCEL -> oneginiSDK.createPinRequestHandler.pinCancelled(PinFlow.Create)
-            else -> Log.e(LOG_TAG, "Got unsupported PIN action: $action")
+//            else -> Log.e(LOG_TAG, "Got unsupported PIN action: $action")
         }
     }
 
@@ -231,7 +205,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         when (action) {
             Constants.PIN_ACTION_PROVIDE -> oneginiSDK.pinAuthenticationRequestHandler.acceptAuthenticationRequest(pin!!.toCharArray())
             Constants.PIN_ACTION_CANCEL -> oneginiSDK.pinAuthenticationRequestHandler.denyAuthenticationRequest()
-            else -> Log.e(LOG_TAG, "Got unsupported PIN action: $action")
+//            else -> Log.e(LOG_TAG, "Got unsupported PIN action: $action")
         }
     }
 
@@ -239,7 +213,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         when (action) {
             Constants.PIN_ACTION_PROVIDE -> oneginiSDK.changePinHandler.onPinProvided(pin!!.toCharArray())
             Constants.PIN_ACTION_CANCEL -> oneginiSDK.changePinHandler.pinCancelled()
-            else -> Log.e(LOG_TAG, "Got unsupported PIN action: $action")
+//            else -> Log.e(LOG_TAG, "Got unsupported PIN action: $action")
         }
     }
 
