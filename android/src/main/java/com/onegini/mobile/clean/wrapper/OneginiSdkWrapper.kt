@@ -35,6 +35,7 @@ class OneginiSdkWrapper(
     val cancelRegistrationUseCase: CancelRegistrationUseCase = CancelRegistrationUseCase(),
     val submitCustomRegistrationActionUseCase: SubmitCustomRegistrationActionUseCase = SubmitCustomRegistrationActionUseCase(),
     val acceptAuthenticationRequestUseCase: AcceptAuthenticationRequestUseCase = AcceptAuthenticationRequestUseCase(),
+    val denyAuthenticationRequestUseCase: DenyAuthenticationRequestUseCase = DenyAuthenticationRequestUseCase(),
 
 ) : IOneginiSdkWrapper {
 
@@ -122,10 +123,6 @@ class OneginiSdkWrapper(
         deregisterAuthenticatorUseCase(profileId, type, promise)
     }
 
-    override fun submitFingerprintDenyAuthenticationRequest(promise: Promise) {
-        TODO("Not yet implemented")
-    }
-
     override fun submitFingerprintFallbackToPin(promise: Promise) {
         TODO("Not yet implemented")
     }
@@ -142,10 +139,6 @@ class OneginiSdkWrapper(
         enrollMobileAuthenticationUseCase(promise)
     }
 
-    override fun denyMobileAuthConfirmation(promise: Promise) {
-        TODO("Not yet implemented")
-    }
-
     override fun handleMobileAuthWithOtp(otpCode: String, promise: Promise) {
         handleMobileAuthWithOtpUseCase(otpCode, promise)
     }
@@ -160,6 +153,10 @@ class OneginiSdkWrapper(
 
     override fun acceptAuthenticationRequest(type: String, value: String?) {
         acceptAuthenticationRequestUseCase(type, value)
+    }
+
+    override fun denyAuthenticationRequest(type: String) {
+        denyAuthenticationRequestUseCase(type)
     }
 
     //

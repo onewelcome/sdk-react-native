@@ -103,6 +103,9 @@ class OneginiSdkWrapperTests {
     @Mock
     lateinit var acceptAuthenticationRequestUseCase: AcceptAuthenticationRequestUseCase
 
+    @Mock
+    lateinit var denyAuthenticationRequestUseCase: DenyAuthenticationRequestUseCase
+
     //
 
     lateinit var wrapper: OneginiSdkWrapper
@@ -143,7 +146,8 @@ class OneginiSdkWrapperTests {
             handleRegistrationCallbackUseCase,
             cancelRegistrationUseCase,
             submitCustomRegistrationActionUseCase,
-            acceptAuthenticationRequestUseCase
+            acceptAuthenticationRequestUseCase,
+            denyAuthenticationRequestUseCase
         )
     }
 
@@ -327,5 +331,12 @@ class OneginiSdkWrapperTests {
         wrapper.acceptAuthenticationRequest("Pin", "1234")
 
         verify(acceptAuthenticationRequestUseCase).invoke("Pin", "1234")
+    }
+
+    @Test
+    fun `when denyAuthenticationRequest method is called calls denyAuthenticationRequestUseCase with proper params`() {
+        wrapper.denyAuthenticationRequest("Pin")
+
+        verify(denyAuthenticationRequestUseCase).invoke("Pin")
     }
 }

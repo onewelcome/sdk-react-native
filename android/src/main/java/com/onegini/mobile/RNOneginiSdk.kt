@@ -6,7 +6,6 @@ import com.onegini.mobile.OneginiComponets.init
 import com.onegini.mobile.clean.wrapper.IOneginiSdkWrapper
 import com.onegini.mobile.clean.wrapper.OneginiSdkWrapper
 import com.onegini.mobile.exception.OneginReactNativeException.Companion.FINGERPRINT_IS_NOT_ENABLED
-import com.onegini.mobile.exception.OneginReactNativeException.Companion.MOBILE_AUTH_OTP_IS_DISABLED
 import com.onegini.mobile.mapers.*
 import com.onegini.mobile.sdk.android.handlers.*
 import com.onegini.mobile.sdk.android.handlers.error.*
@@ -101,6 +100,11 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         sdkWrapper.acceptAuthenticationRequestUseCase(type, value)
     }
 
+    @ReactMethod
+    override fun denyAuthenticationRequest(type: String) {
+        sdkWrapper.denyAuthenticationRequest(type)
+    }
+
     // TODO: temporary not to change RN SDK
     @ReactMethod
     fun submitFingerprintAcceptAuthenticationRequest(promise: Promise) {
@@ -113,20 +117,24 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         sdkWrapper.acceptAuthenticationRequestUseCase("MobileAuthOtp", null)
     }
 
+    // TODO: temporary not to change RN SDK
+    @ReactMethod
+    fun denyMobileAuthConfirmation(promise: Promise) {
+        sdkWrapper.denyAuthenticationRequestUseCase("MobileAuthOtp")
+    }
+
     private fun submitAuthenticationPinAction(action: String, pin: String?) {
         when (action) {
             Constants.PIN_ACTION_PROVIDE -> sdkWrapper.acceptAuthenticationRequestUseCase("Pin", pin)
-            Constants.PIN_ACTION_CANCEL -> oneginiSDK.pinAuthenticationRequestHandler.denyAuthenticationRequest()
+            Constants.PIN_ACTION_CANCEL -> sdkWrapper.denyAuthenticationRequestUseCase("Pin")
 //            else -> Log.e(LOG_TAG, "Got unsupported PIN action: $action")
         }
     }
 
+    // TODO: temporary not to change RN SDK
     @ReactMethod
-    override fun submitFingerprintDenyAuthenticationRequest(promise: Promise) {
-        if (oneginiSDK.fingerprintAuthenticationRequestHandler == null) {
-            promise.reject(FINGERPRINT_IS_NOT_ENABLED.toString(), " The fingerprint is no enabled. Please check your configuration")
-        }
-        oneginiSDK.fingerprintAuthenticationRequestHandler!!.denyAuthenticationRequest()
+    fun submitFingerprintDenyAuthenticationRequest(promise: Promise) {
+        sdkWrapper.denyAuthenticationRequestUseCase("Fingerprint")
     }
 
     @ReactMethod
@@ -229,15 +237,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     @ReactMethod
     override fun enrollMobileAuthentication(promise: Promise) {
         sdkWrapper.enrollMobileAuthentication(promise)
-    }
-
-    @ReactMethod
-    override fun denyMobileAuthConfirmation(promise: Promise) {
-        val handler = oneginiSDK.mobileAuthOtpRequestHandler
-        if (handler == null) {
-            promise.reject(MOBILE_AUTH_OTP_IS_DISABLED.toString(), "The Mobile auth Otp is disabled")
-        }
-        handler!!.denyAuthenticationRequest()
     }
 
     @ReactMethod
