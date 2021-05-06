@@ -30,6 +30,7 @@ class OneginiSdkWrapper(
     val registerAuthenticatorUseCase: RegisterAuthenticatorUseCase = RegisterAuthenticatorUseCase(),
     val isAuthenticatorRegisteredUseCase: IsAuthenticatorRegisteredUseCase = IsAuthenticatorRegisteredUseCase(),
     val deregisterAuthenticatorUseCase: DeregisterAuthenticatorUseCase = DeregisterAuthenticatorUseCase(),
+    val setPreferredAuthenticatorUseCase: SetPreferredAuthenticatorUseCase = SetPreferredAuthenticatorUseCase(),
 
 ) : IOneginiSdkWrapper {
 
@@ -74,7 +75,7 @@ class OneginiSdkWrapper(
     }
 
     override fun setPreferredAuthenticator(profileId: String, idOneginiAuthenticator: String, promise: Promise) {
-        TODO("Not yet implemented")
+        setPreferredAuthenticatorUseCase(profileId, idOneginiAuthenticator, promise)
     }
 
     override fun registerUser(identityProviderId: String?, promise: Promise) {

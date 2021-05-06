@@ -138,11 +138,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     override fun setPreferredAuthenticator(profileId: String, idOneginiAuthenticator: String, promise: Promise) {
-        try {
-            authenticatorManager.setPreferredAuthenticator(profileId, idOneginiAuthenticator)
-        } catch (e: OneginiError) {
-            promise.reject(e.errorType.toString(), e.message)
-        }
+        sdkWrapper.setPreferredAuthenticator(profileId, idOneginiAuthenticator, promise)
     }
 
     @ReactMethod
