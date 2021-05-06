@@ -38,6 +38,7 @@ class OneginiSdkWrapper(
     val denyAuthenticationRequestUseCase: DenyAuthenticationRequestUseCase = DenyAuthenticationRequestUseCase(),
     val submitFingerprintFallbackToPinUseCase: SubmitFingerprintFallbackToPinUseCase = SubmitFingerprintFallbackToPinUseCase(),
     val startChangePinFlowUseCase: StartChangePinFlowUseCase = StartChangePinFlowUseCase(),
+    val submitPinActionUseCase: SubmitPinActionUseCase = SubmitPinActionUseCase(),
 
 ) : IOneginiSdkWrapper {
 
@@ -134,7 +135,7 @@ class OneginiSdkWrapper(
     }
 
     override fun submitPinAction(flowString: String?, action: String, pin: String?) {
-        TODO("Not yet implemented")
+        submitPinActionUseCase(flowString, action, pin)
     }
 
     override fun enrollMobileAuthentication(promise: Promise) {

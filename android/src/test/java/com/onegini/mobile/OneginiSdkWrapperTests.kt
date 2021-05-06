@@ -112,6 +112,9 @@ class OneginiSdkWrapperTests {
     @Mock
     lateinit var startChangePinFlowUseCase: StartChangePinFlowUseCase
 
+    @Mock
+    lateinit var submitPinActionUseCase: SubmitPinActionUseCase
+
     //
 
     lateinit var wrapper: OneginiSdkWrapper
@@ -155,7 +158,8 @@ class OneginiSdkWrapperTests {
             acceptAuthenticationRequestUseCase,
             denyAuthenticationRequestUseCase,
             submitFingerprintFallbackToPinUseCase,
-            startChangePinFlowUseCase
+            startChangePinFlowUseCase,
+            submitPinActionUseCase
         )
     }
 
@@ -360,5 +364,12 @@ class OneginiSdkWrapperTests {
         wrapper.startChangePinFlow(promiseMock)
 
         verify(startChangePinFlowUseCase).invoke(promiseMock)
+    }
+
+    @Test
+    fun `when submitPinAction method is called calls submitPinActionUseCase with proper params`() {
+        wrapper.submitPinAction(Constants.PinFlow.Authentication.flowString, Constants.PIN_ACTION_PROVIDE, "123")
+
+        verify(submitPinActionUseCase).invoke(Constants.PinFlow.Authentication.flowString, Constants.PIN_ACTION_PROVIDE, "123")
     }
 }

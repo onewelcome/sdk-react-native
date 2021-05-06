@@ -1,7 +1,6 @@
 package com.onegini.mobile
 
 import com.facebook.react.bridge.*
-import com.onegini.mobile.Constants.PinFlow
 import com.onegini.mobile.OneginiComponets.init
 import com.onegini.mobile.clean.wrapper.IOneginiSdkWrapper
 import com.onegini.mobile.clean.wrapper.OneginiSdkWrapper
@@ -29,6 +28,10 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     override fun getName(): String {
         return "RNOneginiSdk"
     }
+
+    //
+    // Wrapper methods (IOneginiSdkWrapper)
+    //
 
     @ReactMethod
     override fun startClient(rnConfig: ReadableMap, promise: Promise) {
@@ -75,24 +78,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         sdkWrapper.deregisterAuthenticator(profileId, type, promise)
     }
 
-    // TODO: temporary not to change RN SDK
-    @ReactMethod
-    fun registerFingerprintAuthenticator(profileId: String, promise: Promise) {
-        sdkWrapper.registerAuthenticatorUseCase(profileId, "Fingerprint", promise)
-    }
-
-    // TODO: temporary not to change RN SDK
-    @ReactMethod
-    fun isFingerprintAuthenticatorRegistered(profileId: String, promise: Promise) {
-        sdkWrapper.isAuthenticatorRegistered(profileId, "Fingerprint", promise)
-    }
-
-    // TODO: temporary not to change RN SDK
-    @ReactMethod
-    fun deregisterFingerprintAuthenticator(profileId: String, promise: Promise) {
-        sdkWrapper.deregisterAuthenticator(profileId, "Fingerprint", promise)
-    }
-
     @ReactMethod
     override fun acceptAuthenticationRequest(type: String, value: String?) {
         sdkWrapper.acceptAuthenticationRequestUseCase(type, value)
@@ -101,38 +86,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     @ReactMethod
     override fun denyAuthenticationRequest(type: String) {
         sdkWrapper.denyAuthenticationRequest(type)
-    }
-
-    // TODO: temporary not to change RN SDK
-    @ReactMethod
-    fun submitFingerprintAcceptAuthenticationRequest(promise: Promise) {
-        sdkWrapper.acceptAuthenticationRequestUseCase("Fingerprint", null)
-    }
-
-    // TODO: temporary not to change RN SDK
-    @ReactMethod
-    fun acceptMobileAuthConfirmation(promise: Promise) {
-        sdkWrapper.acceptAuthenticationRequestUseCase("MobileAuthOtp", null)
-    }
-
-    // TODO: temporary not to change RN SDK
-    @ReactMethod
-    fun denyMobileAuthConfirmation(promise: Promise) {
-        sdkWrapper.denyAuthenticationRequestUseCase("MobileAuthOtp")
-    }
-
-    private fun submitAuthenticationPinAction(action: String, pin: String?) {
-        when (action) {
-            Constants.PIN_ACTION_PROVIDE -> sdkWrapper.acceptAuthenticationRequestUseCase("Pin", pin)
-            Constants.PIN_ACTION_CANCEL -> sdkWrapper.denyAuthenticationRequestUseCase("Pin")
-//            else -> Log.e(LOG_TAG, "Got unsupported PIN action: $action")
-        }
-    }
-
-    // TODO: temporary not to change RN SDK
-    @ReactMethod
-    fun submitFingerprintDenyAuthenticationRequest(promise: Promise) {
-        sdkWrapper.denyAuthenticationRequestUseCase("Fingerprint")
     }
 
     @ReactMethod
@@ -180,50 +133,14 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         sdkWrapper.cancelRegistration()
     }
 
+    @ReactMethod
     override fun startChangePinFlow(promise: Promise) {
         sdkWrapper.startChangePinFlowUseCase(promise)
     }
 
-    // TODO: temporary not to change RN SDK
     @ReactMethod
-    fun changePin(promise: Promise) {
-        sdkWrapper.startChangePinFlowUseCase(promise)
-    }
-
-    @ReactMethod
-    @Throws(Exception::class)
     override fun submitPinAction(flowString: String?, action: String, pin: String?) {
-        val flow = PinFlow.parse(flowString)
-        when (flow) {
-            PinFlow.Authentication -> {
-                submitAuthenticationPinAction(action, pin)
-                return
-            }
-            PinFlow.Create -> {
-                submitCreatePinAction(action, pin)
-                return
-            }
-            PinFlow.Change -> {
-                submitChangePinAction(action, pin)
-                return
-            }
-        }
-    }
-
-    private fun submitCreatePinAction(action: String, pin: String?) {
-        when (action) {
-            Constants.PIN_ACTION_PROVIDE -> oneginiSDK.createPinRequestHandler.onPinProvided(pin!!.toCharArray(), PinFlow.Create)
-            Constants.PIN_ACTION_CANCEL -> oneginiSDK.createPinRequestHandler.pinCancelled(PinFlow.Create)
-//            else -> Log.e(LOG_TAG, "Got unsupported PIN action: $action")
-        }
-    }
-
-    private fun submitChangePinAction(action: String, pin: String?) {
-        when (action) {
-            Constants.PIN_ACTION_PROVIDE -> oneginiSDK.changePinHandler.onPinProvided(pin!!.toCharArray())
-            Constants.PIN_ACTION_CANCEL -> oneginiSDK.changePinHandler.pinCancelled()
-//            else -> Log.e(LOG_TAG, "Got unsupported PIN action: $action")
-        }
+        sdkWrapper.submitPinAction(flowString, action, pin)
     }
 
     @ReactMethod
@@ -264,6 +181,50 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     @ReactMethod
     override fun resourceRequest(type: String, details: ReadableMap, promise: Promise) {
         sdkWrapper.resourceRequest(type, details, promise)
+    }
+
+    //
+    // TODO: temporary not to change RN SDK
+    //
+
+    @ReactMethod
+    fun changePin(promise: Promise) {
+        sdkWrapper.startChangePinFlowUseCase(promise)
+    }
+
+    @ReactMethod
+    fun registerFingerprintAuthenticator(profileId: String, promise: Promise) {
+        sdkWrapper.registerAuthenticatorUseCase(profileId, "Fingerprint", promise)
+    }
+
+    @ReactMethod
+    fun isFingerprintAuthenticatorRegistered(profileId: String, promise: Promise) {
+        sdkWrapper.isAuthenticatorRegistered(profileId, "Fingerprint", promise)
+    }
+
+    @ReactMethod
+    fun deregisterFingerprintAuthenticator(profileId: String, promise: Promise) {
+        sdkWrapper.deregisterAuthenticator(profileId, "Fingerprint", promise)
+    }
+
+    @ReactMethod
+    fun submitFingerprintAcceptAuthenticationRequest(promise: Promise) {
+        sdkWrapper.acceptAuthenticationRequestUseCase("Fingerprint", null)
+    }
+
+    @ReactMethod
+    fun acceptMobileAuthConfirmation(promise: Promise) {
+        sdkWrapper.acceptAuthenticationRequestUseCase("MobileAuthOtp", null)
+    }
+
+    @ReactMethod
+    fun denyMobileAuthConfirmation(promise: Promise) {
+        sdkWrapper.denyAuthenticationRequestUseCase("MobileAuthOtp")
+    }
+
+    @ReactMethod
+    fun submitFingerprintDenyAuthenticationRequest(promise: Promise) {
+        sdkWrapper.denyAuthenticationRequestUseCase("Fingerprint")
     }
 
     //
