@@ -97,11 +97,28 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    override fun submitFingerprintAcceptAuthenticationRequest(promise: Promise) {
-        if (oneginiSDK.fingerprintAuthenticationRequestHandler == null) {
-            promise.reject(FINGERPRINT_IS_NOT_ENABLED.toString(), " The fingerprint is no enabled. Please check your configuration")
+    override fun acceptAuthenticationRequest(type: String, value: String?) {
+        sdkWrapper.acceptAuthenticationRequestUseCase(type, value)
+    }
+
+    // TODO: temporary not to change RN SDK
+    @ReactMethod
+    fun submitFingerprintAcceptAuthenticationRequest(promise: Promise) {
+        sdkWrapper.acceptAuthenticationRequestUseCase("Fingerprint", null)
+    }
+
+    // TODO: temporary not to change RN SDK
+    @ReactMethod
+    fun acceptMobileAuthConfirmation(promise: Promise) {
+        sdkWrapper.acceptAuthenticationRequestUseCase("MobileAuthOtp", null)
+    }
+
+    private fun submitAuthenticationPinAction(action: String, pin: String?) {
+        when (action) {
+            Constants.PIN_ACTION_PROVIDE -> sdkWrapper.acceptAuthenticationRequestUseCase("Pin", pin)
+            Constants.PIN_ACTION_CANCEL -> oneginiSDK.pinAuthenticationRequestHandler.denyAuthenticationRequest()
+//            else -> Log.e(LOG_TAG, "Got unsupported PIN action: $action")
         }
-        oneginiSDK.fingerprintAuthenticationRequestHandler!!.acceptAuthenticationRequest()
     }
 
     @ReactMethod
@@ -201,14 +218,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         }
     }
 
-    private fun submitAuthenticationPinAction(action: String, pin: String?) {
-        when (action) {
-            Constants.PIN_ACTION_PROVIDE -> oneginiSDK.pinAuthenticationRequestHandler.acceptAuthenticationRequest(pin!!.toCharArray())
-            Constants.PIN_ACTION_CANCEL -> oneginiSDK.pinAuthenticationRequestHandler.denyAuthenticationRequest()
-//            else -> Log.e(LOG_TAG, "Got unsupported PIN action: $action")
-        }
-    }
-
     private fun submitChangePinAction(action: String, pin: String?) {
         when (action) {
             Constants.PIN_ACTION_PROVIDE -> oneginiSDK.changePinHandler.onPinProvided(pin!!.toCharArray())
@@ -220,15 +229,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     @ReactMethod
     override fun enrollMobileAuthentication(promise: Promise) {
         sdkWrapper.enrollMobileAuthentication(promise)
-    }
-
-    @ReactMethod
-    override fun acceptMobileAuthConfirmation(promise: Promise) {
-        val handler = oneginiSDK.mobileAuthOtpRequestHandler
-        if (handler == null) {
-            promise.reject(MOBILE_AUTH_OTP_IS_DISABLED.toString(), "The Mobile auth Otp is disabled")
-        }
-        handler!!.acceptAuthenticationRequest()
     }
 
     @ReactMethod
