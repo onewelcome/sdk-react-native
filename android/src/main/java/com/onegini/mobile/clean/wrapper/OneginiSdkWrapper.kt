@@ -32,6 +32,7 @@ class OneginiSdkWrapper(
     val deregisterAuthenticatorUseCase: DeregisterAuthenticatorUseCase = DeregisterAuthenticatorUseCase(),
     val setPreferredAuthenticatorUseCase: SetPreferredAuthenticatorUseCase = SetPreferredAuthenticatorUseCase(),
     val handleRegistrationCallbackUseCase: HandleRegistrationCallbackUseCase = HandleRegistrationCallbackUseCase(),
+    val cancelRegistrationUseCase: CancelRegistrationUseCase = CancelRegistrationUseCase(),
 
 ) : IOneginiSdkWrapper {
 
@@ -88,7 +89,7 @@ class OneginiSdkWrapper(
     }
 
     override fun cancelRegistration() {
-        TODO("Not yet implemented")
+        cancelRegistrationUseCase()
     }
 
     override fun getRedirectUri(promise: Promise) {

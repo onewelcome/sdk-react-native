@@ -183,7 +183,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     override fun cancelRegistration() {
-        registrationManager.cancelRegistration()
+        sdkWrapper.cancelRegistration()
     }
 
     @ReactMethod

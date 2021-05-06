@@ -94,6 +94,9 @@ class OneginiSdkWrapperTests {
     @Mock
     lateinit var handleRegistrationCallbackUseCase: HandleRegistrationCallbackUseCase
 
+    @Mock
+    lateinit var cancelRegistrationUseCase: CancelRegistrationUseCase
+
     //
 
     lateinit var wrapper: OneginiSdkWrapper
@@ -131,7 +134,8 @@ class OneginiSdkWrapperTests {
             isAuthenticatorRegisteredUseCase,
             deregisterAuthenticatorUseCase,
             setPreferredAuthenticatorUseCase,
-            handleRegistrationCallbackUseCase
+            handleRegistrationCallbackUseCase,
+            cancelRegistrationUseCase
         )
     }
 
@@ -294,5 +298,12 @@ class OneginiSdkWrapperTests {
         wrapper.handleRegistrationCallback("http://www.pl")
 
         verify(handleRegistrationCallbackUseCase).invoke("http://www.pl")
+    }
+
+    @Test
+    fun `when cancelRegistration method is called calls cancelRegistrationUseCase with proper params`() {
+        wrapper.cancelRegistration()
+
+        verify(cancelRegistrationUseCase).invoke()
     }
 }
