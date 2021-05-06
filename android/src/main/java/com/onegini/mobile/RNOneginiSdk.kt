@@ -8,7 +8,6 @@ import com.onegini.mobile.clean.wrapper.IOneginiSdkWrapper
 import com.onegini.mobile.clean.wrapper.OneginiSdkWrapper
 import com.onegini.mobile.exception.OneginReactNativeException.Companion.FINGERPRINT_IS_NOT_ENABLED
 import com.onegini.mobile.exception.OneginReactNativeException.Companion.MOBILE_AUTH_OTP_IS_DISABLED
-import com.onegini.mobile.managers.AuthenticatorManager
 import com.onegini.mobile.managers.RegistrationManager
 import com.onegini.mobile.mapers.*
 import com.onegini.mobile.sdk.android.handlers.*
@@ -26,7 +25,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     private val reactContext: ReactApplicationContext
     private val registrationManager: RegistrationManager
-    private val authenticatorManager: AuthenticatorManager
 
     private val oneginiSDK: OneginiSDK
         private get() = OneginiComponets.oneginiSDK
@@ -38,7 +36,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
         this.reactContext = reactContext
         registrationManager = RegistrationManager(oneginiSDK)
-        authenticatorManager = AuthenticatorManager(oneginiSDK)
     }
 
     override fun canOverrideExistingModule(): Boolean {
