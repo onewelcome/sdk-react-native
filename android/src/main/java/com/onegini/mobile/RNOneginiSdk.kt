@@ -5,7 +5,6 @@ import com.onegini.mobile.Constants.PinFlow
 import com.onegini.mobile.OneginiComponets.init
 import com.onegini.mobile.clean.wrapper.IOneginiSdkWrapper
 import com.onegini.mobile.clean.wrapper.OneginiSdkWrapper
-import com.onegini.mobile.exception.OneginReactNativeException.Companion.FINGERPRINT_IS_NOT_ENABLED
 import com.onegini.mobile.mapers.*
 import com.onegini.mobile.sdk.android.handlers.*
 import com.onegini.mobile.sdk.android.handlers.error.*
@@ -138,11 +137,8 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    override fun submitFingerprintFallbackToPin(promise: Promise) {
-        if (oneginiSDK.fingerprintAuthenticationRequestHandler == null) {
-            promise.reject(FINGERPRINT_IS_NOT_ENABLED.toString(), " The fingerprint is no enabled. Please check your configuration")
-        }
-        oneginiSDK.fingerprintAuthenticationRequestHandler!!.fallbackToPin()
+    override fun submitFingerprintFallbackToPin() {
+        sdkWrapper.submitFingerprintFallbackToPin()
     }
 
     @ReactMethod

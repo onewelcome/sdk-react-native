@@ -32,16 +32,6 @@ interface IOneginiSdkWrapper {
 
     fun getAuthenticatedUserProfile(promise: Promise)
 
-    fun getAllAuthenticators(profileId: String, promise: Promise)
-
-    fun getRegisteredAuthenticators(profileId: String, promise: Promise)
-
-    fun setPreferredAuthenticator(profileId: String, idOneginiAuthenticator: String, promise: Promise)
-
-    fun acceptAuthenticationRequest(type: String, value: String?)
-
-    fun denyAuthenticationRequest(type: String)
-
     //
     // Registration
     //
@@ -61,7 +51,7 @@ interface IOneginiSdkWrapper {
     fun getIdentityProviders(promise: Promise)
 
     //
-    // Fingerprint
+    // Authenticators
     //
 
     fun registerAuthenticator(profileId: String, type: String, promise: Promise)
@@ -70,7 +60,17 @@ interface IOneginiSdkWrapper {
 
     fun deregisterAuthenticator(profileId: String, type: String, promise: Promise)
 
-    fun submitFingerprintFallbackToPin(promise: Promise)
+    fun submitFingerprintFallbackToPin()
+
+    fun getAllAuthenticators(profileId: String, promise: Promise)
+
+    fun getRegisteredAuthenticators(profileId: String, promise: Promise)
+
+    fun setPreferredAuthenticator(profileId: String, idOneginiAuthenticator: String, promise: Promise)
+
+    fun acceptAuthenticationRequest(type: String, value: String?)
+
+    fun denyAuthenticationRequest(type: String)
 
     //
     // PIN

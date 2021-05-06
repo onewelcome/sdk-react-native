@@ -106,6 +106,9 @@ class OneginiSdkWrapperTests {
     @Mock
     lateinit var denyAuthenticationRequestUseCase: DenyAuthenticationRequestUseCase
 
+    @Mock
+    lateinit var submitFingerprintFallbackToPinUseCase: SubmitFingerprintFallbackToPinUseCase
+
     //
 
     lateinit var wrapper: OneginiSdkWrapper
@@ -147,7 +150,8 @@ class OneginiSdkWrapperTests {
             cancelRegistrationUseCase,
             submitCustomRegistrationActionUseCase,
             acceptAuthenticationRequestUseCase,
-            denyAuthenticationRequestUseCase
+            denyAuthenticationRequestUseCase,
+            submitFingerprintFallbackToPinUseCase
         )
     }
 
@@ -338,5 +342,12 @@ class OneginiSdkWrapperTests {
         wrapper.denyAuthenticationRequest("Pin")
 
         verify(denyAuthenticationRequestUseCase).invoke("Pin")
+    }
+
+    @Test
+    fun `when submitFingerprintFallbackToPin method is called calls submitFingerprintFallbackToPinUseCase with proper params`() {
+        wrapper.submitFingerprintFallbackToPin()
+
+        verify(submitFingerprintFallbackToPinUseCase).invoke()
     }
 }
