@@ -178,7 +178,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     override fun handleRegistrationCallback(uri: String?) {
-        registrationManager.handleRegistrationCallback(uri)
+        sdkWrapper.handleRegistrationCallback(uri)
     }
 
     @ReactMethod

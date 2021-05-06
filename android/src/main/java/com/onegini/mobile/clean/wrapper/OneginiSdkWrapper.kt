@@ -31,6 +31,7 @@ class OneginiSdkWrapper(
     val isAuthenticatorRegisteredUseCase: IsAuthenticatorRegisteredUseCase = IsAuthenticatorRegisteredUseCase(),
     val deregisterAuthenticatorUseCase: DeregisterAuthenticatorUseCase = DeregisterAuthenticatorUseCase(),
     val setPreferredAuthenticatorUseCase: SetPreferredAuthenticatorUseCase = SetPreferredAuthenticatorUseCase(),
+    val handleRegistrationCallbackUseCase: HandleRegistrationCallbackUseCase = HandleRegistrationCallbackUseCase(),
 
 ) : IOneginiSdkWrapper {
 
@@ -95,7 +96,7 @@ class OneginiSdkWrapper(
     }
 
     override fun handleRegistrationCallback(uri: String?) {
-        TODO("Not yet implemented")
+        handleRegistrationCallbackUseCase(uri)
     }
 
     override fun submitCustomRegistrationAction(customAction: String, identityProviderId: String, token: String?) {

@@ -91,6 +91,9 @@ class OneginiSdkWrapperTests {
     @Mock
     lateinit var setPreferredAuthenticatorUseCase: SetPreferredAuthenticatorUseCase
 
+    @Mock
+    lateinit var handleRegistrationCallbackUseCase: HandleRegistrationCallbackUseCase
+
     //
 
     lateinit var wrapper: OneginiSdkWrapper
@@ -127,7 +130,8 @@ class OneginiSdkWrapperTests {
             registerAuthenticatorUseCase,
             isAuthenticatorRegisteredUseCase,
             deregisterAuthenticatorUseCase,
-            setPreferredAuthenticatorUseCase
+            setPreferredAuthenticatorUseCase,
+            handleRegistrationCallbackUseCase
         )
     }
 
@@ -283,5 +287,12 @@ class OneginiSdkWrapperTests {
         wrapper.setPreferredAuthenticator("profileId", "id1", promiseMock)
 
         verify(setPreferredAuthenticatorUseCase).invoke("profileId", "id1", promiseMock)
+    }
+
+    @Test
+    fun `when handleRegistrationCallback method is called calls handleRegistrationCallbackUseCase with proper params`() {
+        wrapper.handleRegistrationCallback("http://www.pl")
+
+        verify(handleRegistrationCallbackUseCase).invoke("http://www.pl")
     }
 }
