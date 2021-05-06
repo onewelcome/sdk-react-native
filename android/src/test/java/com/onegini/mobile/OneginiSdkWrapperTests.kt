@@ -109,6 +109,9 @@ class OneginiSdkWrapperTests {
     @Mock
     lateinit var submitFingerprintFallbackToPinUseCase: SubmitFingerprintFallbackToPinUseCase
 
+    @Mock
+    lateinit var startChangePinFlowUseCase: StartChangePinFlowUseCase
+
     //
 
     lateinit var wrapper: OneginiSdkWrapper
@@ -151,7 +154,8 @@ class OneginiSdkWrapperTests {
             submitCustomRegistrationActionUseCase,
             acceptAuthenticationRequestUseCase,
             denyAuthenticationRequestUseCase,
-            submitFingerprintFallbackToPinUseCase
+            submitFingerprintFallbackToPinUseCase,
+            startChangePinFlowUseCase
         )
     }
 
@@ -349,5 +353,12 @@ class OneginiSdkWrapperTests {
         wrapper.submitFingerprintFallbackToPin()
 
         verify(submitFingerprintFallbackToPinUseCase).invoke()
+    }
+
+    @Test
+    fun `when startChangePinFlow method is called calls startChangePinFlowUseCase with proper params`() {
+        wrapper.startChangePinFlow(promiseMock)
+
+        verify(startChangePinFlowUseCase).invoke(promiseMock)
     }
 }

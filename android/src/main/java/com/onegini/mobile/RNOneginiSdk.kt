@@ -8,7 +8,6 @@ import com.onegini.mobile.clean.wrapper.OneginiSdkWrapper
 import com.onegini.mobile.mapers.*
 import com.onegini.mobile.sdk.android.handlers.*
 import com.onegini.mobile.sdk.android.handlers.error.*
-import com.onegini.mobile.view.handlers.pins.ChangePinHandler
 
 class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext), IOneginiSdkWrapper {
 
@@ -181,17 +180,14 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         sdkWrapper.cancelRegistration()
     }
 
-    @ReactMethod
-    override fun changePin(promise: Promise) {
-        oneginiSDK.changePinHandler.onStartChangePin(object : ChangePinHandler.ChangePinHandlerResponse {
-            override fun onSuccess() {
-                promise.resolve(null)
-            }
+    override fun startChangePinFlow(promise: Promise) {
+        sdkWrapper.startChangePinFlowUseCase(promise)
+    }
 
-            override fun onError(error: OneginiChangePinError?) {
-                promise.reject(error?.errorType.toString(), error?.message)
-            }
-        })
+    // TODO: temporary not to change RN SDK
+    @ReactMethod
+    fun changePin(promise: Promise) {
+        sdkWrapper.startChangePinFlowUseCase(promise)
     }
 
     @ReactMethod
