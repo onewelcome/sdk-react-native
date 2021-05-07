@@ -18,9 +18,11 @@ enum OneginiBridgeEvents : String {
 @objc(RNOneginiSdk)
 class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
-  var bridgeConnector: BridgeConnector
+    var bridgeConnector: BridgeConnector
+    var mainConnector: MainConnector
 
     override init() {
+        self.mainConnector = DefaultMainConnector()
         self.bridgeConnector = BridgeConnector()
         super.init()
         self.bridgeConnector.bridge = self
@@ -41,13 +43,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
     @objc
     func startClient(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        self.oneginiSDKStartup { _, error in
-            if let error = error {
-                reject("\(error.code)", error.localizedDescription, error)
-            } else {
-                resolve(true)
-            }
-        }
+        mainConnector.startClient(resolve, reject: reject)
     }
 
     @objc
@@ -397,17 +393,5 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
         let isAuthenticatorRegistered = bridgeConnector.toAuthenticatorsHandler.isAuthenticatorRegistered(ONGAuthenticatorType.biometric, profile)
 
         resolve(isAuthenticatorRegistered)
-    }
-
-    // Service methods
-    private func oneginiSDKStartup(completion: @escaping (Bool, NSError?) -> Void) {
-        ONGClientBuilder().build()
-        ONGClient.sharedInstance().start { result, error in
-            if let error = error {
-                completion(result, error as NSError)
-            } else {
-                completion(result, nil)
-            }
-        }
     }
 }
