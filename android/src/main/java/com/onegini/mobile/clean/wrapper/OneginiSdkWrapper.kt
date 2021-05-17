@@ -10,8 +10,8 @@ import com.onegini.mobile.clean.use_cases.StartClientUseCase
 class OneginiSdkWrapper(
         private val oneginiSDK: OneginiSDK,
         private val reactApplicationContext: ReactApplicationContext,
-        val startClientUseCase: StartClientUseCase = StartClientUseCase(oneginiSDK, reactApplicationContext),
-        val getIdentityProvidersUseCase: GetIdentityProvidersUseCase = GetIdentityProvidersUseCase()
+        private val startClientUseCase: StartClientUseCase = StartClientUseCase(oneginiSDK, reactApplicationContext),
+        private val getIdentityProvidersUseCase: GetIdentityProvidersUseCase = GetIdentityProvidersUseCase()
 ): IOneginiSdkWrapper {
 
     //
@@ -31,7 +31,8 @@ class OneginiSdkWrapper(
     }
 
     override fun getAccessToken(promise: Promise) {
-//        promise.resolve(oneginiSDK.oneginiClient.accessToken)
+        // This is moved to separate UseCase in next PR
+        promise.resolve(oneginiSDK.oneginiClient.accessToken)
     }
 
     override fun getAuthenticatedUserProfile(promise: Promise) {

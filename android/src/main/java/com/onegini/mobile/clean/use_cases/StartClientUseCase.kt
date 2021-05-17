@@ -5,7 +5,7 @@ import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReadableMap
 import com.onegini.mobile.OneginiComponets
 import com.onegini.mobile.OneginiSDK
-import com.onegini.mobile.clean.model.SdkError
+import com.onegini.mobile.exception.OneginReactNativeException
 import com.onegini.mobile.managers.OneginiClientInitializer
 import com.onegini.mobile.mapers.OneginiReactNativeConfigMapper
 import com.onegini.mobile.sdk.android.handlers.error.OneginiInitializationError
@@ -17,7 +17,7 @@ import com.onegini.mobile.view.handlers.pins.PinNotificationObserver
 import java.lang.Exception
 
 
-class StartClientUseCase(val oneginiSDK: OneginiSDK, val reactApplicationContext: ReactApplicationContext) {
+class StartClientUseCase(private val oneginiSDK: OneginiSDK, private val reactApplicationContext: ReactApplicationContext) {
 
     operator fun invoke(rnConfig: ReadableMap, promise: Promise) {
         try {
@@ -39,11 +39,9 @@ class StartClientUseCase(val oneginiSDK: OneginiSDK, val reactApplicationContext
                 }
             })
         } catch (e: Exception) {
-            promise.reject("Exception", "")
+            promise.reject(OneginReactNativeException.WRONG_CONFIG_MODEL.toString(), "Provided config model parameters are wrong")
         }
     }
-
-    //
 
     private fun oneginiSDKInitiated() {
         oneginiSDK.setPinNotificationObserver(PinNotificationObserver(reactApplicationContext))

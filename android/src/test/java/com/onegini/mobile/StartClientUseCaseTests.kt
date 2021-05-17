@@ -7,6 +7,7 @@ import com.facebook.react.bridge.ReactApplicationContext
 import com.onegini.mobile.clean.SecurityController
 import com.onegini.mobile.clean.model.SdkError
 import com.onegini.mobile.clean.use_cases.StartClientUseCase
+import com.onegini.mobile.exception.OneginReactNativeException
 import com.onegini.mobile.sdk.android.client.OneginiClient
 import com.onegini.mobile.sdk.android.handlers.OneginiInitializationHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiInitializationError
@@ -52,7 +53,7 @@ class StartClientUseCaseTests {
     }
 
     @Test
-    fun `is successful with proper configs`() {
+    fun `when proper configs are provided should resolve`() {
         // mock SDK start success
         `when`(oneginiClient.start(any())).thenAnswer {
             it.getArgument<OneginiInitializationHandler>(0).onSuccess(emptySet())
@@ -65,7 +66,7 @@ class StartClientUseCaseTests {
 
 
     @Test
-    fun `fails with wrong configs`() {
+    fun `when wrong configs are provided should reject`() {
         // mock SDK start success
         lenient().`when`(oneginiClient.start(any())).thenAnswer {
             it.getArgument<OneginiInitializationHandler>(0).onSuccess(emptySet())
@@ -76,13 +77,13 @@ class StartClientUseCaseTests {
         argumentCaptor<String> {
             verify(promiseMock).reject(this.capture(), this.capture())
 
-            Assert.assertEquals("Exception", this.firstValue)
-            Assert.assertEquals("", this.secondValue)
+            Assert.assertEquals(OneginReactNativeException.WRONG_CONFIG_MODEL.toString(), this.firstValue)
+            Assert.assertEquals("Provided config model parameters are wrong", this.secondValue)
         }
     }
 
     @Test
-    fun `when fails passed proper errors `() {
+    fun `when oneginiClient_start fails should reject and pass proper errors`() {
         val error = mock<OneginiInitializationError>()
         val errorType = OneginiInitializationError.CONFIGURATION_ERROR
         `when`(error.errorType).thenReturn(errorType)
@@ -103,7 +104,7 @@ class StartClientUseCaseTests {
     }
 
     @Test
-    fun `if success then calls setup methods on oneginiSDK`() {
+    fun `when succeed should calls setup methods on oneginiSDK`() {
         // mock SDK start success
         `when`(oneginiClient.start(any())).thenAnswer {
             it.getArgument<OneginiInitializationHandler>(0).onSuccess(emptySet())

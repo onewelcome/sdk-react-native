@@ -6,7 +6,6 @@ import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.onegini.mobile.Constants
 import com.onegini.mobile.Constants.PinFlow
-import com.onegini.mobile.RNOneginiSdk
 import com.onegini.mobile.mapers.OneginiErrorMapper
 import com.onegini.mobile.sdk.android.handlers.error.OneginiError
 

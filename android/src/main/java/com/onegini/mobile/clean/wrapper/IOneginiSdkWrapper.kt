@@ -2,7 +2,6 @@ package com.onegini.mobile.clean.wrapper
 
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReadableMap
-import com.onegini.mobile.clean.model.SdkError
 
 
 interface IOneginiSdkWrapper {
