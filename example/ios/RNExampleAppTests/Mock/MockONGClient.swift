@@ -1,10 +1,3 @@
-//
-//  MockONGClient.swift
-//  RNExampleAppTests
-//
-//  Created by Jan Lipmann on 17/05/2021.
-//
-
 import Foundation
 @testable import onegini_react_native_sdk
 

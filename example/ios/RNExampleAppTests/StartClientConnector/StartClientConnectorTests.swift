@@ -1,10 +1,3 @@
-//
-//  StartClientConnectorTestCase.swift
-//  RNExampleAppTests
-//
-//  Created by Jan Lipmann on 17/05/2021.
-//
-
 import XCTest
 @testable import onegini_react_native_sdk
 

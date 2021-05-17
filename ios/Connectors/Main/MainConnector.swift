@@ -5,13 +5,13 @@ protocol MainConnector {
 }
 
 class DefaultMainConnector: MainConnector {
-    let startClientConnector: StartClientConnector
+    let factory: MainConnectorFactory
     
-    init(startClientConnector: StartClientConnector = DefaultStartClientConnector()) {
-        self.startClientConnector = startClientConnector
+    init(factory: MainConnectorFactory = DefaultMainConnectorFactory()) {
+        self.factory = factory
     }
     
     func startClient(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
-        startClientConnector.startClient{ $0.convertTo(resolve: resolve, reject: reject) }
+        factory.startClientConnector.startClient{ $0.convertTo(resolve: resolve, reject: reject) }
     }
 }
