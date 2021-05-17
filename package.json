@@ -1,6 +1,6 @@
 {
-  "name": "react-native-sdk-beta",
-  "title": "React Native SDK",
+  "name": "onegini-react-native-sdk",
+  "title": "Onegini React Native SDK",
   "version": "0.6.0",
   "description": "Onegini SDK component for React Native (iOS and Android)",
   "main": "ts/index.ts",

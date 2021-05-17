@@ -12,13 +12,6 @@ class DefaultMainConnector: MainConnector {
     }
     
     func startClient(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
-        startClientConnector.startClient { result in
-            switch result {
-            case let .success(data):
-                resolve(data)
-            case let .failure(error):
-                reject(error.codeString, error.localizedDescription, error)
-            }
-        }
+        startClientConnector.startClient{ $0.convertTo(resolve: resolve, reject: reject) }
     }
 }

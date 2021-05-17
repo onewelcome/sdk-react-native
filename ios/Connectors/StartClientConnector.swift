@@ -8,9 +8,14 @@ protocol StartClientConnector {
 }
 
 class DefaultStartClientConnector: StartClientConnector {
+    private let client: ONGClientProtocol
+    
+    init(client: ONGClientProtocol = ONGClientBuilder().build()) {
+        self.client = client
+    }
+    
     func startClient(_ completion: @escaping (StartClientConnectorResult) -> Void) {
-        ONGClientBuilder().build()
-        ONGClient.sharedInstance().start { result, error in
+        client.start { result, error in
             if let error = error {
                 completion(.failure(error))
             } else {

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1106C57626524A8E00CFFE58 /* ONGClientProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1106C57526524A8E00CFFE58 /* ONGClientProtocol.swift */; };
+		1106C612265272C600CFFE58 /* Result+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1106C611265272C600CFFE58 /* Result+Extensions.swift */; };
 		1197C2CA2645AC59001EC66C /* MainConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1197C2C92645AC59001EC66C /* MainConnector.swift */; };
 		1197C2FF2645AE5D001EC66C /* StartClientConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1197C2FE2645AE5D001EC66C /* StartClientConnector.swift */; };
 		C78992E525816243002CA5AF /* LoginHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78992E425816243002CA5AF /* LoginHandler.swift */; };
@@ -38,6 +40,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1106C57526524A8E00CFFE58 /* ONGClientProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ONGClientProtocol.swift; sourceTree = "<group>"; };
+		1106C611265272C600CFFE58 /* Result+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Result+Extensions.swift"; sourceTree = "<group>"; };
 		1197C2C92645AC59001EC66C /* MainConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainConnector.swift; sourceTree = "<group>"; };
 		1197C2FE2645AE5D001EC66C /* StartClientConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartClientConnector.swift; sourceTree = "<group>"; };
 		134814201AA4EA6300B7C361 /* libRNOneginiSdk.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNOneginiSdk.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -69,6 +73,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1106C5112652398900CFFE58 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				1106C57526524A8E00CFFE58 /* ONGClientProtocol.swift */,
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
 		134814211AA4EA7D00B7C361 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -80,6 +92,7 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
+				1106C5112652398900CFFE58 /* Protocols */,
 				C7AA00962558E6C10001AB19 /* Extensions */,
 				C7AA006A2558E5730001AB19 /* Handlers */,
 				C7AA00632558E54D0001AB19 /* Connectors */,
@@ -121,6 +134,7 @@
 			isa = PBXGroup;
 			children = (
 				C7AA00972558E6D40001AB19 /* Error+Extension.swift */,
+				1106C611265272C600CFFE58 /* Result+Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -152,6 +166,7 @@
 		58B511D31A9E6C8500147676 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 1240;
 				LastUpgradeCheck = 0920;
 				ORGANIZATIONNAME = Facebook;
 				TargetAttributes = {
@@ -210,7 +225,9 @@
 				F0622594258CD03F00527A7D /* AppToWebHandler.swift in Sources */,
 				C7BD311125AC5DF10057440C /* MobileAuthHandler.swift in Sources */,
 				C7AA00652558E55B0001AB19 /* BridgeConnector.swift in Sources */,
+				1106C612265272C600CFFE58 /* Result+Extensions.swift in Sources */,
 				C7AA0205255925FA0001AB19 /* RNOneginiSdk.m in Sources */,
+				1106C57626524A8E00CFFE58 /* ONGClientProtocol.swift in Sources */,
 				C7BD310E25AC5DC80057440C /* MobileAuthConnector.swift in Sources */,
 				C7AA005E2558E4B80001AB19 /* RNOneginiSdk.swift in Sources */,
 				1197C2CA2645AC59001EC66C /* MainConnector.swift in Sources */,

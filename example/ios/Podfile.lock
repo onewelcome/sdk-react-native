@@ -67,6 +67,9 @@ PODS:
     - DoubleConversion
     - glog
   - glog (0.3.5)
+  - onegini-react-native-sdk (0.6.0):
+    - OneginiSDKiOS (= 9.6.0)
+    - React
   - OneginiSDKiOS (9.6.0)
   - OpenSSL-Universal (1.0.2.20):
     - OpenSSL-Universal/Static (= 1.0.2.20)
@@ -237,9 +240,6 @@ PODS:
     - React-cxxreact (= 0.63.3)
     - React-jsi (= 0.63.3)
   - React-jsinspector (0.63.3)
-  - react-native-sdk-beta (0.6.0):
-    - OneginiSDKiOS (= 9.6.0)
-    - React
   - React-RCTActionSheet (0.63.3):
     - React-Core/RCTActionSheetHeaders (= 0.63.3)
   - React-RCTAnimation (0.63.3):
@@ -331,6 +331,7 @@ DEPENDENCIES:
   - FlipperKit/SKIOSNetworkPlugin (~> 0.54.0)
   - Folly (from `../../node_modules/react-native/third-party-podspecs/Folly.podspec`)
   - glog (from `../../node_modules/react-native/third-party-podspecs/glog.podspec`)
+  - onegini-react-native-sdk (from `../..`)
   - RCTRequired (from `../../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../../node_modules/react-native/Libraries/TypeSafety`)
   - React (from `../../node_modules/react-native/`)
@@ -343,7 +344,6 @@ DEPENDENCIES:
   - React-jsi (from `../../node_modules/react-native/ReactCommon/jsi`)
   - React-jsiexecutor (from `../../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../../node_modules/react-native/ReactCommon/jsinspector`)
-  - react-native-sdk-beta (from `../..`)
   - React-RCTActionSheet (from `../../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../../node_modules/react-native/Libraries/NativeAnimation`)
   - React-RCTBlob (from `../../node_modules/react-native/Libraries/Blob`)
@@ -385,6 +385,8 @@ EXTERNAL SOURCES:
     :podspec: "../../node_modules/react-native/third-party-podspecs/Folly.podspec"
   glog:
     :podspec: "../../node_modules/react-native/third-party-podspecs/glog.podspec"
+  onegini-react-native-sdk:
+    :path: "../.."
   RCTRequired:
     :path: "../../node_modules/react-native/Libraries/RCTRequired"
   RCTTypeSafety:
@@ -405,8 +407,6 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/react-native/ReactCommon/jsiexecutor"
   React-jsinspector:
     :path: "../../node_modules/react-native/ReactCommon/jsinspector"
-  react-native-sdk-beta:
-    :path: "../.."
   React-RCTActionSheet:
     :path: "../../node_modules/react-native/Libraries/ActionSheetIOS"
   React-RCTAnimation:
@@ -448,6 +448,7 @@ SPEC CHECKSUMS:
   FlipperKit: ab353d41aea8aae2ea6daaf813e67496642f3d7d
   Folly: b73c3869541e86821df3c387eb0af5f65addfab4
   glog: 40a13f7840415b9a77023fbcae0f1e6f43192af3
+  onegini-react-native-sdk: 1034eea51a1e9bae6d442102c3a6ef914097220e
   OneginiSDKiOS: 407d6cfc8eeb4c8b76c2662dacef514153cc29eb
   OpenSSL-Universal: ff34003318d5e1163e9529b08470708e389ffcdd
   RCTRequired: 48884c74035a0b5b76dbb7a998bd93bcfc5f2047
@@ -460,7 +461,6 @@ SPEC CHECKSUMS:
   React-jsi: df07aa95b39c5be3e41199921509bfa929ed2b9d
   React-jsiexecutor: b56c03e61c0dd5f5801255f2160a815f4a53d451
   React-jsinspector: 8e68ffbfe23880d3ee9bafa8be2777f60b25cbe2
-  react-native-sdk-beta: 6d8b80ee83bcba03b2cc15f023f9fc2d33e664d6
   React-RCTActionSheet: 53ea72699698b0b47a6421cb1c8b4ab215a774aa
   React-RCTAnimation: 1befece0b5183c22ae01b966f5583f42e69a83c2
   React-RCTBlob: 0b284339cbe4b15705a05e2313a51c6d8b51fa40
@@ -475,6 +475,6 @@ SPEC CHECKSUMS:
   Yoga: 7d13633d129fd179e01b8953d38d47be90db185a
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 10f47d5692af1347e80599d2bd5f97747e6bcc90
+PODFILE CHECKSUM: e7b5d6bf7e2801600a66ba313914a2707b950099
 
 COCOAPODS: 1.10.0
