@@ -14,4 +14,8 @@ class DefaultMainConnector: MainConnector {
     func startClient(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
         factory.startClientConnector.startClient{ $0.convertTo(resolve: resolve, reject: reject) }
     }
+    
+    func registerUser(identityProviderId:String, scopes: [String], _ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+        factory.registerUserConnector.registerUser(identityProviderId: identityProviderId, scopes: scopes) { $0.convertTo(resolve: resolve, reject: reject) }
+    }
 }
