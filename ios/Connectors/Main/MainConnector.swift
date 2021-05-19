@@ -16,6 +16,8 @@ class DefaultMainConnector: MainConnector {
     }
     
     func registerUser(identityProviderId:String, scopes: [String], _ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
-        factory.registerUserConnector.registerUser(identityProviderId: identityProviderId, scopes: scopes) { $0.convertTo(resolve: resolve, reject: reject) }
+        factory.registerUserConnector.registerUser(identityProviderId: identityProviderId, scopes: scopes, progress: { action in
+            // progress actions here
+        }) { $0.convertTo(resolve: resolve, reject: reject) }
     }
 }

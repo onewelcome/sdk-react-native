@@ -3,7 +3,14 @@ import Foundation
 typealias RegisterUserConnectorCompletionResult = Result<UserProfile, Error>
 
 protocol RegisterUserConnector {
-    func registerUser(identityProviderId: String?, scopes:[String], completion: @escaping (RegisterUserConnectorCompletionResult) -> Void)
+    func registerUser(identityProviderId: String?, scopes:[String], progress: ((RegisterProgressAction) -> Void)?, completion: @escaping (RegisterUserConnectorCompletionResult) -> Void)
+}
+
+enum RegisterProgressAction {
+    case registrationStarted
+    case pinChallengeReceived
+    case browserChallengeReceived
+    case customChallengeReceived
 }
 
 final class DefaultRegisterUserConnector:NSObject, RegisterUserConnector {
@@ -11,13 +18,19 @@ final class DefaultRegisterUserConnector:NSObject, RegisterUserConnector {
     private let identityProviderConnector: IdentityProviderConnector
     
     private var completion: ((RegisterUserConnectorCompletionResult) -> Void)?
+    private var progress:  ((RegisterProgressAction) -> Void)?
+    
+    //Challenges
+    private var pinChallenge: ONGCreatePinChallenge?
+    private var browserChallenge: ONGBrowserRegistrationChallenge?
+    private var customChallenge: ONGCustomRegistrationChallenge?
     
     init(userClient: ONGUserClientProtocol = ONGUserClient.sharedInstance(), identityProviderConnector: IdentityProviderConnector) {
         self.userClient = userClient
         self.identityProviderConnector = identityProviderConnector
     }
     
-    func registerUser(identityProviderId: String?, scopes: [String], completion: @escaping (RegisterUserConnectorCompletionResult) -> Void) {
+    func registerUser(identityProviderId: String?, scopes: [String], progress: ((RegisterProgressAction) -> Void)?, completion: @escaping (RegisterUserConnectorCompletionResult) -> Void) {
         self.completion = completion
         
         guard let identityProviderId = identityProviderId else {
@@ -39,23 +52,26 @@ final class DefaultRegisterUserConnector:NSObject, RegisterUserConnector {
 
 extension DefaultRegisterUserConnector: ONGRegistrationDelegate {
     func userClient(_ userClient: ONGUserClient, didReceivePinRegistrationChallenge challenge: ONGCreatePinChallenge) {
-        
+        pinChallenge = challenge
+        progress?(.pinChallengeReceived)
     }
     
     func userClientDidStartRegistration(_ userClient: ONGUserClient) {
-        
+        progress?(.registrationStarted)
     }
     
     func userClient(_ userClient: ONGUserClient, didReceive challenge: ONGBrowserRegistrationChallenge) {
-        
+        self.browserChallenge = challenge
+        progress?(.browserChallengeReceived)
     }
     
     func userClient(_ userClient: ONGUserClient, didReceiveCustomRegistrationFinish challenge: ONGCustomRegistrationChallenge) {
-        
+
     }
     
     func userClient(_ userClient: ONGUserClient, didReceiveCustomRegistrationInitChallenge challenge: ONGCustomRegistrationChallenge) {
-        
+        customChallenge = challenge
+        progress?(.customChallengeReceived)
     }
     
     func userClient(_ userClient: ONGUserClient, didFailToRegisterWith identityProvider: ONGIdentityProvider, error: Error) {
