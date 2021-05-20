@@ -3,14 +3,15 @@ import Foundation
 typealias RegisterUserConnectorCompletionResult = Result<UserProfile, Error>
 
 protocol RegisterUserConnector {
-    func registerUser(identityProviderId: String?, scopes:[String], progress: ((RegisterProgressAction) -> Void)?, completion: @escaping (RegisterUserConnectorCompletionResult) -> Void)
+    func registerUser(identityProviderId: String?, scopes:[String], statusChanged: ((RegisterStatus) -> Void)?, completion: @escaping (RegisterUserConnectorCompletionResult) -> Void)
 }
 
-enum RegisterProgressAction {
+enum RegisterStatus {
     case registrationStarted
-    case pinChallengeReceived
-    case browserChallengeReceived
-    case customChallengeReceived
+    case pinChallengeReceived(pinLength: Int?, error: Error?)
+    case browserChallengeReceived(url: URL?, error: Error?)
+    case customChallengeInitReceived(status: Int?, data: String?, error: Error?)
+    case customChallengeFinishReceived(status: Int?, data: String?, error: Error?)
 }
 
 final class DefaultRegisterUserConnector:NSObject, RegisterUserConnector {
@@ -18,9 +19,8 @@ final class DefaultRegisterUserConnector:NSObject, RegisterUserConnector {
     private let identityProviderConnector: IdentityProviderConnector
     
     private var completion: ((RegisterUserConnectorCompletionResult) -> Void)?
-    private var progress:  ((RegisterProgressAction) -> Void)?
+    private var statusChanged:  ((RegisterStatus) -> Void)?
     
-    //Challenges
     private var pinChallenge: ONGCreatePinChallenge?
     private var browserChallenge: ONGBrowserRegistrationChallenge?
     private var customChallenge: ONGCustomRegistrationChallenge?
@@ -30,7 +30,7 @@ final class DefaultRegisterUserConnector:NSObject, RegisterUserConnector {
         self.identityProviderConnector = identityProviderConnector
     }
     
-    func registerUser(identityProviderId: String?, scopes: [String], progress: ((RegisterProgressAction) -> Void)?, completion: @escaping (RegisterUserConnectorCompletionResult) -> Void) {
+    func registerUser(identityProviderId: String?, scopes: [String], statusChanged: ((RegisterStatus) -> Void)?, completion: @escaping (RegisterUserConnectorCompletionResult) -> Void) {
         self.completion = completion
         
         guard let identityProviderId = identityProviderId else {
@@ -53,25 +53,36 @@ final class DefaultRegisterUserConnector:NSObject, RegisterUserConnector {
 extension DefaultRegisterUserConnector: ONGRegistrationDelegate {
     func userClient(_ userClient: ONGUserClient, didReceivePinRegistrationChallenge challenge: ONGCreatePinChallenge) {
         pinChallenge = challenge
-        progress?(.pinChallengeReceived)
+        statusChanged?(.pinChallengeReceived(pinLength: Int(challenge.pinLength), error: challenge.error))
     }
     
     func userClientDidStartRegistration(_ userClient: ONGUserClient) {
-        progress?(.registrationStarted)
+        statusChanged?(.registrationStarted)
     }
     
     func userClient(_ userClient: ONGUserClient, didReceive challenge: ONGBrowserRegistrationChallenge) {
         self.browserChallenge = challenge
-        progress?(.browserChallengeReceived)
+        statusChanged?(.browserChallengeReceived(url: challenge.url, error: challenge.error))
     }
     
     func userClient(_ userClient: ONGUserClient, didReceiveCustomRegistrationFinish challenge: ONGCustomRegistrationChallenge) {
-
+        customChallenge = challenge
+        guard let info = challenge.info else {
+            statusChanged?(.customChallengeFinishReceived(status: nil, data: nil, error: challenge.error))
+            return
+        }
+        
+        statusChanged?(.customChallengeFinishReceived(status: Int(info.status), data: info.data, error: challenge.error))
     }
     
     func userClient(_ userClient: ONGUserClient, didReceiveCustomRegistrationInitChallenge challenge: ONGCustomRegistrationChallenge) {
         customChallenge = challenge
-        progress?(.customChallengeReceived)
+        guard let info = challenge.info else {
+            statusChanged?(.customChallengeInitReceived(status: nil, data: nil, error: challenge.error))
+            return
+        }
+        
+        statusChanged?(.customChallengeInitReceived(status: Int(info.status), data: info.data, error: challenge.error))
     }
     
     func userClient(_ userClient: ONGUserClient, didFailToRegisterWith identityProvider: ONGIdentityProvider, error: Error) {
