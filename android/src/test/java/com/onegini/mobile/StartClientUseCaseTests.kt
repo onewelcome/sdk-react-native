@@ -87,6 +87,7 @@ class StartClientUseCaseTests {
         val error = mock<OneginiInitializationError>()
         val errorType = OneginiInitializationError.CONFIGURATION_ERROR
         `when`(error.errorType).thenReturn(errorType)
+        `when`(error.message).thenReturn("Problem with smth")
 
         // mock SDK start error
         `when`(oneginiClient.start(any())).thenAnswer {
@@ -99,7 +100,7 @@ class StartClientUseCaseTests {
             verify(promiseMock).reject(this.capture(), this.capture())
 
             Assert.assertEquals(errorType.toString(), this.firstValue)
-            Assert.assertEquals("no message", this.secondValue)
+            Assert.assertEquals("Problem with smth", this.secondValue)
         }
     }
 
