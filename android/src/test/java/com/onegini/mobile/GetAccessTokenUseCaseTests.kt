@@ -7,7 +7,6 @@ import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.Promise
 import com.onegini.mobile.clean.use_cases.GetAccessTokenUseCase
 import com.onegini.mobile.sdk.android.client.OneginiClient
-import com.onegini.mobile.sdk.android.client.UserClient
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockkStatic
@@ -34,9 +33,6 @@ class GetAccessTokenUseCaseTests {
     lateinit var oneginiClient: OneginiClient
 
     @Mock
-    lateinit var userClient: UserClient
-
-    @Mock
     lateinit var promiseMock: Promise
 
     @Before
@@ -53,7 +49,7 @@ class GetAccessTokenUseCaseTests {
     }
 
     @Test
-    fun `returns proper access token`() {
+    fun `should resolve with proper access token`() {
         Mockito.`when`(oneginiClient.accessToken).thenReturn("token123")
 
         GetAccessTokenUseCase()(promiseMock)
@@ -66,7 +62,7 @@ class GetAccessTokenUseCaseTests {
     }
 
     @Test
-    fun `does not crash when receive null`() {
+    fun `when receive null should not crash and resolve with null`() {
         Mockito.`when`(oneginiClient.accessToken).thenReturn(null)
 
         GetAccessTokenUseCase()(promiseMock)
