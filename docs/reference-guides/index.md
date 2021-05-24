@@ -8,10 +8,10 @@ The following methods are available:
 - [startClient](startClient.md)
 
 **User**
-- [authenticateUserImplicitly](authenticateUserImplicitly.md)
 - [registerUser](registerUser.md)
 - [deregisterUser](deregisterUser.md)
 - [authenticateUser](authenticateUser.md)
+- [authenticateUserImplicitly](authenticateUserImplicitly.md)
 - [logout](logout.md)
 - [submitPinAction](submitPinAction.md)
 - [changePin](changePin.md)
