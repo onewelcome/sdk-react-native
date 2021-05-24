@@ -1,6 +1,5 @@
 package com.onegini.mobile
 
-import android.content.Context
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
@@ -24,9 +23,6 @@ import org.mockito.kotlin.verify
 class GetAccessTokenUseCaseTests {
 
     @Mock
-    lateinit var context: Context
-
-    @Mock
     lateinit var oneginiSdk: OneginiSDK
 
     @Mock
@@ -39,8 +35,6 @@ class GetAccessTokenUseCaseTests {
     fun setup() {
         clearAllMocks()
 
-        OneginiComponets.init(context)
-        OneginiComponets.oneginiSDK = oneginiSdk
         Mockito.`when`(oneginiSdk.oneginiClient).thenReturn(oneginiClient)
 
         mockkStatic(Arguments::class)
@@ -52,7 +46,7 @@ class GetAccessTokenUseCaseTests {
     fun `should resolve with proper access token`() {
         Mockito.`when`(oneginiClient.accessToken).thenReturn("token123")
 
-        GetAccessTokenUseCase()(promiseMock)
+        GetAccessTokenUseCase(oneginiSdk)(promiseMock)
 
         argumentCaptor<JavaOnlyArray> {
             verify(promiseMock).resolve(this.capture())
@@ -65,7 +59,7 @@ class GetAccessTokenUseCaseTests {
     fun `when receive null should not crash and resolve with null`() {
         Mockito.`when`(oneginiClient.accessToken).thenReturn(null)
 
-        GetAccessTokenUseCase()(promiseMock)
+        GetAccessTokenUseCase(oneginiSdk)(promiseMock)
 
         argumentCaptor<JavaOnlyArray> {
             verify(promiseMock).resolve(this.capture())
