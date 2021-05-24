@@ -11,7 +11,7 @@ class OneginiSdkWrapper(
         private val oneginiSDK: OneginiSDK,
         private val reactApplicationContext: ReactApplicationContext,
         private val startClientUseCase: StartClientUseCase = StartClientUseCase(oneginiSDK, reactApplicationContext),
-        private val getIdentityProvidersUseCase: GetIdentityProvidersUseCase = GetIdentityProvidersUseCase()
+        private val getIdentityProvidersUseCase: GetIdentityProvidersUseCase = GetIdentityProvidersUseCase(oneginiSDK)
 ): IOneginiSdkWrapper {
 
     //

@@ -1,20 +1,14 @@
 package com.onegini.mobile
 
-import android.content.Context
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
-import com.onegini.mobile.clean.SecurityController
-import com.onegini.mobile.clean.model.SdkError
 import com.onegini.mobile.clean.use_cases.StartClientUseCase
 import com.onegini.mobile.exception.OneginReactNativeException
 import com.onegini.mobile.sdk.android.client.OneginiClient
 import com.onegini.mobile.sdk.android.handlers.OneginiInitializationHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiInitializationError
 import io.mockk.clearAllMocks
-import io.mockk.clearMocks
-import io.mockk.verify
-import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -27,9 +21,6 @@ import org.mockito.kotlin.*
 
 @RunWith(MockitoJUnitRunner::class)
 class StartClientUseCaseTests {
-
-    @Mock
-    lateinit var context: Context
 
     @Mock
     lateinit var oneginiSdk: OneginiSDK
@@ -47,8 +38,6 @@ class StartClientUseCaseTests {
     fun setup() {
         clearAllMocks()
 
-        OneginiComponets.init(context)
-        OneginiComponets.oneginiSDK = oneginiSdk
         `when`(oneginiSdk.oneginiClient).thenReturn(oneginiClient)
     }
 
