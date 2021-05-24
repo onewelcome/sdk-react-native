@@ -19,5 +19,7 @@ The details about plugin configuration can be found in the [Configuration guide]
 To start working with the plugin, we need to initialize Onegini SDK by calling `OneginiSdk.startClient` . You can pass additional config information here as an argument (ADD: reference to this method).
 
 ```
-await OneginiSdk.startClient();
+OneginiSdk.startClient()
+    .then(() => console.log('Start succeed'))
+    .catch(err => console.log('Start failed: ', err))
 ```
