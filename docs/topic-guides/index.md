@@ -7,7 +7,7 @@ The following topic guides are available:
 - [Getting started](1-getting-started.md)
 - [Configuration](2-configuration.md)
 - [User registration](3-user-registration.md)
-- User authentication
+- [User authentication](4-user-authentication.md)
 - User authentication with fingerprint
 - Change PIN
 - Logging out
