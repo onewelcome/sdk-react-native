@@ -14,5 +14,6 @@ The following topic guides are available:
 - [Deregister User](8-deregister-user.md)
 - [Mobile authentication](9-mobile-authentication.md)
 - [Mobile authentication with OTP](9-1-mobile-authentication-with-otp.md)
+- [App To Web Single Sign On](10-app-to-web-sso.md)
 - Secure resource access
 - Error handling
