@@ -10,7 +10,7 @@ The following topic guides are available:
 - [User authentication](4-user-authentication.md)
 - [User authentication with fingerprint](5-user-authentication-with-biometric.md)
 - [Change PIN](6-change-pin.md)
-- Logging out
+- [Logging out](7-logging-out.md)
 - Mobile authentication
 - Secure resource access
 - Error handling
