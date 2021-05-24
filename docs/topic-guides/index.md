@@ -12,6 +12,6 @@ The following topic guides are available:
 - [Change PIN](6-change-pin.md)
 - [Logging out](7-logging-out.md)
 - [Deregister User](8-deregister-user.md)
-- Mobile authentication
+- [Mobile authentication](9-mobile-authentication.md)
 - Secure resource access
 - Error handling
