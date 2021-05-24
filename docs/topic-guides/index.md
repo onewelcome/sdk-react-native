@@ -11,6 +11,7 @@ The following topic guides are available:
 - [User authentication with fingerprint](5-user-authentication-with-biometric.md)
 - [Change PIN](6-change-pin.md)
 - [Logging out](7-logging-out.md)
+- [Deregister User](8-deregister-user.md)
 - Mobile authentication
 - Secure resource access
 - Error handling
