@@ -12,7 +12,7 @@ To start using the Onegini React Native Plugin, refer to the getting started gui
 
 The plugin documentation has been split into several chapters:
 
-- [Topic guides](/topic-guides) explain key components and concepts of the plugin. They provide some sample code and background information to develop using the Onegini React Native plugin.
+- [Topic guides](/topic-guides/index.md) explain key components and concepts of the plugin. They provide some sample code and background information to develop using the Onegini React Native plugin.
 - [Reference guides]() contain the API description and code snippets on how to use the plugin.
 
 
