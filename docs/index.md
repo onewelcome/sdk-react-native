@@ -1,6 +1,6 @@
 <img src="img/onegini.png" alt="Onegini logo" style="max-width:512px"/>
 
-# Onegini React Native Plugin <img src="img/react.svg" alt="RN logo" style="width:80px"/>
+# Onegini React Native Plugin <img src="img/react.svg" alt="RN logo" width="80" style="width:80px;"/>
 
 ## Introduction
 
