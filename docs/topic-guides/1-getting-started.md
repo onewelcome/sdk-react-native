@@ -6,9 +6,9 @@ At the very beginning, you need to make sure that you have access to [Onegini SD
 
 ## Add the plugin to your project
 
-To start using the plugin, you will need to follow a few simple steps:
-
-//
+`npm install react-native-sdk-beta --save`
+OR
+`yarn add react-native-sdk-beta`
 
 ## Configure your project
 
@@ -16,8 +16,8 @@ The details about plugin configuration can be found in the [Configuration guide]
 
 ## Initialize Onegini Flutter SDK
 
-//
+To start working with the plugin, we need to initialize Onegini SDK by calling `OneginiSdk.startClient` . You can pass additional config information here as an argument (ADD: reference to this method).
 
-## Example
-
-//
+```
+await OneginiSdk.startClient();
+```

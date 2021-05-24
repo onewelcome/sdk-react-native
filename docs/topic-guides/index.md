@@ -5,7 +5,7 @@ Topic guides give a high level overview with practical examples for using the On
 The following topic guides are available:
 
 - [Getting started](1-getting-started.md)
-- Configuration
+- [Configuration](2-configuration.md)
 - User registration
 - User authentication
 - User authentication with fingerprint
