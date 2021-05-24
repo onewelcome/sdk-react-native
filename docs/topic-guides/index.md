@@ -15,5 +15,5 @@ The following topic guides are available:
 - [Mobile authentication](9-mobile-authentication.md)
 - [Mobile authentication with OTP](9-1-mobile-authentication-with-otp.md)
 - [App To Web Single Sign On](10-app-to-web-sso.md)
-- Secure resource access
+- [Secure resource access](11-secure-resource-access.md)
 - Error handling
