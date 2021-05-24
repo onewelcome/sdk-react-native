@@ -1,6 +1,6 @@
 # Topic guides
 
-Topic guides give a high level overview with practical examples for using the Onegini Cordova Plugin.
+Topic guides give a high level overview with practical examples for using the Onegini React Native Plugin.
 
 The following topic guides are available:
 
@@ -8,7 +8,7 @@ The following topic guides are available:
 - [Configuration](2-configuration.md)
 - [User registration](3-user-registration.md)
 - [User authentication](4-user-authentication.md)
-- User authentication with fingerprint
+- [User authentication with fingerprint](5-user-authentication-with-biometric.md)
 - Change PIN
 - Logging out
 - Mobile authentication
