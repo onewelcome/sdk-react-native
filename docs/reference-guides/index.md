@@ -16,6 +16,10 @@ The following methods are available:
 - [submitPinAction](submitPinAction.md)
 - [changePin](changePin.md)
 - [usePinFlow](usePinFlow.md)
+- [getAuthenticatedUserProfile](getAuthenticatedUserProfile.md)
+- [getRedirectUri](getRedirectUri.md)
+- [handleRegistrationCallback](handleRegistrationCallback.md)
+- [cancelRegistration](cancelRegistration.md)
 
 **Authenticators**
 - [getAllAuthenticators](getAllAuthenticators.md)
@@ -35,6 +39,10 @@ The following methods are available:
 - [useResources](useResources.md)
 
  **Mobile Auth**
-- [authenticateDeviceForResource](authenticateDeviceForResource.md)
- 
+- [enrollMobileAuthentication](enrollMobileAuthentication.md)
+- [acceptMobileAuthConfirmation](acceptMobileAuthConfirmation.md)
+- [denyMobileAuthConfirmation](denyMobileAuthConfirmation.md)
+- [handleMobileAuthWithOtp](handleMobileAuthWithOtp.md)
 
+ **Others**
+- [addEventListener](addEventListener.md)
