@@ -13,5 +13,6 @@ The following topic guides are available:
 - [Logging out](7-logging-out.md)
 - [Deregister User](8-deregister-user.md)
 - [Mobile authentication](9-mobile-authentication.md)
+- [Mobile authentication with OTP](9-1-mobile-authentication-with-otp.md)
 - Secure resource access
 - Error handling
