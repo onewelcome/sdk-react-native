@@ -24,8 +24,6 @@ import java.util.concurrent.TimeUnit
 
 class OneginiSDK(private val appContext: Context) {
 
-    var isInitialized: Boolean = false
-
     lateinit var registrationRequestHandler: RegistrationRequestHandler
         private set
     lateinit var pinAuthenticationRequestHandler: PinAuthenticationRequestHandler
@@ -46,6 +44,7 @@ class OneginiSDK(private val appContext: Context) {
 
     fun init(oneginiReactNativeConfig: OneginiReactNativeConfig) {
         this.config = oneginiReactNativeConfig
+
         buildSDK(appContext)
     }
 

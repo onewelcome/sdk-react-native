@@ -1,32 +1,25 @@
 package com.onegini.mobile.clean.wrapper
 
 import com.facebook.react.bridge.Promise
+import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReadableMap
+import com.onegini.mobile.OneginiSDK
 import com.onegini.mobile.clean.use_cases.GetIdentityProvidersUseCase
 import com.onegini.mobile.clean.use_cases.StartClientUseCase
 
 class OneginiSdkWrapper(
-        val startClientUseCase: StartClientUseCase = StartClientUseCase(),
-        val getIdentityProvidersUseCase: GetIdentityProvidersUseCase = GetIdentityProvidersUseCase()
+        private val oneginiSDK: OneginiSDK,
+        private val reactApplicationContext: ReactApplicationContext,
+        private val startClientUseCase: StartClientUseCase = StartClientUseCase(oneginiSDK, reactApplicationContext),
+        private val getIdentityProvidersUseCase: GetIdentityProvidersUseCase = GetIdentityProvidersUseCase(oneginiSDK)
 ): IOneginiSdkWrapper {
 
     //
     // Configuration
     //
 
-    override fun startClient(rnConfig: ReadableMap, promise: Promise, onSuccess: () -> Unit) {
-        startClientUseCase(rnConfig) { success, error ->
-            if (success) {
-                promise.resolve(null)
-
-                // TODO - handle logic in UseCase
-                onSuccess()
-            } else {
-                error?.let {
-                    promise.reject(it.type, it.message)
-                }
-            }
-        }
+    override fun startClient(rnConfig: ReadableMap, promise: Promise) {
+        startClientUseCase(rnConfig, promise)
     }
 
     //
@@ -34,13 +27,12 @@ class OneginiSdkWrapper(
     //
 
     override fun getIdentityProviders(promise: Promise) {
-        getIdentityProvidersUseCase() {
-            promise.resolve(it)
-        }
+        getIdentityProvidersUseCase(promise)
     }
 
     override fun getAccessToken(promise: Promise) {
-        TODO("Not yet implemented")
+        // This is moved to separate UseCase in next PR
+        promise.resolve(oneginiSDK.oneginiClient.accessToken)
     }
 
     override fun getAuthenticatedUserProfile(promise: Promise) {

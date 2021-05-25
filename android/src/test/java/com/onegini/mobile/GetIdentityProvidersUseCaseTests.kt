@@ -1,38 +1,23 @@
 package com.onegini.mobile
 
-import android.content.Context
-import android.os.Parcel
-import com.facebook.react.bridge.Arguments
-import com.facebook.react.bridge.JavaOnlyArray
-import com.facebook.react.bridge.JavaOnlyMap
-import com.facebook.react.bridge.WritableArray
-import com.onegini.mobile.clean.SecurityController
-import com.onegini.mobile.clean.model.SdkError
+import com.facebook.react.bridge.*
 import com.onegini.mobile.clean.use_cases.GetIdentityProvidersUseCase
-import com.onegini.mobile.clean.use_cases.StartClientUseCase
 import com.onegini.mobile.sdk.android.client.OneginiClient
 import com.onegini.mobile.sdk.android.client.UserClient
-import com.onegini.mobile.sdk.android.handlers.OneginiInitializationHandler
-import com.onegini.mobile.sdk.android.handlers.error.OneginiInitializationError
-import com.onegini.mobile.sdk.android.model.OneginiIdentityProvider
+import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockkStatic
-import io.mockk.verify
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
-import org.mockito.Mockito.lenient
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.*
 
-
 @RunWith(MockitoJUnitRunner::class)
-class SessionTests {
-
-    @Mock
-    lateinit var context: Context
+class GetIdentityProvidersUseCaseTests {
 
     @Mock
     lateinit var oneginiSdk: OneginiSDK
@@ -44,12 +29,12 @@ class SessionTests {
     lateinit var userClient: UserClient
 
     @Mock
-    lateinit var identityProvidersCallback: (providers: WritableArray) -> Unit
+    lateinit var promiseMock: Promise
 
     @Before
     fun setup() {
-        OneginiComponets.init(context)
-        OneginiComponets.oneginiSDK = oneginiSdk
+        clearAllMocks()
+
         `when`(oneginiSdk.oneginiClient).thenReturn(oneginiClient)
         `when`(oneginiSdk.oneginiClient.userClient).thenReturn(userClient)
 
@@ -59,10 +44,10 @@ class SessionTests {
     }
 
     @Test
-    fun `getIdentityProviders returns proper parsed data`() {
+    fun `should resolve with properly parsed data`() {
         `when`(userClient.identityProviders).thenReturn(setOf(TestData.identityProvider1, TestData.identityProvider2))
 
-        GetIdentityProvidersUseCase()(identityProvidersCallback)
+        GetIdentityProvidersUseCase(oneginiSdk)(promiseMock)
 
         val provider1 = JavaOnlyMap()
         provider1.putString("id", TestData.identityProvider1.id)
@@ -72,17 +57,23 @@ class SessionTests {
         provider2.putString("id", TestData.identityProvider2.id)
         provider2.putString("name", TestData.identityProvider2.name)
 
-        verify(identityProvidersCallback)(JavaOnlyArray.of(provider1, provider2))
+        argumentCaptor<JavaOnlyArray> {
+            verify(promiseMock).resolve(this.capture())
+
+            Assert.assertEquals(JavaOnlyArray.of(provider1, provider2), this.firstValue)
+        }
     }
 
     @Test
-    fun `getIdentityProviders returns empty data when no providers`() {
+    fun `when no providers should resolve with empty data`() {
         `when`(userClient.identityProviders).thenReturn(setOf())
 
-        GetIdentityProvidersUseCase()(identityProvidersCallback)
+        GetIdentityProvidersUseCase(oneginiSdk)(promiseMock)
 
-        verify(identityProvidersCallback)(JavaOnlyArray.of())
+        argumentCaptor<JavaOnlyArray> {
+            verify(promiseMock).resolve(this.capture())
+
+            Assert.assertEquals(JavaOnlyArray.of(), this.firstValue)
+        }
     }
-
-
 }

@@ -4,19 +4,6 @@ package com.onegini.mobile
 import android.net.Uri
 import android.util.Log
 import com.facebook.react.bridge.*
-import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter
-import com.onegini.mobile.Constants.CUSTOM_REGISTRATION_NOTIFICATION
-import com.onegini.mobile.Constants.CUSTOM_REGISTRATION_NOTIFICATION_FINISH_REGISTRATION
-import com.onegini.mobile.Constants.CUSTOM_REGISTRATION_NOTIFICATION_INIT_REGISTRATION
-import com.onegini.mobile.Constants.ONEGINI_FINGERPRINT_NOTIFICATION
-import com.onegini.mobile.Constants.FINGERPRINT_NOTIFICATION_FINISH_AUTHENTICATION
-import com.onegini.mobile.Constants.FINGERPRINT_NOTIFICATION_ON_FINGERPRINT_CAPTURED
-import com.onegini.mobile.Constants.FINGERPRINT_NOTIFICATION_ON_NEXT_AUTHENTICATION_ATTEMPT
-import com.onegini.mobile.Constants.FINGERPRINT_NOTIFICATION_START_AUTHENTICATION
-import com.onegini.mobile.Constants.MOBILE_AUTH_OTP_FINISH_AUTHENTICATION
-import com.onegini.mobile.Constants.MOBILE_AUTH_OTP_NOTIFICATION
-import com.onegini.mobile.Constants.MOBILE_AUTH_OTP_START_AUTHENTICATION
-import com.onegini.mobile.Constants.ONEGINI_PIN_NOTIFICATION
 import com.onegini.mobile.Constants.PinFlow
 import com.onegini.mobile.OneginiComponets.init
 import com.onegini.mobile.clean.wrapper.IOneginiSdkWrapper
@@ -26,15 +13,12 @@ import com.onegini.mobile.exception.OneginReactNativeException.Companion.AUTHENT
 import com.onegini.mobile.exception.OneginReactNativeException.Companion.FINGERPRINT_IS_NOT_ENABLED
 import com.onegini.mobile.exception.OneginReactNativeException.Companion.MOBILE_AUTH_OTP_IS_DISABLED
 import com.onegini.mobile.managers.AuthenticatorManager
-import com.onegini.mobile.managers.OneginiClientInitializer
 import com.onegini.mobile.managers.RegistrationManager
 import com.onegini.mobile.mapers.*
 import com.onegini.mobile.mapers.CustomInfoMapper.add
 import com.onegini.mobile.mapers.UserProfileMapper.add
 import com.onegini.mobile.mapers.UserProfileMapper.toUserProfile
 import com.onegini.mobile.mapers.UserProfileMapper.toWritableMap
-import com.onegini.mobile.model.ApplicationDetails
-import com.onegini.mobile.model.ImplicitUserDetails
 import com.onegini.mobile.network.AnonymousService
 import com.onegini.mobile.network.ImplicitUserService
 import com.onegini.mobile.network.UserService
@@ -42,20 +26,12 @@ import com.onegini.mobile.sdk.android.handlers.*
 import com.onegini.mobile.sdk.android.handlers.error.*
 import com.onegini.mobile.sdk.android.model.OneginiAppToWebSingleSignOn
 import com.onegini.mobile.sdk.android.model.entity.CustomInfo
-import com.onegini.mobile.sdk.android.model.entity.OneginiMobileAuthenticationRequest
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
-import com.onegini.mobile.view.handlers.InitializationHandler
-import com.onegini.mobile.view.handlers.customregistration.CustomRegistrationObserver
-import com.onegini.mobile.view.handlers.fingerprint.FingerprintAuthenticationObserver
-import com.onegini.mobile.view.handlers.mobileauthotp.MobileAuthOtpRequestObserver
 import com.onegini.mobile.view.handlers.pins.ChangePinHandler
-import com.onegini.mobile.view.handlers.pins.PinNotificationObserver
 import io.reactivex.disposables.CompositeDisposable
 
 //
-// TODO
-// I would move all logic from here to some kind of middleware like BridgeManager
-// This is kind of "declaration" file for exported methods and it should be more clear
+// TODO: codeStyle will by applied in next PR
 //
 
 class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
@@ -70,26 +46,20 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     private val reactContext: ReactApplicationContext
     private val registrationManager: RegistrationManager
     private val authenticatorManager: AuthenticatorManager
-    private val pinNotificationObserver: PinNotificationObserver
-    private val customRegistrationObserver: CustomRegistrationObserver
-    private val mobileAuthOtpRequestObserver: MobileAuthOtpRequestObserver
-    private val fingerprintAuthenticationObserver: FingerprintAuthenticationObserver
+
     private val oneginiSDK: OneginiSDK
         private get() = OneginiComponets.oneginiSDK
 
     private val disposables = CompositeDisposable()
 
     init {
-        sdkWrapper = OneginiSdkWrapper()
-
         init(reactContext.applicationContext)
+
+        sdkWrapper = OneginiSdkWrapper(oneginiSDK, reactApplicationContext)
+
         this.reactContext = reactContext
         registrationManager = RegistrationManager(oneginiSDK)
         authenticatorManager = AuthenticatorManager(oneginiSDK)
-        pinNotificationObserver = createBridgePinNotificationHandler()
-        customRegistrationObserver = createCustomRegistrationObserver()
-        mobileAuthOtpRequestObserver = createMobileAuthOtpRequestObserver()
-        fingerprintAuthenticationObserver = createFingerprintAuthenticationObserver()
     }
 
     override fun canOverrideExistingModule(): Boolean {
@@ -102,15 +72,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     fun startClient(rnConfig: ReadableMap, promise: Promise) {
-        sdkWrapper.startClient(rnConfig, promise) { oneginiSDKInitiated() }
-    }
-
-    // TODO: remove from here to Wrapper/UseCase
-    private fun oneginiSDKInitiated() {
-        oneginiSDK.setPinNotificationObserver(pinNotificationObserver)
-        oneginiSDK.setCustomRegistrationObserver(customRegistrationObserver)
-        oneginiSDK.setMobileAuthOtpRequestObserver(mobileAuthOtpRequestObserver)
-        oneginiSDK.setFingerprintAuthenticationObserver(fingerprintAuthenticationObserver)
+        sdkWrapper.startClient(rnConfig, promise)
     }
 
     @ReactMethod
@@ -120,7 +82,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     fun getAccessToken(promise: Promise) {
-        promise.resolve(oneginiSDK.oneginiClient.accessToken)
+        sdkWrapper.getAccessToken(promise)
     }
 
     @ReactMethod
@@ -423,111 +385,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     fun getUserProfiles(promise: Promise) {
         val profiles = oneginiSDK.oneginiClient.userClient.userProfiles
         promise.resolve(toWritableMap(profiles))
-    }
-
-    private fun createMobileAuthOtpRequestObserver(): MobileAuthOtpRequestObserver {
-        return object : MobileAuthOtpRequestObserver {
-            override fun startAuthentication(request: OneginiMobileAuthenticationRequest?) {
-                val map = Arguments.createMap()
-                map.putString("action", MOBILE_AUTH_OTP_START_AUTHENTICATION)
-                OneginiMobileAuthenticationRequestMapper.add(map, request)
-                reactApplicationContext.getJSModule(RCTDeviceEventEmitter::class.java).emit(MOBILE_AUTH_OTP_NOTIFICATION, map)
-            }
-
-            override fun finishAuthentication() {
-                val map = Arguments.createMap()
-                map.putString("action", MOBILE_AUTH_OTP_FINISH_AUTHENTICATION)
-                reactApplicationContext.getJSModule(RCTDeviceEventEmitter::class.java).emit(MOBILE_AUTH_OTP_NOTIFICATION, map)
-            }
-
-        }
-    }
-
-    private fun createFingerprintAuthenticationObserver(): FingerprintAuthenticationObserver {
-        return object : FingerprintAuthenticationObserver {
-            override fun startAuthentication(user: UserProfile?) {
-                val map = Arguments.createMap()
-                add(map, user)
-                map.putString("action", FINGERPRINT_NOTIFICATION_START_AUTHENTICATION)
-                reactApplicationContext.getJSModule(RCTDeviceEventEmitter::class.java).emit(ONEGINI_FINGERPRINT_NOTIFICATION, map)
-            }
-
-            override fun onNextAuthenticationAttempt() {
-                val map = Arguments.createMap()
-                map.putString("action", FINGERPRINT_NOTIFICATION_ON_NEXT_AUTHENTICATION_ATTEMPT)
-                reactApplicationContext.getJSModule(RCTDeviceEventEmitter::class.java).emit(ONEGINI_FINGERPRINT_NOTIFICATION, map)
-            }
-
-            override fun onFingerprintCaptured() {
-                val map = Arguments.createMap()
-                map.putString("action", FINGERPRINT_NOTIFICATION_ON_FINGERPRINT_CAPTURED)
-                reactApplicationContext.getJSModule(RCTDeviceEventEmitter::class.java).emit(ONEGINI_FINGERPRINT_NOTIFICATION, map)
-            }
-
-            override fun finishAuthentication() {
-                val map = Arguments.createMap()
-                map.putString("action", FINGERPRINT_NOTIFICATION_FINISH_AUTHENTICATION)
-                reactApplicationContext.getJSModule(RCTDeviceEventEmitter::class.java).emit(ONEGINI_FINGERPRINT_NOTIFICATION, map)
-            }
-        }
-    }
-
-    private fun createCustomRegistrationObserver(): CustomRegistrationObserver {
-        return object : CustomRegistrationObserver {
-            override fun initRegistration(idProvider: String, info: CustomInfo?) {
-                val map = Arguments.createMap()
-                map.putString("action", CUSTOM_REGISTRATION_NOTIFICATION_INIT_REGISTRATION)
-                OneginiIdentityProviderMapper.add(map, idProvider)
-                add(map, info)
-                reactApplicationContext.getJSModule(RCTDeviceEventEmitter::class.java).emit(CUSTOM_REGISTRATION_NOTIFICATION, map)
-            }
-
-            override fun finishRegistration(idProvider: String, info: CustomInfo?) {
-                val map = Arguments.createMap()
-                map.putString("action", CUSTOM_REGISTRATION_NOTIFICATION_FINISH_REGISTRATION)
-                OneginiIdentityProviderMapper.add(map, idProvider)
-                add(map, info)
-                reactApplicationContext.getJSModule(RCTDeviceEventEmitter::class.java).emit(CUSTOM_REGISTRATION_NOTIFICATION, map)
-            }
-        }
-    }
-
-    private fun createBridgePinNotificationHandler(): PinNotificationObserver {
-        return object : PinNotificationObserver {
-            override fun onNotify(event: String, flow: PinFlow) {
-                val data = Arguments.createMap()
-                when (event) {
-                    Constants.PIN_NOTIFICATION_OPEN_VIEW -> {
-                        data.putString("action", Constants.PIN_NOTIFICATION_OPEN_VIEW)
-                        data.putString("flow", flow.flowString)
-                    }
-                    Constants.PIN_NOTIFICATION_CONFIRM_VIEW -> {
-                        data.putString("action", Constants.PIN_NOTIFICATION_CONFIRM_VIEW)
-                        data.putString("flow", flow.flowString)
-                    }
-                    Constants.PIN_NOTIFICATION_CLOSE_VIEW -> {
-                        data.putString("action", Constants.PIN_NOTIFICATION_CLOSE_VIEW)
-                        data.putString("flow", flow.flowString)
-                    }
-                    Constants.PIN_NOTIFICATION_CHANGED -> {
-                        data.putString("action", Constants.PIN_NOTIFICATION_CHANGED)
-                        data.putString("flow", flow.flowString)
-                    }
-                    else -> Log.e(LOG_TAG, "Got unsupported PIN notification type: $event")
-                }
-                if (data.getString("action") != null) {
-                    reactApplicationContext.getJSModule(RCTDeviceEventEmitter::class.java).emit(ONEGINI_PIN_NOTIFICATION, data)
-                }
-            }
-
-            override fun onError(error: OneginiError?, flow: PinFlow) {
-                val data = Arguments.createMap()
-                data.putString("action", Constants.PIN_NOTIFICATION_SHOW_ERROR)
-                data.putString("flow", flow.flowString)
-                OneginiErrorMapper.update(data, error)
-                reactApplicationContext.getJSModule(RCTDeviceEventEmitter::class.java).emit(ONEGINI_PIN_NOTIFICATION, data)
-            }
-        }
     }
 
     @ReactMethod
