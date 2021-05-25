@@ -4,19 +4,6 @@ package com.onegini.mobile
 import android.net.Uri
 import android.util.Log
 import com.facebook.react.bridge.*
-import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter
-import com.onegini.mobile.Constants.CUSTOM_REGISTRATION_NOTIFICATION
-import com.onegini.mobile.Constants.CUSTOM_REGISTRATION_NOTIFICATION_FINISH_REGISTRATION
-import com.onegini.mobile.Constants.CUSTOM_REGISTRATION_NOTIFICATION_INIT_REGISTRATION
-import com.onegini.mobile.Constants.ONEGINI_FINGERPRINT_NOTIFICATION
-import com.onegini.mobile.Constants.FINGERPRINT_NOTIFICATION_FINISH_AUTHENTICATION
-import com.onegini.mobile.Constants.FINGERPRINT_NOTIFICATION_ON_FINGERPRINT_CAPTURED
-import com.onegini.mobile.Constants.FINGERPRINT_NOTIFICATION_ON_NEXT_AUTHENTICATION_ATTEMPT
-import com.onegini.mobile.Constants.FINGERPRINT_NOTIFICATION_START_AUTHENTICATION
-import com.onegini.mobile.Constants.MOBILE_AUTH_OTP_FINISH_AUTHENTICATION
-import com.onegini.mobile.Constants.MOBILE_AUTH_OTP_NOTIFICATION
-import com.onegini.mobile.Constants.MOBILE_AUTH_OTP_START_AUTHENTICATION
-import com.onegini.mobile.Constants.ONEGINI_PIN_NOTIFICATION
 import com.onegini.mobile.Constants.PinFlow
 import com.onegini.mobile.OneginiComponets.init
 import com.onegini.mobile.clean.wrapper.IOneginiSdkWrapper
@@ -26,15 +13,12 @@ import com.onegini.mobile.exception.OneginReactNativeException.Companion.AUTHENT
 import com.onegini.mobile.exception.OneginReactNativeException.Companion.FINGERPRINT_IS_NOT_ENABLED
 import com.onegini.mobile.exception.OneginReactNativeException.Companion.MOBILE_AUTH_OTP_IS_DISABLED
 import com.onegini.mobile.managers.AuthenticatorManager
-import com.onegini.mobile.managers.OneginiClientInitializer
 import com.onegini.mobile.managers.RegistrationManager
 import com.onegini.mobile.mapers.*
 import com.onegini.mobile.mapers.CustomInfoMapper.add
 import com.onegini.mobile.mapers.UserProfileMapper.add
 import com.onegini.mobile.mapers.UserProfileMapper.toUserProfile
 import com.onegini.mobile.mapers.UserProfileMapper.toWritableMap
-import com.onegini.mobile.model.ApplicationDetails
-import com.onegini.mobile.model.ImplicitUserDetails
 import com.onegini.mobile.network.AnonymousService
 import com.onegini.mobile.network.ImplicitUserService
 import com.onegini.mobile.network.UserService
@@ -42,14 +26,8 @@ import com.onegini.mobile.sdk.android.handlers.*
 import com.onegini.mobile.sdk.android.handlers.error.*
 import com.onegini.mobile.sdk.android.model.OneginiAppToWebSingleSignOn
 import com.onegini.mobile.sdk.android.model.entity.CustomInfo
-import com.onegini.mobile.sdk.android.model.entity.OneginiMobileAuthenticationRequest
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
-import com.onegini.mobile.view.handlers.InitializationHandler
-import com.onegini.mobile.view.handlers.customregistration.CustomRegistrationObserver
-import com.onegini.mobile.view.handlers.fingerprint.FingerprintAuthenticationObserver
-import com.onegini.mobile.view.handlers.mobileauthotp.MobileAuthOtpRequestObserver
 import com.onegini.mobile.view.handlers.pins.ChangePinHandler
-import com.onegini.mobile.view.handlers.pins.PinNotificationObserver
 import io.reactivex.disposables.CompositeDisposable
 
 //
@@ -75,9 +53,10 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     private val disposables = CompositeDisposable()
 
     init {
+        init(reactContext.applicationContext)
+
         sdkWrapper = OneginiSdkWrapper(oneginiSDK, reactApplicationContext)
 
-        init(reactContext.applicationContext)
         this.reactContext = reactContext
         registrationManager = RegistrationManager(oneginiSDK)
         authenticatorManager = AuthenticatorManager(oneginiSDK)
