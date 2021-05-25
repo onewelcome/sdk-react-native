@@ -10,13 +10,14 @@ import com.onegini.mobile.clean.use_cases.RegisterUserUseCase
 import com.onegini.mobile.clean.use_cases.StartClientUseCase
 
 class OneginiSdkWrapper(
-    private val oneginiSDK: OneginiSDK,
-    private val reactApplicationContext: ReactApplicationContext,
-    val startClientUseCase: StartClientUseCase = StartClientUseCase(oneginiSDK, reactApplicationContext),
-    val getIdentityProvidersUseCase: GetIdentityProvidersUseCase = GetIdentityProvidersUseCase(),
-    val getAccessTokenUseCase: GetAccessTokenUseCase = GetAccessTokenUseCase(),
-    val registerUserUseCase: RegisterUserUseCase = RegisterUserUseCase()
-) : IOneginiSdkWrapper {
+        private val oneginiSDK: OneginiSDK,
+        private val reactApplicationContext: ReactApplicationContext,
+        val startClientUseCase: StartClientUseCase = StartClientUseCase(oneginiSDK, reactApplicationContext),
+        val getIdentityProvidersUseCase: GetIdentityProvidersUseCase = GetIdentityProvidersUseCase(oneginiSDK),
+        val getAccessTokenUseCase: GetAccessTokenUseCase = GetAccessTokenUseCase(oneginiSDK),
+        val registerUserUseCase: RegisterUserUseCase = RegisterUserUseCase()
+): IOneginiSdkWrapper {
+
 
     //
     // Configuration
