@@ -7,7 +7,7 @@ import com.onegini.mobile.Constants
 import com.onegini.mobile.mapers.OneginiMobileAuthenticationRequestMapper
 import com.onegini.mobile.sdk.android.model.entity.OneginiMobileAuthenticationRequest
 
-interface IMobileAuthOtpRequestObserver{
+interface IMobileAuthOtpRequestObserver {
     fun startAuthentication(request: OneginiMobileAuthenticationRequest?)
 
     fun finishAuthentication()
@@ -15,7 +15,7 @@ interface IMobileAuthOtpRequestObserver{
 
 //
 
-class MobileAuthOtpRequestObserver(private val reactApplicationContext: ReactApplicationContext): IMobileAuthOtpRequestObserver {
+class MobileAuthOtpRequestObserver(private val reactApplicationContext: ReactApplicationContext) : IMobileAuthOtpRequestObserver {
     override fun startAuthentication(request: OneginiMobileAuthenticationRequest?) {
         val map = Arguments.createMap()
         map.putString("action", Constants.MOBILE_AUTH_OTP_START_AUTHENTICATION)

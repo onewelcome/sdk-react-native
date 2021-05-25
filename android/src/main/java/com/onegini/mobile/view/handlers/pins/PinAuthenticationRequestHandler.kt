@@ -18,9 +18,12 @@ class PinAuthenticationRequestHandler(private val oneginiSDK: OneginiSDK) : Oneg
         this.pinNotificationObserver = pinNotificationObserver
     }
 
-    override fun startAuthentication(userProfile: UserProfile, oneginiPinCallback: OneginiPinCallback,
-                                     attemptCounter: AuthenticationAttemptCounter) {
-        userProfileId = userProfile.profileId //@todo Might need this in the future
+    override fun startAuthentication(
+        userProfile: UserProfile,
+        oneginiPinCallback: OneginiPinCallback,
+        attemptCounter: AuthenticationAttemptCounter
+    ) {
+        userProfileId = userProfile.profileId // @todo Might need this in the future
         callback = oneginiPinCallback
         if (pinNotificationObserver != null) {
             pinNotificationObserver!!.onNotify(Constants.PIN_NOTIFICATION_OPEN_VIEW, Constants.PinFlow.Authentication)
@@ -29,10 +32,12 @@ class PinAuthenticationRequestHandler(private val oneginiSDK: OneginiSDK) : Oneg
 
     override fun onNextAuthenticationAttempt(attemptCounter: AuthenticationAttemptCounter) {
         if (pinNotificationObserver != null) {
-            val exeption = OneginReactNativeException(OneginReactNativeException.ATTEMPT_COUNTER_ERROR,
-                    EmptyOneginiErrorDetails(),
-                    AuthenticationAttemptCounterMapper.toErrorString(attemptCounter),
-                    null)
+            val exeption = OneginReactNativeException(
+                OneginReactNativeException.ATTEMPT_COUNTER_ERROR,
+                EmptyOneginiErrorDetails(),
+                AuthenticationAttemptCounterMapper.toErrorString(attemptCounter),
+                null
+            )
             pinNotificationObserver!!.onError(exeption, Constants.PinFlow.Authentication)
         }
     }

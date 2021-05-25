@@ -16,7 +16,6 @@ import com.onegini.mobile.view.handlers.mobileauthotp.MobileAuthOtpRequestObserv
 import com.onegini.mobile.view.handlers.pins.PinNotificationObserver
 import java.lang.Exception
 
-
 class StartClientUseCase(private val oneginiSDK: OneginiSDK, private val reactApplicationContext: ReactApplicationContext) {
 
     operator fun invoke(rnConfig: ReadableMap, promise: Promise) {

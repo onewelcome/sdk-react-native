@@ -28,24 +28,23 @@ object TestData {
 
     //
 
-    val identityProvider1: OneginiIdentityProvider = object: OneginiIdentityProvider {
-        override fun describeContents(): Int { return 0}
+    val identityProvider1: OneginiIdentityProvider = object : OneginiIdentityProvider {
+        override fun describeContents(): Int { return 0 }
 
         override fun writeToParcel(dest: Parcel?, flags: Int) {}
 
-        override fun getId(): String { return "100"}
+        override fun getId(): String { return "100" }
 
-        override fun getName(): String { return "Provider_1"}
+        override fun getName(): String { return "Provider_1" }
     }
 
-    val identityProvider2: OneginiIdentityProvider = object: OneginiIdentityProvider {
-        override fun describeContents(): Int { return 0}
+    val identityProvider2: OneginiIdentityProvider = object : OneginiIdentityProvider {
+        override fun describeContents(): Int { return 0 }
 
         override fun writeToParcel(dest: Parcel?, flags: Int) {}
 
-        override fun getId(): String { return "200"}
+        override fun getId(): String { return "200" }
 
-        override fun getName(): String { return "Provider_2"}
+        override fun getName(): String { return "Provider_2" }
     }
-
 }

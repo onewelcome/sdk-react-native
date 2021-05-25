@@ -1,9 +1,7 @@
 package com.onegini.mobile.mapers
 
-import android.util.Log
 import com.facebook.react.bridge.ReadableMap
 import com.onegini.mobile.model.ResourceRequestDetails
-import com.onegini.mobile.model.rn.OneginiReactNativeConfig
 import com.onegini.mobile.network.ApiCall
 
 object ResourceRequestDetailsMapper {
@@ -23,17 +21,16 @@ object ResourceRequestDetailsMapper {
 
         val method = try {
             ApiCall.valueOf(map.getString("method") ?: "GET")
-        } catch(e: IllegalArgumentException) {
+        } catch (e: IllegalArgumentException) {
             ApiCall.GET
         }
 
         return ResourceRequestDetails(
-                path = map.getString("path") ?: "/",
-                method = method,
-                encoding = map.getString("encoding") ?: "application/json",
-                headers = headers,
-                parameters = parameters
+            path = map.getString("path") ?: "/",
+            method = method,
+            encoding = map.getString("encoding") ?: "application/json",
+            headers = headers,
+            parameters = parameters
         )
     }
-
 }

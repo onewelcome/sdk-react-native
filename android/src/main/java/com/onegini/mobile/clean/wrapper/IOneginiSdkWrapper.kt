@@ -3,7 +3,6 @@ package com.onegini.mobile.clean.wrapper
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReadableMap
 
-
 interface IOneginiSdkWrapper {
 
     //
@@ -15,7 +14,7 @@ interface IOneginiSdkWrapper {
     //
     // Session
     //
-    
+
     fun getIdentityProviders(promise: Promise)
 
     fun getAccessToken(promise: Promise)
@@ -26,7 +25,5 @@ interface IOneginiSdkWrapper {
 
     fun getRegisteredAuthenticators(profileId: String, promise: Promise)
 
-
     // TODO: all other methods
-
 }

@@ -20,7 +20,7 @@ interface IFingerprintAuthenticationObserver {
 
 //
 
-class FingerprintAuthenticationObserver(private val reactApplicationContext: ReactApplicationContext): IFingerprintAuthenticationObserver {
+class FingerprintAuthenticationObserver(private val reactApplicationContext: ReactApplicationContext) : IFingerprintAuthenticationObserver {
     override fun startAuthentication(user: UserProfile?) {
         val map = Arguments.createMap()
         UserProfileMapper.add(map, user)

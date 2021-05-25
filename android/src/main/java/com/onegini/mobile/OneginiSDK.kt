@@ -1,4 +1,4 @@
-//@todo Later will be transferred to RN Wrapper
+// @todo Later will be transferred to RN Wrapper
 package com.onegini.mobile
 
 import android.content.Context
@@ -64,11 +64,11 @@ class OneginiSDK(private val appContext: Context) {
         createPinRequestHandler = CreatePinRequestHandler(applicationContext, this)
         changePinHandler = ChangePinHandler(this)
 
-        //twoWayOtpIdentityProvider = TwoWayOtpIdentityProvider(context)
+        // twoWayOtpIdentityProvider = TwoWayOtpIdentityProvider(context)
         val clientBuilder = OneginiClientBuilder(applicationContext, createPinRequestHandler, pinAuthenticationRequestHandler) // handlers for optional functionalities
-                .setBrowserRegistrationRequestHandler(registrationRequestHandler) // Set http connect / read timeout
-                .setHttpConnectTimeout(TimeUnit.SECONDS.toMillis(5).toInt())
-                .setHttpReadTimeout(TimeUnit.SECONDS.toMillis(20).toInt())
+            .setBrowserRegistrationRequestHandler(registrationRequestHandler) // Set http connect / read timeout
+            .setHttpConnectTimeout(TimeUnit.SECONDS.toMillis(5).toInt())
+            .setHttpReadTimeout(TimeUnit.SECONDS.toMillis(20).toInt())
 
         setProviders(clientBuilder)
 

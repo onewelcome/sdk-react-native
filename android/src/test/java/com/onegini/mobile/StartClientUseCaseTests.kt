@@ -53,7 +53,6 @@ class StartClientUseCaseTests {
         verify(promiseMock).resolve(null)
     }
 
-
     @Test
     fun `when wrong configs are provided should reject`() {
         // mock SDK start success
@@ -107,6 +106,4 @@ class StartClientUseCaseTests {
         verify(oneginiSdk).setMobileAuthOtpRequestObserver(any())
         verify(oneginiSdk).setFingerprintAuthenticationObserver(any())
     }
-
-
 }

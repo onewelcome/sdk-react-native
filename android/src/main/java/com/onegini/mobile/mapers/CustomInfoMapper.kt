@@ -20,5 +20,4 @@ object CustomInfoMapper {
     fun add(writableMap: WritableMap, customInfo: CustomInfo?) {
         writableMap.putMap(CUSTOM_INFO, customInfo?.let { toWritableMap(it) })
     }
-
 }

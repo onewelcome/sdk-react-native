@@ -17,7 +17,7 @@ interface ICustomRegistrationObserver {
 
 //
 
-class CustomRegistrationObserver(private val reactApplicationContext: ReactApplicationContext): ICustomRegistrationObserver {
+class CustomRegistrationObserver(private val reactApplicationContext: ReactApplicationContext) : ICustomRegistrationObserver {
     override fun initRegistration(idProvider: String, info: CustomInfo?) {
         val map = Arguments.createMap()
         map.putString("action", Constants.CUSTOM_REGISTRATION_NOTIFICATION_INIT_REGISTRATION)

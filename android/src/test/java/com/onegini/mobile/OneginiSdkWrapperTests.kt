@@ -71,5 +71,4 @@ class OneginiSdkWrapperTests {
 
         verify(getAccessTokenUseCase).invoke(promiseMock)
     }
-
 }

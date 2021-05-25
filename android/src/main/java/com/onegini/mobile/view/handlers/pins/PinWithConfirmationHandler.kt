@@ -12,9 +12,11 @@ import com.onegini.mobile.sdk.android.handlers.error.OneginiPinValidationError
 import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiPinCallback
 import java.util.*
 
-class PinWithConfirmationHandler(private val originalHandler: OneginiPinCallback,
-                                 private val oneginiSDK: OneginiSDK,
-                                 private val context: Context) {
+class PinWithConfirmationHandler(
+    private val originalHandler: OneginiPinCallback,
+    private val oneginiSDK: OneginiSDK,
+    private val context: Context
+) {
 
     var pinNotificationObserver: PinNotificationObserver? = null
 
@@ -32,16 +34,19 @@ class PinWithConfirmationHandler(private val originalHandler: OneginiPinCallback
     }
 
     private fun firstPinProvided(pin: CharArray?) {
-        oneginiSDK.oneginiClient.userClient.validatePinWithPolicy(pin, object : OneginiPinValidationHandler {
-            override fun onSuccess() {
-                this@PinWithConfirmationHandler.pin = pin
-                notifyOnSimpleAction(Constants.PIN_NOTIFICATION_CONFIRM_VIEW)
-            }
+        oneginiSDK.oneginiClient.userClient.validatePinWithPolicy(
+            pin,
+            object : OneginiPinValidationHandler {
+                override fun onSuccess() {
+                    this@PinWithConfirmationHandler.pin = pin
+                    notifyOnSimpleAction(Constants.PIN_NOTIFICATION_CONFIRM_VIEW)
+                }
 
-            override fun onError(oneginiPinValidationError: OneginiPinValidationError) {
-                handlePinValidationError(oneginiPinValidationError)
+                override fun onError(oneginiPinValidationError: OneginiPinValidationError) {
+                    handlePinValidationError(oneginiPinValidationError)
+                }
             }
-        })
+        )
     }
 
     fun secondPinProvided(pin: CharArray?) {
@@ -50,12 +55,14 @@ class PinWithConfirmationHandler(private val originalHandler: OneginiPinCallback
         if (pinsEqual) {
             originalHandler.acceptAuthenticationRequest(pin)
         } else {
-            notifyOnError(OneginReactNativeException(
+            notifyOnError(
+                OneginReactNativeException(
                     OneginReactNativeException.PIN_ERROR_NOT_EQUAL,
                     EmptyOneginiErrorDetails(),
                     "PIN was not the same, choose PIN",
                     null
-            ))
+                )
+            )
         }
     }
 

@@ -17,21 +17,18 @@ package com.onegini.mobile.network
 
 import com.google.gson.JsonObject
 import com.onegini.mobile.OneginiComponets
-import com.onegini.mobile.model.ImplicitUserDetails
 import com.onegini.mobile.model.ResourceRequestDetails
 import com.onegini.mobile.network.client.ResourcesClient
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import okhttp3.ResponseBody
 
 class ImplicitUserService private constructor() {
 
-    private val applicationDetailsRetrofitClient: ResourcesClient
-            = OneginiComponets.secureResourceClient.prepareSecuredImplicitUserRetrofitClient(ResourcesClient::class.java)
+    private val applicationDetailsRetrofitClient: ResourcesClient = OneginiComponets.secureResourceClient.prepareSecuredImplicitUserRetrofitClient(ResourcesClient::class.java)
 
     fun getResource(requestDetails: ResourceRequestDetails): Single<JsonObject> {
-        val apiCall = when(requestDetails.method) {
+        val apiCall = when (requestDetails.method) {
             ApiCall.GET -> applicationDetailsRetrofitClient.getResourcesDetails(requestDetails.path, requestDetails.headers)
             ApiCall.POST -> applicationDetailsRetrofitClient.postResourcesDetails(requestDetails.path, requestDetails.headers, requestDetails.parameters)
             ApiCall.PUT -> applicationDetailsRetrofitClient.putResourcesDetails(requestDetails.path, requestDetails.headers, requestDetails.parameters)
@@ -39,8 +36,8 @@ class ImplicitUserService private constructor() {
         }
 
         return apiCall
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
     }
 
     companion object {
@@ -52,5 +49,4 @@ class ImplicitUserService private constructor() {
             return INSTANCE!!
         }
     }
-
 }
