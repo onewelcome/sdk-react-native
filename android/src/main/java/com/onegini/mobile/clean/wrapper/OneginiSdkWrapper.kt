@@ -4,14 +4,16 @@ import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReadableMap
 import com.onegini.mobile.OneginiSDK
+import com.onegini.mobile.clean.use_cases.GetAccessTokenUseCase
 import com.onegini.mobile.clean.use_cases.GetIdentityProvidersUseCase
 import com.onegini.mobile.clean.use_cases.StartClientUseCase
 
 class OneginiSdkWrapper(
         private val oneginiSDK: OneginiSDK,
         private val reactApplicationContext: ReactApplicationContext,
-        private val startClientUseCase: StartClientUseCase = StartClientUseCase(oneginiSDK, reactApplicationContext),
-        private val getIdentityProvidersUseCase: GetIdentityProvidersUseCase = GetIdentityProvidersUseCase(oneginiSDK)
+        val startClientUseCase: StartClientUseCase = StartClientUseCase(oneginiSDK, reactApplicationContext),
+        val getIdentityProvidersUseCase: GetIdentityProvidersUseCase = GetIdentityProvidersUseCase(oneginiSDK),
+        val getAccessTokenUseCase: GetAccessTokenUseCase = GetAccessTokenUseCase(oneginiSDK)
 ): IOneginiSdkWrapper {
 
     //
@@ -31,8 +33,7 @@ class OneginiSdkWrapper(
     }
 
     override fun getAccessToken(promise: Promise) {
-        // This is moved to separate UseCase in next PR
-        promise.resolve(oneginiSDK.oneginiClient.accessToken)
+        getAccessTokenUseCase(promise)
     }
 
     override fun getAuthenticatedUserProfile(promise: Promise) {
