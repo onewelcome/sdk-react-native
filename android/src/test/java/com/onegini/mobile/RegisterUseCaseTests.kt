@@ -7,15 +7,26 @@ import com.onegini.mobile.sdk.android.handlers.OneginiRegistrationHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiRegistrationError
 import com.onegini.mobile.sdk.android.model.OneginiIdentityProvider
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Test
+import org.junit.*
+import org.junit.runner.RunWith
+import org.mockito.Answers
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.lenient
+import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.*
 
-class RegisterUseCaseTests : BaseTests() {
+@RunWith(MockitoJUnitRunner::class)
+class RegisterUseCaseTests {
+
+    @get:Rule
+    val reactArgumentsTestRule = ReactArgumentsTestRule()
+
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    lateinit var oneginiSdk: OneginiSDK
+
+    @Mock
+    lateinit var promiseMock: Promise
 
     @Mock
     lateinit var identityProvider1: OneginiIdentityProvider
@@ -26,8 +37,10 @@ class RegisterUseCaseTests : BaseTests() {
     @Mock
     lateinit var registrationError: OneginiRegistrationError
 
+    lateinit var scopes: ReadableArray
+
     @Before
-    fun prepareIdentityProviders() {
+    fun setup() {
         lenient().`when`(identityProvider1.id).thenReturn("id1")
         lenient().`when`(identityProvider1.name).thenReturn("name1")
 
@@ -37,20 +50,25 @@ class RegisterUseCaseTests : BaseTests() {
         lenient().`when`(registrationError.errorType).thenReturn(666)
         lenient().`when`(registrationError.message).thenReturn("MyError")
 
-        `when`(userClient.identityProviders).thenReturn(setOf(identityProvider1, identityProvider2))
+        `when`(oneginiSdk.oneginiClient.userClient.identityProviders).thenReturn(setOf(identityProvider1, identityProvider2))
+
+        scopes = JavaOnlyArray.of("read")
+    }
+
+    @After
+    fun clear() {
+        reset(promiseMock, oneginiSdk)
     }
 
     //
-    //
-    //
 
     @Test
-    fun `when successful returns user profile with proper id`() {
-        `when`(userClient.registerUser(anyOrNull(), any(), any())).thenAnswer {
+    fun `when onSuccess should resolve with user profile with proper id`() {
+        `when`(oneginiSdk.oneginiClient.userClient.registerUser(anyOrNull(), any(), any())).thenAnswer {
             it.getArgument<OneginiRegistrationHandler>(2).onSuccess(UserProfile("123456"), null)
         }
 
-        RegisterUserUseCase()("id1", promiseMock)
+        RegisterUserUseCase(oneginiSdk)("id1", scopes, promiseMock)
 
         argumentCaptor<JavaOnlyMap> {
             verify(promiseMock).resolve(capture())
@@ -60,19 +78,19 @@ class RegisterUseCaseTests : BaseTests() {
     }
 
     @Test
-    fun `calls with null identity provider if no provider provided`() {
-        RegisterUserUseCase()(null, promiseMock)
+    fun `when no provider is provided should call registerUser with null identity provider`() {
+        RegisterUserUseCase(oneginiSdk)(null, scopes, promiseMock)
 
         argumentCaptor<OneginiIdentityProvider> {
-            verify(userClient).registerUser(capture(), any(), any())
+            verify(oneginiSdk.oneginiClient.userClient).registerUser(capture(), any(), any())
 
             Assert.assertEquals(null, firstValue)
         }
     }
 
     @Test
-    fun `if provider with provided id is not found rejects with proper errors`() {
-        RegisterUserUseCase()("someId", promiseMock)
+    fun `when provider with provided id is not found should reject with proper errors`() {
+        RegisterUserUseCase(oneginiSdk)("someId", scopes, promiseMock)
 
         argumentCaptor<String> {
             verify(promiseMock).reject(capture(), capture())
@@ -83,12 +101,12 @@ class RegisterUseCaseTests : BaseTests() {
     }
 
     @Test
-    fun `if failed rejects with proper errors`() {
-        `when`(userClient.registerUser(anyOrNull(), any(), any())).thenAnswer {
+    fun `when failed should reject with proper errors`() {
+        `when`(oneginiSdk.oneginiClient.userClient.registerUser(anyOrNull(), any(), any())).thenAnswer {
             it.getArgument<OneginiRegistrationHandler>(2).onError(registrationError)
         }
 
-        RegisterUserUseCase()("id1", promiseMock)
+        RegisterUserUseCase(oneginiSdk)("id1", scopes, promiseMock)
 
         argumentCaptor<String> {
             verify(promiseMock).reject(capture(), capture())
@@ -99,14 +117,23 @@ class RegisterUseCaseTests : BaseTests() {
     }
 
     @Test
-    fun `calls with identity provider with provided id`() {
-        RegisterUserUseCase()("id1", promiseMock)
+    fun `should call registerUser with identity provider with provided id and with scopes`() {
+        scopes = JavaOnlyArray.of("read", "other")
+
+        RegisterUserUseCase(oneginiSdk)("id1", scopes, promiseMock)
 
         argumentCaptor<OneginiIdentityProvider> {
-            verify(userClient).registerUser(capture(), any(), any())
+            verify(oneginiSdk.oneginiClient.userClient).registerUser(capture(), any(), any())
 
             Assert.assertEquals("id1", firstValue.id)
             Assert.assertEquals("name1", firstValue.name)
+        }
+
+        argumentCaptor<Array<String>> {
+            verify(oneginiSdk.oneginiClient.userClient).registerUser(any(), capture(), any())
+
+            Assert.assertEquals("read", firstValue[0])
+            Assert.assertEquals("other", firstValue[1])
         }
     }
 }

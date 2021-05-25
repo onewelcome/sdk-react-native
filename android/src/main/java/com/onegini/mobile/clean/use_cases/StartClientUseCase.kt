@@ -24,7 +24,7 @@ class StartClientUseCase(private val oneginiSDK: OneginiSDK, private val reactAp
 
         try {
             config = OneginiReactNativeConfigMapper.toOneginiReactNativeConfig(rnConfig)
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             promise.reject(OneginReactNativeException.WRONG_CONFIG_MODEL.toString(), "Provided config model parameters are wrong")
             return
         }
