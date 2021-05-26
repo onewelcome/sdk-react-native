@@ -13,7 +13,7 @@ You can use implicit authentication to authenticate users based on their client 
 **Example**
 ```
 OneginiSdk.authenticateUserImplicitly(profileId)
-  .then(authData => {
+  .then(profile => {
     console.log('User implicitl authentication succeed!')
   })
   .catch(error => {
