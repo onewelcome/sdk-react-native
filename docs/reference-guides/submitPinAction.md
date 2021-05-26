@@ -1,7 +1,7 @@
-
 # submitPinAction
 
-use can use #usePinFlow here
+Method which allows to submit actions on PIN flow. 
+Please also refer to #usePinFlow.
 
 ```
 submitPinAction(
@@ -11,17 +11,19 @@ submitPinAction(
 )
 ```
 
-| Property | Description |
-| ------ | ----------- |
-| flow   | --- |
-| action   | --- |
-| pin   | --- |
+| Property | Type | Description |
+| ------ | ------ | ----------- |
+| flow | #Events.PinFlow | Current flow e.g. 'authentication', 'create', 'change' |
+| action | #Events.PinAction | 'provide', 'cancel' |
+| pin | string | Optional PIN |
+
+
 
 **Example**
 ```
 OneginiSdk.submitPinAction(
     Events.PinFlow.Change,
-    Events.PinAction.Cancel,
-    null
+    Events.PinAction.Provide,
+    '123456'
 )
 ```
