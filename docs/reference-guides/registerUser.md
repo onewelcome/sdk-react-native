@@ -15,7 +15,7 @@ It may be required to handle registration with some additional action (PIN/Finge
 ```
 OneginiSdk.registerUser(providerId)
     .then(profile => {
-        console.log('Registration success! ', profile);
+        console.log('Registration success! ', profile)
     })
     .catch(error => {
         console.error('Registration failed: ', error.message)
