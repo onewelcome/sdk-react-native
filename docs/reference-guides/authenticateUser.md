@@ -1,20 +1,33 @@
-
 # authenticateUser
 
-Your users can authenticate themselves using any authenticator registered to them. Authentication is done via an AuthenticationHandler. If a user is already authenticated when calling this function, they will be logged out and have to authenticate again.
+Your users can authenticate themselves using any authenticator registered to them. If a user is already authenticated when calling this function, they will be logged out and have to authenticate again.
 
-`authenticateUser(profileId: string): Promise<Types.AuthData>`
-| Property | Description |
-| ------ | ----------- |
-| profileId   | The profile ID you previously stored during registration |
+It may be required to handle authentication with PIN handling. Please refer to #usePinFlow and #addEventListener
+
+`authenticateUser(profileId: string): Promise<AuthData>`
+| Property | Type | Description |
+| ------ | ------ | ----------- |
+| profileId | string | The profile ID you previously stored during registration |
+
 
 **Example**
 ```
 OneginiSdk.authenticateUser(profileId)
   .then(authData => {
-    console.log('User authentication succeed!');
+    console.log('User authentication succeed!')
   })
   .catch(error => {
-    console.log('User authentication failed!: ', error);
-  });
+    console.log('User authentication failed!: ', error.message)
+  })
 ```
+
+**Success**
+| Property | Example | Description |
+| ------ | ------ |  ----------- |
+| AuthData   |  #AuthData  | Authentication data |
+
+**Error**
+| Property | Example | Description |
+| ------ | ------ |  ----------- |
+| code   | 9001   | The error code |
+| message   | "Onegini: Configuration error"   | Human readable error description |
