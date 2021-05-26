@@ -21,5 +21,5 @@ To start working with the plugin, we need to initialize Onegini SDK by calling `
 ```
 OneginiSdk.startClient()
     .then(() => console.log('Start succeed'))
-    .catch(err => console.log('Start failed: ', err))
+    .catch(error => console.log('Start failed: ', error.message))
 ```
