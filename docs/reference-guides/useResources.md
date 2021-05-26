@@ -1,7 +1,6 @@
-
 # useResources
 
- For easiest PIN flow implementation.
+ For easier resources fetching.
 
 ```
 function useResources(
@@ -23,10 +22,20 @@ function useResources(
 const implicitResource = useResources(
     Types.ResourceRequestType.Implicit,
     {
-      ...DefaultResourcesDetails,
       path: 'user-id-decorated',
+      method: 'GET'
     },
     true,
     profileId,
   )
 ```
+
+**Returns**
+| Property | Example | Description |
+| ------ | ------ |  ----------- |
+| loading   | true   |  Are resources begin loaded |
+| data   |   {"application_identifier": "RNExampleApp", "application_platform": "android", "application_version": "0.1.0"}  | Fetched data e.g. JSON |
+| error   | "Onegini: Internal plugin error"   | Human readable error description |
+
+
+
