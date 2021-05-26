@@ -1,9 +1,8 @@
-
 # handleRegistrationCallback
 
-Cancel registration
+Cancels registration flow
 
-`cancelRegistration(): Promise<void>`
+`cancelRegistration()`
 
 **Example**
 ```
