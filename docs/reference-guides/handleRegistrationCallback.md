@@ -1,9 +1,8 @@
-
 # handleRegistrationCallback
 
-Used to manually handle redirect URI during registration. Developer can change it here if needed.
+Used to manually handle redirect URI during registration. Developer can change it here if needed. The easiest way to get this url is to use React Native [Linking](https://reactnative.dev/docs/linking)
 
-`handleRegistrationCallback(uri: string): Promise<void>`
+`handleRegistrationCallback(uri: string)`
 | Property | Type | Description |
 | ------ | ------ | ----------- |
 | uri   | string   | Registration URI |
@@ -13,21 +12,16 @@ Used to manually handle redirect URI during registration. Developer can change i
 useEffect(() => {
     const handleOpenURL = (event: any) => {
       if (event.url.substr(0, event.url.indexOf(':')) === linkUri) {
-        OneginiSdk.handleRegistrationCallback(event.url);
+        OneginiSdk.handleRegistrationCallback(event.url)
       }
-    };
-    
-    const getLinkUri = async () => {
-      let uri = await AsyncStorage.getItem('@redirectUri');
-      setLinkUri(uri);
-    };
-    
+    }
+
     if (linkUri) {
-      Linking.addListener('url', handleOpenURL);
+      Linking.addListener('url', handleOpenURL)
     } else {
-      getLinkUri();
+      getLinkUri()
     }
     
-    return () => Linking.removeListener('url', handleOpenURL);
-}, [linkUri]);
+    return () => Linking.removeListener('url', handleOpenURL)
+}, [linkUri])
 ```
