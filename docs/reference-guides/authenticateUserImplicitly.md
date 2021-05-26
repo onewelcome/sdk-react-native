@@ -4,15 +4,15 @@ You can use implicit authentication to authenticate users based on their client 
 
 
 
-`authenticateUserImplicitly(profileId: string): Promise<Profile>`
+`authenticateUserImplicitly(profileId: string, scopes?: string[]): Promise<Profile>`
 | Property | Type | Description |
 | ------ | ------ | ----------- |
 | profileId | string | The profile ID you previously stored during registration |
-
+| scopes | string[] | An array of scopes the user will authenticate with (optional) |
 
 **Example**
 ```
-OneginiSdk.authenticateUserImplicitly(profileId)
+OneginiSdk.authenticateUserImplicitly(profileId, ['account-balance'])
   .then(profile => {
     console.log('User implicitl authentication succeed!')
   })
