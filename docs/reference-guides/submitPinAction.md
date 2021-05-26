@@ -1,7 +1,7 @@
 # submitPinAction
 
 Method which allows to submit actions on PIN flow. 
-Please also refer to #usePinFlow.
+Please also refer to [usePinFlow](usePinFlow.md).
 
 ```
 submitPinAction(
