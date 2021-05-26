@@ -23,7 +23,7 @@ Then listen for registration event. _(this step is not yet available)_
 
 ```ts
 useEffect(() => {
-    const listener = OneginiSdk.addEventListener(Events.SdkNotification.CustomRegistration, (event: any) => {
+    const listener = OneginiSdk.addEventListener(Events.SdkNotification.RegistrationProcessUrl, (event: any) => {
         // OneginiSdk.handleRegisteredProcessUrl....
     })
 
