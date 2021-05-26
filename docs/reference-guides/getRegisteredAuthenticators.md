@@ -1,4 +1,3 @@
-
 # getRegisteredAuthenticators
 
 Used to get an array of authenticators registered for a specific user. Requires an object containing a profileId.
@@ -13,13 +12,20 @@ Used to get an array of authenticators registered for a specific user. Requires 
 ```
 OneginiSdk.getRegisteredAuthenticators(profileId)
   .then(authenticators => {
-    console.log('getRegisteredAuthenticators succeed: ', authenticators);
+    console.log('getRegisteredAuthenticators succeed: ', authenticators)
   })
   .catch(error => {
-    console.log('getRegisteredAuthenticators failed!: ', error);
-  });
+    console.log('getRegisteredAuthenticators failed!: ', error.message)
+  })
 ```
-**Returns**
+
+**Success**
 | Property | Type |Description |
 | ------ | ------ |----------- |
 | authenticators  | Authenticator[] | List of registered authenticators |
+
+**Error**
+| Property | Example | Description |
+| ------ | ------ |  ----------- |
+| code   | 8000   | The error code |
+| message   | "Onegini: Internal plugin error"   | Human readable error description |
