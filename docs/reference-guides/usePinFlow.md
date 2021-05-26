@@ -1,4 +1,3 @@
-
 # usePinFlow
 
  For easiest PIN flow implementation.
@@ -14,6 +13,7 @@
 | error   | string \| null   | Contains error or empty if no error. |
 | provideNewPinKey   | (newKey: string) => void   |  func. Function to supply next PIN char. Supply '<' key to remove last PIN char. |
 | cancelPinFlow   | () => void   | Helper function to set error to `null`. |
+
 
 **Example**
 ```
