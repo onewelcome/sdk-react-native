@@ -1,4 +1,3 @@
-
 # setPreferredAuthenticator
 
 Used to get the preferred authenticator for the currently authenticated user. Does not require any arguments.
@@ -13,9 +12,15 @@ Used to get the preferred authenticator for the currently authenticated user. Do
 ```
 OneginiSdk.setPreferredAuthenticator(profileId, authenticatorId)
   .then(()) => {
-    console.log('setPreferredAuthenticator succeed!');
+    console.log('setPreferredAuthenticator succeed!')
   })
   .catch(error => {
-    console.log('setPreferredAuthenticator failed!: ', error);
-  });
+    console.log('setPreferredAuthenticator failed!: ', error.message)
+  })
 ```
+
+**Error**
+| Property | Example | Description |
+| ------ | ------ |  ----------- |
+| code   | 8000   | The error code |
+| message   | "Onegini: Internal plugin error"   | Human readable error description |
