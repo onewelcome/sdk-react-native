@@ -1,4 +1,3 @@
-
 # registerAuthenticator
 
 Used to register a new authenticator for the currently authenticated user.
@@ -13,9 +12,17 @@ Used to register a new authenticator for the currently authenticated user.
 ```
 OneginiSdk.registerAuthenticator(profileId, 'PIN')
   .then(() => {
-    console.log('Register Authenticator succeed!');
+    console.log('Register Authenticator succeed!')
   })
   .catch(error => {
-    console.log('Register Authenticator failed!: ', error);
-  });
+    console.log('Register Authenticator failed!: ', error.message)
+  })
 ```
+
+
+**Error**
+| Property | Example | Description |
+| ------ | ------ |  ----------- |
+| code   | 8000   | The error code |
+| message   | "Onegini: Internal plugin error"   | Human readable error description |
+
