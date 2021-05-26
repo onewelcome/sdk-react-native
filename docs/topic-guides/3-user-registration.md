@@ -1,26 +1,86 @@
 # User registration
 
-## Introduction
+User registration is a fundamental part of the Onegini Mobile Security Platform. As developer you have a couple options to handle this process.
 
-User registration is a fundamental part of the Onegini Mobile Security Platform. As developer you have a couple options to handle this process:
 
-## Register by default browser
+### 1) Start
+To start the user registration using WebView or browser you have to call `registerUser(identityProviderId: string | null, scopes?: string[]): Promise<Profile>` method. 
 
-To start the user registration using WebView or browser you can `registerUser(identityProviderId: string | null): Promise<Types.Profile>` method. Calling this method will launch a browser where you need to register. If registration is successful, the browser will return a link that can be caught. After the registration process is completed, the method will return object of `RegistrationResponse`. This will mean that the user has successfully registered. 
-
-#TODO: handle scopes
-#TODO: browser types (Safari, WebView, External)
-#TODO: handleRegistrationCallback
-
-```
+```ts
 OneginiSdk.registerUser(providerId)
     .then(profile => {
-        console.log('Registration success! ', profile);
+        console.log('Registration success! ', profile)
     })
     .catch(err => {
         console.error('Registration failed: ', err)
     })
 ```
+
+Resolve will be caled when the whole flow is successfully finished.
+
+### 2) Listen for URL
+Then listen for registration event. _(this step is not yet available)_
+
+```ts
+useEffect(() => {
+    const listener = OneginiSdk.addEventListener(Events.SdkNotification.CustomRegistration, (event: any) => {
+        // OneginiSdk.handleRegisteredProcessUrl....
+    })
+
+    return () => {
+        listener.remove()
+    }
+}, [])
+```
+
+You have to also listen to PIN event `Events.SdkNotification.Pin` because PIN may be required to finish registration process. Please refer to [usePinFlow](usePinFlow.md).
+
+
+### 3) Process URL
+
+##### Register by internal browser
+
+The easiest way is to use internal browser like WebView/Android or ASWebAuthenticationSession/iOS:
+
+```ts
+OneginiSdk.handleRegisteredProcessUrl(event.url, BrowserType.Internal)
+```
+_(this method is not yet available)_
+
+##### Register by default browser
+
+If you want to use external browser (and have full control over flow and url) you have to pass proper argument for `OneginiSdk.handleRegisteredProcessUrl(url: string, type: BrowserType)` method:
+
+```ts
+OneginiSdk.handleRegisteredProcessUrl(event.url, BrowserType.External)
+```
+_(this method is not yet available)_
+
+Calling this method will launch a browser where you need to register. If registration is successful, the browser will return a link that can be caught (e.g. with React Native [Linking](https://reactnative.dev/docs/linking)). Then you have to call `handleRegistrationCallback(uri: string)` to finalize registration.
+
+### 4) Handle URL
+
+```ts
+useEffect(() => {
+    const handleOpenURL = (event: any) => {
+        if (event.url.substr(0, event.url.indexOf(':')) === linkUri) {
+            OneginiSdk.handleRegistrationCallback(event.url)
+        }
+    }
+
+    if (linkUri) {
+        Linking.addListener('url', handleOpenURL)
+    } else {
+        getLinkUri()
+    }
+
+    return () => Linking.removeListener('url', handleOpenURL)
+}, [linkUri])
+```
+
+### 5) Finish
+
+If everything went properly `registerUser` will resolve with [Profile]() object.
 
 
 ## Choosing an identity provider
