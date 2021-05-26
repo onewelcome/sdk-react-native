@@ -1,4 +1,3 @@
-
 # getAllAuthenticators
 
 Used to get an array of authenticators available for a specific user. Requires an object containing a profileId.
@@ -13,13 +12,20 @@ Used to get an array of authenticators available for a specific user. Requires a
 ```
 OneginiSdk.getAllAuthenticators(profileId)
   .then(authenticators => {
-    console.log('getAllAuthenticators succeed: ', authenticators);
+    console.log('getAllAuthenticators succeed: ', authenticators)
   })
   .catch(error => {
-    console.log('getAllAuthenticators failed!: ', error);
-  });
+    console.log('getAllAuthenticators failed!: ', error.message)
+  })
 ```
-**Returns**
+
+**Success**
 | Property | Type |Description |
 | ------ | ------ |----------- |
 | authenticators  | Authenticator[] | List of all authenticators |
+
+**Error**
+| Property | Example | Description |
+| ------ | ------ |  ----------- |
+| code   | 8000   | The error code |
+| message   | "Onegini: Internal plugin error"   | Human readable error description |
