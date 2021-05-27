@@ -55,9 +55,7 @@ class OneginiSdkWrapperTests {
     @Mock
     lateinit var deregisterUserUseCase: DeregisterUserUseCase
 
-    //
-
-    lateinit var wrapper: OneginiSdkWrapper
+    private lateinit var wrapper: OneginiSdkWrapper
 
     @Before
     fun setup() {
@@ -106,9 +104,9 @@ class OneginiSdkWrapperTests {
 
     @Test
     fun `when registerUser method is called calls registerUserUseCase with proper params`() {
-        wrapper.registerUser("id1", promiseMock)
+        wrapper.registerUser("id1", JavaOnlyArray(), promiseMock)
 
-        verify(registerUserUseCase).invoke("id1", promiseMock)
+        verify(registerUserUseCase).invoke("id1", JavaOnlyArray(), promiseMock)
     }
 
     @Test
