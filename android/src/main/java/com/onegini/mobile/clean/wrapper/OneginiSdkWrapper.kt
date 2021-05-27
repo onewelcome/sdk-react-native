@@ -2,6 +2,7 @@ package com.onegini.mobile.clean.wrapper
 
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
+import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
 import com.onegini.mobile.OneginiSDK
 import com.onegini.mobile.clean.use_cases.*
@@ -10,11 +11,11 @@ class OneginiSdkWrapper(
     private val oneginiSDK: OneginiSDK,
     private val reactApplicationContext: ReactApplicationContext,
     val startClientUseCase: StartClientUseCase = StartClientUseCase(oneginiSDK, reactApplicationContext),
-    val getIdentityProvidersUseCase: GetIdentityProvidersUseCase = GetIdentityProvidersUseCase(),
-    val getAccessTokenUseCase: GetAccessTokenUseCase = GetAccessTokenUseCase(),
-    val registerUserUseCase: RegisterUserUseCase = RegisterUserUseCase(),
-    val getAuthenticatedUserProfileUseCase: GetAuthenticatedUserProfileUseCase = GetAuthenticatedUserProfileUseCase(),
-    val getAllAuthenticatorsUseCase: GetAllAuthenticatorsUseCase = GetAllAuthenticatorsUseCase()
+    val getIdentityProvidersUseCase: GetIdentityProvidersUseCase = GetIdentityProvidersUseCase(oneginiSDK),
+    val getAccessTokenUseCase: GetAccessTokenUseCase = GetAccessTokenUseCase(oneginiSDK),
+    val registerUserUseCase: RegisterUserUseCase = RegisterUserUseCase(oneginiSDK),
+    val getAuthenticatedUserProfileUseCase: GetAuthenticatedUserProfileUseCase = GetAuthenticatedUserProfileUseCase(oneginiSDK),
+    val getAllAuthenticatorsUseCase: GetAllAuthenticatorsUseCase = GetAllAuthenticatorsUseCase(oneginiSDK)
 ) : IOneginiSdkWrapper {
 
     override fun startClient(rnConfig: ReadableMap, promise: Promise) {
@@ -61,8 +62,8 @@ class OneginiSdkWrapper(
         TODO("Not yet implemented")
     }
 
-    override fun registerUser(identityProviderId: String?, promise: Promise) {
-        registerUserUseCase(identityProviderId, promise)
+    override fun registerUser(identityProviderId: String?, scopes: ReadableArray, promise: Promise) {
+        registerUserUseCase(identityProviderId, scopes, promise)
     }
 
     override fun deregisterUser(profileId: String?, promise: Promise) {
