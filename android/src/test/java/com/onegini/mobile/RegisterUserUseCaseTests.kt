@@ -17,7 +17,7 @@ import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.*
 
 @RunWith(MockitoJUnitRunner::class)
-class RegisterUseCaseTests {
+class RegisterUserUseCaseTests {
 
     @get:Rule
     val reactArgumentsTestRule = ReactArgumentsTestRule()
@@ -53,11 +53,6 @@ class RegisterUseCaseTests {
         `when`(oneginiSdk.oneginiClient.userClient.identityProviders).thenReturn(setOf(identityProvider1, identityProvider2))
 
         scopes = JavaOnlyArray.of("read")
-    }
-
-    @After
-    fun clear() {
-        reset(promiseMock, oneginiSdk)
     }
 
     //

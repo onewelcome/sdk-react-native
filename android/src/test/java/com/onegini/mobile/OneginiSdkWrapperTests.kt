@@ -40,7 +40,7 @@ class OneginiSdkWrapperTests {
     @Mock
     lateinit var registerUserUseCase: RegisterUserUseCase
 
-    lateinit var wrapper: OneginiSdkWrapper
+    private lateinit var wrapper: OneginiSdkWrapper
 
     @Before
     fun setup() {

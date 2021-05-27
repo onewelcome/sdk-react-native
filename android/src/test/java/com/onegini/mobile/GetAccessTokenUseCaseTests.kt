@@ -25,11 +25,6 @@ class GetAccessTokenUseCaseTests {
     @Mock
     lateinit var promiseMock: Promise
 
-    @After
-    fun clear() {
-        reset(promiseMock, oneginiSdk)
-    }
-
     //
 
     @Test

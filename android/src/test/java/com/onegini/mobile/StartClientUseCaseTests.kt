@@ -31,11 +31,6 @@ class StartClientUseCaseTests {
     @Mock
     lateinit var reactApplicationContext: ReactApplicationContext
 
-    @After
-    fun clear() {
-        reset(promiseMock, oneginiSdk, reactApplicationContext)
-    }
-
     //
 
     @Test
