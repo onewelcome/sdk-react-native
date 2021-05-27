@@ -178,8 +178,8 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    fun registerUser(identityProviderId: String?, promise: Promise) {
-        sdkWrapper.registerUser(identityProviderId, promise)
+    fun registerUser(identityProviderId: String?, scopes: ReadableArray, promise: Promise) {
+        sdkWrapper.registerUser(identityProviderId, scopes, promise)
     }
 
     @ReactMethod
