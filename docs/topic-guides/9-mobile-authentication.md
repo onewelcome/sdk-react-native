@@ -14,23 +14,24 @@ Before mobile authentication can be used, you should configure the Token Server 
 
 When the Token Server is configured, you can enroll and handle mobile authentication requests using the Onegini SDK.
 
-#TODO: Push not available
-
 ## Enrollment
 
-#TODO: enrollMobileAuthentication
+The onegini.mobileAuth.enroll method enables the basic mobile authentication feature. Mobile authentication with OTP is possible after you enrolled the user (using the onegini.mobileAuth.enroll method).
+
+> Note: It is advised to perform the onegini.mobileAuth.enroll step as soon as possible in your application as it is quite resource intensive because it generates a private key and certificate. The Onegini Cordova plugin requires an authenticated or logged in user to enroll for mobile authentication. The user can enroll for mobile authentication on every device that he/she installed your application on.
 ```
-  OneginiSdk.enrollMobileAuthentication()
-    .then(() => {
-      setSuccessful('Mobile Authentication enabled');
-    })
-    .catch((error) => {
-      setError(error.message);
-    });
+OneginiSdk.enrollMobileAuthentication()
+  .then(() => {
+    console.log('Mobile Authentication enabled!')
+  })
+  .catch(error => {
+    console.error('Mobile Authentication failed: ', error.message)
+  })
 ```
+Successive invocations of enrollment for mobile authentication will re-enroll the device only if the mobile authentication override is enabled in The Token Server configuration. See the Token Server mobile authentication configuration for more information on the server side configuration of mobile authentication.
 
 ## Request handling
-The Onegini Cordova plugin is capable of handling two types of mobile authentication requests. For more information on handling each mobile authentication type, please refer to the corresponding request handling guides.
+The Onegini React Native plugin is capable of handling two types of mobile authentication requests. For more information on handling each mobile authentication type, please refer to the corresponding request handling guides.
 
-- OTP - [OTP Mobile Authentication - Request handling guide]()
-- Push - Push Mobile Authentication - Request handling guide [Not yet available]
+- OTP - [OTP Mobile Authentication - Request handling guide](9-1-mobile-authentication-with-otp.md)
+- Push - Push Mobile Authentication - Request handling guide [_Not yet available_]
