@@ -1,6 +1,7 @@
 package com.onegini.mobile.clean.wrapper
 
 import com.facebook.react.bridge.Promise
+import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
 import com.onegini.mobile.mapers.*
 import com.onegini.mobile.sdk.android.handlers.*
@@ -42,7 +43,7 @@ interface IOneginiSdkWrapper {
     // Registration
     //
 
-    fun registerUser(identityProviderId: String?, promise: Promise)
+    fun registerUser(identityProviderId: String?, scopes: ReadableArray, promise: Promise)
 
     fun deregisterUser(profileId: String?, promise: Promise)
 
