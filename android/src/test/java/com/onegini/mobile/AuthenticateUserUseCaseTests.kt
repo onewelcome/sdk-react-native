@@ -1,6 +1,7 @@
 package com.onegini.mobile
 
 import com.facebook.react.bridge.JavaOnlyMap
+import com.facebook.react.bridge.Promise
 import com.onegini.mobile.clean.use_cases.AuthenticateUserUseCase
 import com.onegini.mobile.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.android.handlers.OneginiAuthenticationHandler
@@ -9,8 +10,10 @@ import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import org.junit.Assert
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Answers
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.lenient
@@ -20,7 +23,16 @@ import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.verify
 
 @RunWith(MockitoJUnitRunner::class)
-class AuthenticateUserUseCaseTests : BaseTests() {
+class AuthenticateUserUseCaseTests {
+
+    @get:Rule
+    val reactArgumentsTestRule = ReactArgumentsTestRule()
+
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    lateinit var oneginiSdk: OneginiSDK
+
+    @Mock
+    lateinit var promiseMock: Promise
 
     @Mock
     lateinit var authenticationError: OneginiAuthenticationError
@@ -34,19 +46,19 @@ class AuthenticateUserUseCaseTests : BaseTests() {
     //
 
     @Test
-    fun `when user profile cannot be created rejects with proper errors`() {
-        AuthenticateUserUseCase()("123", promiseMock)
+    fun `when user profile cannot be created should reject with proper errors`() {
+        AuthenticateUserUseCase(oneginiSdk)("123", promiseMock)
 
         verify(promiseMock).reject(OneginiWrapperErrors.USER_PROFILE_IS_NULL.code, OneginiWrapperErrors.USER_PROFILE_IS_NULL.message)
     }
 
     @Test
-    fun `when successful should return user profile and custom info`() {
-        `when`(userClient.authenticateUser(any(), any())).thenAnswer {
+    fun `when successful should resolve with user profile and custom info`() {
+        `when`(oneginiSdk.oneginiClient.userClient.authenticateUser(any(), any())).thenAnswer {
             it.getArgument<OneginiAuthenticationHandler>(1).onSuccess(UserProfile("666666"), CustomInfo(666, "customData"))
         }
 
-        AuthenticateUserUseCase()("123456", promiseMock)
+        AuthenticateUserUseCase(oneginiSdk)("123456", promiseMock)
 
         argumentCaptor<JavaOnlyMap> {
             verify(promiseMock).resolve(capture())
@@ -58,15 +70,15 @@ class AuthenticateUserUseCaseTests : BaseTests() {
     }
 
     @Test
-    fun `when fails rejects with proper error`() {
-        `when`(userClient.authenticateUser(any(), any())).thenAnswer {
+    fun `when fails should reject with proper error`() {
+        `when`(oneginiSdk.oneginiClient.userClient.authenticateUser(any(), any())).thenAnswer {
             it.getArgument<OneginiAuthenticationHandler>(1).onError(authenticationError)
         }
 
-        AuthenticateUserUseCase()("123456", promiseMock)
+        AuthenticateUserUseCase(oneginiSdk)("123456", promiseMock)
 
         argumentCaptor<UserProfile> {
-            verify(userClient).authenticateUser(capture(), any())
+            verify(oneginiSdk.oneginiClient.userClient).authenticateUser(capture(), any())
 
             Assert.assertEquals("123456", firstValue.profileId)
         }

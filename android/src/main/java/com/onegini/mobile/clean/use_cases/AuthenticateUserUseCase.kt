@@ -2,7 +2,7 @@ package com.onegini.mobile.clean.use_cases
 
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Promise
-import com.onegini.mobile.OneginiComponets
+import com.onegini.mobile.OneginiSDK
 import com.onegini.mobile.exception.OneginiWrapperErrors
 import com.onegini.mobile.mapers.CustomInfoMapper
 import com.onegini.mobile.mapers.UserProfileMapper
@@ -11,7 +11,7 @@ import com.onegini.mobile.sdk.android.handlers.error.OneginiAuthenticationError
 import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 
-class AuthenticateUserUseCase {
+class AuthenticateUserUseCase(private val oneginiSDK: OneginiSDK) {
 
     operator fun invoke(profileId: String?, promise: Promise) {
         val userProfile = try {
@@ -25,7 +25,7 @@ class AuthenticateUserUseCase {
             return
         }
 
-        OneginiComponets.oneginiSDK.oneginiClient.userClient.authenticateUser(
+        oneginiSDK.oneginiClient.userClient.authenticateUser(
             userProfile,
             object : OneginiAuthenticationHandler {
                 override fun onSuccess(userProfile: UserProfile?, customInfo: CustomInfo?) {
