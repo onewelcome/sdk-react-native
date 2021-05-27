@@ -23,34 +23,47 @@ It should be noted that there are significant differences between Fingerprint on
 
 ## Enabling system biometric authenticator authentication
 
-In order to enable fingerprint authenticator authentication for a user, the Onegini React Native plugin provides the `OneginiSdk.registerAuthenticator` to which you need to pass `authenticatorId`. This function requires the user to authenticate.
+In order to enable fingerprint authenticator authentication for a user, the Onegini React Native plugin provides the [registerAuthenticator](../reference-guides/registerAuthenticator.md) to which you need to pass `authenticatorId`. This function requires the user to authenticate.
 
 **Example code for registering the system biometric authenticator:**
+```
+OneginiSdk
+    .registerAuthenticator(profileId, authenticatorId)
+    .then(() => {
+        console.error("Register authenticator succeed!");
+    })
+    .catch(error => {
+        console.error("Register authenticator failed: " + error);
+    });
+```
 
-    OneginiSdk
-        .registerAuthenticator(profileId, authenticatorId)
-        .then(() => {
-            console.error("Register authenticator succeed!");
-        })
-        .catch(error => {
-            console.error("Register authenticator failed: " + error);
-        });
-
-#TODO: events?
-#TODO: PIN FALLBACK?
-#TODO: setPreferred
-After calling that method you should receive `openFingerprintScreen` or `fingerprintFallbackToPin` events.
+You have to also listen for PIN events in case of fallback. Please refer to [usePinFlow](../reference-guides/usePinFlow.md).
 
 Fingerprint authentication may not be available on every device. In this case, or if the authenticator has already been registered, the above method will return an error.
 
-To request a list of available authenticators that have not yet been registered, the plugin exposes the `Onegini.instance.userClient.getNotRegisteredAuthenticators` function. If the device does not meet the fingerprint requirements, the fingerprint authenticator will not be present in the returned array of of authenticators.
+To request a list of available authenticators, the plugin exposes the [getAllAuthenticators](../reference-topic/getAllAuthenticators.md) function. If the device does not meet the fingerprint requirements, the fingerprint authenticator will not be present in the returned array of of authenticators.
+
+Note that registering a new authenticator does not set it as the preferred authenticator for the user, which is PIN by default. To change this [setPreferredAuthenticator](../reference-topis/setPreferredAuthenticator.md) can be used.
+
+**Example code to set fingerprint as the preferred authenticator:**
+```
+OneginiSdk.setPreferredAuthenticator(profileId, authenticatorId)
+  .then(()) => {
+    console.log('setPreferredAuthenticator succeed!')
+  })
+  .catch(error => {
+    console.log('setPreferredAuthenticator failed!: ', error.message)
+  })
+```
+> To set FaceID as the preferred authenticator authenticatorType should be set as "Fingerprint"
+
 
 ## Authenticating a user with fingerprint
 
-Once the fingerprint authenticator has been registered and set as the preferred authenticator, the user is able to authenticate using fingerprint. The method to do so is the same as for PIN, the `authenticateUser` method.
+Once the fingerprint authenticator has been registered and set as the preferred authenticator, the user is able to authenticate using fingerprint. The method to do so is the same as for PIN, the [authenticateUser](../reference-guides/authenticateUser.md) method.
 
-#TODO: Fingerprint events?
-However, if fingerprint authentication is a possibility for the user, extra handler methods must be implemented. This is in addition to the PIN specific methods (which are necessary in case of fallback to PIN).
+
+However, if fingerprint authentication is a possibility for the user, extra handler methods must be implemented. This is in addition to the PIN specific methods (which are necessary in case of fallback to PIN). Please refer to [useFingerprintFlow](../reference-guides/useFingerprintFlow.md)
 
 **Example code to log in a user with fingerprint:**
 
@@ -59,11 +72,16 @@ OneginiSdk.registerUser(providerId)
     .then(profile => {
         console.log('Registration success! ', profile);
     })
-    .catch(err => {
-        console.error('Registration failed: ', err);
+    .catch(error => {
+        console.error('Registration failed: ', error.message);
     })
     
-    // Fingerprint handling
+// ...
+// Fingerprint handling
+// 
+
+const {active, stage, fallbackToPin, cancelFlow} = useFingerprintFlow();
 ```
-#TODO: openPinScreenAuth?
-If the user fails to authenticate using fingerprint too many times (this limit is set by the OS), the fingerprint authenticator is automatically deregistered and the relevant tokens are revoked by the Onegini React Native plugin. At this point, a fallback to PIN is performed, and the user is request to enter their PIN via `openPinScreenAuth`. If this too, fails, returned value will be `null` which is signalling the authentication has failed.
+
+
+If the user fails to authenticate using fingerprint too many times (this limit is set by the OS), the fingerprint authenticator is automatically deregistered and the relevant tokens are revoked by the Onegini React Native plugin. At this point, a fallback to PIN is performed, and the user is request to enter their PIN.
