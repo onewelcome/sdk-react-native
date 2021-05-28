@@ -10,7 +10,7 @@ resourceRequest(
 
 | Property | Type | Description |
 | ------ | ------ | ----------- |
-| type   | #ResourceRequestType   | Request type 'Anonymous', 'ImplicitUser', 'Anonymous' |
+| type   | #ResourceRequestType   | Request type 'User', 'ImplicitUser', 'Anonymous' |
 | details   | #ResourcesDetails   | Request details e.g. method type ('GET') |
 
 **Example**
