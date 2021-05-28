@@ -1,41 +1,17 @@
-# useResources
+# useFingerprintFlow
 
- For easier resources fetching.
+ For easiest Fingerprint/FaceID flow implementation.
 
-```
-function useResources(
-  type: ResourceRequestType,
-  details: ResourcesDetails,
-  shouldAuthenticate: boolean,
-  profileId?: string | null,
-) 
-```
+`useFingerprintFlow()`
 
 | Returns | Type | Description |
 | ------ | ------ | ----------- |
-| loading   | boolean   |  Are resources begin loaded |
-| error   | string   |  Error |
-| data   | JSON   |  Data response. |
+| active   | boolean   |  Defines wheather Fingerprint recognication process active or not |
+| stage   | [FingerprintStage]()   |  Current stage of Fingerprint flow |
+| fallbackToPin   | () => void   |  Helper function to trigger fallback to PIN flow |
+| cancelFlow   | () => void   |  Helper function to trigger cancelling Fingerprint flow |
 
 **Example**
 ```
-const implicitResource = useResources(
-    Types.ResourceRequestType.Implicit,
-    {
-      path: 'user-id-decorated',
-      method: 'GET'
-    },
-    true,
-    profileId,
-  )
+const {active, stage, fallbackToPin, cancelFlow} = useFingerprintFlow()
 ```
-
-**Returns**
-| Property | Example | Description |
-| ------ | ------ |  ----------- |
-| loading   | true   |  Are resources begin loaded |
-| data   |   {"application_identifier": "RNExampleApp", "application_platform": "android", "application_version": "0.1.0"}  | Fetched data e.g. JSON |
-| error   | "Onegini: Internal plugin error"   | Human readable error description |
-
-
-
