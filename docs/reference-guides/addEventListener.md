@@ -6,7 +6,7 @@ Listener for specified event can be added with this function.
 
 | Property | Type | Description |
 | ------ | ------ | ----------- |
-| eventType   | #SdkNotification   | Name of the event e.g. SdkNotification.Pin |
+| eventType   | [SdkNotification](SdkNotification.md)   | Name of the event e.g. SdkNotification.Pin |
 | callback   | (event: any) => void   | Callback function |
 
 **Example**
