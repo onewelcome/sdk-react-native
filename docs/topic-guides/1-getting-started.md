@@ -16,7 +16,7 @@ The details about plugin configuration can be found in the [Configuration guide]
 
 ## Initialize Onegini Flutter SDK
 
-To start working with the plugin, we need to initialize Onegini SDK by calling `OneginiSdk.startClient` . You can pass additional config information here as an argument (ADD: reference to this method).
+To start working with the plugin, we need to initialize Onegini SDK by calling [startClient](../reference-guides/startClient.md) . You can pass additional config information here as an argument (see [Config](../reference-guides/Config.md)).
 
 ```
 OneginiSdk.startClient()
