@@ -6,7 +6,7 @@ When registering a user, the React Native Plugin redirects the user to the authe
 
 ## Get registered profiles
 
-While it is possible to keep track of registered users oneself, the React Native Plugin also provides a function to retrieve all registered profiles.
+While it is possible to keep track of registered users oneself, the React Native Plugin also provides a function to retrieve all registered profiles [getUserProfiles](../reference-guides/getUserProfiles.md).
 ```js
 OneginiSdk.getUserProfiles()
   .then(profiles => {
