@@ -26,7 +26,7 @@ OneginiSdk.registerUser(providerId)
 **Success**
 | Property | Example | Description |
 | ------ | ------ |  ----------- |
-| Profile   |  #Profile  | New registered profile |
+| Profile   |  [Profile](Profile.md)  | New registered profile |
 
 **Error**
 | Property | Example | Description |
