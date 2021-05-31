@@ -41,9 +41,9 @@ You have to also listen for PIN events in case of fallback. Please refer to [use
 
 Fingerprint authentication may not be available on every device. In this case, or if the authenticator has already been registered, the above method will return an error.
 
-To request a list of available authenticators, the plugin exposes the [getAllAuthenticators](../reference-topic/getAllAuthenticators.md) function. If the device does not meet the fingerprint requirements, the fingerprint authenticator will not be present in the returned array of of authenticators.
+To request a list of available authenticators, the plugin exposes the [getAllAuthenticators](../reference-guides/getAllAuthenticators.md) function. If the device does not meet the fingerprint requirements, the fingerprint authenticator will not be present in the returned array of of authenticators.
 
-Note that registering a new authenticator does not set it as the preferred authenticator for the user, which is PIN by default. To change this [setPreferredAuthenticator](../reference-topis/setPreferredAuthenticator.md) can be used.
+Note that registering a new authenticator does not set it as the preferred authenticator for the user, which is PIN by default. To change this [setPreferredAuthenticator](../reference-guides/setPreferredAuthenticator.md) can be used.
 
 **Example code to set fingerprint as the preferred authenticator:**
 ```
@@ -63,7 +63,7 @@ OneginiSdk.setPreferredAuthenticator(profileId, authenticatorId)
 Once the fingerprint authenticator has been registered and set as the preferred authenticator, the user is able to authenticate using fingerprint. The method to do so is the same as for PIN, the [authenticateUser](../reference-guides/authenticateUser.md) method.
 
 
-However, if fingerprint authentication is a possibility for the user, extra handler methods must be implemented. This is in addition to the PIN specific methods (which are necessary in case of fallback to PIN). Please refer to [useFingerprintFlow](../reference-guides/useFingerprintFlow.md)
+However, if fingerprint authentication is a possibility for the user, extra handler methods must be implemented. This is in addition to the PIN specific methods (which are necessary in case of fallback to PIN). Please refer to [useFingerprintFlow](../reference-guides/useFingerprintFlow.md).
 
 **Example code to log in a user with fingerprint:**
 
