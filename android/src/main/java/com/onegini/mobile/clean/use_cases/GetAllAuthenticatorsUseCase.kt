@@ -21,15 +21,8 @@ class GetAllAuthenticatorsUseCase(private val oneginiSDK: OneginiSDK) {
         promise.resolve(OneginiAuthenticatorMapper.toWritableMap(authenticators))
     }
 
-    private fun getUserProfile(profileId: String?): UserProfile? {
-        if (profileId == null) {
-            return null
-        }
-        oneginiSDK.oneginiClient.userClient.userProfiles.forEach {
-            if (it.profileId == profileId) {
-                return it
-            }
-        }
-        return null
+    private fun getUserProfile(profileId: String): UserProfile? {
+        return oneginiSDK.oneginiClient.userClient.userProfiles
+            .find { it.profileId == profileId }
     }
 }
