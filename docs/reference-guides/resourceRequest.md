@@ -10,8 +10,8 @@ resourceRequest(
 
 | Property | Type | Description |
 | ------ | ------ | ----------- |
-| type   | #ResourceRequestType   | Request type 'User', 'ImplicitUser', 'Anonymous' |
-| details   | #ResourcesDetails   | Request details e.g. method type ('GET') |
+| type   | [ResourceRequestType](ResourceRequestType.md)   | Request type 'User', 'ImplicitUser', 'Anonymous' |
+| details   | [ResourcesDetails](ResourcesDetails.md)   | Request details e.g. method type ('GET') |
 
 **Example**
 ```
