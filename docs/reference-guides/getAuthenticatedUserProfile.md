@@ -3,7 +3,6 @@
 This method returns the currently authenticated user (profile). The method fails when no user is authenticated.
 
 
-
 `getAuthenticatedUserProfile(): Promise<Profile>`
 
 **Example**
@@ -20,4 +19,4 @@ OneginiSdk.getAuthenticatedUserProfile()
 **Success**
 | Property | Type | Description |
 | ------ | ------ | ----------- |
-| authenticatedProfile   | #Profile   | Currently authenticated user profile |
+| authenticatedProfile   | [Profile](Profile.md)   | Currently authenticated user profile |
