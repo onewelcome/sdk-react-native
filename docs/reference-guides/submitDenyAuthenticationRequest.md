@@ -1,6 +1,6 @@
 # submitFingerprintDenyAuthenticationRequest
 
-Submit deny for Fingerprint Authorization request. Please refer to [useFingerprintFlow]()
+Submit deny for Fingerprint Authorization request. Please refer to [useFingerprintFlow](useFingerprintFlow.md).
 
 `submitFingerprintDenyAuthenticationRequest(): Promise<void>`
 
