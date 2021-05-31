@@ -24,7 +24,7 @@ OneginiSdk.authenticateUserImplicitly(profileId, ['account-balance'])
 **Success**
 | Property | Example | Description |
 | ------ | ------ |  ----------- |
-| Profile   |  #Profile  | Profile data |
+| Profile   |  [Profile](Profile.md)  | Profile data |
 
 **Error**
 | Property | Example | Description |
