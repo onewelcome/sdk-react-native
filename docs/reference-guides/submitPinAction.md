@@ -13,8 +13,8 @@ submitPinAction(
 
 | Property | Type | Description |
 | ------ | ------ | ----------- |
-| flow | #Events.PinFlow | Current flow e.g. 'authentication', 'create', 'change' |
-| action | #Events.PinAction | 'provide', 'cancel' |
+| flow | [PinFlow](PinFlow.md) | Current flow e.g. 'authentication', 'create', 'change' |
+| action | [PinAction](PinAction.md) | 'provide', 'cancel' |
 | pin | string | Optional PIN |
 
 
