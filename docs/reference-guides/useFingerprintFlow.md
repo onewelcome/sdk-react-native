@@ -7,7 +7,7 @@
 | Returns | Type | Description |
 | ------ | ------ | ----------- |
 | active   | boolean   |  Defines wheather Fingerprint recognication process active or not |
-| stage   | [FingerprintStage]()   |  Current stage of Fingerprint flow |
+| stage   | [FingerprintStage](FingerprintStage.md)   |  Current stage of Fingerprint flow |
 | fallbackToPin   | () => void   |  Helper function to trigger fallback to PIN flow |
 | cancelFlow   | () => void   |  Helper function to trigger cancelling Fingerprint flow |
 
