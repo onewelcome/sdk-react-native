@@ -2,7 +2,7 @@
 
 Your users can authenticate themselves using any authenticator registered to them. If a user is already authenticated when calling this function, they will be logged out and have to authenticate again.
 
-It may be required to handle authentication with some additional action (PIN/Fingerprint) handling. Please refer to #usePinFlow and #addEventListener
+It may be required to handle authentication with some additional action (PIN/Fingerprint) handling. Please refer to [usePinFlow](usePinFlow.md) and [addEventListener](addEventListener.md).
 
 `authenticateUser(profileId: string): Promise<AuthData>`
 | Property | Type | Description |
@@ -24,7 +24,7 @@ OneginiSdk.authenticateUser(profileId)
 **Success**
 | Property | Example | Description |
 | ------ | ------ |  ----------- |
-| AuthData   |  #AuthData  | Authentication data |
+| AuthData   |  [AuthData](AuthData.md)  | Authentication data |
 
 **Error**
 | Property | Example | Description |
