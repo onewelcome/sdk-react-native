@@ -1,6 +1,6 @@
 # submitFallbackToPin
 
-If Fingerprint authorization failed - you can force user to fallback to PIN. Please also refer to #useFingerprintFlow
+If Fingerprint authorization failed - you can force user to fallback to PIN. Please also refer to [useFingerprintFlow](useFingerprintFlow.md).
 
 `submitFallbackToPin(): Promise<void>`
 
