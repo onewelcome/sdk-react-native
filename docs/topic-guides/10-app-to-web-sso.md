@@ -5,7 +5,7 @@ App to Web Single Sign On (SSO) allows you to take a session from your mobile ap
 
 The Onegini React Native plugin allow you to specify a target URL where authentication is required. This URL must be configured in the [Action Token](https://docs-single-tenant.onegini.com/cim/idp/7.35.0/topic-guides/authentication/action-token-login.html) configuration of the Onegini Consumer Identity Manager. It will then verify that your mobile application's session is valid and establish a session with the Identity provider before redirecting the user to the target URL with them automatically logged in.
 
-To use the functionality, call the [startSingleSignOn](../reference-guides/startSingleSignOn.md) with the target URI and wait for the result. In case of a success, the [SingleSignOnData]() data object will be returned.
+To use the functionality, call the [startSingleSignOn](../reference-guides/startSingleSignOn.md) with the target URI and wait for the result. In case of a success, the [SingleSignOnData](../reference-guides/SingleSignOnData.md) data object will be returned.
 
 **Example code to use app to web sso:**
 
