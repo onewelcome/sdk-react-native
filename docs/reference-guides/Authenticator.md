@@ -7,5 +7,5 @@
 | type   | string   |   |
 | isPreferred   | boolean   |   |
 | isRegistered   | boolean   |   |
-| userProfile   | [Profile](Profile.md)?   |   |
+| userProfile   | [Profile](Profile.md) (optional)   |   |
 
