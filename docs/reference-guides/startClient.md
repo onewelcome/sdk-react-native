@@ -7,7 +7,7 @@ The first thing that needs to be done when the app starts is to initizialize the
 `startClient(sdkConfig?: Config): Promise<void>`
 | Property | Type | Description |
 | ------ | ------ | ----------- |
-| sdkConfig | #Config | Config setup that can be passed |
+| sdkConfig | [Config](Config.md) | Config setup that can be passed |
 
 **Example**
 ```
