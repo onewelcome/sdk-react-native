@@ -1,6 +1,6 @@
 # changePin
 
-Once authenticated, a user is able to change PIN. This method starts the flow. For further actions please refer to #usePinFlow, #submitPinAction and #addEventListener.
+Once authenticated, a user is able to change PIN. This method starts the flow. For further actions please refer to [usePinFlow](usePinFlow.md), [submitPinAction](submitPinAction.md) and [addEventListener](addEventListener.md).
 
 `changePin(): Promise<void>`
 
