@@ -16,6 +16,7 @@ The following methods are available:
 - [submitPinAction](submitPinAction.md)
 - [changePin](changePin.md)
 - [usePinFlow](usePinFlow.md)
+- [useFingerprintFlow](useFingerprintFlow.md)
 - [getAuthenticatedUserProfile](getAuthenticatedUserProfile.md)
 - [getRedirectUri](getRedirectUri.md)
 - [handleRegistrationCallback](handleRegistrationCallback.md)
