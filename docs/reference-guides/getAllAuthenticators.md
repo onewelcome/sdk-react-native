@@ -22,7 +22,7 @@ OneginiSdk.getAllAuthenticators(profileId)
 **Success**
 | Property | Type |Description |
 | ------ | ------ |----------- |
-| authenticators  | Authenticator[] | List of all authenticators |
+| authenticators  | [Authenticator](Authenticator.md)[] | List of all authenticators |
 
 **Error**
 | Property | Example | Description |
