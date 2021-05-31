@@ -6,7 +6,7 @@
 
 | Returns | Type | Description |
 | ------ | ------ | ----------- |
-| flow   | Events.PinFlow   |  Current state|
+| flow   | [PinFlow](PinFlow.md)   |  Current state|
 | pin   | string   |  Current pin value. |
 | visible   | boolean   |  Defines wheather show PIN flow or not. |
 | isConfirmMode   | boolean   |  For `create` and `change` user should confirm inserted PIN, this boolean helps to know current state. |
