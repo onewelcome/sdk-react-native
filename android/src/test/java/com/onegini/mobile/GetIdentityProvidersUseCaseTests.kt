@@ -2,15 +2,9 @@ package com.onegini.mobile
 
 import com.facebook.react.bridge.*
 import com.onegini.mobile.clean.use_cases.GetIdentityProvidersUseCase
-import com.onegini.mobile.sdk.android.client.OneginiClient
-import com.onegini.mobile.sdk.android.client.UserClient
-import io.mockk.clearAllMocks
-import io.mockk.every
-import io.mockk.mockkStatic
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Test
+import org.junit.*
 import org.junit.runner.RunWith
+import org.mockito.Answers
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.junit.MockitoJUnitRunner
@@ -19,33 +13,20 @@ import org.mockito.kotlin.*
 @RunWith(MockitoJUnitRunner::class)
 class GetIdentityProvidersUseCaseTests {
 
-    @Mock
+    @get:Rule
+    val reactArgumentsTestRule = ReactArgumentsTestRule()
+
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     lateinit var oneginiSdk: OneginiSDK
-
-    @Mock
-    lateinit var oneginiClient: OneginiClient
-
-    @Mock
-    lateinit var userClient: UserClient
 
     @Mock
     lateinit var promiseMock: Promise
 
-    @Before
-    fun setup() {
-        clearAllMocks()
-
-        `when`(oneginiSdk.oneginiClient).thenReturn(oneginiClient)
-        `when`(oneginiSdk.oneginiClient.userClient).thenReturn(userClient)
-
-        mockkStatic(Arguments::class)
-        every { Arguments.createArray() } answers { JavaOnlyArray() }
-        every { Arguments.createMap() } answers { JavaOnlyMap() }
-    }
+    //
 
     @Test
     fun `should resolve with properly parsed data`() {
-        `when`(userClient.identityProviders).thenReturn(setOf(TestData.identityProvider1, TestData.identityProvider2))
+        `when`(oneginiSdk.oneginiClient.userClient.identityProviders).thenReturn(setOf(TestData.identityProvider1, TestData.identityProvider2))
 
         GetIdentityProvidersUseCase(oneginiSdk)(promiseMock)
 
@@ -66,7 +47,7 @@ class GetIdentityProvidersUseCaseTests {
 
     @Test
     fun `when no providers should resolve with empty data`() {
-        `when`(userClient.identityProviders).thenReturn(setOf())
+        `when`(oneginiSdk.oneginiClient.userClient.identityProviders).thenReturn(setOf())
 
         GetIdentityProvidersUseCase(oneginiSdk)(promiseMock)
 

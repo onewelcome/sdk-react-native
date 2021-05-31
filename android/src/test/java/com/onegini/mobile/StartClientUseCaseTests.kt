@@ -5,14 +5,11 @@ import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.onegini.mobile.clean.use_cases.StartClientUseCase
 import com.onegini.mobile.exception.OneginReactNativeException
-import com.onegini.mobile.sdk.android.client.OneginiClient
 import com.onegini.mobile.sdk.android.handlers.OneginiInitializationHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiInitializationError
-import io.mockk.clearAllMocks
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Test
+import org.junit.*
 import org.junit.runner.RunWith
+import org.mockito.Answers
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.lenient
@@ -22,29 +19,24 @@ import org.mockito.kotlin.*
 @RunWith(MockitoJUnitRunner::class)
 class StartClientUseCaseTests {
 
-    @Mock
+    @get:Rule
+    val reactArgumentsTestRule = ReactArgumentsTestRule()
+
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     lateinit var oneginiSdk: OneginiSDK
-
-    @Mock
-    lateinit var oneginiClient: OneginiClient
-
-    @Mock
-    lateinit var reactApplicationContext: ReactApplicationContext
 
     @Mock
     lateinit var promiseMock: Promise
 
-    @Before
-    fun setup() {
-        clearAllMocks()
+    @Mock
+    lateinit var reactApplicationContext: ReactApplicationContext
 
-        `when`(oneginiSdk.oneginiClient).thenReturn(oneginiClient)
-    }
+    //
 
     @Test
     fun `when proper configs are provided should resolve`() {
         // mock SDK start success
-        `when`(oneginiClient.start(any())).thenAnswer {
+        `when`(oneginiSdk.oneginiClient.start(any())).thenAnswer {
             it.getArgument<OneginiInitializationHandler>(0).onSuccess(emptySet())
         }
 
@@ -55,11 +47,6 @@ class StartClientUseCaseTests {
 
     @Test
     fun `when wrong configs are provided should reject`() {
-        // mock SDK start success
-        lenient().`when`(oneginiClient.start(any())).thenAnswer {
-            it.getArgument<OneginiInitializationHandler>(0).onSuccess(emptySet())
-        }
-
         StartClientUseCase(oneginiSdk, reactApplicationContext)(JavaOnlyMap(), promiseMock)
 
         argumentCaptor<String> {
@@ -78,7 +65,7 @@ class StartClientUseCaseTests {
         `when`(error.message).thenReturn("Problem with smth")
 
         // mock SDK start error
-        `when`(oneginiClient.start(any())).thenAnswer {
+        `when`(oneginiSdk.oneginiClient.start(any())).thenAnswer {
             it.getArgument<OneginiInitializationHandler>(0).onError(error)
         }
 
@@ -95,7 +82,7 @@ class StartClientUseCaseTests {
     @Test
     fun `when succeed should calls setup methods on oneginiSDK`() {
         // mock SDK start success
-        `when`(oneginiClient.start(any())).thenAnswer {
+        `when`(oneginiSdk.oneginiClient.start(any())).thenAnswer {
             it.getArgument<OneginiInitializationHandler>(0).onSuccess(emptySet())
         }
 
