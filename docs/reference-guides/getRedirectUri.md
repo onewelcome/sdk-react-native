@@ -18,7 +18,7 @@ OneginiSdk.getRedirectUri()
 **Returns**
 | Property | Type | Description |
 | ------ | ------ | ----------- |
-| redirectUri   | #RedirectUri   | Current redirect URI |
+| redirectUri   | [RedirectUri](RedirectUri.md)   | Current redirect URI |
 
 **Error**
 | Property | Example | Description |
