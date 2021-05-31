@@ -2,7 +2,7 @@
 
 Before a user can authenticate using PIN or fingerprint, a user will need to register with your Token Server. Registration can be initiated using this method.
 
-It may be required to handle registration with some additional action (PIN/Fingerprint) handling. Please refer to #usePinFlow and #addEventListener
+It may be required to handle registration with some additional action (PIN/Fingerprint) handling. Please refer to [usePinFlow](usePinFlow.md) and [addEventListener](addEventListener.md).
 
 `registerUser(identityProviderId: string | null, scopes: string[]): Promise<Profile>`
 | Property | Type | Description |
