@@ -16,9 +16,9 @@ When the Token Server is configured, you can enroll and handle mobile authentica
 
 ## Enrollment
 
-The onegini.mobileAuth.enroll method enables the basic mobile authentication feature. Mobile authentication with OTP is possible after you enrolled the user (using the onegini.mobileAuth.enroll method).
+The [enrollMobileAuthentication](../reference-guides/enrollMobileAuthentication.md) method enables the basic mobile authentication feature. Mobile authentication with OTP is possible after you enrolled the user.
 
-> Note: It is advised to perform the onegini.mobileAuth.enroll step as soon as possible in your application as it is quite resource intensive because it generates a private key and certificate. The Onegini Cordova plugin requires an authenticated or logged in user to enroll for mobile authentication. The user can enroll for mobile authentication on every device that he/she installed your application on.
+> Note: It is advised to perform the `enrollMobileAuthentication` step as soon as possible in your application as it is quite resource intensive because it generates a private key and certificate. The Onegini Cordova plugin requires an authenticated or logged in user to enroll for mobile authentication. The user can enroll for mobile authentication on every device that he/she installed your application on.
 ```
 OneginiSdk.enrollMobileAuthentication()
   .then(() => {
