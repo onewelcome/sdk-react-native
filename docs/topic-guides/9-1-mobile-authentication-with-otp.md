@@ -28,5 +28,4 @@ OneginiSdk.handleMobileAuthWithOtp('base64 encoded OTP')
 })
 ```
 
-_TODO: Handle events_
 
