@@ -47,11 +47,6 @@ class StartClientUseCaseTests {
 
     @Test
     fun `when wrong configs are provided should reject`() {
-        // mock SDK start success
-        lenient().`when`(oneginiSdk.oneginiClient.start(any())).thenAnswer {
-            it.getArgument<OneginiInitializationHandler>(0).onSuccess(emptySet())
-        }
-
         StartClientUseCase(oneginiSdk, reactApplicationContext)(JavaOnlyMap(), promiseMock)
 
         argumentCaptor<String> {
