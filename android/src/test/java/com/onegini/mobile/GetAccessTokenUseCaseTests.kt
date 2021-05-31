@@ -10,7 +10,6 @@ import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.argumentCaptor
-import org.mockito.kotlin.reset
 import org.mockito.kotlin.verify
 
 @RunWith(MockitoJUnitRunner::class)

@@ -87,7 +87,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     fun getAuthenticatedUserProfile(promise: Promise) {
-        promise.resolve(toWritableMap(oneginiSDK.oneginiClient.userClient.authenticatedUserProfile))
+        sdkWrapper.getAuthenticatedUserProfile(promise)
     }
 
     @ReactMethod
