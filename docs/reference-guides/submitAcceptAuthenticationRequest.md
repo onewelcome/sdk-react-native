@@ -1,6 +1,6 @@
 # submitAcceptAuthenticationRequest
 
-Submit accept for Fingerprint Authorization request. Please refer to [useFingerprintFlow]()
+Submit accept for Fingerprint Authorization request. Please refer to [useFingerprintFlow](useFingerprintFlow.md).
 
 `submitFingerprintAcceptAuthenticationRequest(): Promise<void>`
 
