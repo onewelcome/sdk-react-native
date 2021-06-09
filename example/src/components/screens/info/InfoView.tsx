@@ -7,7 +7,7 @@ import OneginiSdk, {
   DefaultResourcesDetails,
   useResources,
   Types,
-} from 'react-native-sdk-beta';
+} from 'onegini-react-native-sdk';
 
 interface Props {
   onFinished?: () => void;

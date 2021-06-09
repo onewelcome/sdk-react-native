@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Button from '../../../general/Button';
 import Switch from '../../../general/Switch';
-import OneginiSdk from 'react-native-sdk-beta';
+import OneginiSdk from 'onegini-react-native-sdk';
 import CustomRegistrationChooserView from '../CustomRegistrationChooserView';
 
 //

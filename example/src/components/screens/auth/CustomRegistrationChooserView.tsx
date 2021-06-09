@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, View} from 'react-native';
 import Button from '../../general/Button';
-import OneginiSdk, {Types} from 'react-native-sdk-beta';
+import OneginiSdk, {Types} from 'onegini-react-native-sdk';
 import AppColors from '../../constants/AppColors';
 
 interface Props {

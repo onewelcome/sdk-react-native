@@ -6,7 +6,7 @@ import SettingsActionsView from './components/SettingsActionsView';
 import DashboardActionsView from './components/DashboardActionsView';
 import ChangeAuthView from './components/ChangeAuthView';
 import OtpCodeView from './components/OtpCodeView';
-import OneginiSdk, {Events} from 'react-native-sdk-beta';
+import OneginiSdk, {Events} from 'onegini-react-native-sdk';
 import DevicesView from '../devices/DevicesView';
 
 interface Props {

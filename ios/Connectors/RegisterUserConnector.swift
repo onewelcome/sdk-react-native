@@ -3,15 +3,10 @@ import Foundation
 typealias RegisterUserConnectorCompletionResult = Result<UserProfile, Error>
 
 protocol RegisterUserConnector {
-    func registerUser(identityProviderId: String?, scopes:[String], statusChanged: ((RegisterStatus) -> Void)?, completion: @escaping (RegisterUserConnectorCompletionResult) -> Void)
-}
-
-enum RegisterStatus {
-    case registrationStarted
-    case pinChallengeReceived(pinLength: Int?, error: Error?)
-    case browserChallengeReceived(url: URL?, error: Error?)
-    case customChallengeInitReceived(status: Int?, data: String?, error: Error?)
-    case customChallengeFinishReceived(status: Int?, data: String?, error: Error?)
+    func registerUser(identityProviderId: String?, scopes:[String], statusChanged: ((RegisterEvent) -> Void)?, completion: @escaping (RegisterUserConnectorCompletionResult) -> Void)
+    
+    func sendPin(_ pin: String)
+    func cancelPinChallenge()
 }
 
 final class DefaultRegisterUserConnector:NSObject, RegisterUserConnector {
@@ -19,19 +14,21 @@ final class DefaultRegisterUserConnector:NSObject, RegisterUserConnector {
     private let identityProviderConnector: IdentityProviderConnector
     
     private var completion: ((RegisterUserConnectorCompletionResult) -> Void)?
-    private var statusChanged:  ((RegisterStatus) -> Void)?
+    private var statusChanged:  ((RegisterEvent) -> Void)?
     
     private var pinChallenge: ONGCreatePinChallenge?
     private var browserChallenge: ONGBrowserRegistrationChallenge?
     private var customChallenge: ONGCustomRegistrationChallenge?
     
-    init(userClient: ONGUserClientProtocol = ONGUserClient.sharedInstance(), identityProviderConnector: IdentityProviderConnector) {
+    init(userClient: ONGUserClientProtocol = ONGUserClient.sharedInstance(),
+         identityProviderConnector: IdentityProviderConnector = DefaultIdentityProviderConnector()) {
         self.userClient = userClient
         self.identityProviderConnector = identityProviderConnector
     }
     
-    func registerUser(identityProviderId: String?, scopes: [String], statusChanged: ((RegisterStatus) -> Void)?, completion: @escaping (RegisterUserConnectorCompletionResult) -> Void) {
+    func registerUser(identityProviderId: String?, scopes: [String], statusChanged: ((RegisterEvent) -> Void)?, completion: @escaping (RegisterUserConnectorCompletionResult) -> Void) {
         self.completion = completion
+        self.statusChanged = statusChanged
         
         guard let identityProviderId = identityProviderId else {
             userClient.registerUser(with: nil, scopes: scopes, delegate: self)
@@ -48,6 +45,7 @@ final class DefaultRegisterUserConnector:NSObject, RegisterUserConnector {
         }
     }
     
+
 }
 
 extension DefaultRegisterUserConnector: ONGRegistrationDelegate {
@@ -91,5 +89,20 @@ extension DefaultRegisterUserConnector: ONGRegistrationDelegate {
     
     func userClient(_ userClient: ONGUserClient, didRegisterUser userProfile: ONGUserProfile, identityProvider: ONGIdentityProvider, info: ONGCustomInfo?) {
         completion?(.success(UserProfile(identifier: userProfile.profileId)))
+    }
+}
+
+// MARK: - Pin
+extension DefaultRegisterUserConnector {
+    func sendPin(_ pin: String) {
+        guard let challenge = pinChallenge else { return }
+        
+        challenge.sender.respond(withCreatedPin: pin, challenge: challenge)
+    }
+    
+    func cancelPinChallenge() {
+        guard let challenge = pinChallenge else { return }
+        
+        challenge.sender.cancel(challenge)
     }
 }

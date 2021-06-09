@@ -199,7 +199,7 @@ dependencies {
     implementation "androidx.multidex:multidex:2.0.1"
 
     // Onegini RN SDK wrapper
-    implementation project(':react-native-sdk-beta')
+    implementation project(':onegini-react-native-sdk')
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'

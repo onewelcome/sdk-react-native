@@ -3,7 +3,7 @@ import {StyleSheet, Text, Linking, Alert} from 'react-native';
 import ContentContainer from './ContentContainer';
 import Button from '../../../general/Button';
 import {logout, deregisterUser} from '../../../helpers/DashboardHelpers';
-import OneginiSdk from 'react-native-sdk-beta';
+import OneginiSdk from 'onegini-react-native-sdk';
 
 const onSingleSingOn = () => {
   OneginiSdk.startSingleSignOn(
