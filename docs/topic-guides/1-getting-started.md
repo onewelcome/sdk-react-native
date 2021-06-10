@@ -14,7 +14,7 @@ OR
 
 The details about plugin configuration can be found in the [Configuration guide](./2-configuration.md).
 
-## Initialize Onegini Flutter SDK
+## Initialize Onegini React Native SDK
 
 To start working with the plugin, we need to initialize Onegini SDK by calling [startClient](../reference-guides/startClient.md) . You can pass additional config information here as an argument (see [Config](../reference-guides/Config.md)).
 
