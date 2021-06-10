@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import Button from '../../../general/Button';
-import OneginiSdk from 'react-native-sdk-beta';
+import OneginiSdk from 'onegini-react-native-sdk';
 
 interface Props {
   onAuthorized?: (success: boolean) => void;

@@ -1,4 +1,4 @@
-import OneginiSdk, {Types} from 'react-native-sdk-beta';
+import OneginiSdk, {Types} from 'onegini-react-native-sdk';
 
 const registerFingerprintAuthenticator = async (
   successful: (success: boolean) => void,

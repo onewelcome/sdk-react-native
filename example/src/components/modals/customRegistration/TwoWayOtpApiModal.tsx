@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Modal, Text, TextInput} from 'react-native';
 import AppColors from '../../constants/AppColors';
 import Button from '../../general/Button';
-import OneginiSdk, {Events} from 'react-native-sdk-beta';
+import OneginiSdk, {Events} from 'onegini-react-native-sdk';
 
 const IdProvider = '2-way-otp-api';
 

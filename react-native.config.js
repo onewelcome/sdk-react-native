@@ -8,7 +8,7 @@ module.exports = {
     },
   },
   dependencies: {
-    'react-native-sdk-beta' : {
+    'onegini-react-native-sdk' : {
       platforms : {
         android : null,
         ios     : null,

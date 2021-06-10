@@ -17,7 +17,7 @@
     "target": "esnext",
     "baseUrl": "./",
     "paths": {
-      "react-native-sdk-beta": ["ts/index"]
+      "onegini-react-native-sdk": ["ts/index"]
     },
   },
   "exclude": [
