@@ -3,7 +3,7 @@
 User registration is a fundamental part of the Onegini Mobile Security Platform. As developer you have a couple options to handle this process.
 
 
-### 1) Start
+## 1) Start
 To start the user registration using WebView or browser you have to call [registerUser](../reference-guides/registerUser.md) method. 
 
 ```ts
@@ -18,7 +18,7 @@ OneginiSdk.registerUser(providerId)
 
 Resolve will be caled when the whole flow is successfully finished.
 
-### 2) Listen for URL
+## 2) Listen for URL
 Then listen for registration event with [addEventListener](../reference-guides/addEventListener.md). _(this step is not yet available)_
 
 ```ts
@@ -36,9 +36,9 @@ useEffect(() => {
 You have to also listen to PIN event [SdkNotification](../reference-guides/SdkNotification.md) because PIN may be required to finish registration process. Please refer to [usePinFlow](../reference-guides/usePinFlow.md).
 
 
-### 3) Process URL
+## 3) Process URL
 
-##### Register by internal browser
+#### Register by internal browser
 
 The easiest way is to use internal browser like WebView/Android or ASWebAuthenticationSession/iOS. Onegini React Native plugin provides the whole implementation with [handleRegisteredProcessUrl](../reference-guides/handleRegisteredProcessUrl.md).
 
@@ -47,7 +47,7 @@ OneginiSdk.handleRegisteredProcessUrl(event.url, BrowserType.Internal)
 ```
 _(this method is not yet available)_
 
-##### Register by default browser
+#### Register by default browser
 
 If you want to use external browser (and have full control over flow and url) you have to pass [BrowserType](../reference-guides/BrowserType.md).External.
 
@@ -58,7 +58,7 @@ _(this method is not yet available)_
 
 Calling this method will launch a browser where you need to register. If registration is successful, the browser will return a link that can be caught (e.g. with React Native [Linking](https://reactnative.dev/docs/linking)).
 
-### 4) Handle URL
+## 4) Handle URL
 
 Then you have to call [handleRegistrationCallback](../reference-guides/handleRegistrationCallback.md) to finalize registration.
 
@@ -80,7 +80,7 @@ useEffect(() => {
 }, [linkUri])
 ```
 
-### 5) Finish
+## 5) Finish
 
 If everything went properly [registerUser](../reference-guides/registerUser.md) will resolve with [Profile](../reference-guides/Profile.md) object.
 
