@@ -1,6 +1,5 @@
 # Deregister user
 
-## Deregistering a user
 
 Deregistering a user implies the removal of all of their data (including access and refresh tokens) from the device. It also includes a request to the Token Server to revoke all tokens associated with the user. The client credentials will remain stored on the device.
 
