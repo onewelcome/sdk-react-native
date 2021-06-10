@@ -193,5 +193,28 @@ OR
 These are the issues that are not connected to Onegini React Native SDK but you may encounter them during integration.
 
 ## Xcode 12.5 with Flipper
+
+### Discussion
 https://github.com/facebook/flipper/issues/2215
+
+### Solution
 In `ios/Podfile` change `use_flipper!`  into `use_flipper!({ 'Flipper-Folly' => '2.5.3', 'Flipper' => '0.87.0', 'Flipper-RSocket' => '1.3.1' })`
+
+## Undefined symbols for architecture
+### Discussion
+https://github.com/facebookarchive/react-native-fbsdk/issues/794
+
+### Solution
+Open Xcode project (.xcworkspace) and add empty Swift file (NotUsed.swift). When prompt for creating Create Bridging Header - accept.
+
+## Podfile
+### Discussion
+### Solution
+In iOS/Pofile add at the top
+`add source 'https://github.com/CocoaPods/Specs.git'`
+
+## Codegen / Invalid regular expression
+### Discussion
+https://github.com/facebook/react-native/issues/31180
+### Solution
+`yarn add --dev react-native-codegen`
