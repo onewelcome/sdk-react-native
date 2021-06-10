@@ -53,7 +53,10 @@ interface NativeMethods {
   ): Promise<any>;
 
   // User register/deregister
-  registerUser(identityProviderId: string | null): Promise<Types.Profile>;
+  registerUser(
+    identityProviderId: string | null,
+    scopes: String[],
+  ): Promise<Types.Profile>;
   deregisterUser(profileId: string): Promise<any>;
   handleRegistrationCallback(uri: string): void; // TODO: I think it should be moved "behind" SDK - dev should not know about it
   cancelRegistration(): void;
