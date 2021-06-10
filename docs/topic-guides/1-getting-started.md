@@ -6,9 +6,9 @@ At the very beginning, you need to make sure that you have access to [Onegini SD
 
 ## Add the plugin to your project
 
-`npm install react-native-sdk-beta --save`
+`npm install onegini-react-native-sdk --save`
 OR
-`yarn add react-native-sdk-beta`
+`yarn add onegini-react-native-sdk`
 
 ## Configure your project
 

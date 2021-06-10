@@ -11,7 +11,7 @@ import {
   getRegisteredAuthenticators,
   setPreferredAuthenticator,
 } from '../../../helpers/FingerprintHelper';
-import {Types} from 'react-native-sdk-beta';
+import {Types} from 'onegini-react-native-sdk';
 
 const emptyRegisteredAuthenticators: Types.Authenticator[] = [
   {id: '0', name: '', isPreferred: true, isRegistered: false, type: ''},

@@ -6,7 +6,7 @@ import {
   DefaultResourcesDetails,
   useResources,
   Types,
-} from 'react-native-sdk-beta';
+} from 'onegini-react-native-sdk';
 
 const renderDevice = (device: any) => {
   return (

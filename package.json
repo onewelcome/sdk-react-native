@@ -1,6 +1,6 @@
 {
-  "name": "react-native-sdk-beta",
-  "title": "React Native SDK",
+  "name": "onegini-react-native-sdk",
+  "title": "Onegini React Native SDK",
   "version": "0.6.0",
   "description": "Onegini SDK component for React Native (iOS and Android)",
   "main": "ts/index.ts",
@@ -10,7 +10,7 @@
     "android/build.gradle",
     "ios/",
     "ts/",
-    "react-native-sdk-beta.podspec"
+    "onegini-react-native-sdk.podspec"
   ],
   "scripts": {
     "android": "tsc && react-native run-android",
@@ -22,7 +22,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://gitlab.com/develocraft/onegini-react-native-sdk.git",
-    "baseUrl": "https://www.npmjs.com/package/react-native-sdk-beta"
+    "baseUrl": "https://www.npmjs.com/package/onegini-react-native-sdk"
   },
   "keywords": [
     "react-native",
@@ -32,8 +32,8 @@
     "sdk"
   ],
   "author": {
-    "name": "Valeriy Rumak",
-    "email": "valeriy.rumak@develocraft.com"
+    "name": "Onegini",
+    "email": "contact@onegini.com"
   },
   "license": "MIT",
   "licenseFilename": "LICENSE",

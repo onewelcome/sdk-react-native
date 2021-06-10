@@ -3,7 +3,7 @@ import {Text, StyleSheet, Alert} from 'react-native';
 import ContentContainer from './ContentContainer';
 import Button from '../../../general/Button';
 import {enrollMobileAuthentication} from '../../../helpers/MobileAuthenticationHelper';
-import OneginiSdk from 'react-native-sdk-beta';
+import OneginiSdk from 'onegini-react-native-sdk';
 
 const onChangePinPressed = () => {
   //@todo handle deregistration error when codes will be presented

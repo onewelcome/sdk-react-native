@@ -1,4 +1,4 @@
-import OneginiSdk from 'react-native-sdk-beta';
+import OneginiSdk from 'onegini-react-native-sdk';
 
 const enrollMobileAuthentication = (
   setSuccessful: (msg: string) => void,

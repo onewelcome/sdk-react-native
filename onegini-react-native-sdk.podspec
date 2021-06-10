@@ -6,7 +6,7 @@ Pod::Spec.new do |s|
   s.name         = package["name"]
   s.version      = package["version"]
   s.summary      = package["description"]
-  s.homepage     = "https://www.npmjs.com/package/react-native-sdk-beta"
+  s.homepage     = "https://www.npmjs.com/package/onegini-react-native-sdk"
 
   s.license      = package['license']
   s.authors      = { "Develocraft" => "valeriy.rumak@develocraft.com" }

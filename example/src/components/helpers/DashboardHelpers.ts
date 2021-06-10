@@ -1,5 +1,5 @@
 import {Alert} from 'react-native';
-import OneginiSdk from 'react-native-sdk-beta';
+import OneginiSdk from 'onegini-react-native-sdk';
 
 const logout = async (onLogoutSuccess?: () => void) => {
   try {
