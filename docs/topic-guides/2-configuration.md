@@ -11,7 +11,7 @@ The following steps describe how to configure our native Android and iOS SDKs fo
 
 
 
-#### Android: 
+### Android: 
 
 1. Modify `android/app/build.gradle`:
 
@@ -101,7 +101,7 @@ The following steps describe how to configure our native Android and iOS SDKs fo
     
     More information [HERE](https://docs.onegini.com/msp/stable/android-sdk/reference/security-controls.html#examples), section: SecurityController.
 
-#### iOS: 
+### iOS: 
 
 1. The Onegini SDK is uploaded to the Onegini Artifactory repository. In order to let CocoaPods use an Artifactory repository you need to install a specific plugin.
     ```
@@ -155,17 +155,17 @@ The following steps describe how to configure our native Android and iOS SDKs fo
 
 `react-native link react-native-sdk-beta`
 
-##### Manual installation
+## Manual installation
 
 
-#### iOS
+### iOS
 
 1. In XCode, in the project navigator, right click `Libraries` ➜ `Add Files to [your project's name]`
 2. Go to `node_modules` ➜ `react-native-sdk-beta` and add `RNOneginiSdk.xcodeproj`
 3. In XCode, in the project navigator, select your project. Add `libRNOneginiSdk.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
 4. Run your project (`Cmd+R`)<
 
-#### Android
+### Android
 
 1. Open up `android/app/src/main/java/[...]/MainActivity.java`
   - Add `import com.onegini.mobile.RNOneginiSdkPackage;` to the imports at the top of the file
@@ -184,3 +184,7 @@ The following steps describe how to configure our native Android and iOS SDKs fo
 - `yarn` or `npm install`
 - **iOS**: `yarn ios` or `npm run ios`
 - **Android**: `yarn android` or `npm run android`
+
+# Requirements
+1. iOS >= 12.0
+
