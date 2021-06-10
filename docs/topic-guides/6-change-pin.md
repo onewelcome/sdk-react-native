@@ -1,7 +1,5 @@
 # Change PIN
 
-## Changing PIN
-
 The Onegini React Native plugin exposes a function [changePin](../reference-guides/changePin.md) to allow the currently logged in user to change their PIN. The user is first required to provide their current PIN, before being allowed to create the new PIN. Please refer to [usePinFlow](../reference-guides/usePinFlow.md).
 
 **Example code to change PIN of currently logged in user:**
