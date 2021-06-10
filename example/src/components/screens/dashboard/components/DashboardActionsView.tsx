@@ -51,8 +51,8 @@ const DashboardActionsView: React.FC<Props> = (props) => {
       )}
       {renderButton('SINGLE SIGN-ON', () => onSingleSingOn(), false)}
       {renderButton('SETTINGS', props.onSettingsPressed, false)}
-      {renderButton('LOGOUT', () => logout(props.onLogout), false)}
       {renderButton('DEREGISTER', () => deregisterUser(props.onLogout), false)}
+      {renderButton('LOGOUT', () => logout(props.onLogout), false)}
     </ContentContainer>
   );
 };
