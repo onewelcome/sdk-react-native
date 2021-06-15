@@ -1,6 +1,6 @@
 protocol BridgeToResourceHandlerProtocol: AnyObject {
     func authenticateDevice(_ path: NSString, _ completion: @escaping (Bool, NSError?) -> Void)
-    func authenticateImplicitly(_ profile: ONGUserProfile, _ completion: @escaping (Bool, NSError?) -> Void)
+    func authenticateImplicitly(_ profile: ONGUserProfile, scopes: [String], _ completion: @escaping (Bool, NSError?) -> Void)
     func resourceRequest(_ type: ResourceRequestType, _ details: NSDictionary, _ completion: @escaping (String?, NSError?) -> Void)
 }
 
@@ -21,11 +21,11 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
         }
     }
 
-    func authenticateImplicitly(_ profile: ONGUserProfile, _ completion: @escaping (Bool, NSError?) -> Void) {
+    func authenticateImplicitly(_ profile: ONGUserProfile, scopes:[String], _ completion: @escaping (Bool, NSError?) -> Void) {
         if isProfileImplicitlyAuthenticated(profile) {
             completion(true, nil)
         } else {
-            authenticateProfileImplicitly(profile) { success, error in
+            authenticateProfileImplicitly(profile, scopes: scopes) { success, error in
                 if let error = error {
                     completion(false, error as NSError)
                 } else {
@@ -48,8 +48,8 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
         return implicitlyAuthenticatedProfile != nil && implicitlyAuthenticatedProfile == profile
     }
 
-    fileprivate func authenticateProfileImplicitly(_ profile: ONGUserProfile, completion: @escaping (Bool, NSError?) -> Void) {
-        ONGUserClient.sharedInstance().implicitlyAuthenticateUser(profile, scopes: nil) { success, error in
+    fileprivate func authenticateProfileImplicitly(_ profile: ONGUserProfile, scopes: [String], completion: @escaping (Bool, NSError?) -> Void) {
+        ONGUserClient.sharedInstance().implicitlyAuthenticateUser(profile, scopes: scopes) { success, error in
             if !success {
                 completion(success, error as NSError)
             }
