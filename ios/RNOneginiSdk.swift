@@ -252,7 +252,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
         let type = ResourceRequestType(rawValue: type) ?? .Anonymous
 
         bridgeConnector.toResourceHandler.resourceRequest(type, details) {
-            (data: [String: Any]?, error) -> Void in
+            (data: String?, error) -> Void in
 
             if let error = error {
                 reject("\(error.code)", error.localizedDescription, error)
