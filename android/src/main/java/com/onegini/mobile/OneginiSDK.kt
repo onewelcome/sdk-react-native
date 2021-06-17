@@ -50,11 +50,7 @@ class OneginiSDK(private val appContext: Context) {
 
     val oneginiClient: OneginiClient
         get() {
-            var oneginiClient = OneginiClient.getInstance()
-            if (oneginiClient == null) {
-                oneginiClient = buildSDK(appContext)
-            }
-            return oneginiClient
+            return OneginiClient.getInstance()!!
         }
 
     private fun buildSDK(context: Context): OneginiClient {
@@ -123,23 +119,12 @@ class OneginiSDK(private val appContext: Context) {
         if (config.configModelClassName == null) {
             return
         }
-        try {
-            val clazz = Class.forName(config.configModelClassName!!)
-            val ctor = clazz.getConstructor()
-            val `object` = ctor.newInstance()
-            if (`object` is OneginiClientConfigModel) {
-                clientBuilder.setConfigModel(`object`)
-            }
-        } catch (e: ClassNotFoundException) {
-            e.printStackTrace()
-        } catch (e: NoSuchMethodException) {
-            e.printStackTrace()
-        } catch (e: IllegalAccessException) {
-            e.printStackTrace()
-        } catch (e: InstantiationException) {
-            e.printStackTrace()
-        } catch (e: InvocationTargetException) {
-            e.printStackTrace()
+
+        val clazz = Class.forName(config.configModelClassName!!)
+        val ctor = clazz.getConstructor()
+        val `object` = ctor.newInstance()
+        if (`object` is OneginiClientConfigModel) {
+            clientBuilder.setConfigModel(`object`)
         }
     }
 
