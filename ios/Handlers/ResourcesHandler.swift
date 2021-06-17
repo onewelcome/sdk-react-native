@@ -22,15 +22,11 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
     }
 
     func authenticateImplicitly(_ profile: ONGUserProfile, scopes:[String], _ completion: @escaping (Bool, NSError?) -> Void) {
-        if isProfileImplicitlyAuthenticated(profile) {
-            completion(true, nil)
-        } else {
-            authenticateProfileImplicitly(profile, scopes: scopes) { success, error in
-                if let error = error {
-                    completion(false, error as NSError)
-                } else {
-                    completion(true, nil)
-                }
+        authenticateProfileImplicitly(profile, scopes: scopes) { success, error in
+            if let error = error {
+                completion(false, error as NSError)
+            } else {
+                completion(true, nil)
             }
         }
     }
