@@ -62,5 +62,8 @@
     "react-native-modal-selector": "^2.0.3",
     "react-test-renderer": "16.13.1",
     "typescript": "^4.2.3"
+  },
+  "dependencies": {
+    "react-native-simple-toast": "^1.1.3"
   }
 }
