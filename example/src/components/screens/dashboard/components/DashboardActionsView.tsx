@@ -13,7 +13,7 @@ const onSingleSingOn = () => {
       Linking.openURL(it.url);
     })
     .catch((error) => {
-      Alert.alert('Error', error);
+      Alert.alert('Error', JSON.stringify(error));
     });
 };
 
