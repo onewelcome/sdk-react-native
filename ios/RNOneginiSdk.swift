@@ -101,15 +101,16 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
     @objc
     func registerUser(_ identityProviderId: (NSString)?,
-                        resolver resolve: @escaping RCTPromiseResolveBlock,
-                        rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+                      scopes: [String],
+                      resolver resolve: @escaping RCTPromiseResolveBlock,
+                      rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         var provider: ONGIdentityProvider? = nil
 
         if(identityProviderId != nil) {
             provider =         ONGClient.sharedInstance().userClient.identityProviders().first(where: { $0.value(forKey: "identifier") as? NSString == identityProviderId })!;
         }
 
-        bridgeConnector.toRegistrationConnector.registrationHandler.signUp(identityProvider: provider) {
+        bridgeConnector.toRegistrationConnector.registrationHandler.signUp(identityProvider: provider, scopes: scopes) {
           (_, userProfile, error) -> Void in
 
             if let error = error {
@@ -216,11 +217,12 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
     @objc
     func authenticateUserImplicitly(_ profileId: (NSString),
-                        resolver resolve: @escaping RCTPromiseResolveBlock,
-                        rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+                                    scopes: [String],
+                                    resolver resolve: @escaping RCTPromiseResolveBlock,
+                                    rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         let profile: ONGUserProfile = ONGClient.sharedInstance().userClient.userProfiles().first(where: { $0.value(forKey: "profileId") as! NSObject == profileId })!;
 
-        bridgeConnector.toResourceHandler.authenticateImplicitly(profile) {
+        bridgeConnector.toResourceHandler.authenticateImplicitly(profile, scopes: scopes) {
             (success, error) -> Void in
             if let error = error {
                 reject("\(error.code)", error.localizedDescription, error)
