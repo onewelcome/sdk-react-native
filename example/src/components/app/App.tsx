@@ -5,8 +5,8 @@ import {
   StyleSheet,
   Platform,
   BackHandler,
+  ToastAndroid,
 } from 'react-native';
-import Toast from 'react-native-simple-toast';
 import PinModal from '../modals/pin/PinModal';
 import TwoWayOtpApiModal from '../modals/customRegistration/TwoWayOtpApiModal';
 import HomeScreen from '../screens/home/HomeScreen';
@@ -26,7 +26,7 @@ const App: React.FC<{}> = () => {
 
       setTimeout(() => setIsReadyToExit(false), 2000);
 
-      Toast.show('Click back again to exit.', Toast.SHORT);
+      ToastAndroid.show('Click back again to exit.', ToastAndroid.SHORT);
 
       return true;
     });
