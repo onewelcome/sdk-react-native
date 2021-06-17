@@ -35,7 +35,7 @@ const startSdk = async (onStarted?: () => void) => {
     );
     onStarted?.();
   } catch (e) {
-    Alert.alert('error', e);
+    Alert.alert('error', JSON.stringify(e));
   }
 };
 

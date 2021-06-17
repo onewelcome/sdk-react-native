@@ -29,7 +29,12 @@ class StartClientUseCase(private val oneginiSDK: OneginiSDK, private val reactAp
             return
         }
 
-        oneginiSDK.init(config)
+        try {
+            oneginiSDK.init(config)
+        } catch (e: Exception) {
+            promise.reject(OneginReactNativeException.WRONG_CONFIG_MODEL.toString(), "Configuration error. Did you provide OneginiClientConfigModel?")
+            return
+        }
 
         oneginiSDK.oneginiClient.start(object : OneginiInitializationHandler {
             override fun onSuccess(removedUserProfiles: Set<UserProfile>) {
