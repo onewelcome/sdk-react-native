@@ -1,5 +1,12 @@
-import React from 'react';
-import {SafeAreaView, StatusBar, StyleSheet, Platform} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  Platform,
+  BackHandler,
+} from 'react-native';
+import Toast from 'react-native-simple-toast';
 import PinModal from '../modals/pin/PinModal';
 import TwoWayOtpApiModal from '../modals/customRegistration/TwoWayOtpApiModal';
 import HomeScreen from '../screens/home/HomeScreen';
@@ -7,6 +14,26 @@ import MobileAuthOTPModal from '../modals/mobileauthotp/MobileAuthOTPModal';
 import FingerprintModal from '../modals/fingerprint/FingerprintModal';
 
 const App: React.FC<{}> = () => {
+  const [isReadyToExit, setIsReadyToExit] = useState(false);
+
+  useEffect(() => {
+    const subscriber = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (isReadyToExit) {
+        return false;
+      }
+
+      setIsReadyToExit(true);
+
+      setTimeout(() => setIsReadyToExit(false), 2000);
+
+      Toast.show('Click back again to exit.', Toast.SHORT);
+
+      return true;
+    });
+
+    return () => subscriber.remove();
+  }, [isReadyToExit]);
+
   return (
     <>
       <StatusBar
