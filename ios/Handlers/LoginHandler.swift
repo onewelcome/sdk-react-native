@@ -40,7 +40,7 @@ extension LoginHandler: ONGAuthenticationDelegate {
     func userClient(_: ONGUserClient, didReceive challenge: ONGPinChallenge) {
         pinChallenge = challenge
         let pinError = mapErrorFromPinChallenge(challenge)
-        BridgeConnector.shared?.toPinHandlerConnector.pinHandler.handleFlowUpdate(PinFlow.authentication, pinError, receiver: self)
+        BridgeConnector.shared?.toPinHandlerConnector.pinHandler.handleFlowUpdate(PinFlow.authentication, error: pinError, receiver: self, userInfo: challenge.userInfo)
     }
 
     func userClient(_: ONGUserClient, didReceive challenge: ONGCustomAuthFinishAuthenticationChallenge) {
@@ -61,5 +61,22 @@ extension LoginHandler: ONGAuthenticationDelegate {
         pinChallenge = nil
         BridgeConnector.shared?.toPinHandlerConnector.pinHandler.closeFlow()
         loginCompletion!(nil, error as NSError)
+    }
+}
+
+
+extension ONGPinChallenge {
+    enum UserInfoKey {
+        static let maxFailureCount = "maxFailureCount"
+        static let previousFailureCount = "previousFailureCount"
+        static let remainingFailureCount = "remainingFailureCount"
+    }
+    
+    var userInfo: [String: Any] {
+        [
+            UserInfoKey.maxFailureCount: maxFailureCount,
+            UserInfoKey.previousFailureCount: previousFailureCount,
+            UserInfoKey.remainingFailureCount: remainingFailureCount
+        ]
     }
 }
