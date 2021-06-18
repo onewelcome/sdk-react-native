@@ -3,7 +3,7 @@ protocol BridgeToPinConnectorProtocol: AnyObject {
     var pinHandler: PinConnectorToPinHandler { get }
 
     func handlePinAction(_ flow: (NSString), _ action: (NSString), _ pin: (NSString)) -> Void
-    func sendNotification(event: PinNotification, flow: PinFlow?, error: NSError?) -> Void
+    func sendNotification(event: PinNotification, flow: PinFlow?, error: NSError?, userInfo: [String: Any]?) -> Void
 }
 
 //@todo handle change and auth flows
@@ -29,19 +29,19 @@ class PinConnector : BridgeToPinConnectorProtocol {
         }
     }
 
-    func sendNotification(event: PinNotification, flow: PinFlow?, error: NSError?) {
+    func sendNotification(event: PinNotification, flow: PinFlow?, error: NSError?, userInfo: [String: Any]? = nil) {
         switch (event){
             case .open:
-                sendEvent(data: ["flow": flow?.rawValue, "action": PinNotification.open.rawValue])
+                sendEvent(data: ["flow": flow?.rawValue ?? "", "action": PinNotification.open.rawValue, "userInfo": userInfo ?? [:]])
                 break
             case .confirm:
-                sendEvent(data: ["flow": flow?.rawValue, "action": PinNotification.confirm.rawValue])
+                sendEvent(data: ["flow": flow?.rawValue ?? "", "action": PinNotification.confirm.rawValue])
                 break;
             case .close:
-                sendEvent(data: ["flow": flow?.rawValue, "action": PinNotification.close.rawValue])
+                sendEvent(data: ["flow": flow?.rawValue ?? "", "action": PinNotification.close.rawValue])
                 break;
             case .showError:
-                sendEvent(data: ["flow": flow?.rawValue, "action": PinNotification.showError.rawValue, "errorMsg": error?.localizedDescription])
+                sendEvent(data: ["flow": flow?.rawValue ?? "", "action": PinNotification.showError.rawValue, "errorMsg": error?.localizedDescription ?? "", "userInfo": userInfo ?? [:]])
                 break
         }
     }
@@ -50,7 +50,6 @@ class PinConnector : BridgeToPinConnectorProtocol {
       bridgeConnector?.sendBridgeEvent(eventName: OneginiBridgeEvents.pinNotification, data: data)
   }
 }
-
 
 // Pin notification actions for RN Bridge
 enum PinNotification : String {
