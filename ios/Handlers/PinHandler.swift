@@ -2,7 +2,7 @@ protocol PinConnectorToPinHandler: AnyObject {
     func onPinProvided(pin: (NSString))
     func onChangePinCalled(completion: @escaping (Bool, NSError?) -> Void)
     func onCancel()
-    func handleFlowUpdate(_ flow: PinFlow, _ error: NSError?, receiver: PinHandlerToReceiverProtocol)
+    func handleFlowUpdate(_ flow: PinFlow, error: NSError?, receiver: PinHandlerToReceiverProtocol, userInfo: [String: Any]?)
     func closeFlow()
 }
 
@@ -66,22 +66,22 @@ class PinHandler: NSObject {
         }
     }
 
-    func notifyOnError(_ error: NSError) {
-        sendConnectorNotification(PinNotification.showError, flow, error)
+    func notifyOnError(_ error: NSError, userInfo: [String: Any]? = nil) {
+        sendConnectorNotification(PinNotification.showError, flow, error, userInfo)
 
         if(mode == PINEntryMode.registrationConfirm) {
             mode = .registration
         }
     }
 
-    private func sendConnectorNotification(_ event: PinNotification, _ flow: PinFlow?, _ error: NSError?) {
-        BridgeConnector.shared?.toPinHandlerConnector.sendNotification(event: event, flow: flow, error: error)
+    private func sendConnectorNotification(_ event: PinNotification, _ flow: PinFlow?, _ error: NSError?,  _ userInfo: [String: Any]? = nil) {
+        BridgeConnector.shared?.toPinHandlerConnector.sendNotification(event: event, flow: flow, error: error, userInfo: userInfo)
     }
 }
 
 extension PinHandler : PinConnectorToPinHandler {
     // @todo Support different pinLength
-    func handleFlowUpdate(_ flow: PinFlow, _ error: NSError?, receiver: PinHandlerToReceiverProtocol) {
+    func handleFlowUpdate(_ flow: PinFlow, error: NSError?, receiver: PinHandlerToReceiverProtocol, userInfo:[String: Any]? = nil) {
         if(self.flow == nil){
             self.flow = flow
             pinReceiver = receiver
@@ -89,7 +89,7 @@ extension PinHandler : PinConnectorToPinHandler {
 
 
         if(error != nil){
-            notifyOnError(error!)
+            notifyOnError(error!, userInfo: userInfo)
         } else {
             if(mode == nil) {
                 switch flow {
@@ -104,7 +104,7 @@ extension PinHandler : PinConnectorToPinHandler {
                         break
                 }
 
-                sendConnectorNotification(PinNotification.open, flow, nil)
+                sendConnectorNotification(PinNotification.open, flow, nil, userInfo)
             }
         }
     }
@@ -177,7 +177,7 @@ extension PinHandler: ONGChangePinDelegate {
     func userClient(_ userClient: ONGUserClient, didReceive challenge: ONGPinChallenge) {
         authPinChallenge = challenge
         let pinError = mapErrorFromPinChallenge(challenge)
-        handleFlowUpdate(PinFlow.authentication, pinError, receiver: self)
+        handleFlowUpdate(PinFlow.authentication, error: pinError, receiver: self)
     }
 
     func userClient(_: ONGUserClient, didReceive challenge: ONGCreatePinChallenge) {
@@ -190,14 +190,14 @@ extension PinHandler: ONGChangePinDelegate {
             closeFlow()
         }
         
-        handleFlowUpdate(PinFlow.create, pinError, receiver: self)
+        handleFlowUpdate(PinFlow.create, error: pinError, receiver: self)
     }
     
     func userClient(_: ONGUserClient, didFailToChangePinForUser _: ONGUserProfile, error: Error) {
         authPinChallenge = nil
         createPinChallenge = nil
         closeFlow()
-        handleFlowUpdate(PinFlow.change, error as NSError, receiver: self)
+        handleFlowUpdate(PinFlow.change, error: error as NSError, receiver: self)
     }
     
     func userClient(_ userClient: ONGUserClient, didStartPinChangeForUser userProfile: ONGUserProfile) {
