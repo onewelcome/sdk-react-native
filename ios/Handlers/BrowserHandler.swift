@@ -19,8 +19,7 @@ class BrowserViewController: NSObject, BrowserHandlerProtocol {
     }
 
     func handleUrl(url: URL) {
-        let scheme = "reactnativeexample";
-
+        let scheme = URL(string: ONGClient.sharedInstance().configModel.redirectURL)!.scheme
         webAuthSession = ASWebAuthenticationSession(url: url, callbackURLScheme: scheme, completionHandler: { callbackURL, error in
           guard error == nil, let successURL = callbackURL else {
             self.cancelButtonPressed()
