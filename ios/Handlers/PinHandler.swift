@@ -17,7 +17,7 @@ enum PINEntryMode {
 }
 
 class PinHandler: NSObject {
-    var pinChallenge: ONGPinChallenge?
+    var authPinChallenge: ONGPinChallenge?
     var createPinChallenge: ONGCreatePinChallenge?
     var flow: PinFlow?
     var mode: PINEntryMode?
@@ -136,24 +136,23 @@ extension PinHandler : PinConnectorToPinHandler {
 
 extension PinHandler : PinHandlerToReceiverProtocol {
     func handlePin(pin: String?) {
-        guard let createPinChallenge = self.createPinChallenge else {
-            guard let pinChallenge = self.pinChallenge else { return }
-
+        if let authPinChallenge = self.authPinChallenge {
             if(pin != nil) {
-                pinChallenge.sender.respond(withPin: pin!, challenge: pinChallenge)
+                authPinChallenge.sender.respond(withPin: pin!, challenge: authPinChallenge)
 
             } else {
-                pinChallenge.sender.cancel(pinChallenge)
+                authPinChallenge.sender.cancel(authPinChallenge)
             }
 
             return
         }
-
-        if(pin != nil) {
-            createPinChallenge.sender.respond(withCreatedPin: pin!, challenge: createPinChallenge)
-
-        } else {
-            createPinChallenge.sender.cancel(createPinChallenge)
+        
+        if let createPinChallenge = self.createPinChallenge {
+            if(pin != nil) {
+                createPinChallenge.sender.respond(withCreatedPin: pin!, challenge: createPinChallenge)
+            } else {
+                createPinChallenge.sender.cancel(createPinChallenge)
+            }
         }
     }
 
@@ -176,29 +175,40 @@ extension PinHandler : PinHandlerToReceiverProtocol {
 
 extension PinHandler: ONGChangePinDelegate {
     func userClient(_ userClient: ONGUserClient, didReceive challenge: ONGPinChallenge) {
-        pinChallenge = challenge
+        authPinChallenge = challenge
         let pinError = mapErrorFromPinChallenge(challenge)
         handleFlowUpdate(PinFlow.authentication, pinError, receiver: self)
     }
 
     func userClient(_: ONGUserClient, didReceive challenge: ONGCreatePinChallenge) {
-        pinChallenge = nil
-        closeFlow()
+        authPinChallenge = nil
         createPinChallenge = challenge
         let pinError = mapErrorFromCreatePinChallenge(challenge)
+        
+        // Fix: dont close when we have an error to show
+        if pinError == nil {
+            closeFlow()
+        }
+        
         handleFlowUpdate(PinFlow.create, pinError, receiver: self)
     }
-
+    
     func userClient(_: ONGUserClient, didFailToChangePinForUser _: ONGUserProfile, error: Error) {
-        pinChallenge = nil
+        authPinChallenge = nil
         createPinChallenge = nil
         closeFlow()
-        changePinCompletion!(false, error as NSError)
+        handleFlowUpdate(PinFlow.change, error as NSError, receiver: self)
+    }
+    
+    func userClient(_ userClient: ONGUserClient, didStartPinChangeForUser userProfile: ONGUserProfile) {
     }
 
     func userClient(_: ONGUserClient, didChangePinForUser _: ONGUserProfile) {
         createPinChallenge = nil
         closeFlow()
         changePinCompletion!(true, nil)
+        
+        // Fix: dont update when this flow is done
+//        handleFlowUpdate(PinFlow.change, nil, receiver: self)
     }
 }
