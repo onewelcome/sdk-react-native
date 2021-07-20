@@ -14,7 +14,8 @@ class OneginiSdkWrapper(
     val getIdentityProvidersUseCase: GetIdentityProvidersUseCase = GetIdentityProvidersUseCase(oneginiSDK),
     val getAccessTokenUseCase: GetAccessTokenUseCase = GetAccessTokenUseCase(oneginiSDK),
     val registerUserUseCase: RegisterUserUseCase = RegisterUserUseCase(oneginiSDK),
-    val getAuthenticatedUserProfileUseCase: GetAuthenticatedUserProfileUseCase = GetAuthenticatedUserProfileUseCase(oneginiSDK)
+    val getAuthenticatedUserProfileUseCase: GetAuthenticatedUserProfileUseCase = GetAuthenticatedUserProfileUseCase(oneginiSDK),
+    val getAllAuthenticatorsUseCase: GetAllAuthenticatorsUseCase = GetAllAuthenticatorsUseCase(oneginiSDK)
 ) : IOneginiSdkWrapper {
 
     override fun startClient(rnConfig: ReadableMap, promise: Promise) {
@@ -50,7 +51,7 @@ class OneginiSdkWrapper(
     }
 
     override fun getAllAuthenticators(profileId: String, promise: Promise) {
-        TODO("Not yet implemented")
+        getAllAuthenticatorsUseCase(profileId, promise)
     }
 
     override fun getRegisteredAuthenticators(profileId: String, promise: Promise) {
