@@ -49,6 +49,9 @@ class OneginiSdkWrapperTests {
     @Mock
     lateinit var getUserProfilesUseCase: GetUserProfilesUseCase
 
+    @Mock
+    lateinit var getRedirectUriUseCase: GetRedirectUriUseCase
+
     private lateinit var wrapper: OneginiSdkWrapper
 
     @Before
@@ -69,7 +72,8 @@ class OneginiSdkWrapperTests {
             getAuthenticatedUserProfileUseCase,
             getAllAuthenticatorsUseCase,
             getRegisteredAuthenticatorsUseCase,
-            getUserProfilesUseCase
+            getUserProfilesUseCase,
+            getRedirectUriUseCase
         )
     }
 
@@ -127,5 +131,12 @@ class OneginiSdkWrapperTests {
         wrapper.getUserProfiles(promiseMock)
 
         verify(getUserProfilesUseCase).invoke(promiseMock)
+    }
+
+    @Test
+    fun `when getRedirectUri method is called calls getRedirectUriUseCase with proper params`() {
+        wrapper.getRedirectUri(promiseMock)
+
+        verify(getRedirectUriUseCase).invoke(promiseMock)
     }
 }

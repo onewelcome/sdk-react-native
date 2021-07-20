@@ -236,10 +236,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     fun getRedirectUri(promise: Promise) {
-        val uri = registrationManager.redirectUri
-        val result = Arguments.createMap()
-        result.putString("redirectUri", uri)
-        promise.resolve(result)
+        sdkWrapper.getRedirectUri(promise)
     }
 
     @ReactMethod
