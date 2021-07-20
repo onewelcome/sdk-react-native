@@ -7,7 +7,6 @@ import com.onegini.mobile.sdk.android.handlers.OneginiDeregisterUserProfileHandl
 import com.onegini.mobile.sdk.android.handlers.error.OneginiDeregistrationError
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import org.junit.Assert
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -35,14 +34,6 @@ class DeregisterUserUseCaseTests {
     @Mock
     lateinit var deregistrationError: OneginiDeregistrationError
 
-    @Before
-    fun prepareIdentityProviders() {
-        lenient().`when`(deregistrationError.errorType).thenReturn(666)
-        lenient().`when`(deregistrationError.message).thenReturn("MyError")
-    }
-
-    //
-
     @Test
     fun `when user profile cannot be created should reject with proper errors`() {
         DeregisterUserUseCase(oneginiSdk)("123", promiseMock)
@@ -51,7 +42,21 @@ class DeregisterUserUseCaseTests {
     }
 
     @Test
+    fun `should call proper SDK methods`() {
+        DeregisterUserUseCase(oneginiSdk)("123456", promiseMock)
+
+        argumentCaptor<UserProfile> {
+            verify(oneginiSdk.oneginiClient.userClient).deregisterUser(capture(), any())
+
+            Assert.assertEquals("123456", firstValue.profileId)
+        }
+    }
+
+    @Test
     fun `when fails should reject with proper error`() {
+        lenient().`when`(deregistrationError.errorType).thenReturn(666)
+        lenient().`when`(deregistrationError.message).thenReturn("MyError")
+
         `when`(oneginiSdk.oneginiClient.userClient.deregisterUser(any(), any())).thenAnswer {
             it.getArgument<OneginiDeregisterUserProfileHandler>(1).onError(deregistrationError)
         }
@@ -60,8 +65,6 @@ class DeregisterUserUseCaseTests {
 
         argumentCaptor<UserProfile> {
             verify(oneginiSdk.oneginiClient.userClient).deregisterUser(capture(), any())
-
-            Assert.assertEquals("123456", firstValue.profileId)
         }
 
         argumentCaptor<String> {
@@ -82,8 +85,6 @@ class DeregisterUserUseCaseTests {
 
         argumentCaptor<UserProfile> {
             verify(oneginiSdk.oneginiClient.userClient).deregisterUser(capture(), any())
-
-            Assert.assertEquals("123456", firstValue.profileId)
         }
 
         verify(promiseMock).resolve(null)
