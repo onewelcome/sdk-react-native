@@ -27,8 +27,6 @@ class GetUserProfilesUseCaseTests {
     @Mock
     lateinit var promiseMock: Promise
 
-    //
-
     @Test
     fun `should return parsed profiles`() {
         Mockito.lenient().`when`(oneginiSdk.oneginiClient.userClient.userProfiles).thenReturn(setOf(UserProfile("123456"), UserProfile("234567")))
@@ -38,6 +36,7 @@ class GetUserProfilesUseCaseTests {
         argumentCaptor<JavaOnlyArray> {
             verify(promiseMock).resolve(capture())
 
+            Assert.assertEquals(2, firstValue.size());
             Assert.assertEquals("123456", firstValue.getMap(0)?.getString("profileId"))
             Assert.assertEquals("234567", firstValue.getMap(1)?.getString("profileId"))
         }
