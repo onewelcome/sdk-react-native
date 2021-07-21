@@ -11,9 +11,9 @@ import com.onegini.mobile.sdk.android.handlers.error.OneginiAuthenticationError
 import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 
-class AuthenticateUserUseCase(private val oneginiSDK: OneginiSDK) {
+class AuthenticateUserUseCase(private val oneginiSDK: OneginiSDK, private val getRegisteredAuthenticatorsUseCase: GetRegisteredAuthenticatorsUseCase = GetRegisteredAuthenticatorsUseCase(oneginiSDK)) {
 
-    operator fun invoke(profileId: String?, promise: Promise) {
+    operator fun invoke(profileId: String?, authenticatorId: String?, promise: Promise) {
         val userProfile = try {
             UserProfile(profileId)
         } catch (e: IllegalArgumentException) {
@@ -25,20 +25,33 @@ class AuthenticateUserUseCase(private val oneginiSDK: OneginiSDK) {
             return
         }
 
-        oneginiSDK.oneginiClient.userClient.authenticateUser(
-            userProfile,
-            object : OneginiAuthenticationHandler {
-                override fun onSuccess(userProfile: UserProfile?, customInfo: CustomInfo?) {
-                    val result = Arguments.createMap()
-                    UserProfileMapper.add(result, userProfile)
-                    CustomInfoMapper.add(result, customInfo)
-                    promise.resolve(result)
-                }
+        val allAuthenticators = getRegisteredAuthenticatorsUseCase.getList(userProfile)
+        val authenticator = allAuthenticators.find { it.id == authenticatorId }
 
-                override fun onError(error: OneginiAuthenticationError) {
-                    promise.reject(error.errorType.toString(), error.message)
-                }
+        val handler = object : OneginiAuthenticationHandler {
+            override fun onSuccess(userProfile: UserProfile?, customInfo: CustomInfo?) {
+                val result = Arguments.createMap()
+                UserProfileMapper.add(result, userProfile)
+                CustomInfoMapper.add(result, customInfo)
+                promise.resolve(result)
             }
-        )
+
+            override fun onError(error: OneginiAuthenticationError) {
+                promise.reject(error.errorType.toString(), error.message)
+            }
+        }
+
+        if (authenticator != null) {
+            oneginiSDK.oneginiClient.userClient.authenticateUser(
+                userProfile,
+                authenticator,
+                handler
+            )
+        } else {
+            oneginiSDK.oneginiClient.userClient.authenticateUser(
+                userProfile,
+                handler
+            )
+        }
     }
 }

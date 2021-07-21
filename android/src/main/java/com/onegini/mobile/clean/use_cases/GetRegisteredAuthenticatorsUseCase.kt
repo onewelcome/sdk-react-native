@@ -4,6 +4,8 @@ import com.facebook.react.bridge.Promise
 import com.onegini.mobile.OneginiSDK
 import com.onegini.mobile.exception.OneginiWrapperErrors
 import com.onegini.mobile.mapers.OneginiAuthenticatorMapper
+import com.onegini.mobile.sdk.android.model.OneginiAuthenticator
+import com.onegini.mobile.sdk.android.model.entity.UserProfile
 
 class GetRegisteredAuthenticatorsUseCase(private val oneginiSDK: OneginiSDK, private val getUserProfileUseCase: GetUserProfileUseCase = GetUserProfileUseCase(oneginiSDK)) {
 
@@ -15,8 +17,12 @@ class GetRegisteredAuthenticatorsUseCase(private val oneginiSDK: OneginiSDK, pri
             return
         }
 
-        val authenticators = oneginiSDK.oneginiClient.userClient.getRegisteredAuthenticators(userProfile)
+        val authenticators = getList(userProfile)
 
         promise.resolve(OneginiAuthenticatorMapper.toWritableMap(authenticators))
+    }
+
+    fun getList(userProfile: UserProfile): Set<OneginiAuthenticator> {
+        return oneginiSDK.oneginiClient.userClient.getRegisteredAuthenticators(userProfile)
     }
 }

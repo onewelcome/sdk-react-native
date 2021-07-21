@@ -27,8 +27,8 @@ class OneginiSdkWrapper(
         startClientUseCase(rnConfig, promise)
     }
 
-    override fun authenticateUser(profileId: String?, promise: Promise) {
-        authenticateUserUseCase(profileId, promise)
+    override fun authenticateUser(profileId: String?, authenticatorId: String?, promise: Promise) {
+        authenticateUserUseCase(profileId, authenticatorId, promise)
     }
 
     override fun authenticateUserImplicitly(profileId: String?, promise: Promise) {
