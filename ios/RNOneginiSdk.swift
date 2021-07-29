@@ -30,7 +30,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     override func supportedEvents() -> [String]! {
-        return mainConnector.supportedEventsNames +  [OneginiBridgeEvents.pinNotification.rawValue, OneginiBridgeEvents.fingerprintNotification.rawValue, OneginiBridgeEvents.customRegistrationNotification.rawValue, OneginiBridgeEvents.authWithOtpNotification.rawValue]
+        return [OneginiBridgeEvents.pinNotification.rawValue, OneginiBridgeEvents.fingerprintNotification.rawValue, OneginiBridgeEvents.customRegistrationNotification.rawValue, OneginiBridgeEvents.authWithOtpNotification.rawValue]
     }
     
     func sendBridgeEvent(eventName: OneginiBridgeEvents, data: Any!) -> Void {
@@ -107,22 +107,6 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func registerUser(_ identityProviderId: (NSString)?,
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-//        var provider: ONGIdentityProvider? = nil
-//
-//        if(identityProviderId != nil) {
-//            provider =         ONGClient.sharedInstance().userClient.identityProviders().first(where: { $0.value(forKey: "identifier") as? NSString == identityProviderId })!;
-//        }
-//
-//        bridgeConnector.toRegistrationConnector.registrationHandler.signUp(identityProvider: provider) {
-//          (_, userProfile, error) -> Void in
-//
-//            if let error = error {
-//                reject("\(error.code)", error.localizedDescription, error)
-//            } else {
-//                resolve(["profileId" : userProfile?.profileId!])
-//            }
-//
-//        }
         mainConnector.registerUser(identityProviderId: identityProviderId as? String, scopes: ["read"], resolve, reject: reject)
     }
 

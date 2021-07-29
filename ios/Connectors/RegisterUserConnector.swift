@@ -19,11 +19,29 @@ final class DefaultRegisterUserConnector:NSObject, RegisterUserConnector {
     private var pinChallenge: ONGCreatePinChallenge?
     private var browserChallenge: ONGBrowserRegistrationChallenge?
     private var customChallenge: ONGCustomRegistrationChallenge?
+
+    private var browserConntroller: BrowserHandlerProtocol?
+    private let pinConnector: BridgeToPinConnectorProtocol
     
     init(userClient: ONGUserClientProtocol = ONGUserClient.sharedInstance(),
-         identityProviderConnector: IdentityProviderConnector = DefaultIdentityProviderConnector()) {
+         identityProviderConnector: IdentityProviderConnector = DefaultIdentityProviderConnector(),
+         pinConnector: BridgeToPinConnectorProtocol = PinConnector()) {
         self.userClient = userClient
         self.identityProviderConnector = identityProviderConnector
+        self.pinConnector = pinConnector
+
+        super.init()
+
+        self.setupBrowser()
+    }
+
+    private func setupBrowser() {
+        // FIXME: fallback to lower iOS versions
+        if #available(iOS 12.0, *) {
+            self.browserConntroller = BrowserViewController(registerHandlerProtocol: self)
+        } else {
+            // Fallback on earlier versions
+        }
     }
     
     func registerUser(identityProviderId: String?, scopes: [String], statusChanged: ((RegisterEvent) -> Void)?, completion: @escaping (RegisterUserConnectorCompletionResult) -> Void) {
@@ -44,43 +62,59 @@ final class DefaultRegisterUserConnector:NSObject, RegisterUserConnector {
             }
         }
     }
-    
+}
 
+// MARK: - Browser
+
+extension DefaultRegisterUserConnector: BrowserHandlerToRegisterHandlerProtocol {
+    func handleRedirectURL(url: URL?) {
+        guard let browserChallenge = self.browserChallenge else { return }
+
+        guard let url = url else {
+            browserChallenge.sender.cancel(browserChallenge)
+            return
+        }
+
+        browserChallenge.sender.respond(with: url, challenge: browserChallenge)
+    }
+
+    func presentBrowserUserRegistrationView(registrationUserURL: URL) {
+        browserConntroller?.handleUrl(url: registrationUserURL)
+    }
 }
 
 extension DefaultRegisterUserConnector: ONGRegistrationDelegate {
     func userClient(_ userClient: ONGUserClient, didReceivePinRegistrationChallenge challenge: ONGCreatePinChallenge) {
         pinChallenge = challenge
-        statusChanged?(.pinChallengeReceived(pinLength: Int(challenge.pinLength), error: challenge.error))
-    }
-    
-    func userClientDidStartRegistration(_ userClient: ONGUserClient) {
-        statusChanged?(.registrationStarted)
+
+        let pinError = mapErrorFromPinChallenge(challenge)
+        pinConnector.pinHandler.handleFlowUpdate(PinFlow.create, pinError, receiver: self)
     }
     
     func userClient(_ userClient: ONGUserClient, didReceive challenge: ONGBrowserRegistrationChallenge) {
         self.browserChallenge = challenge
-        statusChanged?(.browserChallengeReceived(url: challenge.url, error: challenge.error))
+
+        presentBrowserUserRegistrationView(registrationUserURL: challenge.url)
     }
     
     func userClient(_ userClient: ONGUserClient, didReceiveCustomRegistrationFinish challenge: ONGCustomRegistrationChallenge) {
         customChallenge = challenge
-        guard let info = challenge.info else {
-            statusChanged?(.customChallengeFinishReceived(status: nil, data: nil, error: challenge.error))
-            return
+
+        var data: [String: Any] = ["identityProviderId" : challenge.identityProvider.identifier,
+                                   "action": CustomRegistrationNotification.finishRegistration.rawValue]
+        if let info = challenge.info {
+            let customInfo: [String: Any] = ["data":  info.data, "status": info.status]
+            data["customInfo"] = customInfo
         }
-        
-        statusChanged?(.customChallengeFinishReceived(status: Int(info.status), data: info.data, error: challenge.error))
+        statusChanged?(.customChallengeFinishReceived(data: data, error: challenge.error))
     }
     
     func userClient(_ userClient: ONGUserClient, didReceiveCustomRegistrationInitChallenge challenge: ONGCustomRegistrationChallenge) {
         customChallenge = challenge
-        guard let info = challenge.info else {
-            statusChanged?(.customChallengeInitReceived(status: nil, data: nil, error: challenge.error))
-            return
-        }
-        
-        statusChanged?(.customChallengeInitReceived(status: Int(info.status), data: info.data, error: challenge.error))
+
+        let data = ["identityProviderId" : challenge.identityProvider.identifier,
+                    "action": CustomRegistrationNotification.initRegistration.rawValue]
+        statusChanged?(.customChallengeInitReceived(data: data, error: challenge.error))
     }
     
     func userClient(_ userClient: ONGUserClient, didFailToRegisterWith identityProvider: ONGIdentityProvider, error: Error) {
@@ -93,7 +127,13 @@ extension DefaultRegisterUserConnector: ONGRegistrationDelegate {
 }
 
 // MARK: - Pin
-extension DefaultRegisterUserConnector {
+extension DefaultRegisterUserConnector: PinHandlerToReceiverProtocol {
+    func handlePin(pin: String?) {
+        guard let challenge = pinChallenge, let pin = pin else { return }
+
+        challenge.sender.respond(withCreatedPin: pin, challenge: challenge)
+    }
+
     func sendPin(_ pin: String) {
         guard let challenge = pinChallenge else { return }
         
@@ -105,4 +145,23 @@ extension DefaultRegisterUserConnector {
         
         challenge.sender.cancel(challenge)
     }
+
+    fileprivate func mapErrorFromPinChallenge(_ challenge: ONGCreatePinChallenge) -> NSError? {
+        if let error = challenge.error {
+            return error as NSError
+        } else {
+            return nil
+        }
+    }
 }
+
+
+// MARK: - Events
+
+private extension DefaultRegisterUserConnector {
+    private func sendCustomRegistrationNotification(_ event: CustomRegistrationNotification,_ data: [String: Any]?)  {
+        
+    }
+}
+
+

@@ -2,7 +2,6 @@ import Foundation
 
 protocol MainConnector {
     var sendEventHandler: ((Event) -> ())? { get set }
-    var supportedEventsNames: [String] { get }
     func startClient(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock)
     
     func registerUser(identityProviderId:String?, scopes: [String], _ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock)
@@ -16,10 +15,6 @@ class DefaultMainConnector: MainConnector {
     private var registerUserConnector: RegisterUserConnector?
     
     var sendEventHandler: ((Event) -> ())?
-    
-    var supportedEventsNames: [String] {
-        return RegisterEvent.allNames
-    }
     
     init(factory: MainConnectorFactory = DefaultMainConnectorFactory()) {
         self.factory = factory
