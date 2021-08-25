@@ -99,7 +99,7 @@ OR
    - Keep it as it is.
    - If there is a need to move `OneginiConfigModel` to another place - it's **required** to specify custom classpath for OneginiSdk: [Supported Methods:](#supported-methods) setConfigModelClassName(className).
 
-   More information [HERE](https://docs.onegini.com/msp/stable/android-sdk/topics/setting-up-the-project.html#verifying), section: Running the SDK Configurator.
+   More information [HERE](https://docs.onegini.com/msp/stable/android-sdk/topics/setting-up-the-project#verifying), section: Running the SDK Configurator.
 
 7. <a name="android-setup-security-controller"/>Setup the SecurityController(<u>not required</u>).
 
@@ -107,7 +107,7 @@ OR
    Example SecurityController implementation you can find inside library source code("com.onegini.mobile.SecurityController").
    By default security options brought from `com.onegini.mobile.SecurityController`.
 
-   More information [HERE](https://docs.onegini.com/msp/stable/android-sdk/reference/security-controls.html#examples), section: SecurityController.
+   More information [HERE](https://docs.onegini.com/msp/stable/android-sdk/reference/security-controls#examples), section: SecurityController.
 
 #### iOS:
 
