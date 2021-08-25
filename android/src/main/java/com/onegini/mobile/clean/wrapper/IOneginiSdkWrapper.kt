@@ -21,7 +21,7 @@ interface IOneginiSdkWrapper {
 
     fun authenticateUser(profileId: String?, authenticatorId: String?, promise: Promise)
 
-    fun authenticateUserImplicitly(profileId: String?, promise: Promise)
+    fun authenticateUserImplicitly(profileId: String?, scopes: ReadableArray, promise: Promise)
 
     fun authenticateDeviceForResource(resourcePath: String, promise: Promise)
 

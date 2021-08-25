@@ -168,8 +168,8 @@ class OneginiSdkWrapperTests {
 
     @Test
     fun `when authenticateUserImplicitly method is called calls authenticateUserImplicitlyUseCase with proper params`() {
-        wrapper.authenticateUserImplicitly("123456", promiseMock)
+        wrapper.authenticateUserImplicitly("123456", JavaOnlyArray(), promiseMock)
 
-        verify(authenticateUserImplicitlyUseCase).invoke("123456", promiseMock)
+        verify(authenticateUserImplicitlyUseCase).invoke("123456", JavaOnlyArray(), promiseMock)
     }
 }
