@@ -361,8 +361,8 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    override fun authenticateUser(profileId: String?, promise: Promise) {
-        sdkWrapper.authenticateUser(profileId, promise)
+    override fun authenticateUser(profileId: String?, authenticatorId: String?, promise: Promise) {
+        sdkWrapper.authenticateUser(profileId, authenticatorId, promise)
     }
 
     @ReactMethod

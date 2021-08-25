@@ -161,9 +161,9 @@ class OneginiSdkWrapperTests {
 
     @Test
     fun `when authenticateUser method is called calls authenticateUserUseCase with proper params`() {
-        wrapper.authenticateUser("123456", promiseMock)
+        wrapper.authenticateUser("123456", "1", promiseMock)
 
-        verify(authenticateUserUseCase).invoke("123456", promiseMock)
+        verify(authenticateUserUseCase).invoke("123456", "1", promiseMock)
     }
 
     @Test
