@@ -2,6 +2,7 @@ package com.onegini.mobile.clean.wrapper
 
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
+import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
 import com.onegini.mobile.OneginiSDK
 import com.onegini.mobile.clean.use_cases.*
@@ -10,30 +11,30 @@ class OneginiSdkWrapper(
     private val oneginiSDK: OneginiSDK,
     private val reactApplicationContext: ReactApplicationContext,
     val startClientUseCase: StartClientUseCase = StartClientUseCase(oneginiSDK, reactApplicationContext),
-    val getIdentityProvidersUseCase: GetIdentityProvidersUseCase = GetIdentityProvidersUseCase(),
-    val getAccessTokenUseCase: GetAccessTokenUseCase = GetAccessTokenUseCase(),
-    val registerUserUseCase: RegisterUserUseCase = RegisterUserUseCase(),
-    val getAuthenticatedUserProfileUseCase: GetAuthenticatedUserProfileUseCase = GetAuthenticatedUserProfileUseCase(),
-    val getAllAuthenticatorsUseCase: GetAllAuthenticatorsUseCase = GetAllAuthenticatorsUseCase(),
-    val getRegisteredAuthenticatorsUseCase: GetRegisteredAuthenticatorsUseCase = GetRegisteredAuthenticatorsUseCase(),
-    val getUserProfilesUseCase: GetUserProfilesUseCase = GetUserProfilesUseCase(),
-    val getRedirectUriUseCase: GetRedirectUriUseCase = GetRedirectUriUseCase(),
-    val deregisterUserUseCase: DeregisterUserUseCase = DeregisterUserUseCase(),
-    val authenticateUserUseCase: AuthenticateUserUseCase = AuthenticateUserUseCase(),
-    val authenticateUserImplicitlyUseCase: AuthenticateUserImplicitlyUseCase = AuthenticateUserImplicitlyUseCase(),
-    val authenticateDeviceForResourceUseCase: AuthenticateDeviceForResourceUseCase = AuthenticateDeviceForResourceUseCase()
+    val getIdentityProvidersUseCase: GetIdentityProvidersUseCase = GetIdentityProvidersUseCase(oneginiSDK),
+    val getAccessTokenUseCase: GetAccessTokenUseCase = GetAccessTokenUseCase(oneginiSDK),
+    val registerUserUseCase: RegisterUserUseCase = RegisterUserUseCase(oneginiSDK),
+    val getAuthenticatedUserProfileUseCase: GetAuthenticatedUserProfileUseCase = GetAuthenticatedUserProfileUseCase(oneginiSDK),
+    val getAllAuthenticatorsUseCase: GetAllAuthenticatorsUseCase = GetAllAuthenticatorsUseCase(oneginiSDK),
+    val getRegisteredAuthenticatorsUseCase: GetRegisteredAuthenticatorsUseCase = GetRegisteredAuthenticatorsUseCase(oneginiSDK),
+    val getUserProfilesUseCase: GetUserProfilesUseCase = GetUserProfilesUseCase(oneginiSDK),
+    val getRedirectUriUseCase: GetRedirectUriUseCase = GetRedirectUriUseCase(oneginiSDK),
+    val deregisterUserUseCase: DeregisterUserUseCase = DeregisterUserUseCase(oneginiSDK),
+    val authenticateUserUseCase: AuthenticateUserUseCase = AuthenticateUserUseCase(oneginiSDK),
+    val authenticateUserImplicitlyUseCase: AuthenticateUserImplicitlyUseCase = AuthenticateUserImplicitlyUseCase(oneginiSDK),
+    val authenticateDeviceForResourceUseCase: AuthenticateDeviceForResourceUseCase = AuthenticateDeviceForResourceUseCase(oneginiSDK)
 ) : IOneginiSdkWrapper {
 
     override fun startClient(rnConfig: ReadableMap, promise: Promise) {
         startClientUseCase(rnConfig, promise)
     }
 
-    override fun authenticateUser(profileId: String?, promise: Promise) {
-        authenticateUserUseCase(profileId, promise)
+    override fun authenticateUser(profileId: String?, authenticatorId: String?, promise: Promise) {
+        authenticateUserUseCase(profileId, authenticatorId, promise)
     }
 
-    override fun authenticateUserImplicitly(profileId: String?, promise: Promise) {
-        authenticateUserImplicitlyUseCase(profileId, promise)
+    override fun authenticateUserImplicitly(profileId: String?, scopes: ReadableArray, promise: Promise) {
+        authenticateUserImplicitlyUseCase(profileId, scopes, promise)
     }
 
     override fun authenticateDeviceForResource(resourcePath: String, promise: Promise) {
@@ -68,8 +69,8 @@ class OneginiSdkWrapper(
         TODO("Not yet implemented")
     }
 
-    override fun registerUser(identityProviderId: String?, promise: Promise) {
-        registerUserUseCase(identityProviderId, promise)
+    override fun registerUser(identityProviderId: String?, scopes: ReadableArray, promise: Promise) {
+        registerUserUseCase(identityProviderId, scopes, promise)
     }
 
     override fun deregisterUser(profileId: String?, promise: Promise) {
