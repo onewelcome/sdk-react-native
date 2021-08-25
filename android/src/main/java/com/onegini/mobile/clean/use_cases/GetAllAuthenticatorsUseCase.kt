@@ -1,11 +1,11 @@
 package com.onegini.mobile.clean.use_cases
 
 import com.facebook.react.bridge.Promise
-import com.onegini.mobile.OneginiComponets
+import com.onegini.mobile.OneginiSDK
 import com.onegini.mobile.exception.OneginiWrapperErrors
 import com.onegini.mobile.mapers.OneginiAuthenticatorMapper
 
-class GetAllAuthenticatorsUseCase(val getUserProfileUseCase: GetUserProfileUseCase = GetUserProfileUseCase()) {
+class GetAllAuthenticatorsUseCase(private val oneginiSDK: OneginiSDK, private val getUserProfileUseCase: GetUserProfileUseCase = GetUserProfileUseCase(oneginiSDK)) {
 
     operator fun invoke(profileId: String, promise: Promise) {
         val userProfile = getUserProfileUseCase(profileId)
@@ -15,7 +15,7 @@ class GetAllAuthenticatorsUseCase(val getUserProfileUseCase: GetUserProfileUseCa
             return
         }
 
-        val authenticators = OneginiComponets.oneginiSDK.oneginiClient.userClient.getAllAuthenticators(userProfile)
+        val authenticators = oneginiSDK.oneginiClient.userClient.getAllAuthenticators(userProfile)
 
         promise.resolve(OneginiAuthenticatorMapper.toWritableMap(authenticators))
     }

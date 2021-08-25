@@ -176,8 +176,8 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    override fun registerUser(identityProviderId: String?, promise: Promise) {
-        sdkWrapper.registerUser(identityProviderId, promise)
+    override fun registerUser(identityProviderId: String?, scopes: ReadableArray, promise: Promise) {
+        sdkWrapper.registerUser(identityProviderId, scopes, promise)
     }
 
     @ReactMethod
