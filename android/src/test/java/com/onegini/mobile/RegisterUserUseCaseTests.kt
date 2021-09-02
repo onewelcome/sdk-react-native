@@ -1,12 +1,13 @@
 package com.onegini.mobile
 
 import com.facebook.react.bridge.*
-import com.onegini.mobile.clean.use_cases.RegisterUserUseCase
-import com.onegini.mobile.exception.OneginiWrapperErrors
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.RegisterUserUseCase
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.android.handlers.OneginiRegistrationHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiRegistrationError
 import com.onegini.mobile.sdk.android.model.OneginiIdentityProvider
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
+import com.onegini.mobile.sdk.reactnative.OneginiSDK
 import org.junit.*
 import org.junit.runner.RunWith
 import org.mockito.Answers

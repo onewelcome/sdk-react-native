@@ -1,8 +1,9 @@
 package com.onegini.mobile
 
 import com.facebook.react.bridge.*
-import com.onegini.mobile.clean.use_cases.*
-import com.onegini.mobile.clean.wrapper.OneginiSdkWrapper
+import com.onegini.mobile.sdk.reactnative.clean.wrapper.OneginiSdkWrapper
+import com.onegini.mobile.sdk.reactnative.OneginiSDK
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.*
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockkStatic

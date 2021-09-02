@@ -10,7 +10,7 @@ import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import com.onegini.mobile.RNOneginiSdkPackage;
+import com.onegini.mobile.sdk.reactnative.RNOneginiSdkPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
