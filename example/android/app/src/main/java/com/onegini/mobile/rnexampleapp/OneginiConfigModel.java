@@ -1,4 +1,4 @@
-package com.rnexampleapp;
+package com.onegini.mobile.rnexampleapp;
 
 import android.os.Build;
 import com.onegini.mobile.sdk.android.model.OneginiClientConfigModel;

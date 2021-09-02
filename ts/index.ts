@@ -107,7 +107,8 @@ interface NativeMethods {
 //
 const DefaultConfig: Types.Config = {
   enableFingerprint: true,
-  securityControllerClassName: 'com.rnexampleapp.SecurityController',
+  securityControllerClassName:
+    'com.onegini.mobile.rnexampleapp.SecurityController',
   enableMobileAuthenticationOtp: true,
   customProviders: [{id: '2-way-otp-api', isTwoStep: true}],
   configModelClassName: null,

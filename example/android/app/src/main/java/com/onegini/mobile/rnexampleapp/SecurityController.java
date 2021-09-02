@@ -1,5 +1,5 @@
 //@todo Later will be transferred to RN Wrapper
-package com.rnexampleapp;
+package com.onegini.mobile.rnexampleapp;
 
 @SuppressWarnings({ "unused", "WeakerAccess" })
 public final class SecurityController {

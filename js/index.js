@@ -31,7 +31,7 @@ export const MOBILE_AUTH_OTP_NOTIFICATION = {
 const OneginiSdk = {
   config: {
     configModelClassName: null,
-    securityControllerClassName: "com.rnexampleapp.SecurityController",
+    securityControllerClassName: "com.onegini.mobile.rnexampleapp.SecurityController",
     customProviders: [{ id: '2-way-otp-api', isTwoStep: true }],
     enableMobileAuthenticationOtp: true,
     enableFingerprint: true
