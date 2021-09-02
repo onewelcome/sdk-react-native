@@ -1,4 +1,4 @@
-package com.onegini.mobile
+package com.onegini.mobile.sdk.reactnative
 
 import android.os.Parcel
 import com.facebook.react.bridge.JavaOnlyArray

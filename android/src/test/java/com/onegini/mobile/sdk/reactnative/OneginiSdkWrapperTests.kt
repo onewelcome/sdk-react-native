@@ -1,4 +1,4 @@
-package com.onegini.mobile
+package com.onegini.mobile.sdk.reactnative
 
 import com.facebook.react.bridge.*
 import com.onegini.mobile.sdk.reactnative.clean.wrapper.OneginiSdkWrapper

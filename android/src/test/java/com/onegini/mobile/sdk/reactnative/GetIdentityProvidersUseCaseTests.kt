@@ -1,8 +1,7 @@
-package com.onegini.mobile
+package com.onegini.mobile.sdk.reactnative
 
 import com.facebook.react.bridge.*
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetIdentityProvidersUseCase
-import com.onegini.mobile.sdk.reactnative.OneginiSDK
 import org.junit.*
 import org.junit.runner.RunWith
 import org.mockito.Answers

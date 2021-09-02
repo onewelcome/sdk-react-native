@@ -1,9 +1,8 @@
-package com.onegini.mobile
+package com.onegini.mobile.sdk.reactnative
 
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.Promise
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAccessTokenUseCase
-import com.onegini.mobile.sdk.reactnative.OneginiSDK
 import org.junit.*
 import org.junit.runner.RunWith
 import org.mockito.Answers
