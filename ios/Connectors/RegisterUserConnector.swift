@@ -20,28 +20,17 @@ final class DefaultRegisterUserConnector:NSObject, RegisterUserConnector {
     private var browserChallenge: ONGBrowserRegistrationChallenge?
     private var customChallenge: ONGCustomRegistrationChallenge?
 
-    private var browserConntroller: BrowserHandlerProtocol?
+    private var browserConnector: BrowserConnector?
     private let pinConnector: BridgeToPinConnectorProtocol
     
     init(userClient: ONGUserClientProtocol = ONGUserClient.sharedInstance(),
          identityProviderConnector: IdentityProviderConnector = DefaultIdentityProviderConnector(),
+         browserConnector: BrowserConnector = DefaultBrowserConnector(),
          pinConnector: BridgeToPinConnectorProtocol = PinConnector()) {
         self.userClient = userClient
         self.identityProviderConnector = identityProviderConnector
+        self.browserConnector = browserConnector
         self.pinConnector = pinConnector
-
-        super.init()
-
-        self.setupBrowser()
-    }
-
-    private func setupBrowser() {
-        // FIXME: fallback to lower iOS versions
-        if #available(iOS 12.0, *) {
-            self.browserConntroller = BrowserViewController(registerHandlerProtocol: self)
-        } else {
-            // Fallback on earlier versions
-        }
     }
     
     func registerUser(identityProviderId: String?, scopes: [String], statusChanged: ((RegisterEvent) -> Void)?, completion: @escaping (RegisterUserConnectorCompletionResult) -> Void) {
@@ -66,7 +55,7 @@ final class DefaultRegisterUserConnector:NSObject, RegisterUserConnector {
 
 // MARK: - Browser
 
-extension DefaultRegisterUserConnector: BrowserHandlerToRegisterHandlerProtocol {
+extension DefaultRegisterUserConnector {
     func handleRedirectURL(url: URL?) {
         guard let browserChallenge = self.browserChallenge else { return }
 
@@ -79,7 +68,20 @@ extension DefaultRegisterUserConnector: BrowserHandlerToRegisterHandlerProtocol 
     }
 
     func presentBrowserUserRegistrationView(registrationUserURL: URL) {
-        browserConntroller?.handleUrl(url: registrationUserURL)
+        browserConnector?.handleURL(registrationUserURL, completion: { [weak self] action in
+            switch action {
+            case .cancel:
+                guard let browserChallenge = self?.browserChallenge else { return }
+
+                browserChallenge.sender.cancel(browserChallenge)
+            case .handleUrl(url: let url):
+                guard let browserChallenge = self?.browserChallenge else { return }
+
+                browserChallenge.sender.respond(with: url, challenge: browserChallenge)
+            case .handleError(let error):
+                debugPrint("[BrowserConnector handleURL] error: ", error.localizedDescription)
+            }
+        })
     }
 }
 

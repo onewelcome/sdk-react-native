@@ -107,7 +107,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func registerUser(_ identityProviderId: (NSString)?,
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        mainConnector.registerUser(identityProviderId: identityProviderId as? String, scopes: ["read"], resolve, reject: reject)
+        mainConnector.registerUser(identityProviderId: identityProviderId as String?, scopes: ["read"], resolve, reject: reject)
     }
 
     @objc
