@@ -7,7 +7,7 @@ protocol BridgeToPinConnectorProtocol: AnyObject {
 }
 
 //@todo handle change and auth flows
-class PinConnector : BridgeToPinConnectorProtocol {
+class OLDPinConnector : BridgeToPinConnectorProtocol {
     var pinHandler: PinConnectorToPinHandler
     unowned var bridgeConnector: BridgeConnectorProtocol?
 

@@ -3,7 +3,7 @@ import Foundation
 typealias RegisterUserConnectorCompletionResult = Result<UserProfile, Error>
 
 protocol RegisterUserConnector {
-    func registerUser(identityProviderId: String?, scopes:[String], statusChanged: ((RegisterEvent) -> Void)?, completion: @escaping (RegisterUserConnectorCompletionResult) -> Void)
+    func registerUser(identityProviderId: String?, scopes:[String], statusChanged: ((Event) -> Void)?, completion: @escaping (RegisterUserConnectorCompletionResult) -> Void)
     
     func sendPin(_ pin: String)
     func cancelPinChallenge()
@@ -14,26 +14,36 @@ final class DefaultRegisterUserConnector:NSObject, RegisterUserConnector {
     private let identityProviderConnector: IdentityProviderConnector
     
     private var completion: ((RegisterUserConnectorCompletionResult) -> Void)?
-    private var statusChanged:  ((RegisterEvent) -> Void)?
+    private var statusChanged:  ((Event) -> Void)?
     
     private var pinChallenge: ONGCreatePinChallenge?
     private var browserChallenge: ONGBrowserRegistrationChallenge?
     private var customChallenge: ONGCustomRegistrationChallenge?
 
     private var browserConnector: BrowserConnector?
-    private let pinConnector: BridgeToPinConnectorProtocol
+    private var pinConnector: PinConnector
     
     init(userClient: ONGUserClientProtocol = ONGUserClient.sharedInstance(),
          identityProviderConnector: IdentityProviderConnector = DefaultIdentityProviderConnector(),
          browserConnector: BrowserConnector = DefaultBrowserConnector(),
-         pinConnector: BridgeToPinConnectorProtocol = PinConnector()) {
+         pinConnector: PinConnector = DefaultPinConnector()) {
         self.userClient = userClient
         self.identityProviderConnector = identityProviderConnector
         self.browserConnector = browserConnector
         self.pinConnector = pinConnector
+
+        super.init()
+
+        bind()
+    }
+
+    private func bind() {
+        self.pinConnector.sendEventHandler = {[weak self] event in
+            self?.statusChanged?(event)
+        }
     }
     
-    func registerUser(identityProviderId: String?, scopes: [String], statusChanged: ((RegisterEvent) -> Void)?, completion: @escaping (RegisterUserConnectorCompletionResult) -> Void) {
+    func registerUser(identityProviderId: String?, scopes: [String], statusChanged: ((Event) -> Void)?, completion: @escaping (RegisterUserConnectorCompletionResult) -> Void) {
         self.completion = completion
         self.statusChanged = statusChanged
         
@@ -90,7 +100,7 @@ extension DefaultRegisterUserConnector: ONGRegistrationDelegate {
         pinChallenge = challenge
 
         let pinError = mapErrorFromPinChallenge(challenge)
-        pinConnector.pinHandler.handleFlowUpdate(PinFlow.create, pinError, receiver: self)
+        pinConnector.handleFlowUpdate(PinFlow.create, pinError, receiver: self)
     }
     
     func userClient(_ userClient: ONGUserClient, didReceive challenge: ONGBrowserRegistrationChallenge) {
@@ -108,7 +118,7 @@ extension DefaultRegisterUserConnector: ONGRegistrationDelegate {
             let customInfo: [String: Any] = ["data":  info.data, "status": info.status]
             data["customInfo"] = customInfo
         }
-        statusChanged?(.customChallengeFinishReceived(data: data, error: challenge.error))
+        statusChanged?(RegisterEvent.customChallengeFinishReceived(data: data, error: challenge.error))
     }
     
     func userClient(_ userClient: ONGUserClient, didReceiveCustomRegistrationInitChallenge challenge: ONGCustomRegistrationChallenge) {
@@ -116,7 +126,7 @@ extension DefaultRegisterUserConnector: ONGRegistrationDelegate {
 
         let data = ["identityProviderId" : challenge.identityProvider.identifier,
                     "action": CustomRegistrationNotification.initRegistration.rawValue]
-        statusChanged?(.customChallengeInitReceived(data: data, error: challenge.error))
+        statusChanged?(RegisterEvent.customChallengeInitReceived(data: data, error: challenge.error))
     }
     
     func userClient(_ userClient: ONGUserClient, didFailToRegisterWith identityProvider: ONGIdentityProvider, error: Error) {

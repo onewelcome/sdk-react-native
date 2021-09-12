@@ -5,9 +5,7 @@ protocol MainConnector {
     func startClient(_ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock)
     
     func registerUser(identityProviderId:String?, scopes: [String], _ resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock)
-    func openURL(_ url: URL, browser: WebBrowser)
     func sendPin(_ pin: String)
-    
 }
 
 class DefaultMainConnector: MainConnector {
@@ -30,17 +28,8 @@ class DefaultMainConnector: MainConnector {
             self?.sendEventHandler?(status)
         }) { $0.convertTo(resolve: resolve, reject: reject) }
     }
-    
-    func openURL(_ url: URL, browser: WebBrowser = .safari ) {
-        
-    }
 
     func sendPin(_ pin: String) {
         registerUserConnector?.sendPin(pin)
     }
-}
-
-enum WebBrowser {
-    case safari
-    case external
 }

@@ -27,6 +27,7 @@ class PinHandler: NSObject {
 
     func processPin(pinEntry: Array<String>) {
         let pincode = pinEntry.joined()
+        mode = .registration
         switch mode {
           case .registration:
               handleRegistrationPin(pinEntry)

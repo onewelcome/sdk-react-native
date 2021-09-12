@@ -4,7 +4,7 @@ protocol BridgeConnectorProtocol: AnyObject {
 
 class BridgeConnector : BridgeConnectorProtocol {
     let toRegistrationConnector: BridgeToRegistrationConnectorProtocol = RegistrationConnector()
-    let toPinHandlerConnector: BridgeToPinConnectorProtocol = PinConnector()
+    let toPinHandlerConnector: BridgeToPinConnectorProtocol = OLDPinConnector()
     let toMobileAuthConnector: BridgeToMobileAuthConnectorProtocol = MobileAuthConnector()
     let toLoginHandler: BridgeToLoginHandlerProtocol = LoginHandler()
     let toAuthenticatorsHandler: BridgeToAuthenticatorsHandlerProtocol = AuthenticatorsHandler()
