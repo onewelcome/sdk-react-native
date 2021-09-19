@@ -12,6 +12,7 @@ protocol PinConnector {
     
     func handleFlowUpdate(_ flow: PinFlow, _ error: NSError?, receiver: PinHandlerToReceiverProtocol)
     func handlePinAction(_ flow: (NSString), _ action: (NSString), _ pin: (NSString))
+    func closeFlow()
 }
 
 final class DefaultPinConnector: PinConnector {
@@ -26,6 +27,7 @@ final class DefaultPinConnector: PinConnector {
 
     func handleFlowUpdate(_ flow: PinFlow, _ error: NSError?, receiver: PinHandlerToReceiverProtocol) {
         self.flow = flow
+        self.pinReceiver = receiver
 
         if let error = error {
             notifyOnError(error)
@@ -81,6 +83,14 @@ final class DefaultPinConnector: PinConnector {
         }
     }
 
+    func closeFlow() {
+        if(flow != nil){
+            mode = nil
+            flow = nil
+            sendNotification(event: PinNotification.close, flow: flow, error: nil)
+        }
+    }
+
     private func sendEvent(data: [String: Any]?) {
         let event = GenericEvent(name: OneginiBridgeEvents.pinNotification.rawValue, data: data)
         sendEventHandler?(event)
@@ -88,7 +98,6 @@ final class DefaultPinConnector: PinConnector {
 
     private func processPin(pin: NSString) {
         let pincode: String = pin as String
-        mode = .registration
         switch mode {
           case .registration:
             handleRegistrationPin(pincode)
@@ -124,4 +133,15 @@ final class DefaultPinConnector: PinConnector {
     }
 }
 
-
+extension PINEntryMode {
+    init?(with flow: PinFlow) {
+        switch flow {
+            case PinFlow.authentication:
+                self = .login
+            case PinFlow.create:
+                self = .registration
+            default:
+                self = .registration
+        }
+    }
+}

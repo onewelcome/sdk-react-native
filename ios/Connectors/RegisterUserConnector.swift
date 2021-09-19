@@ -4,9 +4,12 @@ typealias RegisterUserConnectorCompletionResult = Result<UserProfile, Error>
 
 protocol RegisterUserConnector {
     func registerUser(identityProviderId: String?, scopes:[String], statusChanged: ((Event) -> Void)?, completion: @escaping (RegisterUserConnectorCompletionResult) -> Void)
+    func handleCustomRegistrationAction(_ action: NSString, _ identityProviderId: NSString, _ code: NSString?)
     
     func sendPin(_ pin: String)
     func cancelPinChallenge()
+    func cancelRegistration()
+    func processRedirectURL(url: URL)
 }
 
 final class DefaultRegisterUserConnector:NSObject, RegisterUserConnector {
@@ -21,7 +24,7 @@ final class DefaultRegisterUserConnector:NSObject, RegisterUserConnector {
     private var customChallenge: ONGCustomRegistrationChallenge?
 
     private var browserConnector: BrowserConnector?
-    private var pinConnector: PinConnector
+    var pinConnector: PinConnector
     
     init(userClient: ONGUserClientProtocol = ONGUserClient.sharedInstance(),
          identityProviderConnector: IdentityProviderConnector = DefaultIdentityProviderConnector(),
@@ -60,6 +63,41 @@ final class DefaultRegisterUserConnector:NSObject, RegisterUserConnector {
             case let .failure(error): self.completion?(.failure(error))
             }
         }
+    }
+
+    func handleCustomRegistrationAction(_ action: (NSString), _ identityProviderId: (NSString), _ code: (NSString)? = nil) {
+        switch action {
+            case CustomRegistrationAction.provide.rawValue:
+                processOTPCode(code: code as String?)
+            case CustomRegistrationAction.cancel.rawValue:
+                cancelCustomRegistration()
+                break
+            default:
+                let event = GenericEvent(name: OneginiBridgeEvents.pinNotification.rawValue, data: ["action": PinNotification.showError.rawValue, "errorMsg": "Unsupported pin action. Contact SDK maintainer."])
+                statusChanged?(event)
+                break
+        }
+    }
+
+    func processRedirectURL(url: URL) {
+        handleRedirectURL(url: url)
+    }
+
+    func processOTPCode(code: String?) {
+        handleOTPCode(code)
+    }
+
+    func cancelCustomRegistration() {
+        handleOTPCode(nil, true)
+    }
+
+    func handleOTPCode(_ code: String? = nil, _ cancelled: Bool? = false) {
+        guard let customChallenge = self.customChallenge else { return }
+        if(cancelled == true) {
+            customChallenge.sender.cancel(customChallenge)
+            return;
+        }
+        customChallenge.sender.respond(withData: code, challenge: customChallenge)
     }
 }
 
@@ -134,6 +172,7 @@ extension DefaultRegisterUserConnector: ONGRegistrationDelegate {
     }
     
     func userClient(_ userClient: ONGUserClient, didRegisterUser userProfile: ONGUserProfile, identityProvider: ONGIdentityProvider, info: ONGCustomInfo?) {
+        pinConnector.closeFlow()
         completion?(.success(UserProfile(identifier: userProfile.profileId)))
     }
 }
@@ -158,21 +197,16 @@ extension DefaultRegisterUserConnector: PinHandlerToReceiverProtocol {
         challenge.sender.cancel(challenge)
     }
 
+    func cancelRegistration() {
+        handleRedirectURL(url: nil)
+    }
+
     fileprivate func mapErrorFromPinChallenge(_ challenge: ONGCreatePinChallenge) -> NSError? {
         if let error = challenge.error {
             return error as NSError
         } else {
             return nil
         }
-    }
-}
-
-
-// MARK: - Events
-
-private extension DefaultRegisterUserConnector {
-    private func sendCustomRegistrationNotification(_ event: CustomRegistrationNotification,_ data: [String: Any]?)  {
-        
     }
 }
 

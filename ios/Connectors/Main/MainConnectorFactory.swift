@@ -1,15 +1,20 @@
 protocol MainConnectorFactory {
     var startClientConnector: StartClientConnector { get }
-    var registerUserConnector: RegisterUserConnector { get }
+    var pinConnector: PinConnector { get }
+
+    func registerUserConnector(with pinConnector: PinConnector) -> RegisterUserConnector
 }
 
 class DefaultMainConnectorFactory: MainConnectorFactory {
     var startClientConnector: StartClientConnector {
         return DefaultStartClientConnector()
     }
-    
-    var registerUserConnector: RegisterUserConnector {
-        return DefaultRegisterUserConnector()
+
+    var pinConnector: PinConnector {
+        return DefaultPinConnector()
     }
-    
+
+    func registerUserConnector(with pinConnector: PinConnector) -> RegisterUserConnector {
+        return DefaultRegisterUserConnector(pinConnector: pinConnector)
+    }
 }

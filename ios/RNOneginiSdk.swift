@@ -112,7 +112,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
     @objc
     func submitCustomRegistrationAction(_ action: (NSString), identityProviderId: (NSString), token: (NSString)?) -> Void {
-        bridgeConnector.toRegistrationConnector.handleCustomRegistrationAction(action, identityProviderId, token)
+        mainConnector.handleCustomRegistrationAction(action, identityProviderId, token)
     }
 
     @objc
@@ -134,17 +134,17 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
     @objc
     func handleRegistrationCallback(_ url: (NSString)) -> Void {
-        bridgeConnector.toRegistrationConnector.registrationHandler.processRedirectURL(url: URL(string: url as String)!)
+        mainConnector.processRedirectURL(url: URL(string: url as String)!)
     }
 
     @objc
     func cancelRegistration() -> Void {
-        bridgeConnector.toRegistrationConnector.registrationHandler.cancelRegistration()
+        mainConnector.cancelRegistration()
     }
 
     @objc
     func submitPinAction(_ flow: (NSString), action: (NSString), pin: (NSString)) -> Void {
-        bridgeConnector.toPinHandlerConnector.handlePinAction(flow, action, pin)
+        mainConnector.handlePinAction(flow, action, pin)
     }
 
     @objc
