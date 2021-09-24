@@ -12,7 +12,6 @@ import org.junit.runner.RunWith
 import org.mockito.Answers
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
-import org.mockito.Mockito.lenient
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.*
 
@@ -47,11 +46,6 @@ class StartClientUseCaseTests {
 
     @Test
     fun `when wrong configs are provided should reject`() {
-        // mock SDK start success
-        lenient().`when`(oneginiSdk.oneginiClient.start(any())).thenAnswer {
-            it.getArgument<OneginiInitializationHandler>(0).onSuccess(emptySet())
-        }
-
         StartClientUseCase(oneginiSdk, reactApplicationContext)(JavaOnlyMap(), promiseMock)
 
         argumentCaptor<String> {
