@@ -3,9 +3,11 @@ package com.onegini.mobile
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.Promise
 import com.onegini.mobile.clean.use_cases.GetAllAuthenticatorsUseCase
+import com.onegini.mobile.clean.use_cases.GetUserProfileUseCase
 import com.onegini.mobile.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import org.junit.Assert.*
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -29,9 +31,19 @@ class GetAllAuthenticatorsUseCaseTests {
     @Mock
     lateinit var promiseMock: Promise
 
+    @Mock
+    lateinit var getUserProfileUseCase: GetUserProfileUseCase
+
+    private lateinit var getAllAuthenticatorsUseCase: GetAllAuthenticatorsUseCase
+
+    @Before
+    fun setup() {
+        getAllAuthenticatorsUseCase = GetAllAuthenticatorsUseCase(oneginiSdk, getUserProfileUseCase)
+    }
+
     @Test
     fun `when no profile is found should reject with error`() {
-        GetAllAuthenticatorsUseCase(oneginiSdk)("profileId1", promiseMock)
+        getAllAuthenticatorsUseCase("profileId1", promiseMock)
 
         argumentCaptor<String> {
             verify(promiseMock).reject(capture(), capture())
@@ -45,12 +57,14 @@ class GetAllAuthenticatorsUseCaseTests {
     fun `should resolve with list of authenticators for specific user profile`() {
         `when`(oneginiSdk.oneginiClient.userClient.getAllAuthenticators(any())).thenReturn(setOf(TestData.authenticator1, TestData.authenticator2))
 
-        `when`(oneginiSdk.oneginiClient.userClient.userProfiles).thenReturn(setOf(UserProfile("123456"), UserProfile("234567")))
+        `when`(getUserProfileUseCase.invoke(any())).thenReturn(UserProfile("123456"))
 
-        GetAllAuthenticatorsUseCase(oneginiSdk)("123456", promiseMock)
+        getAllAuthenticatorsUseCase("123456", promiseMock)
 
         argumentCaptor<JavaOnlyArray> {
             verify(promiseMock).resolve(capture())
+
+            assertEquals(2, firstValue.size())
 
             assertEquals(TestData.authenticator1.id, firstValue.getMap(0)?.getString("id"))
             assertEquals(TestData.authenticator1.name, firstValue.getMap(0)?.getString("name"))
@@ -65,8 +79,6 @@ class GetAllAuthenticatorsUseCaseTests {
             assertEquals(TestData.authenticator2.isPreferred, firstValue.getMap(1)?.getBoolean("isPreferred"))
             assertEquals(TestData.authenticator2.isRegistered, firstValue.getMap(1)?.getBoolean("isRegistered"))
             assertEquals(TestData.authenticator2.userProfile.profileId, firstValue.getMap(1)?.getMap("userProfile")?.getString("profileId"))
-
-            assertEquals(2, firstValue.size())
         }
     }
 }

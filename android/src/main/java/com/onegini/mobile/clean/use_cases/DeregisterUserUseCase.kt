@@ -5,16 +5,11 @@ import com.onegini.mobile.OneginiSDK
 import com.onegini.mobile.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.android.handlers.OneginiDeregisterUserProfileHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiDeregistrationError
-import com.onegini.mobile.sdk.android.model.entity.UserProfile
 
-class DeregisterUserUseCase(private val oneginiSDK: OneginiSDK) {
+class DeregisterUserUseCase(private val oneginiSDK: OneginiSDK, private val getUserProfileUseCase: GetUserProfileUseCase = GetUserProfileUseCase(oneginiSDK)) {
 
     operator fun invoke(profileId: String?, promise: Promise) {
-        val userProfile = try {
-            UserProfile(profileId)
-        } catch (e: IllegalArgumentException) {
-            null
-        }
+        val userProfile = getUserProfileUseCase(profileId)
 
         if (userProfile == null) {
             promise.reject(OneginiWrapperErrors.USER_PROFILE_IS_NULL.code, OneginiWrapperErrors.USER_PROFILE_IS_NULL.message)
