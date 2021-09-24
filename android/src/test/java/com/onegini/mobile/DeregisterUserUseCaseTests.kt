@@ -2,18 +2,19 @@ package com.onegini.mobile
 
 import com.facebook.react.bridge.Promise
 import com.onegini.mobile.clean.use_cases.DeregisterUserUseCase
+import com.onegini.mobile.clean.use_cases.GetUserProfileUseCase
 import com.onegini.mobile.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.android.handlers.OneginiDeregisterUserProfileHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiDeregistrationError
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import org.junit.Assert
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Answers
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
-import org.mockito.Mockito.lenient
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
@@ -34,16 +35,29 @@ class DeregisterUserUseCaseTests {
     @Mock
     lateinit var deregistrationError: OneginiDeregistrationError
 
+    @Mock
+    lateinit var getUserProfileUseCase: GetUserProfileUseCase
+
+    private lateinit var deregisterUserUseCase: DeregisterUserUseCase
+
+    @Before
+    fun setup() {
+        `when`(getUserProfileUseCase.invoke(any())).thenReturn(UserProfile("123456"))
+        deregisterUserUseCase = DeregisterUserUseCase(oneginiSdk, getUserProfileUseCase)
+    }
+
     @Test
     fun `when user profile cannot be created should reject with proper errors`() {
-        DeregisterUserUseCase(oneginiSdk)("123", promiseMock)
+        `when`(getUserProfileUseCase.invoke(any())).thenReturn(null)
+
+        deregisterUserUseCase("123", promiseMock)
 
         verify(promiseMock).reject(OneginiWrapperErrors.USER_PROFILE_IS_NULL.code, OneginiWrapperErrors.USER_PROFILE_IS_NULL.message)
     }
 
     @Test
     fun `should call proper SDK methods`() {
-        DeregisterUserUseCase(oneginiSdk)("123456", promiseMock)
+        deregisterUserUseCase("123456", promiseMock)
 
         argumentCaptor<UserProfile> {
             verify(oneginiSdk.oneginiClient.userClient).deregisterUser(capture(), any())
@@ -52,20 +66,21 @@ class DeregisterUserUseCaseTests {
         }
     }
 
-    @Test
-    fun `when fails should reject with proper error`() {
-        lenient().`when`(deregistrationError.errorType).thenReturn(666)
-        lenient().`when`(deregistrationError.message).thenReturn("MyError")
-
+    fun whenUserDeregistrationFailed() {
+        `when`(deregistrationError.errorType).thenReturn(666)
+        `when`(deregistrationError.message).thenReturn("MyError")
         `when`(oneginiSdk.oneginiClient.userClient.deregisterUser(any(), any())).thenAnswer {
             it.getArgument<OneginiDeregisterUserProfileHandler>(1).onError(deregistrationError)
         }
+    }
 
-        DeregisterUserUseCase(oneginiSdk)("123456", promiseMock)
+    @Test
+    fun `when fails should reject with proper error`() {
+        whenUserDeregistrationFailed()
 
-        argumentCaptor<UserProfile> {
-            verify(oneginiSdk.oneginiClient.userClient).deregisterUser(capture(), any())
-        }
+        deregisterUserUseCase("123456", promiseMock)
+
+        verify(oneginiSdk.oneginiClient.userClient).deregisterUser(any(), any())
 
         argumentCaptor<String> {
             verify(promiseMock).reject(capture(), capture())
@@ -81,11 +96,9 @@ class DeregisterUserUseCaseTests {
             it.getArgument<OneginiDeregisterUserProfileHandler>(1).onSuccess()
         }
 
-        DeregisterUserUseCase(oneginiSdk)("123456", promiseMock)
+        deregisterUserUseCase("123456", promiseMock)
 
-        argumentCaptor<UserProfile> {
-            verify(oneginiSdk.oneginiClient.userClient).deregisterUser(capture(), any())
-        }
+        verify(oneginiSdk.oneginiClient.userClient).deregisterUser(any(), any())
 
         verify(promiseMock).resolve(null)
     }

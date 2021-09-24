@@ -13,7 +13,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Answers
 import org.mockito.Mock
-import org.mockito.Mockito
+import org.mockito.Mockito.`when`
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
@@ -43,7 +43,7 @@ class GetRegisteredAuthenticatorsUseCaseTests {
 
     @Test
     fun `when no profile is found should reject with error`() {
-        Mockito.lenient().`when`(oneginiSdk.oneginiClient.userClient.getRegisteredAuthenticators(any())).thenReturn(setOf(TestData.authenticator1, TestData.authenticator2))
+        `when`(oneginiSdk.oneginiClient.userClient.getRegisteredAuthenticators(any())).thenReturn(setOf(TestData.authenticator1, TestData.authenticator2))
 
         getRegisteredAuthenticatorsUseCase("123456", promiseMock)
 
@@ -57,9 +57,9 @@ class GetRegisteredAuthenticatorsUseCaseTests {
 
     @Test
     fun `should resolve with list of authenticators for specific user profile`() {
-        Mockito.lenient().`when`(oneginiSdk.oneginiClient.userClient.getRegisteredAuthenticators(any())).thenReturn(setOf(TestData.authenticator1, TestData.authenticator2))
+        `when`(oneginiSdk.oneginiClient.userClient.getRegisteredAuthenticators(any())).thenReturn(setOf(TestData.authenticator1, TestData.authenticator2))
 
-        Mockito.`when`(getUserProfileUseCase.invoke(any())).thenReturn(UserProfile("123456"))
+        `when`(getUserProfileUseCase.invoke(any())).thenReturn(UserProfile("123456"))
 
         getRegisteredAuthenticatorsUseCase("123456", promiseMock)
 
