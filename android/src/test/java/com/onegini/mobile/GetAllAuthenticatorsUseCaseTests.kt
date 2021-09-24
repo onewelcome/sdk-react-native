@@ -14,7 +14,6 @@ import org.junit.runner.RunWith
 import org.mockito.Answers
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
-import org.mockito.Mockito.lenient
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
@@ -56,7 +55,7 @@ class GetAllAuthenticatorsUseCaseTests {
 
     @Test
     fun `should resolve with list of authenticators for specific user profile`() {
-        lenient().`when`(oneginiSdk.oneginiClient.userClient.getAllAuthenticators(any())).thenReturn(setOf(TestData.authenticator1, TestData.authenticator2))
+        `when`(oneginiSdk.oneginiClient.userClient.getAllAuthenticators(any())).thenReturn(setOf(TestData.authenticator1, TestData.authenticator2))
 
         `when`(getUserProfileUseCase.invoke(any())).thenReturn(UserProfile("123456"))
 
