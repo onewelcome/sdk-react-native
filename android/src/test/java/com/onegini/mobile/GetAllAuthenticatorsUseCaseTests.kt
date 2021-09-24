@@ -65,6 +65,8 @@ class GetAllAuthenticatorsUseCaseTests {
         argumentCaptor<JavaOnlyArray> {
             verify(promiseMock).resolve(capture())
 
+            assertEquals(2,firstValue.size())
+
             assertEquals(TestData.authenticator1.id, firstValue.getMap(0)?.getString("id"))
             assertEquals(TestData.authenticator1.name, firstValue.getMap(0)?.getString("name"))
             assertEquals(TestData.authenticator1.type, firstValue.getMap(0)?.getInt("type"))
