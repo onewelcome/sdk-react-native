@@ -26,7 +26,7 @@ class AuthenticateUserImplicitlyUseCase(private val oneginiSDK: OneginiSDK, val 
                 userProfile, scopesArray,
                 object : OneginiImplicitAuthenticationHandler {
                     override fun onSuccess(profile: UserProfile) {
-                        promise.resolve(null)
+                        promise.resolve(profile)
                     }
 
                     override fun onError(error: OneginiImplicitTokenRequestError) {
