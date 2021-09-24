@@ -7,6 +7,7 @@ import com.onegini.mobile.clean.use_cases.GetUserProfileUseCase
 import com.onegini.mobile.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import org.junit.Assert.*
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -33,11 +34,18 @@ class GetRegisteredAuthenticatorsUseCaseTests {
     @Mock
     lateinit var getUserProfileUseCase: GetUserProfileUseCase
 
+    private lateinit var getRegisteredAuthenticatorsUseCase: GetRegisteredAuthenticatorsUseCase
+
+    @Before
+    fun setup() {
+        getRegisteredAuthenticatorsUseCase = GetRegisteredAuthenticatorsUseCase(oneginiSdk, getUserProfileUseCase)
+    }
+
     @Test
     fun `when no profile is found should reject with error`() {
         Mockito.lenient().`when`(oneginiSdk.oneginiClient.userClient.getRegisteredAuthenticators(any())).thenReturn(setOf(TestData.authenticator1, TestData.authenticator2))
 
-        GetRegisteredAuthenticatorsUseCase(oneginiSdk)("profileId1", promiseMock)
+        getRegisteredAuthenticatorsUseCase("123456", promiseMock)
 
         argumentCaptor<String> {
             verify(promiseMock).reject(capture(), capture())
@@ -53,10 +61,12 @@ class GetRegisteredAuthenticatorsUseCaseTests {
 
         Mockito.`when`(getUserProfileUseCase.invoke(any())).thenReturn(UserProfile("123456"))
 
-        GetRegisteredAuthenticatorsUseCase(oneginiSdk, getUserProfileUseCase)("123456", promiseMock)
+        getRegisteredAuthenticatorsUseCase("123456", promiseMock)
 
         argumentCaptor<JavaOnlyArray> {
             verify(promiseMock).resolve(capture())
+
+            assertEquals(2,firstValue.size())
 
             assertEquals(TestData.authenticator1.id, firstValue.getMap(0)?.getString("id"))
             assertEquals(TestData.authenticator1.name, firstValue.getMap(0)?.getString("name"))

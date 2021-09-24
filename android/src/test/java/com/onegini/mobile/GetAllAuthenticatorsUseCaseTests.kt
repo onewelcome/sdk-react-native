@@ -7,6 +7,7 @@ import com.onegini.mobile.clean.use_cases.GetUserProfileUseCase
 import com.onegini.mobile.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import org.junit.Assert.*
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -34,9 +35,16 @@ class GetAllAuthenticatorsUseCaseTests {
     @Mock
     lateinit var getUserProfileUseCase: GetUserProfileUseCase
 
+    private lateinit var getAllAuthenticatorsUseCase: GetAllAuthenticatorsUseCase
+
+    @Before
+    fun setup() {
+        getAllAuthenticatorsUseCase = GetAllAuthenticatorsUseCase(oneginiSdk, getUserProfileUseCase)
+    }
+
     @Test
     fun `when no profile is found should reject with error`() {
-        GetAllAuthenticatorsUseCase(oneginiSdk)("profileId1", promiseMock)
+        getAllAuthenticatorsUseCase("profileId1", promiseMock)
 
         argumentCaptor<String> {
             verify(promiseMock).reject(capture(), capture())
@@ -52,7 +60,7 @@ class GetAllAuthenticatorsUseCaseTests {
 
         `when`(getUserProfileUseCase.invoke(any())).thenReturn(UserProfile("123456"))
 
-        GetAllAuthenticatorsUseCase(oneginiSdk, getUserProfileUseCase)("123456", promiseMock)
+        getAllAuthenticatorsUseCase("123456", promiseMock)
 
         argumentCaptor<JavaOnlyArray> {
             verify(promiseMock).resolve(capture())
