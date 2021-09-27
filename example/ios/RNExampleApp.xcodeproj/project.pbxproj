@@ -12,6 +12,9 @@
 		0F8C97296D2FAD6CF7DF4695 /* libPods-RNExampleApp-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B47C12E37A0E8A2911A38FE /* libPods-RNExampleApp-tvOSTests.a */; };
 		1106C5C826524FE500CFFE58 /* StartClientConnectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1106C5C726524FE500CFFE58 /* StartClientConnectorTests.swift */; };
 		1106C5D22652501400CFFE58 /* MockONGClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1106C5D12652501400CFFE58 /* MockONGClient.swift */; };
+		11DA24242701EB75003895BD /* RegisterUserConnectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DA24232701EB75003895BD /* RegisterUserConnectorTests.swift */; };
+		11DA24262701EFB8003895BD /* MockUserClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DA24252701EFB8003895BD /* MockUserClient.swift */; };
+		11DA24282702060C003895BD /* MockBrowserConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11DA24272702060C003895BD /* MockBrowserConnector.swift */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -56,6 +59,9 @@
 		1106C5C026524E6800CFFE58 /* RNExampleAppTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RNExampleAppTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		1106C5C726524FE500CFFE58 /* StartClientConnectorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StartClientConnectorTests.swift; sourceTree = "<group>"; };
 		1106C5D12652501400CFFE58 /* MockONGClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockONGClient.swift; sourceTree = "<group>"; };
+		11DA24232701EB75003895BD /* RegisterUserConnectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterUserConnectorTests.swift; sourceTree = "<group>"; };
+		11DA24252701EFB8003895BD /* MockUserClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockUserClient.swift; sourceTree = "<group>"; };
+		11DA24272702060C003895BD /* MockBrowserConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockBrowserConnector.swift; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* RNExampleApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RNExampleApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = RNExampleApp/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = RNExampleApp/AppDelegate.m; sourceTree = "<group>"; };
@@ -144,6 +150,7 @@
 			isa = PBXGroup;
 			children = (
 				1106C5C726524FE500CFFE58 /* StartClientConnectorTests.swift */,
+				11DA24232701EB75003895BD /* RegisterUserConnectorTests.swift */,
 			);
 			path = StartClientConnector;
 			sourceTree = "<group>";
@@ -152,6 +159,8 @@
 			isa = PBXGroup;
 			children = (
 				1106C5D12652501400CFFE58 /* MockONGClient.swift */,
+				11DA24252701EFB8003895BD /* MockUserClient.swift */,
+				11DA24272702060C003895BD /* MockBrowserConnector.swift */,
 			);
 			path = Mock;
 			sourceTree = "<group>";
@@ -678,6 +687,9 @@
 			files = (
 				1106C5D22652501400CFFE58 /* MockONGClient.swift in Sources */,
 				00E356F31AD99517003FC87E /* RNExampleAppTests.m in Sources */,
+				11DA24282702060C003895BD /* MockBrowserConnector.swift in Sources */,
+				11DA24242701EB75003895BD /* RegisterUserConnectorTests.swift in Sources */,
+				11DA24262701EFB8003895BD /* MockUserClient.swift in Sources */,
 				1106C5C826524FE500CFFE58 /* StartClientConnectorTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -737,7 +749,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = RNExampleAppTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -761,7 +773,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = RNExampleAppTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"-ObjC",

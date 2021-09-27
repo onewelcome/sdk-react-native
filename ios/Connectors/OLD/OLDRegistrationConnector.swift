@@ -6,7 +6,7 @@ protocol BridgeToRegistrationConnectorProtocol: AnyObject {
     func sendCustomRegistrationNotification(_ event: CustomRegistrationNotification,_ data: NSMutableDictionary?) -> Void
 }
 
-class RegistrationConnector : BridgeToRegistrationConnectorProtocol {
+class OLDRegistrationConnector : BridgeToRegistrationConnectorProtocol {
     var registrationHandler: RegistrationConnectorToHandlerProtocol
     unowned var bridgeConnector: BridgeConnectorProtocol?
 
