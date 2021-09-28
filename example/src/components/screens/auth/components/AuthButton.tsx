@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import Button from '../../../general/Button';
 import OneginiSdk from 'onegini-react-native-sdk';
+import {CurrentUser} from '../../../../auth/auth';
 
 interface Props {
   onAuthorized?: (success: boolean) => void;
@@ -37,6 +38,8 @@ function onPressClicked(
   OneginiSdk.getUserProfiles().then((profiles) =>
     OneginiSdk.authenticateUser(profiles[0].profileId)
       .then((result) => {
+        CurrentUser.id = profiles[0].profileId;
+
         console.log('AUTH: ', JSON.stringify(result));
         onAuthorized?.(true);
       })

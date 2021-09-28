@@ -6,6 +6,7 @@ import Button from '../../../general/Button';
 import Switch from '../../../general/Switch';
 import OneginiSdk from 'onegini-react-native-sdk';
 import CustomRegistrationChooserView from '../CustomRegistrationChooserView';
+import {CurrentUser} from '../../../../auth/auth';
 
 //
 
@@ -121,7 +122,8 @@ const startRegister = async (
   setRegistering?.(true);
 
   try {
-    await OneginiSdk.registerUser(providerId, ['read']);
+    const profile = await OneginiSdk.registerUser(providerId, ['read']);
+    CurrentUser.id = profile.profileId;
     setRegistering?.(false);
     onRegisterSuccess?.();
   } catch (e) {

@@ -4,6 +4,7 @@ import ContentContainer from './ContentContainer';
 import Button from '../../../general/Button';
 import {logout, deregisterUser} from '../../../helpers/DashboardHelpers';
 import OneginiSdk from 'onegini-react-native-sdk';
+import {CurrentUser} from '../../../../auth/auth';
 
 const onSingleSingOn = () => {
   OneginiSdk.startSingleSignOn(
@@ -42,7 +43,7 @@ interface Props {
 const DashboardActionsView: React.FC<Props> = (props) => {
   return (
     <ContentContainer>
-      <Text style={styles.helloText}>Hello, $userName!</Text>
+      <Text style={styles.helloText}>{`Hello user: ${CurrentUser.id}`}</Text>
       {renderButton('YOUR DEVICES', props.onYourDevicesPressed, false)}
       {renderButton(
         'MOBILE AUTH WITH OTP',
