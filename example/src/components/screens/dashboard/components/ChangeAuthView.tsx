@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import ContentContainer from './ContentContainer';
 import Row from '../../../general/Row';
@@ -37,6 +37,9 @@ const ChangeAuthView: React.FC<Props> = () => {
     pinRegisteredAuthenticator,
   );
 
+  // because react-native-modal-selector is broken and calls onChange when unmount
+  const isModalOpen = useRef(false);
+
   useEffect(() => {
     isFingerprintAuthenticatorRegistered(setFingerprintEnable);
     getRegisteredAuthenticators(setRegisteredAuthenticators, setPreferred);
@@ -62,13 +65,21 @@ const ChangeAuthView: React.FC<Props> = () => {
           keyExtractor={(item) => item.id}
           labelExtractor={(item) => item.name}
           selectedItemTextStyle={{fontWeight: '700'}}
+          onModalClose={() => {
+            isModalOpen.current = false;
+          }}
+          onModalOpen={() => {
+            isModalOpen.current = true;
+          }}
           onChange={(option) => {
-            onPreferredChanged(
-              option,
-              setMessage,
-              setPreferred,
-              setRegisteredAuthenticators,
-            );
+            if (isModalOpen.current) {
+              onPreferredChanged(
+                option,
+                setMessage,
+                setPreferred,
+                setRegisteredAuthenticators,
+              );
+            }
           }}
         />
       </Row>
