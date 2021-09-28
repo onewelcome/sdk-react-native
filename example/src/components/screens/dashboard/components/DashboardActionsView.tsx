@@ -38,6 +38,7 @@ interface Props {
   onSettingsPressed?: () => void;
   onMobileAuthWithOTPPressed?: () => void;
   onYourDevicesPressed?: () => void;
+  onAccessTokenPressed?: () => void;
 }
 
 const DashboardActionsView: React.FC<Props> = (props) => {
@@ -54,6 +55,11 @@ const DashboardActionsView: React.FC<Props> = (props) => {
       {renderButton('SETTINGS', props.onSettingsPressed, false)}
       {renderButton('DEREGISTER', () => deregisterUser(props.onLogout), false)}
       {renderButton('LOGOUT', () => logout(props.onLogout), false)}
+      {renderButton(
+        'ACCESS TOKEN',
+        () => props.onAccessTokenPressed?.(),
+        false,
+      )}
     </ContentContainer>
   );
 };

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {StyleSheet, View, Text, Image} from 'react-native';
+import {StyleSheet, View, Text, Image, Alert} from 'react-native';
 import {Assets} from '../../../../assets';
 import BackButton from '../../general/BackButton';
 import SettingsActionsView from './components/SettingsActionsView';
@@ -18,6 +18,12 @@ const DashboardScreen: React.FC<Props> = (props) => {
     CONTENT_VIEW.DASHBOARD_ACTIONS,
   );
 
+  function onShowAccessToken() {
+    OneginiSdk.getAccessToken()
+      .then((token) => Alert.alert('Access Token', token))
+      .catch(() => Alert.alert('Error!', 'Could not get AccessToken!'));
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -32,7 +38,12 @@ const DashboardScreen: React.FC<Props> = (props) => {
           {TITLE_BY_CONTENT_VIEW.get(contentView)}
         </Text>
       </View>
-      {renderContent(contentView, setContentView, props.onLogout)}
+      {renderContent(
+        contentView,
+        setContentView,
+        props.onLogout,
+        onShowAccessToken,
+      )}
     </View>
   );
 };
@@ -80,6 +91,7 @@ const renderContent = (
   currentContentView: CONTENT_VIEW,
   setContentView: (contentView: CONTENT_VIEW) => void,
   onLogout?: () => void,
+  onShowAccessToken?: () => void,
 ) => {
   switch (currentContentView) {
     case CONTENT_VIEW.DASHBOARD_ACTIONS:
@@ -93,6 +105,7 @@ const renderContent = (
             setContentView(CONTENT_VIEW.OTP_CODE)
           }
           onYourDevicesPressed={() => setContentView(CONTENT_VIEW.DEVICES)}
+          onAccessTokenPressed={onShowAccessToken}
         />
       );
     case CONTENT_VIEW.SETTINGS_ACTIONS:
