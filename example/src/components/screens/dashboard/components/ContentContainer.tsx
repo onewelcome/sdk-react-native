@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     top: '10%',
     width: '100%',
-    height: '75%',
+    height: '100%',
     borderRadius: 4,
     backgroundColor: '#ffffff',
     shadowColor: '#000',
