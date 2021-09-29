@@ -76,7 +76,7 @@ const backButtonHandler = (
       setContentView(CONTENT_VIEW.SETTINGS_ACTIONS);
       break;
     case CONTENT_VIEW.OTP_CODE:
-      setContentView(CONTENT_VIEW.SETTINGS_ACTIONS);
+      setContentView(CONTENT_VIEW.DASHBOARD_ACTIONS);
       break;
     case CONTENT_VIEW.DEVICES:
       setContentView(CONTENT_VIEW.DASHBOARD_ACTIONS);
