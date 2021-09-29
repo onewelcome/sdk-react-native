@@ -32,19 +32,28 @@ const deregisterFingerprintAuthenticator = async (
 
 const getRegisteredAuthenticators = async (
   registeredAuthenticators: (authenticators: Types.Authenticator[]) => void,
+  setAllAuthenticators: (authenticators: Types.Authenticator[]) => void,
   preferred: (authenticator: Types.Authenticator) => void,
 ) => {
   const profile = await OneginiSdk.getAuthenticatedUserProfile();
   const authenticators = await OneginiSdk.getRegisteredAuthenticators(
     profile.profileId,
   );
+
+  const allAuthenticators = await OneginiSdk.getAllAuthenticators(
+    profile.profileId,
+  );
+
+  console.log('allAuthenticators: ', JSON.stringify(allAuthenticators));
   console.log('authenticators: ', JSON.stringify(authenticators));
+
   authenticators.forEach((it) => {
     if (it.isPreferred) {
       preferred(it);
     }
   });
   registeredAuthenticators(authenticators);
+  setAllAuthenticators(allAuthenticators);
 };
 
 const isFingerprintAuthenticatorRegistered = async (

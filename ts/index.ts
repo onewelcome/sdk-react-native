@@ -68,6 +68,7 @@ interface NativeMethods {
   getRegisteredAuthenticators(
     profileId: string,
   ): Promise<Types.Authenticator[]>;
+  getAllAuthenticators(profileId: string): Promise<Types.Authenticator[]>;
   setPreferredAuthenticator(
     profileId: string,
     idOneginiAuthenticator: string,

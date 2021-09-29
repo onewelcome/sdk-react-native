@@ -33,6 +33,9 @@ const ChangeAuthView: React.FC<Props> = () => {
   const [registeredAuthenticators, setRegisteredAuthenticators] = useState<
     Types.Authenticator[]
   >(emptyRegisteredAuthenticators);
+  const [allAuthenticators, setAllAuthenticators] = useState<
+    Types.Authenticator[]
+  >(emptyRegisteredAuthenticators);
   const [preferred, setPreferred] = useState<Types.Authenticator>(
     pinRegisteredAuthenticator,
   );
@@ -42,8 +45,19 @@ const ChangeAuthView: React.FC<Props> = () => {
 
   useEffect(() => {
     isFingerprintAuthenticatorRegistered(setFingerprintEnable);
-    getRegisteredAuthenticators(setRegisteredAuthenticators, setPreferred);
+    getRegisteredAuthenticators(
+      setRegisteredAuthenticators,
+      setAllAuthenticators,
+      setPreferred,
+    );
   }, []);
+
+  const hasFingerprintAuthenticator =
+    allAuthenticators.findIndex(
+      (auth) =>
+        auth.id.toUpperCase() === 'FINGERPRINT' ||
+        auth.name.toUpperCase() === 'FINGERPRINT',
+    ) > -1;
 
   const renderMessage = (msg: string) => {
     if (msg !== '') {
@@ -92,21 +106,23 @@ const ChangeAuthView: React.FC<Props> = () => {
           value={true}
           disabled={true}
         />
-        <Switch
-          containerStyle={styles.fingerprintSwitchContainer}
-          labelStyle={styles.switchLabel}
-          label={'Fingerprint'}
-          onSwitch={(enabled: boolean) =>
-            onSwithFingerprint(
-              enabled,
-              setFingerprintEnable,
-              setMessage,
-              setRegisteredAuthenticators,
-              setPreferred,
-            )
-          }
-          value={isFigerprintEnable}
-        />
+        {hasFingerprintAuthenticator && (
+          <Switch
+            containerStyle={styles.fingerprintSwitchContainer}
+            labelStyle={styles.switchLabel}
+            label={'Fingerprint'}
+            onSwitch={(enabled: boolean) =>
+              onSwithFingerprint(
+                enabled,
+                setFingerprintEnable,
+                setMessage,
+                setRegisteredAuthenticators,
+                setPreferred,
+              )
+            }
+            value={isFigerprintEnable}
+          />
+        )}
       </View>
     </ContentContainer>
   );
