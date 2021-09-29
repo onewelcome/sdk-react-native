@@ -12,10 +12,19 @@ const CustomRegistrationChooserView: React.FC<Props> = (props) => {
   const [providers, setProviders] = useState<Types.IdentityProvider[]>([]);
 
   useEffect(() => {
+    // ugly!
+    let isMounted = true;
+
     OneginiSdk.getIdentityProviders().then((identityProviders) => {
       console.log('identityProviders: ', identityProviders);
-      setProviders(identityProviders);
+      if (isMounted) {
+        setProviders(identityProviders);
+      }
     });
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (
