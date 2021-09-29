@@ -137,7 +137,11 @@ const onPreferredChanged = (
   setPreferredAuthenticator(
     preferred,
     (success: boolean) => {
-      getRegisteredAuthenticators(setRegisteredAuthenticators, setPreferred);
+      getRegisteredAuthenticators(
+        setRegisteredAuthenticators,
+        () => {},
+        setPreferred,
+      );
     },
     setMessage,
   );
@@ -156,14 +160,22 @@ const onSwithFingerprint = (
       if (successful) {
         setFigerprintEnable(true);
       }
-      getRegisteredAuthenticators(setRegisteredAuthenticators, setPreferred);
+      getRegisteredAuthenticators(
+        setRegisteredAuthenticators,
+        () => {},
+        setPreferred,
+      );
     }, setMessage);
   } else {
     deregisterFingerprintAuthenticator((successful) => {
       if (successful) {
         setFigerprintEnable(false);
       }
-      getRegisteredAuthenticators(setRegisteredAuthenticators, setPreferred);
+      getRegisteredAuthenticators(
+        setRegisteredAuthenticators,
+        () => {},
+        setPreferred,
+      );
     }, setMessage);
   }
 };
