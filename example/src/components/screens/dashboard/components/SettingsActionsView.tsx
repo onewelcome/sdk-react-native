@@ -9,7 +9,14 @@ const onChangePinPressed = () => {
   //@todo handle deregistration error when codes will be presented
   OneginiSdk.changePin()
     .then(() => Alert.alert('Success'))
-    .catch((error) => Alert.alert('error', JSON.stringify(error)));
+    .catch((error) => {
+      if (error) {
+        // this is cancel
+        if (error.code !== '9006') {
+          Alert.alert('error', JSON.stringify(error));
+        }
+      }
+    });
 };
 
 const renderButton = (
