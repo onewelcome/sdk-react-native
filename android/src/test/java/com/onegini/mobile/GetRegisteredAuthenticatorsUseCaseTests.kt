@@ -2,7 +2,7 @@ package com.onegini.mobile
 
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.Promise
-import com.onegini.mobile.clean.use_cases.GetAllAuthenticatorsUseCase
+import com.onegini.mobile.clean.use_cases.GetRegisteredAuthenticatorsUseCase
 import com.onegini.mobile.clean.use_cases.GetUserProfileUseCase
 import com.onegini.mobile.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
@@ -13,14 +13,14 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Answers
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
+import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.verify
 
 @RunWith(MockitoJUnitRunner::class)
-class GetAllAuthenticatorsUseCaseTests {
+class GetRegisteredAuthenticatorsUseCaseTests {
 
     @get:Rule
     val reactArgumentsTestRule = ReactArgumentsTestRule()
@@ -34,16 +34,18 @@ class GetAllAuthenticatorsUseCaseTests {
     @Mock
     lateinit var getUserProfileUseCase: GetUserProfileUseCase
 
-    private lateinit var getAllAuthenticatorsUseCase: GetAllAuthenticatorsUseCase
+    private lateinit var getRegisteredAuthenticatorsUseCase: GetRegisteredAuthenticatorsUseCase
 
     @Before
     fun setup() {
-        getAllAuthenticatorsUseCase = GetAllAuthenticatorsUseCase(oneginiSdk, getUserProfileUseCase)
+        getRegisteredAuthenticatorsUseCase = GetRegisteredAuthenticatorsUseCase(oneginiSdk, getUserProfileUseCase)
     }
 
     @Test
     fun `when no profile is found should reject with error`() {
-        getAllAuthenticatorsUseCase("profileId1", promiseMock)
+        Mockito.lenient().`when`(oneginiSdk.oneginiClient.userClient.getRegisteredAuthenticators(any())).thenReturn(setOf(TestData.authenticator1, TestData.authenticator2))
+
+        getRegisteredAuthenticatorsUseCase("123456", promiseMock)
 
         argumentCaptor<String> {
             verify(promiseMock).reject(capture(), capture())
@@ -55,11 +57,11 @@ class GetAllAuthenticatorsUseCaseTests {
 
     @Test
     fun `should resolve with list of authenticators for specific user profile`() {
-        `when`(oneginiSdk.oneginiClient.userClient.getAllAuthenticators(any())).thenReturn(setOf(TestData.authenticator1, TestData.authenticator2))
+        Mockito.lenient().`when`(oneginiSdk.oneginiClient.userClient.getRegisteredAuthenticators(any())).thenReturn(setOf(TestData.authenticator1, TestData.authenticator2))
 
-        `when`(getUserProfileUseCase.invoke(any())).thenReturn(UserProfile("123456"))
+        Mockito.`when`(getUserProfileUseCase.invoke(any())).thenReturn(UserProfile("123456"))
 
-        getAllAuthenticatorsUseCase("123456", promiseMock)
+        getRegisteredAuthenticatorsUseCase("123456", promiseMock)
 
         argumentCaptor<JavaOnlyArray> {
             verify(promiseMock).resolve(capture())
