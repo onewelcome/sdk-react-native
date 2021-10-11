@@ -79,9 +79,7 @@ class OneginiSdkWrapperTests {
     @Mock
     lateinit var enrollMobileAuthenticationUseCase: EnrollMobileAuthenticationUseCase
 
-    //
-
-    lateinit var wrapper: OneginiSdkWrapper
+    private lateinit var wrapper: OneginiSdkWrapper
 
     @Before
     fun setup() {
@@ -138,9 +136,9 @@ class OneginiSdkWrapperTests {
 
     @Test
     fun `when registerUser method is called calls registerUserUseCase with proper params`() {
-        wrapper.registerUser("id1", promiseMock)
+        wrapper.registerUser("id1", JavaOnlyArray(), promiseMock)
 
-        verify(registerUserUseCase).invoke("id1", promiseMock)
+        verify(registerUserUseCase).invoke("id1", JavaOnlyArray(), promiseMock)
     }
 
     @Test
@@ -187,16 +185,16 @@ class OneginiSdkWrapperTests {
 
     @Test
     fun `when authenticateUser method is called calls authenticateUserUseCase with proper params`() {
-        wrapper.authenticateUser("123456", promiseMock)
+        wrapper.authenticateUser("123456", "1", promiseMock)
 
-        verify(authenticateUserUseCase).invoke("123456", promiseMock)
+        verify(authenticateUserUseCase).invoke("123456", "1", promiseMock)
     }
 
     @Test
     fun `when authenticateUserImplicitly method is called calls authenticateUserImplicitlyUseCase with proper params`() {
-        wrapper.authenticateUserImplicitly("123456", promiseMock)
+        wrapper.authenticateUserImplicitly("123456", JavaOnlyArray(), promiseMock)
 
-        verify(authenticateUserImplicitlyUseCase).invoke("123456", promiseMock)
+        verify(authenticateUserImplicitlyUseCase).invoke("123456", JavaOnlyArray(), promiseMock)
     }
 
     @Test
