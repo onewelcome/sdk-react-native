@@ -66,14 +66,6 @@ class DeregisterUserUseCaseTests {
         }
     }
 
-    fun whenUserDeregistrationFailed() {
-        `when`(deregistrationError.errorType).thenReturn(666)
-        `when`(deregistrationError.message).thenReturn("MyError")
-        `when`(oneginiSdk.oneginiClient.userClient.deregisterUser(any(), any())).thenAnswer {
-            it.getArgument<OneginiDeregisterUserProfileHandler>(1).onError(deregistrationError)
-        }
-    }
-
     @Test
     fun `when fails should reject with proper error`() {
         whenUserDeregistrationFailed()
@@ -101,5 +93,13 @@ class DeregisterUserUseCaseTests {
         verify(oneginiSdk.oneginiClient.userClient).deregisterUser(any(), any())
 
         verify(promiseMock).resolve(null)
+    }
+
+    private fun whenUserDeregistrationFailed() {
+        `when`(deregistrationError.errorType).thenReturn(666)
+        `when`(deregistrationError.message).thenReturn("MyError")
+        `when`(oneginiSdk.oneginiClient.userClient.deregisterUser(any(), any())).thenAnswer {
+            it.getArgument<OneginiDeregisterUserProfileHandler>(1).onError(deregistrationError)
+        }
     }
 }
