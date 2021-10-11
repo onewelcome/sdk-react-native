@@ -1,20 +1,14 @@
 package com.onegini.mobile.clean.use_cases
 
 import com.facebook.react.bridge.Promise
-import com.onegini.mobile.OneginiComponets
+import com.onegini.mobile.OneginiSDK
+import com.onegini.mobile.exception.OneginiWrapperErrorException
 import com.onegini.mobile.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.android.model.OneginiAuthenticator
 
-class IsAuthenticatorRegisteredUseCase(val getUserProfileUseCase: GetUserProfileUseCase = GetUserProfileUseCase()) {
+class IsAuthenticatorRegisteredUseCase(private val oneginiSDK: OneginiSDK, private val getNotRegisteredAuthenticatorForTypeUseCase: GetNotRegisteredAuthenticatorForTypeUseCase = GetNotRegisteredAuthenticatorForTypeUseCase(oneginiSDK)) {
 
     operator fun invoke(profileId: String, type: String, promise: Promise) {
-        val userProfile = getUserProfileUseCase(profileId)
-
-        if (userProfile == null) {
-            promise.reject(OneginiWrapperErrors.USER_PROFILE_IS_NULL.code, OneginiWrapperErrors.USER_PROFILE_IS_NULL.message)
-            return
-        }
-
         val authType = when (type) {
             "Fingerprint" -> OneginiAuthenticator.FINGERPRINT
             "Pin" -> OneginiAuthenticator.PIN
@@ -22,15 +16,15 @@ class IsAuthenticatorRegisteredUseCase(val getUserProfileUseCase: GetUserProfile
             else -> OneginiAuthenticator.CUSTOM
         }
 
-        var authenticator: OneginiAuthenticator? = null
-
-        val notRegisteredAuthenticators: Set<OneginiAuthenticator> = OneginiComponets.oneginiSDK.oneginiClient.userClient.getRegisteredAuthenticators(userProfile)
-        for (auth in notRegisteredAuthenticators) {
-            if (auth.type == authType) {
-                authenticator = auth
+        try {
+            getNotRegisteredAuthenticatorForTypeUseCase(profileId, authType)
+            promise.resolve(true)
+        } catch (e: OneginiWrapperErrorException) {
+            if (e.wrapperError == OneginiWrapperErrors.AUTHENTICATED_USER_PROFILE_IS_NULL) {
+                promise.resolve(false)
+            } else {
+                promise.reject(e.wrapperError.code, e.wrapperError.message)
             }
         }
-
-        promise.resolve(authenticator != null)
     }
 }

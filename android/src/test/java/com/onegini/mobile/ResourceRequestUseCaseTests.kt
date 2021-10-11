@@ -1,6 +1,7 @@
 package com.onegini.mobile
 
 import com.facebook.react.bridge.JavaOnlyMap
+import com.facebook.react.bridge.Promise
 import com.onegini.mobile.clean.use_cases.ResourceRequestUseCase
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.plugins.RxJavaPlugins
@@ -9,8 +10,10 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.junit.Assert
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Answers
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.lenient
@@ -19,7 +22,16 @@ import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.verify
 
 @RunWith(MockitoJUnitRunner::class)
-class ResourceRequestUseCaseTests : BaseTests() {
+class ResourceRequestUseCaseTests {
+
+    @get:Rule
+    val reactArgumentsTestRule = ReactArgumentsTestRule()
+
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    lateinit var oneginiSdk: OneginiSDK
+
+    @Mock
+    lateinit var promiseMock: Promise
 
     @Mock
     lateinit var resourceOkHttpClient: OkHttpClient
@@ -32,11 +44,11 @@ class ResourceRequestUseCaseTests : BaseTests() {
 
     @Before
     fun prepareMocks() {
-        lenient().`when`(userClient.resourceOkHttpClient).thenReturn(resourceOkHttpClient)
-        lenient().`when`(userClient.implicitResourceOkHttpClient).thenReturn(implicitResourceOkHttpClient)
-        lenient().`when`(deviceClient.anonymousResourceOkHttpClient).thenReturn(anonymousResourceOkHttpClient)
+        lenient().`when`(oneginiSdk.oneginiClient.userClient.resourceOkHttpClient).thenReturn(resourceOkHttpClient)
+        lenient().`when`(oneginiSdk.oneginiClient.userClient.implicitResourceOkHttpClient).thenReturn(implicitResourceOkHttpClient)
+        lenient().`when`(oneginiSdk.oneginiClient.deviceClient.anonymousResourceOkHttpClient).thenReturn(anonymousResourceOkHttpClient)
 
-        `when`(oneginiClient.configModel).thenReturn(TestData.configModel)
+        `when`(oneginiSdk.oneginiClient.configModel).thenReturn(TestData.configModel)
 
         RxAndroidPlugins.reset()
         RxJavaPlugins.reset()
@@ -44,8 +56,6 @@ class ResourceRequestUseCaseTests : BaseTests() {
         RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
         RxAndroidPlugins.setInitMainThreadSchedulerHandler { Schedulers.trampoline() }
     }
-
-    //
 
     @Test
     fun `when called with User type should create and call proper request`() {
@@ -58,7 +68,7 @@ class ResourceRequestUseCaseTests : BaseTests() {
         headers.putString("header1", "testVal")
         map.putMap("headers", headers)
 
-        ResourceRequestUseCase()("User", map, promiseMock)
+        ResourceRequestUseCase(oneginiSdk)("User", map, promiseMock)
 
         argumentCaptor<Request> {
             verify(resourceOkHttpClient).newCall(capture())
@@ -79,7 +89,7 @@ class ResourceRequestUseCaseTests : BaseTests() {
         headers.putString("header1", "testVal")
         map.putMap("headers", headers)
 
-        ResourceRequestUseCase()("ImplicitUser", map, promiseMock)
+        ResourceRequestUseCase(oneginiSdk)("ImplicitUser", map, promiseMock)
 
         argumentCaptor<Request> {
             verify(implicitResourceOkHttpClient).newCall(capture())
@@ -99,7 +109,7 @@ class ResourceRequestUseCaseTests : BaseTests() {
         headers.putString("header1", "testVal")
         map.putMap("headers", headers)
 
-        ResourceRequestUseCase()("Anonymous", map, promiseMock)
+        ResourceRequestUseCase(oneginiSdk)("Anonymous", map, promiseMock)
 
         argumentCaptor<Request> {
             verify(anonymousResourceOkHttpClient).newCall(capture())
@@ -119,7 +129,7 @@ class ResourceRequestUseCaseTests : BaseTests() {
         headers.putString("header1", "testVal")
         map.putMap("headers", headers)
 
-        ResourceRequestUseCase()("Anonymous", map, promiseMock)
+        ResourceRequestUseCase(oneginiSdk)("Anonymous", map, promiseMock)
 
         // TODO: What would be the easiest way to mock success (observer) here?
 

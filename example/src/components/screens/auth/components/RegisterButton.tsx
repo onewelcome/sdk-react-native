@@ -121,7 +121,7 @@ const startRegister = async (
   setRegistering?.(true);
 
   try {
-    await OneginiSdk.registerUser(providerId);
+    await OneginiSdk.registerUser(providerId, ['read']);
     setRegistering?.(false);
     onRegisterSuccess?.();
   } catch (e) {
