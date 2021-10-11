@@ -163,8 +163,8 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    override fun registerUser(identityProviderId: String?, promise: Promise) {
-        sdkWrapper.registerUser(identityProviderId, promise)
+    override fun registerUser(identityProviderId: String?, scopes: ReadableArray, promise: Promise) {
+        sdkWrapper.registerUser(identityProviderId, scopes, promise)
     }
 
     @ReactMethod
@@ -306,13 +306,13 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    override fun authenticateUser(profileId: String?, promise: Promise) {
-        sdkWrapper.authenticateUser(profileId, promise)
+    override fun authenticateUser(profileId: String?, authenticatorId: String?, promise: Promise) {
+        sdkWrapper.authenticateUser(profileId, authenticatorId, promise)
     }
 
     @ReactMethod
-    override fun authenticateUserImplicitly(profileId: String?, promise: Promise) {
-        sdkWrapper.authenticateUserImplicitly(profileId, promise)
+    override fun authenticateUserImplicitly(profileId: String?, scopes: ReadableArray, promise: Promise) {
+        sdkWrapper.authenticateUserImplicitly(profileId, scopes, promise)
     }
 
     @ReactMethod

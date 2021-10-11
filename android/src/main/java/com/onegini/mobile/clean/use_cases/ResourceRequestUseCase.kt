@@ -2,7 +2,7 @@ package com.onegini.mobile.clean.use_cases
 
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReadableMap
-import com.onegini.mobile.OneginiComponets
+import com.onegini.mobile.OneginiSDK
 import com.onegini.mobile.mapers.ResourceRequestDetailsMapper
 import com.onegini.mobile.model.ResourceRequestDetails
 import com.onegini.mobile.network.ApiCall
@@ -12,14 +12,14 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import okhttp3.*
 
-class ResourceRequestUseCase {
+class ResourceRequestUseCase(private val oneginiSDK: OneginiSDK) {
 
     private var disposable: Disposable? = null
 
     operator fun invoke(type: String, details: ReadableMap, promise: Promise) {
         val requestDetails = ResourceRequestDetailsMapper.toResourceRequestDetails(details)
         val client = getClient(type)
-        val baseUrl = OneginiComponets.oneginiSDK.oneginiClient.configModel.resourceBaseUrl
+        val baseUrl = oneginiSDK.oneginiClient.configModel.resourceBaseUrl
         val request = prepareRequest(baseUrl, requestDetails)
 
         disposable = makeRequest(client, request, promise)
@@ -33,10 +33,10 @@ class ResourceRequestUseCase {
 
     private fun getClient(type: String): OkHttpClient {
         return when (type) {
-            "User" -> OneginiComponets.oneginiSDK.oneginiClient.userClient.resourceOkHttpClient
-            "ImplicitUser" -> OneginiComponets.oneginiSDK.oneginiClient.userClient.implicitResourceOkHttpClient
-            "Anonymous" -> OneginiComponets.oneginiSDK.oneginiClient.deviceClient.anonymousResourceOkHttpClient
-            else -> OneginiComponets.oneginiSDK.oneginiClient.deviceClient.anonymousResourceOkHttpClient
+            "User" -> oneginiSDK.oneginiClient.userClient.resourceOkHttpClient
+            "ImplicitUser" -> oneginiSDK.oneginiClient.userClient.implicitResourceOkHttpClient
+            "Anonymous" -> oneginiSDK.oneginiClient.deviceClient.anonymousResourceOkHttpClient
+            else -> oneginiSDK.oneginiClient.deviceClient.anonymousResourceOkHttpClient
         }
     }
 
