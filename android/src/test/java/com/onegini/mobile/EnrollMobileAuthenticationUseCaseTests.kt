@@ -34,7 +34,7 @@ class EnrollMobileAuthenticationUseCaseTests {
 
     @Test
     fun `when success should resolve with null`() {
-        Mockito.`when`(oneginiSdk.oneginiClient.userClient.enrollUserForMobileAuth(any())).thenAnswer {
+        `when`(oneginiSdk.oneginiClient.userClient.enrollUserForMobileAuth(any())).thenAnswer {
             it.getArgument<OneginiMobileAuthEnrollmentHandler>(0).onSuccess()
         }
 
@@ -46,7 +46,7 @@ class EnrollMobileAuthenticationUseCaseTests {
     }
 
     @Test
-    fun `when fails rejects with proper error`() {
+    fun `when fails should reject with proper error`() {
         whenEnrollMobileAuthenticationFailed()
 
         EnrollMobileAuthenticationUseCase(oneginiSdk)(promiseMock)
