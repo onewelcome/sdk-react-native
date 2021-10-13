@@ -18,7 +18,8 @@ class OneginiSdkWrapper(
     val getAllAuthenticatorsUseCase: GetAllAuthenticatorsUseCase = GetAllAuthenticatorsUseCase(oneginiSDK),
     val getRegisteredAuthenticatorsUseCase: GetRegisteredAuthenticatorsUseCase = GetRegisteredAuthenticatorsUseCase(oneginiSDK),
     val getUserProfilesUseCase: GetUserProfilesUseCase = GetUserProfilesUseCase(oneginiSDK),
-    val getRedirectUriUseCase: GetRedirectUriUseCase = GetRedirectUriUseCase(oneginiSDK)
+    val getRedirectUriUseCase: GetRedirectUriUseCase = GetRedirectUriUseCase(oneginiSDK),
+    val deregisterUserUseCase: DeregisterUserUseCase = DeregisterUserUseCase(oneginiSDK)
 ) : IOneginiSdkWrapper {
 
     override fun startClient(rnConfig: ReadableMap, promise: Promise) {
@@ -70,7 +71,7 @@ class OneginiSdkWrapper(
     }
 
     override fun deregisterUser(profileId: String?, promise: Promise) {
-        TODO("Not yet implemented")
+        deregisterUserUseCase(profileId, promise)
     }
 
     override fun cancelRegistration() {

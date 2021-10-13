@@ -30,6 +30,7 @@ class RegisterUserUseCaseTests {
 
     @Mock
     lateinit var promiseMock: Promise
+
     @Mock
     lateinit var identityProvider1: OneginiIdentityProvider
 
