@@ -1,6 +1,7 @@
 package com.onegini.mobile
 
 import com.facebook.react.bridge.JavaOnlyArray
+import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReadableArray
 import com.onegini.mobile.clean.use_cases.AuthenticateUserImplicitlyUseCase
@@ -63,17 +64,17 @@ class AuthenticateUserImplicitlyUseCaseTests {
     }
 
     @Test
-    fun `when successful should resolve with null`() {
+    fun `when successful should resolve with user profile`() {
         `when`(oneginiSdk.oneginiClient.userClient.authenticateUserImplicitly(any(), any(), any())).thenAnswer {
             it.getArgument<OneginiImplicitAuthenticationHandler>(2).onSuccess(UserProfile("123456"))
         }
 
         authenticateUserImplicitlyUseCase("123456", scopes, promiseMock)
 
-        argumentCaptor<UserProfile> {
+        argumentCaptor<JavaOnlyMap> {
             verify(promiseMock).resolve(capture())
 
-            Assert.assertEquals("123456", firstValue.profileId)
+            Assert.assertEquals("123456", firstValue.getString("profileId"))
         }
     }
 
