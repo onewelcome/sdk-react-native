@@ -77,14 +77,6 @@ class AuthenticateUserImplicitlyUseCaseTests {
         }
     }
 
-    fun whenAuthenticateUserImplicitlyFailed() {
-        `when`(authenticationError.errorType).thenReturn(666)
-        `when`(authenticationError.message).thenReturn("MyError")
-        `when`(oneginiSdk.oneginiClient.userClient.authenticateUserImplicitly(any(), any(), any())).thenAnswer {
-            it.getArgument<OneginiImplicitAuthenticationHandler>(2).onError(authenticationError)
-        }
-    }
-
     @Test
     fun `when fails should reject with proper error`() {
         whenAuthenticateUserImplicitlyFailed()
@@ -106,6 +98,14 @@ class AuthenticateUserImplicitlyUseCaseTests {
             verify(oneginiSdk.oneginiClient.userClient).authenticateUserImplicitly(capture(), any(), any())
 
             Assert.assertEquals("123456", firstValue.profileId)
+        }
+    }
+
+    private fun whenAuthenticateUserImplicitlyFailed() {
+        `when`(authenticationError.errorType).thenReturn(666)
+        `when`(authenticationError.message).thenReturn("MyError")
+        `when`(oneginiSdk.oneginiClient.userClient.authenticateUserImplicitly(any(), any(), any())).thenAnswer {
+            it.getArgument<OneginiImplicitAuthenticationHandler>(2).onError(authenticationError)
         }
     }
 }
