@@ -6,6 +6,7 @@ import com.onegini.mobile.clean.use_cases.AuthenticateDeviceUseCase
 import com.onegini.mobile.sdk.android.handlers.OneginiDeviceAuthenticationHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiDeviceAuthenticationError
 import org.junit.Assert
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -32,13 +33,20 @@ class AuthenticateDeviceUseCaseTests {
     @Mock
     lateinit var authenticationError: OneginiDeviceAuthenticationError
 
+    private lateinit var authenticateDeviceUseCase: AuthenticateDeviceUseCase
+
+    @Before
+    fun setup() {
+        authenticateDeviceUseCase = AuthenticateDeviceUseCase(oneginiSdk)
+    }
+
     @Test
     fun `when successful should resolve with null`() {
         `when`(oneginiSdk.oneginiClient.deviceClient.authenticateDevice(any(), any())).thenAnswer {
             it.getArgument<OneginiDeviceAuthenticationHandler>(1).onSuccess()
         }
 
-        AuthenticateDeviceUseCase(oneginiSdk)(JavaOnlyArray.of("path"), promiseMock)
+        authenticateDeviceUseCase(JavaOnlyArray.of("path"), promiseMock)
 
         argumentCaptor<Array<String>> {
             verify(oneginiSdk.oneginiClient.deviceClient).authenticateDevice(capture(), any())
@@ -53,7 +61,7 @@ class AuthenticateDeviceUseCaseTests {
     fun `when fails should reject with proper error`() {
         whenAuthenticateDeviceFailed()
 
-        AuthenticateDeviceUseCase(oneginiSdk)(JavaOnlyArray.of("path"), promiseMock)
+        authenticateDeviceUseCase(JavaOnlyArray.of("path"), promiseMock)
 
         argumentCaptor<String> {
             verify(promiseMock).reject(capture(), capture())
