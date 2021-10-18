@@ -63,12 +63,7 @@ class AuthenticateDeviceUseCaseTests {
 
         authenticateDeviceUseCase(JavaOnlyArray.of("path"), promiseMock)
 
-        argumentCaptor<String> {
-            verify(promiseMock).reject(capture(), capture())
-
-            Assert.assertEquals("666", firstValue)
-            Assert.assertEquals("MyError", secondValue)
-        }
+        verify(promiseMock).reject("666", "MyError")
     }
 
     private fun whenAuthenticateDeviceFailed() {
