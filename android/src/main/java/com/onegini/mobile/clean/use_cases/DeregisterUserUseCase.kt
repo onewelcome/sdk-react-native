@@ -6,8 +6,10 @@ import com.onegini.mobile.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.android.handlers.OneginiDeregisterUserProfileHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiDeregistrationError
 
-class DeregisterUserUseCase(private val oneginiSDK: OneginiSDK, private val getUserProfileUseCase: GetUserProfileUseCase = GetUserProfileUseCase(oneginiSDK)) {
-
+class DeregisterUserUseCase(
+    private val oneginiSDK: OneginiSDK,
+    private val getUserProfileUseCase: GetUserProfileUseCase = GetUserProfileUseCase(oneginiSDK)
+) {
     operator fun invoke(profileId: String?, promise: Promise) {
         val userProfile = getUserProfileUseCase(profileId)
 

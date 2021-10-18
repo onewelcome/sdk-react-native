@@ -98,14 +98,6 @@ class AuthenticateUserUseCaseTests {
         }
     }
 
-    fun whenAuthenticateUserFailed() {
-        `when`(authenticationError.errorType).thenReturn(666)
-        `when`(authenticationError.message).thenReturn("MyError")
-        `when`(oneginiSdk.oneginiClient.userClient.authenticateUser(any(), any())).thenAnswer {
-            it.getArgument<OneginiAuthenticationHandler>(1).onError(authenticationError)
-        }
-    }
-
     @Test
     fun `when fails should reject with proper error`() {
         whenAuthenticateUserFailed()
@@ -117,6 +109,14 @@ class AuthenticateUserUseCaseTests {
 
             Assert.assertEquals("666", firstValue)
             Assert.assertEquals("MyError", secondValue)
+        }
+    }
+
+    private fun whenAuthenticateUserFailed() {
+        `when`(authenticationError.errorType).thenReturn(666)
+        `when`(authenticationError.message).thenReturn("MyError")
+        `when`(oneginiSdk.oneginiClient.userClient.authenticateUser(any(), any())).thenAnswer {
+            it.getArgument<OneginiAuthenticationHandler>(1).onError(authenticationError)
         }
     }
 }
