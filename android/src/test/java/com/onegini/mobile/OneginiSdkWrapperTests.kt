@@ -55,6 +55,9 @@ class OneginiSdkWrapperTests {
     @Mock
     lateinit var deregisterUserUseCase: DeregisterUserUseCase
 
+    @Mock
+    lateinit var authenticateUserUseCase: AuthenticateUserUseCase
+
     private lateinit var wrapper: OneginiSdkWrapper
 
     @Before
@@ -77,7 +80,8 @@ class OneginiSdkWrapperTests {
             getRegisteredAuthenticatorsUseCase,
             getUserProfilesUseCase,
             getRedirectUriUseCase,
-            deregisterUserUseCase
+            deregisterUserUseCase,
+            authenticateUserUseCase
         )
     }
 
@@ -149,5 +153,12 @@ class OneginiSdkWrapperTests {
         wrapper.deregisterUser("123456", promiseMock)
 
         verify(deregisterUserUseCase).invoke("123456", promiseMock)
+    }
+
+    @Test
+    fun `when authenticateUser method is called calls authenticateUserUseCase with proper params`() {
+        wrapper.authenticateUser("123456", "1", promiseMock)
+
+        verify(authenticateUserUseCase).invoke("123456", "1", promiseMock)
     }
 }

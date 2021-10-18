@@ -19,15 +19,16 @@ class OneginiSdkWrapper(
     val getRegisteredAuthenticatorsUseCase: GetRegisteredAuthenticatorsUseCase = GetRegisteredAuthenticatorsUseCase(oneginiSDK),
     val getUserProfilesUseCase: GetUserProfilesUseCase = GetUserProfilesUseCase(oneginiSDK),
     val getRedirectUriUseCase: GetRedirectUriUseCase = GetRedirectUriUseCase(oneginiSDK),
-    val deregisterUserUseCase: DeregisterUserUseCase = DeregisterUserUseCase(oneginiSDK)
+    val deregisterUserUseCase: DeregisterUserUseCase = DeregisterUserUseCase(oneginiSDK),
+    val authenticateUserUseCase: AuthenticateUserUseCase = AuthenticateUserUseCase(oneginiSDK)
 ) : IOneginiSdkWrapper {
 
     override fun startClient(rnConfig: ReadableMap, promise: Promise) {
         startClientUseCase(rnConfig, promise)
     }
 
-    override fun authenticateUser(profileId: String?, promise: Promise) {
-        TODO("Not yet implemented")
+    override fun authenticateUser(profileId: String?, authenticatorId: String?, promise: Promise) {
+        authenticateUserUseCase(profileId, authenticatorId, promise)
     }
 
     override fun authenticateUserImplicitly(profileId: String?, promise: Promise) {
