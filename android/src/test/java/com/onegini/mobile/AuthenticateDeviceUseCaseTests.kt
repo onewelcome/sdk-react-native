@@ -1,5 +1,6 @@
 package com.onegini.mobile
 
+import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.Promise
 import com.onegini.mobile.clean.use_cases.AuthenticateDeviceUseCase
 import com.onegini.mobile.sdk.android.handlers.OneginiDeviceAuthenticationHandler
@@ -37,7 +38,7 @@ class AuthenticateDeviceUseCaseTests {
             it.getArgument<OneginiDeviceAuthenticationHandler>(1).onSuccess()
         }
 
-        AuthenticateDeviceUseCase(oneginiSdk)("path", promiseMock)
+        AuthenticateDeviceUseCase(oneginiSdk)(JavaOnlyArray.of("path"), promiseMock)
 
         argumentCaptor<Array<String>> {
             verify(oneginiSdk.oneginiClient.deviceClient).authenticateDevice(capture(), any())
@@ -50,20 +51,23 @@ class AuthenticateDeviceUseCaseTests {
 
     @Test
     fun `when fails should reject with proper error`() {
-        `when`(authenticationError.errorType).thenReturn(666)
-        `when`(authenticationError.message).thenReturn("MyError")
+        whenAuthenticateDeviceFailed()
 
-        `when`(oneginiSdk.oneginiClient.deviceClient.authenticateDevice(any(), any())).thenAnswer {
-            it.getArgument<OneginiDeviceAuthenticationHandler>(1).onError(authenticationError)
-        }
-
-        AuthenticateDeviceUseCase(oneginiSdk)("path", promiseMock)
+        AuthenticateDeviceUseCase(oneginiSdk)(JavaOnlyArray.of("path"), promiseMock)
 
         argumentCaptor<String> {
             verify(promiseMock).reject(capture(), capture())
 
             Assert.assertEquals("666", firstValue)
             Assert.assertEquals("MyError", secondValue)
+        }
+    }
+
+    private fun whenAuthenticateDeviceFailed() {
+        `when`(authenticationError.errorType).thenReturn(666)
+        `when`(authenticationError.message).thenReturn("MyError")
+        `when`(oneginiSdk.oneginiClient.deviceClient.authenticateDevice(any(), any())).thenAnswer {
+            it.getArgument<OneginiDeviceAuthenticationHandler>(1).onError(authenticationError)
         }
     }
 }

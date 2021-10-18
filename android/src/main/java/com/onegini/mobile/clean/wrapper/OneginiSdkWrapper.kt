@@ -37,8 +37,8 @@ class OneginiSdkWrapper(
         authenticateUserImplicitlyUseCase(profileId, scopes, promise)
     }
 
-    override fun authenticateDevice(resourcePath: String, promise: Promise) {
-        authenticateDeviceUseCase(resourcePath, promise)
+    override fun authenticateDevice(scopes: ReadableArray, promise: Promise) {
+        authenticateDeviceUseCase(scopes, promise)
     }
 
     override fun getUserProfiles(promise: Promise) {

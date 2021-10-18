@@ -179,8 +179,8 @@ class OneginiSdkWrapperTests {
 
     @Test
     fun `when authenticateDeviceForResource method is called calls authenticateDeviceForResourceUseCase with proper params`() {
-        wrapper.authenticateDeviceUseCase("path", promiseMock)
+        wrapper.authenticateDeviceUseCase(JavaOnlyArray.of("path"), promiseMock)
 
-        verify(authenticateDeviceUseCase).invoke("path", promiseMock)
+        verify(authenticateDeviceUseCase).invoke(JavaOnlyArray.of("path"), promiseMock)
     }
 }
