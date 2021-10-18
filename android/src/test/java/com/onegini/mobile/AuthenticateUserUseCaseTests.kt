@@ -4,6 +4,7 @@ import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.Promise
 import com.onegini.mobile.clean.use_cases.AuthenticateUserUseCase
 import com.onegini.mobile.clean.use_cases.GetRegisteredAuthenticatorsUseCase
+import com.onegini.mobile.clean.use_cases.GetUserProfileUseCase
 import com.onegini.mobile.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.android.handlers.OneginiAuthenticationHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiAuthenticationError
@@ -18,7 +19,6 @@ import org.junit.runner.RunWith
 import org.mockito.Answers
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
-import org.mockito.Mockito.lenient
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
@@ -45,14 +45,24 @@ class AuthenticateUserUseCaseTests {
     @Mock
     lateinit var authenticator: OneginiAuthenticator
 
+    @Mock
+    lateinit var getUserProfileUseCase: GetUserProfileUseCase
+
+    private lateinit var authenticateUserUseCase: AuthenticateUserUseCase
+
     @Before
     fun setup() {
+        `when`(getUserProfileUseCase.invoke(any())).thenReturn(UserProfile("123456"))
         `when`(authenticator.id).thenReturn("1")
+
+        authenticateUserUseCase = AuthenticateUserUseCase(oneginiSdk, getRegisteredAuthenticatorsUseCase, getUserProfileUseCase)
     }
 
     @Test
     fun `when user profile cannot be created should reject with proper errors`() {
-        AuthenticateUserUseCase(oneginiSdk, getRegisteredAuthenticatorsUseCase)("123", "1", promiseMock)
+        `when`(getUserProfileUseCase.invoke(any())).thenReturn(null)
+
+        authenticateUserUseCase("123", "1", promiseMock)
 
         verify(promiseMock).reject(OneginiWrapperErrors.USER_PROFILE_IS_NULL.code, OneginiWrapperErrors.USER_PROFILE_IS_NULL.message)
     }
@@ -63,7 +73,7 @@ class AuthenticateUserUseCaseTests {
             it.getArgument<OneginiAuthenticationHandler>(1).onSuccess(UserProfile("666666"), CustomInfo(666, "customData"))
         }
 
-        AuthenticateUserUseCase(oneginiSdk, getRegisteredAuthenticatorsUseCase)("123456", null, promiseMock)
+        authenticateUserUseCase("123456", null, promiseMock)
 
         argumentCaptor<JavaOnlyMap> {
             verify(promiseMock).resolve(capture())
@@ -78,37 +88,35 @@ class AuthenticateUserUseCaseTests {
     fun `should call SDK method with proper id and authenticatorId`() {
         `when`(getRegisteredAuthenticatorsUseCase.getList(any())).thenReturn(setOf(authenticator))
 
-        AuthenticateUserUseCase(oneginiSdk, getRegisteredAuthenticatorsUseCase)("123456", "1", promiseMock)
+        authenticateUserUseCase("123456", "1", promiseMock)
 
-        argumentCaptor<OneginiAuthenticator> {
-            verify(oneginiSdk.oneginiClient.userClient).authenticateUser(any(), capture(), any())
+        argumentCaptor<UserProfile, OneginiAuthenticator>().apply {
+            verify(oneginiSdk.oneginiClient.userClient).authenticateUser(first.capture(), second.capture(), any())
 
-            Assert.assertEquals("1", firstValue.id)
-        }
-
-        argumentCaptor<UserProfile> {
-            verify(oneginiSdk.oneginiClient.userClient).authenticateUser(capture(), any(), any())
-
-            Assert.assertEquals("123456", firstValue.profileId)
+            Assert.assertEquals("123456", first.firstValue.profileId)
+            Assert.assertEquals("1", second.firstValue.id)
         }
     }
 
     @Test
     fun `when fails should reject with proper error`() {
-        lenient().`when`(authenticationError.errorType).thenReturn(666)
-        lenient().`when`(authenticationError.message).thenReturn("MyError")
+        whenAuthenticateUserFailed()
 
-        `when`(oneginiSdk.oneginiClient.userClient.authenticateUser(any(), any())).thenAnswer {
-            it.getArgument<OneginiAuthenticationHandler>(1).onError(authenticationError)
-        }
-
-        AuthenticateUserUseCase(oneginiSdk)("123456", null, promiseMock)
+        authenticateUserUseCase("123456", null, promiseMock)
 
         argumentCaptor<String> {
             verify(promiseMock).reject(capture(), capture())
 
             Assert.assertEquals("666", firstValue)
             Assert.assertEquals("MyError", secondValue)
+        }
+    }
+
+    private fun whenAuthenticateUserFailed() {
+        `when`(authenticationError.errorType).thenReturn(666)
+        `when`(authenticationError.message).thenReturn("MyError")
+        `when`(oneginiSdk.oneginiClient.userClient.authenticateUser(any(), any())).thenAnswer {
+            it.getArgument<OneginiAuthenticationHandler>(1).onError(authenticationError)
         }
     }
 }

@@ -62,7 +62,7 @@ class OneginiSdkWrapperTests {
     lateinit var authenticateUserImplicitlyUseCase: AuthenticateUserImplicitlyUseCase
 
     @Mock
-    lateinit var authenticateDeviceForResourceUseCase: AuthenticateDeviceForResourceUseCase
+    lateinit var authenticateDeviceUseCase: AuthenticateDeviceUseCase
 
     @Mock
     lateinit var logoutUseCase: LogoutUseCase
@@ -95,7 +95,7 @@ class OneginiSdkWrapperTests {
             deregisterUserUseCase,
             authenticateUserUseCase,
             authenticateUserImplicitlyUseCase,
-            authenticateDeviceForResourceUseCase,
+            authenticateDeviceUseCase,
             logoutUseCase,
             resourceRequestUseCase
         )
@@ -187,9 +187,9 @@ class OneginiSdkWrapperTests {
 
     @Test
     fun `when authenticateDeviceForResource method is called calls authenticateDeviceForResourceUseCase with proper params`() {
-        wrapper.authenticateDeviceForResource("path", promiseMock)
+        wrapper.authenticateDeviceUseCase(JavaOnlyArray.of("path"), promiseMock)
 
-        verify(authenticateDeviceForResourceUseCase).invoke("path", promiseMock)
+        verify(authenticateDeviceUseCase).invoke(JavaOnlyArray.of("path"), promiseMock)
     }
 
     @Test

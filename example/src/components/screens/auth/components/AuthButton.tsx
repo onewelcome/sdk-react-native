@@ -35,7 +35,7 @@ function onPressClicked(
   setError?: (error: string) => void,
 ) {
   OneginiSdk.getUserProfiles().then((profiles) =>
-    OneginiSdk.authenticateUser(profiles[0].profileId)
+    OneginiSdk.authenticateUser(profiles[0].profileId, null)
       .then((result) => {
         console.log('AUTH: ', JSON.stringify(result));
         onAuthorized?.(true);

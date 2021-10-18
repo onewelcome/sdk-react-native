@@ -1,6 +1,7 @@
 package com.onegini.mobile
 
 import com.facebook.react.bridge.JavaOnlyArray
+import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReadableArray
 import com.onegini.mobile.clean.use_cases.AuthenticateUserImplicitlyUseCase
@@ -16,7 +17,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Answers
 import org.mockito.Mock
-import org.mockito.Mockito
+import org.mockito.Mockito.`when`
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
@@ -42,70 +43,70 @@ class AuthenticateUserImplicitlyUseCaseTests {
     @Mock
     lateinit var getUserProfileUseCase: GetUserProfileUseCase
 
+    private lateinit var authenticateUserImplicitlyUseCase: AuthenticateUserImplicitlyUseCase
+
     @Before
     fun setup() {
-        Mockito.`when`(getUserProfileUseCase.invoke(any())).thenReturn(UserProfile("123456"))
+        `when`(getUserProfileUseCase.invoke(any())).thenReturn(UserProfile("123456"))
 
         scopes = JavaOnlyArray.of("read")
+
+        authenticateUserImplicitlyUseCase = AuthenticateUserImplicitlyUseCase(oneginiSdk, getUserProfileUseCase)
     }
 
     @Test
     fun `when no profile is found should reject with error`() {
-        AuthenticateUserImplicitlyUseCase(oneginiSdk)("444333", scopes, promiseMock)
+        `when`(getUserProfileUseCase.invoke(any())).thenReturn(null)
 
-        argumentCaptor<String> {
-            verify(promiseMock).reject(capture(), capture())
+        authenticateUserImplicitlyUseCase("444333", scopes, promiseMock)
 
-            Assert.assertEquals(OneginiWrapperErrors.USER_PROFILE_IS_NULL.code, firstValue)
-            Assert.assertEquals(OneginiWrapperErrors.USER_PROFILE_IS_NULL.message, secondValue)
-        }
+        verify(promiseMock).reject(OneginiWrapperErrors.USER_PROFILE_IS_NULL.code, OneginiWrapperErrors.USER_PROFILE_IS_NULL.message)
     }
 
     @Test
-    fun `when successful should resolve with null`() {
-        Mockito.`when`(oneginiSdk.oneginiClient.userClient.authenticateUserImplicitly(any(), any(), any())).thenAnswer {
+    fun `when successful should resolve with user profile`() {
+        `when`(oneginiSdk.oneginiClient.userClient.authenticateUserImplicitly(any(), any(), any())).thenAnswer {
             it.getArgument<OneginiImplicitAuthenticationHandler>(2).onSuccess(UserProfile("123456"))
         }
 
-        AuthenticateUserImplicitlyUseCase(oneginiSdk, getUserProfileUseCase)("123456", scopes, promiseMock)
+        authenticateUserImplicitlyUseCase("123456", scopes, promiseMock)
 
-        verify(promiseMock).resolve(null)
+        argumentCaptor<JavaOnlyMap> {
+            verify(promiseMock).resolve(capture())
+
+            Assert.assertEquals("123456", firstValue.getString("profileId"))
+        }
     }
 
     @Test
     fun `when fails should reject with proper error`() {
-        Mockito.`when`(authenticationError.errorType).thenReturn(666)
-        Mockito.`when`(authenticationError.message).thenReturn("MyError")
+        whenAuthenticateUserImplicitlyFailed()
 
-        Mockito.`when`(oneginiSdk.oneginiClient.userClient.authenticateUserImplicitly(any(), any(), any())).thenAnswer {
-            it.getArgument<OneginiImplicitAuthenticationHandler>(2).onError(authenticationError)
-        }
+        authenticateUserImplicitlyUseCase("123456", scopes, promiseMock)
 
-        AuthenticateUserImplicitlyUseCase(oneginiSdk, getUserProfileUseCase)("123456", scopes, promiseMock)
-
-        argumentCaptor<String> {
-            verify(promiseMock).reject(capture(), capture())
-
-            Assert.assertEquals("666", firstValue)
-            Assert.assertEquals("MyError", secondValue)
-        }
+        verify(promiseMock).reject("666", "MyError")
     }
 
     @Test
     fun `when called should call proper methods`() {
-        Mockito.`when`(authenticationError.errorType).thenReturn(666)
-        Mockito.`when`(authenticationError.message).thenReturn("MyError")
-
-        Mockito.`when`(oneginiSdk.oneginiClient.userClient.authenticateUserImplicitly(any(), any(), any())).thenAnswer {
-            it.getArgument<OneginiImplicitAuthenticationHandler>(2).onError(authenticationError)
+        `when`(oneginiSdk.oneginiClient.userClient.authenticateUserImplicitly(any(), any(), any())).thenAnswer {
+            it.getArgument<OneginiImplicitAuthenticationHandler>(2).onSuccess(UserProfile("123456"))
         }
 
-        AuthenticateUserImplicitlyUseCase(oneginiSdk, getUserProfileUseCase)("123456", scopes, promiseMock)
+        authenticateUserImplicitlyUseCase("123456", scopes, promiseMock)
 
         argumentCaptor<UserProfile> {
             verify(oneginiSdk.oneginiClient.userClient).authenticateUserImplicitly(capture(), any(), any())
 
             Assert.assertEquals("123456", firstValue.profileId)
+        }
+    }
+
+    private fun whenAuthenticateUserImplicitlyFailed() {
+        `when`(authenticationError.errorType).thenReturn(666)
+        `when`(authenticationError.message).thenReturn("MyError")
+        `when`(oneginiSdk.oneginiClient.userClient.authenticateUserImplicitly(any(), any(), any())).thenAnswer {
+            it.getArgument<OneginiImplicitAuthenticationHandler>(2).onError(authenticationError)
         }
     }
 }

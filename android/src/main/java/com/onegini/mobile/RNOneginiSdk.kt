@@ -349,8 +349,8 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    override fun authenticateDeviceForResource(resourcePath: String, promise: Promise) {
-        sdkWrapper.authenticateDeviceForResource(resourcePath, promise)
+    override fun authenticateDevice(scopes: ReadableArray, promise: Promise) {
+        sdkWrapper.authenticateDevice(scopes, promise)
     }
 
     @ReactMethod

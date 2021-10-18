@@ -42,8 +42,12 @@ class ResourceRequestUseCaseTests {
     @Mock
     lateinit var anonymousResourceOkHttpClient: OkHttpClient
 
+    private lateinit var resourceRequestUseCase: ResourceRequestUseCase
+
     @Before
-    fun prepareMocks() {
+    fun setup() {
+        resourceRequestUseCase = ResourceRequestUseCase(oneginiSdk)
+
         lenient().`when`(oneginiSdk.oneginiClient.userClient.resourceOkHttpClient).thenReturn(resourceOkHttpClient)
         lenient().`when`(oneginiSdk.oneginiClient.userClient.implicitResourceOkHttpClient).thenReturn(implicitResourceOkHttpClient)
         lenient().`when`(oneginiSdk.oneginiClient.deviceClient.anonymousResourceOkHttpClient).thenReturn(anonymousResourceOkHttpClient)
@@ -68,7 +72,7 @@ class ResourceRequestUseCaseTests {
         headers.putString("header1", "testVal")
         map.putMap("headers", headers)
 
-        ResourceRequestUseCase(oneginiSdk)("User", map, promiseMock)
+        resourceRequestUseCase("User", map, promiseMock)
 
         argumentCaptor<Request> {
             verify(resourceOkHttpClient).newCall(capture())
@@ -89,7 +93,7 @@ class ResourceRequestUseCaseTests {
         headers.putString("header1", "testVal")
         map.putMap("headers", headers)
 
-        ResourceRequestUseCase(oneginiSdk)("ImplicitUser", map, promiseMock)
+        resourceRequestUseCase("ImplicitUser", map, promiseMock)
 
         argumentCaptor<Request> {
             verify(implicitResourceOkHttpClient).newCall(capture())
@@ -109,7 +113,7 @@ class ResourceRequestUseCaseTests {
         headers.putString("header1", "testVal")
         map.putMap("headers", headers)
 
-        ResourceRequestUseCase(oneginiSdk)("Anonymous", map, promiseMock)
+        resourceRequestUseCase("Anonymous", map, promiseMock)
 
         argumentCaptor<Request> {
             verify(anonymousResourceOkHttpClient).newCall(capture())
@@ -129,7 +133,7 @@ class ResourceRequestUseCaseTests {
         headers.putString("header1", "testVal")
         map.putMap("headers", headers)
 
-        ResourceRequestUseCase(oneginiSdk)("Anonymous", map, promiseMock)
+        resourceRequestUseCase("Anonymous", map, promiseMock)
 
         // TODO: What would be the easiest way to mock success (observer) here?
 

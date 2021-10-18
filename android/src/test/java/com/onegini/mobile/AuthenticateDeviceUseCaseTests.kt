@@ -1,23 +1,25 @@
 package com.onegini.mobile
 
+import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.Promise
-import com.onegini.mobile.clean.use_cases.AuthenticateDeviceForResourceUseCase
+import com.onegini.mobile.clean.use_cases.AuthenticateDeviceUseCase
 import com.onegini.mobile.sdk.android.handlers.OneginiDeviceAuthenticationHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiDeviceAuthenticationError
 import org.junit.Assert
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Answers
 import org.mockito.Mock
-import org.mockito.Mockito
+import org.mockito.Mockito.`when`
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.verify
 
 @RunWith(MockitoJUnitRunner::class)
-class AuthenticateDeviceForResourceUseCaseTests {
+class AuthenticateDeviceUseCaseTests {
 
     @get:Rule
     val reactArgumentsTestRule = ReactArgumentsTestRule()
@@ -31,13 +33,20 @@ class AuthenticateDeviceForResourceUseCaseTests {
     @Mock
     lateinit var authenticationError: OneginiDeviceAuthenticationError
 
+    private lateinit var authenticateDeviceUseCase: AuthenticateDeviceUseCase
+
+    @Before
+    fun setup() {
+        authenticateDeviceUseCase = AuthenticateDeviceUseCase(oneginiSdk)
+    }
+
     @Test
     fun `when successful should resolve with null`() {
-        Mockito.`when`(oneginiSdk.oneginiClient.deviceClient.authenticateDevice(any(), any())).thenAnswer {
+        `when`(oneginiSdk.oneginiClient.deviceClient.authenticateDevice(any(), any())).thenAnswer {
             it.getArgument<OneginiDeviceAuthenticationHandler>(1).onSuccess()
         }
 
-        AuthenticateDeviceForResourceUseCase(oneginiSdk)("path", promiseMock)
+        authenticateDeviceUseCase(JavaOnlyArray.of("path"), promiseMock)
 
         argumentCaptor<Array<String>> {
             verify(oneginiSdk.oneginiClient.deviceClient).authenticateDevice(capture(), any())
@@ -50,20 +59,18 @@ class AuthenticateDeviceForResourceUseCaseTests {
 
     @Test
     fun `when fails should reject with proper error`() {
-        Mockito.`when`(authenticationError.errorType).thenReturn(666)
-        Mockito.`when`(authenticationError.message).thenReturn("MyError")
+        whenAuthenticateDeviceFailed()
 
-        Mockito.`when`(oneginiSdk.oneginiClient.deviceClient.authenticateDevice(any(), any())).thenAnswer {
+        authenticateDeviceUseCase(JavaOnlyArray.of("path"), promiseMock)
+
+        verify(promiseMock).reject("666", "MyError")
+    }
+
+    private fun whenAuthenticateDeviceFailed() {
+        `when`(authenticationError.errorType).thenReturn(666)
+        `when`(authenticationError.message).thenReturn("MyError")
+        `when`(oneginiSdk.oneginiClient.deviceClient.authenticateDevice(any(), any())).thenAnswer {
             it.getArgument<OneginiDeviceAuthenticationHandler>(1).onError(authenticationError)
-        }
-
-        AuthenticateDeviceForResourceUseCase(oneginiSdk)("path", promiseMock)
-
-        argumentCaptor<String> {
-            verify(promiseMock).reject(capture(), capture())
-
-            Assert.assertEquals("666", firstValue)
-            Assert.assertEquals("MyError", secondValue)
         }
     }
 }
