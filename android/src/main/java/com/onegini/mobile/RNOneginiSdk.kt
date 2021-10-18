@@ -368,8 +368,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     override fun authenticateUserImplicitly(profileId: String?, promise: Promise) {
-        Log.d(LOG_TAG, "authenticateUserImplicitly profileId: $profileId")
-
         val userProfile = authenticatorManager.getUserProfile(profileId)
         if (userProfile == null) {
             promise.reject(OneginReactNativeException.PROFILE_DOES_NOT_EXIST.toString(), "The profileId $profileId does not exist")
@@ -392,8 +390,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     override fun authenticateDeviceForResource(resourcePath: String, promise: Promise) {
-        Log.d(LOG_TAG, "authenticateDeviceForResource resourcePath: $resourcePath")
-
         oneginiSDK.oneginiClient.deviceClient.authenticateDevice(
             arrayOf(resourcePath),
             object : OneginiDeviceAuthenticationHandler {
