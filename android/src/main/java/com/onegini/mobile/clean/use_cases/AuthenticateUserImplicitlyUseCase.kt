@@ -9,8 +9,10 @@ import com.onegini.mobile.sdk.android.handlers.OneginiImplicitAuthenticationHand
 import com.onegini.mobile.sdk.android.handlers.error.OneginiImplicitTokenRequestError
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 
-class AuthenticateUserImplicitlyUseCase(private val oneginiSDK: OneginiSDK, val getUserProfileUseCase: GetUserProfileUseCase = GetUserProfileUseCase(oneginiSDK)) {
-
+class AuthenticateUserImplicitlyUseCase(
+    private val oneginiSDK: OneginiSDK,
+    val getUserProfileUseCase: GetUserProfileUseCase = GetUserProfileUseCase(oneginiSDK)
+) {
     operator fun invoke(profileId: String?, scopes: ReadableArray, promise: Promise) {
         val userProfile = getUserProfileUseCase(profileId)
 
