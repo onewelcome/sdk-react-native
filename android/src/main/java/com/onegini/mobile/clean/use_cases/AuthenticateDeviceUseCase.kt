@@ -5,7 +5,7 @@ import com.onegini.mobile.OneginiSDK
 import com.onegini.mobile.sdk.android.handlers.OneginiDeviceAuthenticationHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiDeviceAuthenticationError
 
-class AuthenticateDeviceForResourceUseCase(private val oneginiSDK: OneginiSDK) {
+class AuthenticateDeviceUseCase(private val oneginiSDK: OneginiSDK) {
 
     operator fun invoke(resourcePath: String, promise: Promise) {
         oneginiSDK.oneginiClient.deviceClient.authenticateDevice(

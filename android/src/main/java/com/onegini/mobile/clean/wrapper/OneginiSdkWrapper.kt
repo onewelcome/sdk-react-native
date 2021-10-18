@@ -22,7 +22,7 @@ class OneginiSdkWrapper(
     val deregisterUserUseCase: DeregisterUserUseCase = DeregisterUserUseCase(oneginiSDK),
     val authenticateUserUseCase: AuthenticateUserUseCase = AuthenticateUserUseCase(oneginiSDK),
     val authenticateUserImplicitlyUseCase: AuthenticateUserImplicitlyUseCase = AuthenticateUserImplicitlyUseCase(oneginiSDK),
-    val authenticateDeviceForResourceUseCase: AuthenticateDeviceForResourceUseCase = AuthenticateDeviceForResourceUseCase(oneginiSDK)
+    val authenticateDeviceUseCase: AuthenticateDeviceUseCase = AuthenticateDeviceUseCase(oneginiSDK)
 ) : IOneginiSdkWrapper {
 
     override fun startClient(rnConfig: ReadableMap, promise: Promise) {
@@ -37,8 +37,8 @@ class OneginiSdkWrapper(
         authenticateUserImplicitlyUseCase(profileId, scopes, promise)
     }
 
-    override fun authenticateDeviceForResource(resourcePath: String, promise: Promise) {
-        authenticateDeviceForResourceUseCase(resourcePath, promise)
+    override fun authenticateDevice(resourcePath: String, promise: Promise) {
+        authenticateDeviceUseCase(resourcePath, promise)
     }
 
     override fun getUserProfiles(promise: Promise) {

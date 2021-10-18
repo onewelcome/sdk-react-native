@@ -31,7 +31,7 @@ const fetchResource = async (
       if (type === ResourceRequestType.Implicit && profileId) {
         await OneginiSdk.authenticateUserImplicitly(profileId, ['read']);
       } else if (type === ResourceRequestType.Anonymous) {
-        await OneginiSdk.authenticateDeviceForResource(resourceDetails.path);
+        await OneginiSdk.authenticateDevice(resourceDetails.path);
       }
     }
 
