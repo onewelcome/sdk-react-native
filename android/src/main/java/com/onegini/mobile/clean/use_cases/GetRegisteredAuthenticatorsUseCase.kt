@@ -7,8 +7,10 @@ import com.onegini.mobile.mapers.OneginiAuthenticatorMapper
 import com.onegini.mobile.sdk.android.model.OneginiAuthenticator
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 
-class GetRegisteredAuthenticatorsUseCase(private val oneginiSDK: OneginiSDK, private val getUserProfileUseCase: GetUserProfileUseCase = GetUserProfileUseCase(oneginiSDK)) {
-
+class GetRegisteredAuthenticatorsUseCase(
+    private val oneginiSDK: OneginiSDK,
+    private val getUserProfileUseCase: GetUserProfileUseCase = GetUserProfileUseCase(oneginiSDK)
+) {
     operator fun invoke(profileId: String, promise: Promise) {
         val userProfile = getUserProfileUseCase(profileId)
 

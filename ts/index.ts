@@ -45,8 +45,8 @@ interface NativeMethods {
 
   // Resource getters
   //@todo extend types for details and responses
-  authenticateUserImplicitly(profileId: string, scopes: String[]): Promise<any>;
-  authenticateDeviceForResource(resourcePath: string): Promise<any>;
+  authenticateUserImplicitly(profileId: string, scopes: string[]): Promise<any>;
+  authenticateDevice(scopes: string[]): Promise<any>;
   resourceRequest(
     type: Types.ResourceRequestType,
     details: Types.ResourcesDetails,
@@ -55,7 +55,7 @@ interface NativeMethods {
   // User register/deregister
   registerUser(
     identityProviderId: string | null,
-    scopes: String[],
+    scopes: string[],
   ): Promise<Types.Profile>;
   deregisterUser(profileId: string): Promise<any>;
   handleRegistrationCallback(uri: string): void; // TODO: I think it should be moved "behind" SDK - dev should not know about it
@@ -64,7 +64,7 @@ interface NativeMethods {
   // Authentication
   authenticateUser(
     profileId: string,
-    authenticatorId?: string,
+    authenticatorId: string | null,
   ): Promise<Types.AuthData>;
   logout(): Promise<any>; // any or void when we have null from native?
   getAllAuthenticators(profileId: string): Promise<Types.Authenticator[]>; // TODO: use it in ExampleApp

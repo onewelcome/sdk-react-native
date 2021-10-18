@@ -11,14 +11,13 @@ import com.onegini.mobile.sdk.android.handlers.error.OneginiAuthenticationError
 import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 
-class AuthenticateUserUseCase(private val oneginiSDK: OneginiSDK, private val getRegisteredAuthenticatorsUseCase: GetRegisteredAuthenticatorsUseCase = GetRegisteredAuthenticatorsUseCase(oneginiSDK)) {
-
+class AuthenticateUserUseCase(
+    private val oneginiSDK: OneginiSDK,
+    private val getRegisteredAuthenticatorsUseCase: GetRegisteredAuthenticatorsUseCase = GetRegisteredAuthenticatorsUseCase(oneginiSDK),
+    private val getUserProfileUseCase: GetUserProfileUseCase = GetUserProfileUseCase(oneginiSDK)
+) {
     operator fun invoke(profileId: String?, authenticatorId: String?, promise: Promise) {
-        val userProfile = try {
-            UserProfile(profileId)
-        } catch (e: IllegalArgumentException) {
-            null
-        }
+        val userProfile = getUserProfileUseCase(profileId)
 
         if (userProfile == null) {
             promise.reject(OneginiWrapperErrors.USER_PROFILE_IS_NULL.code, OneginiWrapperErrors.USER_PROFILE_IS_NULL.message)

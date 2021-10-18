@@ -231,7 +231,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     @objc
-    func authenticateDeviceForResource(_ resourcePath: (NSString),
+    func authenticateDevice(_ resourcePath: (NSString),
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         bridgeConnector.toResourceHandler.authenticateDevice(resourcePath) {
