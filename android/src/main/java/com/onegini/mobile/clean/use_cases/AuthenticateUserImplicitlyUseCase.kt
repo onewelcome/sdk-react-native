@@ -5,12 +5,15 @@ import com.facebook.react.bridge.ReadableArray
 import com.onegini.mobile.OneginiSDK
 import com.onegini.mobile.exception.OneginiWrapperErrors
 import com.onegini.mobile.mapers.RegistrationScopesMapper
+import com.onegini.mobile.mapers.UserProfileMapper
 import com.onegini.mobile.sdk.android.handlers.OneginiImplicitAuthenticationHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiImplicitTokenRequestError
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 
-class AuthenticateUserImplicitlyUseCase(private val oneginiSDK: OneginiSDK, val getUserProfileUseCase: GetUserProfileUseCase = GetUserProfileUseCase(oneginiSDK)) {
-
+class AuthenticateUserImplicitlyUseCase(
+    private val oneginiSDK: OneginiSDK,
+    val getUserProfileUseCase: GetUserProfileUseCase = GetUserProfileUseCase(oneginiSDK)
+) {
     operator fun invoke(profileId: String?, scopes: ReadableArray, promise: Promise) {
         val userProfile = getUserProfileUseCase(profileId)
 
@@ -26,7 +29,7 @@ class AuthenticateUserImplicitlyUseCase(private val oneginiSDK: OneginiSDK, val 
                 userProfile, scopesArray,
                 object : OneginiImplicitAuthenticationHandler {
                     override fun onSuccess(profile: UserProfile) {
-                        promise.resolve(null)
+                        promise.resolve(UserProfileMapper.toWritableMap(profile))
                     }
 
                     override fun onError(error: OneginiImplicitTokenRequestError) {
