@@ -10,10 +10,10 @@ public class OneginiConfigModel implements OneginiClientConfigModel {
   private final String appIdentifier = "AlBaraka";
   private final String appPlatform = "android";
   private final String redirectionUri = "login://succes";
-  private final String appVersion = "0.2";
-  private final String baseURL = "https://demo1-preprod.onegini.com";
+  private final String appVersion = "0.3";
+  private final String baseURL = "https://demo1-security-proxy-preprod.onegini.com";
   private final String resourceBaseURL = "https://demo1-security-proxy-preprod.onegini.com/resources/";
-  private final String keystoreHash = "2de325546cd79f67004a64f0a564ccfa32d41657fc4b742cc58af31fcdce1f27";
+  private final String keystoreHash = "57df329c651fc792ce84cb4fec49533739887f8af2d158872ab0c48e16207616";
   private final int maxPinFailures = 3;
 
   public String getAppIdentifier() {
@@ -62,8 +62,9 @@ public class OneginiConfigModel implements OneginiClientConfigModel {
   /**
    * Get the max PIN failures. This attribute is just used for visual representation towards the end-user.
    *
-   * @return The max PIN failures
    * @Deprecated Since Android SDK 6.01.00 this attribute is fetched from the Device config.
+   *
+   * @return The max PIN failures
    */
   public int getMaxPinFailures() {
     return maxPinFailures;
@@ -72,14 +73,14 @@ public class OneginiConfigModel implements OneginiClientConfigModel {
   @Override
   public String toString() {
     return "ConfigModel{" +
-        "  appIdentifier='" + appIdentifier + "'" +
-        ", appPlatform='" + appPlatform + "'" +
-        ", redirectionUri='" + redirectionUri + "'" +
-        ", appVersion='" + appVersion + "'" +
-        ", baseURL='" + baseURL + "'" +
-        ", maxPinFailures='" + maxPinFailures + "'" +
-        ", resourceBaseURL='" + resourceBaseURL + "'" +
-        ", keyStoreHash='" + getKeyStoreHash() + "'" +
-        "}";
+            "  appIdentifier='" + appIdentifier + "'" +
+            ", appPlatform='" + appPlatform + "'" +
+            ", redirectionUri='" + redirectionUri + "'" +
+            ", appVersion='" + appVersion + "'" +
+            ", baseURL='" + baseURL + "'" +
+            ", maxPinFailures='" + maxPinFailures + "'" +
+            ", resourceBaseURL='" + resourceBaseURL + "'" +
+            ", keyStoreHash='" + getKeyStoreHash() + "'" +
+            "}";
   }
 }
