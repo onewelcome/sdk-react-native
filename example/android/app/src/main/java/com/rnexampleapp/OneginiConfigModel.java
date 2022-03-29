@@ -10,10 +10,10 @@ public class OneginiConfigModel implements OneginiClientConfigModel {
   private final String appIdentifier = "AlBaraka";
   private final String appPlatform = "android";
   private final String redirectionUri = "login://succes";
-  private final String appVersion = "0.3";
-  private final String baseURL = "https://demo1-security-proxy-preprod.onegini.com";
+  private final String appVersion = "0.4";
+  private final String baseURL = "https://demo1-preprod.onegini.com";
   private final String resourceBaseURL = "https://demo1-security-proxy-preprod.onegini.com/resources/";
-  private final String keystoreHash = "57df329c651fc792ce84cb4fec49533739887f8af2d158872ab0c48e16207616";
+  private final String keystoreHash = "6c1c24ecf889701fd6f6264e1f7f454e3879cdf1e41d4a3a0e2c6ea114807037";
   private final int maxPinFailures = 3;
 
   public String getAppIdentifier() {
