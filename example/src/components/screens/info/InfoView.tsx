@@ -25,7 +25,7 @@ const getProfileData = async (
     } else {
       setProfileError('No profiles registered.');
     }
-  } catch (e) {
+  } catch (e: any) {
     setProfileError(e);
   }
 };

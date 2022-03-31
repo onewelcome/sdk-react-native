@@ -124,7 +124,7 @@ const startRegister = async (
     await OneginiSdk.registerUser(providerId);
     setRegistering?.(false);
     onRegisterSuccess?.();
-  } catch (e) {
+  } catch (e: any) {
     setRegistering?.(false);
     setError?.(e.message ? e.message : 'Something strange happened');
   }

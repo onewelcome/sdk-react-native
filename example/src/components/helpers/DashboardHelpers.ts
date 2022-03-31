@@ -5,8 +5,8 @@ const logout = async (onLogoutSuccess?: () => void) => {
   try {
     await OneginiSdk.logout();
     onLogoutSuccess?.();
-  } catch (err) {
-    Alert.alert('error', err || 'Something strange happened.');
+  } catch (err: any) {
+    Alert.alert('error', err.message ? err.message : 'Something strange happened.');
   }
 };
 
@@ -20,8 +20,8 @@ const deregisterUser = async (onDeregisterSuccess?: () => void) => {
     } else {
       Alert.alert('error', 'Not found logged in user.');
     }
-  } catch (err) {
-    Alert.alert('error', err);
+  } catch (err: any) {
+    Alert.alert('error', err.message);
   }
 };
 
