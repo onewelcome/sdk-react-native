@@ -25,7 +25,7 @@ const getProfileData = async (
     } else {
       setProfileError('No profiles registered.');
     }
-  } catch (e) {
+  } catch (e: any) {
     setProfileError(e);
   }
 };
@@ -46,22 +46,22 @@ const InfoView: React.FC<Props> = (props) => {
   const implicitResource = useResources(
       Types.ResourceRequestType.Implicit,
       {
-        ...DefaultResourcesDetails,
-        path: 'user-id-decorated',
+          ...DefaultResourcesDetails,
+          path: 'user-id-decorated',
       },
       true,
-      ['read'],
+      ['user-id-decorated'],
       profileId,
   );
 
   const resource = useResources(
-      Types.ResourceRequestType.Anonymous,
-      {
-        ...DefaultResourcesDetails,
-        path: 'application-details',
-      },
-      true,
-      ['read'],
+    Types.ResourceRequestType.Anonymous,
+    {
+      ...DefaultResourcesDetails,
+      path: 'application-details',
+    },
+    true,
+    ['application-details']
   );
 
   // get profileId at start
