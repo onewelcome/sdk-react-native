@@ -73,7 +73,7 @@ const OneginiSdk = {
 
   // Resource getters
   authenticateUserImplicitly: (profileId, scopes) => RNOneginiSdk.authenticateUserImplicitly(profileId, scopes),
-  authenticateDeviceForResource: (resourcePath) => RNOneginiSdk.authenticateDeviceForResource(resourcePath),
+  authenticateDeviceForResource: (scopes) => RNOneginiSdk.authenticateDeviceForResource(scopes),
   resourceRequest: (isImplicit = false, details = {}) => RNOneginiSdk.resourceRequest(isImplicit, details),
 
   // User register/deregister

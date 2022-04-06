@@ -436,11 +436,11 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    private fun authenticateDeviceForResource(resourcePath: String, promise: Promise) {
-        Log.d(LOG_TAG, "authenticateDeviceForResource resourcePath: $resourcePath")
+    private fun authenticateDeviceForResource(scopes: Array<String>, promise: Promise) {
+        Log.d(LOG_TAG, "authenticateDeviceForResource scopes: $scopes")
 
         oneginiSDK.oneginiClient.deviceClient.authenticateDevice(
-            arrayOf(resourcePath),
+            scopes,
             object : OneginiDeviceAuthenticationHandler {
                 override fun onSuccess() {
                     promise.resolve(null)
