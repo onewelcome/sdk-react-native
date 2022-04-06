@@ -45,7 +45,7 @@ interface NativeMethods {
 
   // Resource getters
   //@todo extend types for details and responses
-  authenticateUserImplicitly(profileId: string): Promise<any>;
+  authenticateUserImplicitly(profileId: string, scopes?: string[]): Promise<any>;
   authenticateDeviceForResource(resourcePath: string): Promise<any>;
   resourceRequest(
     type: Types.ResourceRequestType,

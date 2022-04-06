@@ -31,6 +31,7 @@ describe('useResources', () => {
           Types.ResourceRequestType.Anonymous,
           {...DefaultResourcesDetails},
           false,
+          ['read'],
         ),
       );
 

@@ -412,7 +412,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    private fun authenticateUserImplicitly(profileId: String?, promise: Promise) {
+    private fun authenticateUserImplicitly(profileId: String?, scopes: Array<String>?, promise: Promise) {
         Log.d(LOG_TAG, "authenticateUserImplicitly profileId: $profileId")
 
         val userProfile = authenticatorManager.getUserProfile(profileId)
@@ -421,7 +421,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         } else {
             oneginiSDK.oneginiClient.userClient
                 .authenticateUserImplicitly(
-                    userProfile, arrayOf("read"),
+                    userProfile, scopes,
                     object : OneginiImplicitAuthenticationHandler {
                         override fun onSuccess(profile: UserProfile) {
                             promise.resolve(null)

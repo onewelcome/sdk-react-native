@@ -44,22 +44,24 @@ const InfoView: React.FC<Props> = (props) => {
   const [profileId, setProfileId] = useState<string | null>(null);
 
   const implicitResource = useResources(
-    Types.ResourceRequestType.Implicit,
-    {
-      ...DefaultResourcesDetails,
-      path: 'user-id-decorated',
-    },
-    true,
-    profileId,
+      Types.ResourceRequestType.Implicit,
+      {
+        ...DefaultResourcesDetails,
+        path: 'user-id-decorated',
+      },
+      true,
+      ['read'],
+      profileId,
   );
 
   const resource = useResources(
-    Types.ResourceRequestType.Anonymous,
-    {
-      ...DefaultResourcesDetails,
-      path: 'application-details',
-    },
-    true,
+      Types.ResourceRequestType.Anonymous,
+      {
+        ...DefaultResourcesDetails,
+        path: 'application-details',
+      },
+      true,
+      ['read'],
   );
 
   // get profileId at start

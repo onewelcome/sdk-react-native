@@ -458,7 +458,7 @@ SPEC CHECKSUMS:
   glog: 40a13f7840415b9a77023fbcae0f1e6f43192af3
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   onegini-react-native-sdk: 4df71881d62419eb45d0c0c576dcd9fa87463838
-  OneginiSDKiOS: 407d6cfc8eeb4c8b76c2662dacef514153cc29eb
+  OneginiSDKiOS: babc50be6164c671b377dcabcefa5eaf6dd842e8
   OpenSSL-Universal: 1aa4f6a6ee7256b83db99ec1ccdaa80d10f9af9b
   RCTRequired: 48884c74035a0b5b76dbb7a998bd93bcfc5f2047
   RCTTypeSafety: edf4b618033c2f1c5b7bc3d90d8e085ed95ba2ab
@@ -486,4 +486,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: f76a8ba8219bd7a6a5565f61a48456fcf7bdb62f
 
-COCOAPODS: 1.10.0
+COCOAPODS: 1.11.3

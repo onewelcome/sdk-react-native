@@ -29,12 +29,13 @@ const getData = (data: any, key: string) => {
 
 const DevicesView: React.FC<{}> = () => {
   const {loading, data, error} = useResources(
-    Types.ResourceRequestType.User,
-    {
-      ...DefaultResourcesDetails,
-      path: 'devices',
-    },
-    false,
+      Types.ResourceRequestType.User,
+      {
+        ...DefaultResourcesDetails,
+        path: 'devices',
+      },
+      false,
+      ['read'],
   );
 
   return (

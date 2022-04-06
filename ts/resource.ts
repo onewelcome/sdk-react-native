@@ -19,6 +19,7 @@ const fetchResource = async (
   shouldAuthenticate: boolean,
   type: ResourceRequestType,
   resourceDetails: ResourcesDetails,
+  scopes?: string[],
   profileId: string | null = null,
 ) => {
   // when type is ResourceRequestType.Implicit we require profileId
@@ -29,7 +30,7 @@ const fetchResource = async (
   try {
     if (shouldAuthenticate) {
       if (type === ResourceRequestType.Implicit && profileId) {
-        await OneginiSdk.authenticateUserImplicitly(profileId);
+        await OneginiSdk.authenticateUserImplicitly(profileId, scopes);
       } else if (type === ResourceRequestType.Anonymous) {
         await OneginiSdk.authenticateDeviceForResource(resourceDetails.path);
       }
@@ -55,6 +56,7 @@ function useResources(
   type: ResourceRequestType,
   details: ResourcesDetails,
   shouldAuthenticate: boolean,
+  scopes?: string[],
   profileId?: string | null,
 ) {
   const [loading, setLoading] = useState(true);
@@ -79,6 +81,7 @@ function useResources(
       shouldAuthenticate,
       type,
       currentDetails,
+      scopes,
       profileId,
     );
   }, [type, shouldAuthenticate, profileId, currentDetails]);

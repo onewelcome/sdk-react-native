@@ -25,7 +25,7 @@ class OneginiSdkWrapper(
         TODO("Not yet implemented")
     }
 
-    override fun authenticateUserImplicitly(profileId: String?, promise: Promise) {
+    override fun authenticateUserImplicitly(profileId: String?, scopes: Array<String>?, promise: Promise) {
         TODO("Not yet implemented")
     }
 
