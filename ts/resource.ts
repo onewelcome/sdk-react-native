@@ -38,8 +38,6 @@ const fetchResource = async (
 
     const data = await OneginiSdk.resourceRequest(type, resourceDetails);
 
-    console.log('fetchResource = ', data);
-
     setData(data);
     setLoading(false);
   } catch (e) {
