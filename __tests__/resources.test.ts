@@ -4,7 +4,6 @@ import OneginiSdk, {
   DefaultConfig,
   useResources,
   Types,
-  DefaultResourcesDetails,
 } from '../ts/index';
 
 import {renderHook} from '@testing-library/react-hooks/native';
@@ -27,12 +26,18 @@ describe('useResources', () => {
   describe('when called without authorization', () => {
     const testRender = () =>
       renderHook(() =>
-        useResources(
-          Types.ResourceRequestType.Anonymous,
-          {...DefaultResourcesDetails},
-          false,
-          ['read'],
-        ),
+          useResources(
+              Types.ResourceRequestType.Anonymous,
+              {
+                method: 'GET',
+                parameters: {'custom-param1': 'p1', 'custom-param2': 'p2'},
+                encoding: 'application/json',
+                headers: {'custom-header1': 'val1', 'custom-header2': 'val2'},
+                path: 'test'
+              },
+              false,
+              ['read'],
+          ),
       );
 
     it('should return proper loading state', async () => {
@@ -56,7 +61,13 @@ describe('useResources', () => {
       expect(RNOneginiSdk.resourceRequest).toBeCalledTimes(1);
       expect(RNOneginiSdk.resourceRequest).toBeCalledWith(
         Types.ResourceRequestType.Anonymous,
-        {...DefaultResourcesDetails},
+        {
+          method: 'GET',
+          parameters: {'custom-param1': 'p1', 'custom-param2': 'p2'},
+          encoding: 'application/json',
+          headers: {'custom-header1': 'val1', 'custom-header2': 'val2'},
+          path: 'test'
+        },
       );
     });
 

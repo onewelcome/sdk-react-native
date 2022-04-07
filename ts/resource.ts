@@ -2,14 +2,6 @@ import {useState, useEffect, Dispatch, SetStateAction} from 'react';
 import OneginiSdk from './index';
 import {ResourceRequestType, ResourcesDetails} from './data-types';
 
-const DefaultResourcesDetails: ResourcesDetails = {
-  path: 'test',
-  method: 'GET',
-  parameters: {'custom-param1': 'p1', 'custom-param2': 'p2'},
-  encoding: 'application/json',
-  headers: {'custom-header1': 'val1', 'custom-header2': 'val2'},
-};
-
 //
 
 const fetchResource = async (
@@ -91,4 +83,4 @@ function useResources(
   };
 }
 
-export {useResources, DefaultResourcesDetails};
+export {useResources};
