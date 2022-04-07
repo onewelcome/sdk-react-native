@@ -112,6 +112,4 @@ const onNewPinKey = (
 const onCancelPinFlow = (flow: Events.PinFlow) =>
   OneginiSdk.submitPinAction(flow, Events.PinAction.Cancel, null);
 
-//
-
 export {usePinFlow};
