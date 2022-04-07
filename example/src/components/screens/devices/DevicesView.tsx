@@ -3,7 +3,6 @@ import {StyleSheet, Text, View, ScrollView} from 'react-native';
 import AppColors from '../../constants/AppColors';
 import Layout from '../../constants/Layout';
 import {
-  DefaultResourcesDetails,
   useResources,
   Types,
 } from 'onegini-react-native-sdk';
@@ -28,7 +27,10 @@ const DevicesView: React.FC<{}> = () => {
   const {loading, data, error} = useResources(
     Types.ResourceRequestType.User,
     {
-      ...DefaultResourcesDetails,
+      method: 'GET',
+      parameters: {'custom-param1': 'p1', 'custom-param2': 'p2'},
+      encoding: 'application/json',
+      headers: {'custom-header1': 'val1', 'custom-header2': 'val2'},
       path: 'devices',
     },
     false,
@@ -38,7 +40,7 @@ const DevicesView: React.FC<{}> = () => {
 
   useEffect(() => {
       if(data){
-          const mappedData = typeof data === 'string' || (data as any) instanceof String ? JSON.parse(data as string) : data;
+          const mappedData = typeof data === 'string' || (data as any) instanceof String ? JSON.parse(data as unknown as string) : data;
           setDevices(mappedData['devices']);
       }
   }, [setDevices, data]);

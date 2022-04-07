@@ -9,7 +9,7 @@ import * as Types from './data-types';
 import * as Events from './events';
 import {usePinFlow} from './pin-flow';
 import {useFingerprintFlow} from './fingerprint-flow';
-import {useResources, DefaultResourcesDetails} from './resource';
+import {useResources} from './resource';
 
 //
 
@@ -193,7 +193,6 @@ export {
   usePinFlow,
   useFingerprintFlow,
   useResources,
-  DefaultResourcesDetails,
   DefaultConfig,
 };
 

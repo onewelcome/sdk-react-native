@@ -4,7 +4,6 @@ import Button from '../../general/Button';
 import ContentContainer from '../dashboard/components/ContentContainer';
 import AppColors from '../../constants/AppColors';
 import OneginiSdk, {
-  DefaultResourcesDetails,
   useResources,
   Types,
 } from 'onegini-react-native-sdk';
@@ -46,8 +45,11 @@ const InfoView: React.FC<Props> = (props) => {
   const implicitResource = useResources(
       Types.ResourceRequestType.Implicit,
       {
-          ...DefaultResourcesDetails,
-          path: 'user-id-decorated',
+        method: 'GET',
+        parameters: {'custom-param1': 'p1', 'custom-param2': 'p2'},
+        encoding: 'application/json',
+        headers: {'custom-header1': 'val1', 'custom-header2': 'val2'},
+        path: 'user-id-decorated',
       },
       true,
       ['user-id-decorated'],
@@ -57,7 +59,10 @@ const InfoView: React.FC<Props> = (props) => {
   const resource = useResources(
     Types.ResourceRequestType.Anonymous,
     {
-      ...DefaultResourcesDetails,
+      method: 'GET',
+      parameters: {'custom-param1': 'p1', 'custom-param2': 'p2'},
+      encoding: 'application/json',
+      headers: {'custom-header1': 'val1', 'custom-header2': 'val2'},
       path: 'application-details',
     },
     true,
