@@ -9,7 +9,7 @@ const registerFingerprintAuthenticator = async (
     await OneginiSdk.registerFingerprintAuthenticator(profile.profileId);
     message('Fingerprint is enabled');
     successful(true);
-  } catch (error) {
+  } catch (error: any) {
     message(error.message);
     successful(false);
   }
@@ -24,7 +24,7 @@ const deregisterFingerprintAuthenticator = async (
     await OneginiSdk.deregisterFingerprintAuthenticator(profile.profileId);
     message('Fingerprint is disabled');
     successful(true);
-  } catch (error) {
+  } catch (error: any) {
     message(error.message);
     successful(false);
   }
@@ -78,7 +78,7 @@ const setPreferredAuthenticator = async (
     await OneginiSdk.setPreferredAuthenticator(profile.profileId, preferred.id);
     successful(true);
     message('The ' + preferred.name + ' is set');
-  } catch (error) {
+  } catch (error: any) {
     message(error.message);
     successful(false);
   }

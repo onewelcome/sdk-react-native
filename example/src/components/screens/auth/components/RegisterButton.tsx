@@ -126,7 +126,7 @@ const startRegister = async (
     CurrentUser.id = profile.profileId;
     setRegistering?.(false);
     onRegisterSuccess?.();
-  } catch (e) {
+  } catch (e: any) {
     setRegistering?.(false);
     setError?.(e.message ? e.message : 'Something strange happened');
   }
