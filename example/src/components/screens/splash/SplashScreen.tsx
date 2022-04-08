@@ -6,11 +6,12 @@ import {Assets} from '../../../../assets';
 
 interface Props {
   onSdkStarted?: () => void;
+  onSdkError?: () => void;
 }
 
 const SplashScreen: React.FC<Props> = (props) => {
   useEffect(() => {
-    startSdk(props.onSdkStarted);
+    startSdk(props.onSdkStarted, props.onSdkError);
   }, [props.onSdkStarted]);
 
   return (
@@ -20,7 +21,7 @@ const SplashScreen: React.FC<Props> = (props) => {
   );
 };
 
-const startSdk = async (onStarted?: () => void) => {
+const startSdk = async (onStarted?: Props['onSdkStarted'], onError?: Props['onSdkError']) => {
   try {
     await OneginiSdk.startClient();
 
@@ -35,7 +36,8 @@ const startSdk = async (onStarted?: () => void) => {
     );
     onStarted?.();
   } catch (e) {
-    Alert.alert('error', JSON.stringify(e));
+    Alert.alert('Error when starting SDK', JSON.stringify(e));
+    onError?.();
   }
 };
 
