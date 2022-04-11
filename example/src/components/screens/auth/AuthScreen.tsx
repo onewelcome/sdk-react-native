@@ -33,7 +33,7 @@ const AuthScreen: React.FC<Props> = (props) => {
             CurrentUser.id = profileId;
 
             props.onAuthorized?.(true);
-        } catch (e) {
+        } catch (e: any) {
             setError(e.message);
         }
     }, []);
@@ -41,7 +41,7 @@ const AuthScreen: React.FC<Props> = (props) => {
     useEffect(() => {
         try {
             hasProfile().then(() => authenticateUser());
-        } catch (e) {
+        } catch (e: any) {
             setError(e.message);
         }
     }, [])
