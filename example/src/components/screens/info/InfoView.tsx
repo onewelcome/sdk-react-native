@@ -4,7 +4,6 @@ import Button from '../../general/Button';
 import ContentContainer from '../dashboard/components/ContentContainer';
 import AppColors from '../../constants/AppColors';
 import OneginiSdk, {
-  DefaultResourcesDetails,
   useResources,
   Types,
 } from 'onegini-react-native-sdk';
@@ -25,7 +24,7 @@ const getProfileData = async (
     } else {
       setProfileError('No profiles registered.');
     }
-  } catch (e) {
+  } catch (e: any) {
     setProfileError(e);
   }
 };
@@ -44,22 +43,30 @@ const InfoView: React.FC<Props> = (props) => {
   const [profileId, setProfileId] = useState<string | null>(null);
 
   const implicitResource = useResources(
-    Types.ResourceRequestType.Implicit,
-    {
-      ...DefaultResourcesDetails,
-      path: 'user-id-decorated',
-    },
-    true,
-    profileId,
+      Types.ResourceRequestType.Implicit,
+      {
+        method: 'GET',
+        parameters: {'custom-param1': 'p1', 'custom-param2': 'p2'},
+        encoding: 'application/json',
+        headers: {'custom-header1': 'val1', 'custom-header2': 'val2'},
+        path: 'user-id-decorated',
+      },
+      true,
+      ['user-id-decorated'],
+      profileId,
   );
 
   const resource = useResources(
     Types.ResourceRequestType.Anonymous,
     {
-      ...DefaultResourcesDetails,
+      method: 'GET',
+      parameters: {'custom-param1': 'p1', 'custom-param2': 'p2'},
+      encoding: 'application/json',
+      headers: {'custom-header1': 'val1', 'custom-header2': 'val2'},
       path: 'application-details',
     },
     true,
+    ['application-details']
   );
 
   // get profileId at start

@@ -1,5 +1,5 @@
 protocol BridgeToResourceHandlerProtocol: AnyObject {
-    func authenticateDevice(_ path: NSString, _ completion: @escaping (Bool, NSError?) -> Void)
+    func authenticateDevice(_ scopes:[String], _ completion: @escaping (Bool, NSError?) -> Void)
     func authenticateImplicitly(_ profile: ONGUserProfile, scopes: [String], _ completion: @escaping (Bool, NSError?) -> Void)
     func resourceRequest(_ type: ResourceRequestType, _ details: NSDictionary, _ completion: @escaping (String?, NSError?) -> Void)
 }
@@ -11,8 +11,8 @@ enum ResourceRequestType: String {
 }
 
 class ResourceHandler: BridgeToResourceHandlerProtocol {
-    func authenticateDevice(_ path: NSString, _ completion: @escaping (Bool, NSError?) -> Void) {
-        ONGDeviceClient.sharedInstance().authenticateDevice([path as String]) { success, error in
+    func authenticateDevice(_ scopes:[String], _ completion: @escaping (Bool, NSError?) -> Void) {
+        ONGDeviceClient.sharedInstance().authenticateDevice(scopes) { success, error in
             if let error = error {
                 completion(success, error as NSError)
             } else {

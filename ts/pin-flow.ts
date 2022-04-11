@@ -5,6 +5,7 @@ const usePinFlow = () => {
   const [flow, setFlow] = useState<Events.PinFlow>(Events.PinFlow.Create);
   const [pin, setPin] = useState('');
   const [visible, setVisible] = useState(false);
+  const [userInfo, setUserInfo] = useState(null);
   const [error, setError] = useState<string | null>(null);
   const [isConfirmMode, setConfirmMode] = useState(false);
 
@@ -37,9 +38,10 @@ const usePinFlow = () => {
     [flow],
   );
 
-  const handleError = useCallback((err: string | null) => {
+  const handleError = useCallback((err: string | null, userInfo?: any) => {
     setError(err);
     setConfirmMode(false);
+    setUserInfo(userInfo || null);
     setPin('');
   }, []);
 
@@ -55,7 +57,7 @@ const usePinFlow = () => {
           setConfirmState();
           break;
         case Events.PinNotification.Error:
-          handleError(event.errorMsg);
+          handleError(event.errorMsg, event.userInfo ?? undefined);
           break;
         case Events.PinNotification.Close:
           setInitialState();
@@ -84,6 +86,7 @@ const usePinFlow = () => {
     error,
     provideNewPinKey,
     cancelPinFlow,
+    userInfo,
   };
 };
 
@@ -111,7 +114,5 @@ const onNewPinKey = (
 
 const onCancelPinFlow = (flow: Events.PinFlow) =>
   OneginiSdk.submitPinAction(flow, Events.PinAction.Cancel, null);
-
-//
 
 export {usePinFlow};

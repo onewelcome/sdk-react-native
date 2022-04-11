@@ -9,12 +9,12 @@ const DEFAULT_RESOURCE_DETAILS = {
   headers: {"custom-header1" : "val1", "custom-header2" : "val2"},
 };
 
-const fetchResource = async (setLoading, setError, setData, shouldAuthenticate, isImplicit, resourceDetails, profileId = null) => {
+const fetchResource = async (setLoading, setError, setData, shouldAuthenticate, isImplicit, resourceDetails, scopes, profileId = null) => {
   try {
     if (shouldAuthenticate) {
       isImplicit
-        ? await OneginiSdk.authenticateUserImplicitly(profileId)
-        : await OneginiSdk.authenticateDeviceForResource(resourceDetails.path);
+        ? await OneginiSdk.authenticateUserImplicitly(profileId, scopes)
+        : await OneginiSdk.authenticateDeviceForResource(scopes);
     }
     const data = await OneginiSdk.resourceRequest(isImplicit, resourceDetails);
 
@@ -28,13 +28,13 @@ const fetchResource = async (setLoading, setError, setData, shouldAuthenticate, 
   }
 };
 
-const useResource = (resourceDetails = DEFAULT_RESOURCE_DETAILS, shouldAuthenticate = false) => {
+const useResource = (resourceDetails = DEFAULT_RESOURCE_DETAILS, shouldAuthenticate = false, scopes = null) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    fetchResource(setLoading, setError, setData, shouldAuthenticate, false, resourceDetails);
+    fetchResource(setLoading, setError, setData, shouldAuthenticate, false, resourceDetails, scopes);
   }, []);
 
   return [
@@ -44,7 +44,7 @@ const useResource = (resourceDetails = DEFAULT_RESOURCE_DETAILS, shouldAuthentic
   ]
 };
 
-const useImplicitResource = (resourceDetails = DEFAULT_RESOURCE_DETAILS, shouldAuthenticate = true) => {
+const useImplicitResource = (resourceDetails = DEFAULT_RESOURCE_DETAILS, shouldAuthenticate = true, scopes = null) => {
   const [profileId, setProfileId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -52,7 +52,7 @@ const useImplicitResource = (resourceDetails = DEFAULT_RESOURCE_DETAILS, shouldA
 
   useEffect(() => {
     if(profileId) {
-      fetchResource(setLoading, setError, setData, shouldAuthenticate, true, resourceDetails, profileId);
+      fetchResource(setLoading, setError, setData, shouldAuthenticate, true, resourceDetails, scopes, profileId);
     }
   }, [profileId]);
 

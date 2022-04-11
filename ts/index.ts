@@ -9,7 +9,7 @@ import * as Types from './data-types';
 import * as Events from './events';
 import {usePinFlow} from './pin-flow';
 import {useFingerprintFlow} from './fingerprint-flow';
-import {useResources, DefaultResourcesDetails} from './resource';
+import {useResources} from './resource';
 
 //
 
@@ -45,8 +45,8 @@ interface NativeMethods {
 
   // Resource getters
   //@todo extend types for details and responses
-  authenticateUserImplicitly(profileId: string): Promise<any>;
-  authenticateDeviceForResource(resourcePath: string): Promise<any>;
+  authenticateUserImplicitly(profileId: string, scopes?: string[]): Promise<any>;
+  authenticateDeviceForResource(scopes?: string[]): Promise<any>;
   resourceRequest(
     type: Types.ResourceRequestType,
     details: Types.ResourcesDetails,
@@ -193,7 +193,6 @@ export {
   usePinFlow,
   useFingerprintFlow,
   useResources,
-  DefaultResourcesDetails,
   DefaultConfig,
 };
 

@@ -72,8 +72,8 @@ const OneginiSdk = {
   getRedirectUri: () => RNOneginiSdk.getRedirectUri(),
 
   // Resource getters
-  authenticateUserImplicitly: (profileId) => RNOneginiSdk.authenticateUserImplicitly(profileId),
-  authenticateDeviceForResource: (resourcePath) => RNOneginiSdk.authenticateDeviceForResource(resourcePath),
+  authenticateUserImplicitly: (profileId, scopes) => RNOneginiSdk.authenticateUserImplicitly(profileId, scopes),
+  authenticateDeviceForResource: (scopes) => RNOneginiSdk.authenticateDeviceForResource(scopes),
   resourceRequest: (isImplicit = false, details = {}) => RNOneginiSdk.resourceRequest(isImplicit, details),
 
   // User register/deregister

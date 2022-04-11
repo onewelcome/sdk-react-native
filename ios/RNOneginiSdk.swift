@@ -233,10 +233,10 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     @objc
-    func authenticateDeviceForResource(_ resourcePath: (NSString),
+    func authenticateDeviceForResource(_ scopes: [String],
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        bridgeConnector.toResourceHandler.authenticateDevice(resourcePath) {
+        bridgeConnector.toResourceHandler.authenticateDevice(scopes) {
             (success, error) -> Void in
             if let error = error {
                 reject("\(error.code)", error.localizedDescription, error)

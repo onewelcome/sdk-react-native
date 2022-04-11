@@ -30,7 +30,7 @@
 		C7EF0AD2259438A700D14892 /* DeviceListFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7EF0AD1259438A700D14892 /* DeviceListFetcher.swift */; };
 		C7EF0AD5259438BB00D14892 /* ImplicitDataFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7EF0AD4259438BB00D14892 /* ImplicitDataFetcher.swift */; };
 		C7EF0BC8259442EA00D14892 /* FetchImplicitResourceErrorDomainMapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7EF0BC7259442EA00D14892 /* FetchImplicitResourceErrorDomainMapping.swift */; };
-		C7EF0BCB259443AA00D14892 /* ResourcesFetchHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7EF0BCA259443AA00D14892 /* ResourcesFetchHandler.swift */; };
+		C7EF0BCB259443AA00D14892 /* ResourcesHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7EF0BCA259443AA00D14892 /* ResourcesHandler.swift */; };
 		F0622594258CD03F00527A7D /* AppToWebHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0622593258CD03F00527A7D /* AppToWebHandler.swift */; };
 /* End PBXBuildFile section */
 
@@ -72,7 +72,7 @@
 		C7EF0AD1259438A700D14892 /* DeviceListFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceListFetcher.swift; sourceTree = "<group>"; };
 		C7EF0AD4259438BB00D14892 /* ImplicitDataFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImplicitDataFetcher.swift; sourceTree = "<group>"; };
 		C7EF0BC7259442EA00D14892 /* FetchImplicitResourceErrorDomainMapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchImplicitResourceErrorDomainMapping.swift; sourceTree = "<group>"; };
-		C7EF0BCA259443AA00D14892 /* ResourcesFetchHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourcesFetchHandler.swift; sourceTree = "<group>"; };
+		C7EF0BCA259443AA00D14892 /* ResourcesHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourcesHandler.swift; sourceTree = "<group>"; };
 		F0622593258CD03F00527A7D /* AppToWebHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppToWebHandler.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -130,7 +130,7 @@
 				C7AA006E2558E59D0001AB19 /* PinHandler.swift */,
 				C7AA00712558E5A80001AB19 /* BrowserHandler.swift */,
 				C78992E425816243002CA5AF /* LoginHandler.swift */,
-				C7EF0BCA259443AA00D14892 /* ResourcesFetchHandler.swift */,
+				C7EF0BCA259443AA00D14892 /* ResourcesHandler.swift */,
 				C7BD311025AC5DF10057440C /* MobileAuthHandler.swift */,
 				C7BD315825B838190057440C /* AuthenticatorsHandler.swift */,
 			);
@@ -248,7 +248,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C7AA00982558E6D40001AB19 /* ErrorExtension.swift in Sources */,
-				C7EF0BCB259443AA00D14892 /* ResourcesFetchHandler.swift in Sources */,
+				C7EF0BCB259443AA00D14892 /* ResourcesHandler.swift in Sources */,
 				C7AA006F2558E59D0001AB19 /* PinHandler.swift in Sources */,
 				C7AA00722558E5A80001AB19 /* BrowserHandler.swift in Sources */,
 				F0622594258CD03F00527A7D /* AppToWebHandler.swift in Sources */,
@@ -309,6 +309,8 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				EXCLUDED_ARCHS = "";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -368,6 +370,8 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				EXCLUDED_ARCHS = "";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;

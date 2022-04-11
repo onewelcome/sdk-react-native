@@ -1,22 +1,18 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View, ScrollView} from 'react-native';
 import AppColors from '../../constants/AppColors';
 import Layout from '../../constants/Layout';
 import {
-  DefaultResourcesDetails,
   useResources,
   Types,
 } from 'onegini-react-native-sdk';
 
-const renderDevice = (device: any) => {
-  return (
-    <View key={device['id']} style={styles.row}>
-      <Text style={styles.info}>{'name: ' + device['name']}</Text>
-      <Text style={styles.info}>{'application: ' + device['application']}</Text>
-      <Text style={styles.info}>{'platform: ' + device['platform']}</Text>
-    </View>
-  );
-};
+interface RenderDevice {
+    id: string;
+    name: string;
+    application: string;
+    platform: string;
+}
 
 //@todo resolve this with more types for resources
 const getData = (data: any, key: string) => {
@@ -31,11 +27,23 @@ const DevicesView: React.FC<{}> = () => {
   const {loading, data, error} = useResources(
     Types.ResourceRequestType.User,
     {
-      ...DefaultResourcesDetails,
+      method: 'GET',
+      parameters: {'custom-param1': 'p1', 'custom-param2': 'p2'},
+      encoding: 'application/json',
+      headers: {'custom-header1': 'val1', 'custom-header2': 'val2'},
       path: 'devices',
     },
     false,
+    ['devices'],
   );
+  const [devices, setDevices] = useState<RenderDevice[] | undefined>(undefined);
+
+  useEffect(() => {
+      if(data){
+          const mappedData = typeof data === 'string' || (data as any) instanceof String ? JSON.parse(data as unknown as string) : data;
+          setDevices(mappedData['devices']);
+      }
+  }, [setDevices, data]);
 
   return (
     <ScrollView style={styles.container}>
@@ -47,7 +55,13 @@ const DevicesView: React.FC<{}> = () => {
       )}
       {data && !loading && !error && (
         <View style={styles.scrollViewContainer}>
-          {getData(data, 'devices')?.map((device: any) => renderDevice(device))}
+          {devices?.map(({name, application, platform, id}) => (
+            <View key={id} style={styles.row}>
+              <Text style={styles.info}>{`name: ${name}`}</Text>
+              <Text style={styles.info}>{`application: ${application}`}</Text>
+              <Text style={styles.info}>{`platform: ${platform}`}</Text>
+            </View>
+          ))}
         </View>
       )}
     </ScrollView>
