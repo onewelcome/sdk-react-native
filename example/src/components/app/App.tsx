@@ -12,6 +12,7 @@ import TwoWayOtpApiModal from '../modals/customRegistration/TwoWayOtpApiModal';
 import HomeScreen from '../screens/home/HomeScreen';
 import MobileAuthOTPModal from '../modals/mobileauthotp/MobileAuthOTPModal';
 import FingerprintModal from '../modals/fingerprint/FingerprintModal';
+import {AuthProvider} from "../../providers/auth.provider";
 
 const App: React.FC<{}> = () => {
   const [isReadyToExit, setIsReadyToExit] = useState(false);
@@ -35,19 +36,19 @@ const App: React.FC<{}> = () => {
   }, [isReadyToExit]);
 
   return (
-    <>
-      <StatusBar
-        barStyle={Platform.OS === 'android' ? 'light-content' : 'default'}
-        backgroundColor={'#4a38ae'}
-      />
-      <SafeAreaView style={styles.container}>
-        <FingerprintModal />
-        <MobileAuthOTPModal />
-        <TwoWayOtpApiModal />
-        <PinModal />
-        <HomeScreen />
-      </SafeAreaView>
-    </>
+      <AuthProvider>
+        <StatusBar
+            barStyle={Platform.OS === 'android' ? 'light-content' : 'default'}
+            backgroundColor={'#4a38ae'}
+        />
+        <SafeAreaView style={styles.container}>
+          <FingerprintModal/>
+          <MobileAuthOTPModal/>
+          <TwoWayOtpApiModal/>
+          <PinModal/>
+          <HomeScreen/>
+        </SafeAreaView>
+      </AuthProvider>
   );
 };
 
