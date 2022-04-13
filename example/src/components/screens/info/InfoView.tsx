@@ -31,6 +31,9 @@ const getProfileData = async (
 
 //@todo resolve this with more types for resources
 const getData = (data: any, key: string) => {
+  if(typeof data === 'string' || data instanceof String){
+    data = JSON.parse(data as string);
+  }
   if (data[key]) {
     return data[key];
   } else {
@@ -52,7 +55,7 @@ const InfoView: React.FC<Props> = (props) => {
         path: 'user-id-decorated',
       },
       true,
-      ['user-id-decorated'],
+      [],
       profileId,
   );
 
@@ -78,7 +81,7 @@ const InfoView: React.FC<Props> = (props) => {
     <ContentContainer containerStyle={styles.container}>
       <View style={styles.row}>
         <Text style={styles.label}>User Info</Text>
-        {implicitResource.loading && (
+        {implicitResource.loading && !profileError && (
           <Text style={styles.info}>{'Loading...'}</Text>
         )}
         {profileError && (
