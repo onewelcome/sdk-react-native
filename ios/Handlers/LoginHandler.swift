@@ -2,6 +2,7 @@ protocol BridgeToLoginHandlerProtocol: AnyObject {
     func authenticateUser(_ profile: ONGUserProfile, completion: @escaping (ONGUserProfile?, NSError?) -> Void)
 }
 
+
 class LoginHandler: NSObject, PinHandlerToReceiverProtocol {
     var pinChallenge: ONGPinChallenge?
     var loginCompletion: ((ONGUserProfile?, NSError?) -> Void)?
