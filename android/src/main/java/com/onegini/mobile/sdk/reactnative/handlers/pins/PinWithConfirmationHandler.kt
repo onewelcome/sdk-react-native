@@ -86,11 +86,11 @@ class PinWithConfirmationHandler(
     }
 
     fun notifyOnSimpleAction(notifyAction: String) {
-        pinNotificationObserver?.onNotify(notifyAction, lastFlow)
+        pinNotificationObserver?.onNotify(notifyAction, lastFlow, null)
     }
 
-    fun notifyOnOpen() {
-        pinNotificationObserver?.onNotify(Constants.PIN_NOTIFICATION_OPEN_VIEW, lastFlow)
+    fun notifyOnOpen(data: Any? = null) {
+        pinNotificationObserver?.onNotify(Constants.PIN_NOTIFICATION_OPEN_VIEW, lastFlow, data)
     }
 
     fun notifyOnError(error: OneginiError?) {

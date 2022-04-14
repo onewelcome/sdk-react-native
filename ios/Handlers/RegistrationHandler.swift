@@ -101,6 +101,7 @@ extension RegistrationHandler: ONGRegistrationDelegate {
     func userClient(_: ONGUserClient, didReceivePinRegistrationChallenge challenge: ONGCreatePinChallenge) {
         createPinChallenge = challenge
         let pinError = mapErrorFromPinChallenge(challenge)
+        DefaultKeysUtil.setPinLength(profileId: challenge.userProfile.profileId, pinLength: challenge.pinLength)
         BridgeConnector.shared?.toPinHandlerConnector.pinHandler.handleFlowUpdate(PinFlow.create, error: pinError, receiver: self, userInfo: nil, data: challenge.pinLength)
     }
 

@@ -9,6 +9,7 @@ import com.onegini.mobile.sdk.android.handlers.request.OneginiPinAuthenticationR
 import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiPinCallback
 import com.onegini.mobile.sdk.android.model.entity.AuthenticationAttemptCounter
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
+import com.onegini.mobile.sdk.reactnative.util.PreferencesUtils
 
 class PinAuthenticationRequestHandler(private val oneginiSDK: OneginiSDK) : OneginiPinAuthenticationRequestHandler {
     private var callback: OneginiPinCallback? = null
@@ -26,7 +27,8 @@ class PinAuthenticationRequestHandler(private val oneginiSDK: OneginiSDK) : Oneg
         userProfileId = userProfile.profileId // @todo Might need this in the future
         callback = oneginiPinCallback
         if (pinNotificationObserver != null) {
-            pinNotificationObserver!!.onNotify(Constants.PIN_NOTIFICATION_OPEN_VIEW, Constants.PinFlow.Authentication)
+            val pinLength = PreferencesUtils.getPinLength(userProfileId!!)
+            pinNotificationObserver!!.onNotify(Constants.PIN_NOTIFICATION_OPEN_VIEW, Constants.PinFlow.Authentication, pinLength)
         }
     }
 
@@ -44,7 +46,7 @@ class PinAuthenticationRequestHandler(private val oneginiSDK: OneginiSDK) : Oneg
 
     override fun finishAuthentication() {
         if (pinNotificationObserver != null) {
-            pinNotificationObserver!!.onNotify(Constants.PIN_NOTIFICATION_CLOSE_VIEW, Constants.PinFlow.Authentication)
+            pinNotificationObserver!!.onNotify(Constants.PIN_NOTIFICATION_CLOSE_VIEW, Constants.PinFlow.Authentication, null)
         }
     }
 

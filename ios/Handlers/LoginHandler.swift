@@ -2,7 +2,6 @@ protocol BridgeToLoginHandlerProtocol: AnyObject {
     func authenticateUser(_ profile: ONGUserProfile, completion: @escaping (ONGUserProfile?, NSError?) -> Void)
 }
 
-
 class LoginHandler: NSObject, PinHandlerToReceiverProtocol {
     var pinChallenge: ONGPinChallenge?
     var loginCompletion: ((ONGUserProfile?, NSError?) -> Void)?
@@ -37,10 +36,11 @@ extension LoginHandler : BridgeToLoginHandlerProtocol {
 }
 
 extension LoginHandler: ONGAuthenticationDelegate {
-    func userClient(_: ONGUserClient, didReceive challenge: ONGPinChallenge) {
+    func userClient(_ : ONGUserClient, didReceive challenge: ONGPinChallenge) {
         pinChallenge = challenge
         let pinError = mapErrorFromPinChallenge(challenge)
-        BridgeConnector.shared?.toPinHandlerConnector.pinHandler.handleFlowUpdate(PinFlow.authentication, error: pinError, receiver: self, userInfo: challenge.userInfo, data: nil)
+        let pinConfig = DefaultKeysUtil.getPinConfig(profileId: challenge.userProfile.profileId)
+        BridgeConnector.shared?.toPinHandlerConnector.pinHandler.handleFlowUpdate(PinFlow.authentication, error: pinError, receiver: self, userInfo: challenge.userInfo, data: pinConfig?.pinLength)
     }
 
     func userClient(_: ONGUserClient, didReceive challenge: ONGCustomAuthFinishAuthenticationChallenge) {

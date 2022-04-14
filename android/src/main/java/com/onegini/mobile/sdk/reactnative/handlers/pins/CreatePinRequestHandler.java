@@ -12,6 +12,7 @@ import com.onegini.mobile.sdk.android.handlers.error.OneginiPinValidationError;
 import com.onegini.mobile.sdk.android.handlers.request.OneginiCreatePinRequestHandler;
 import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiPinCallback;
 import com.onegini.mobile.sdk.android.model.entity.UserProfile;
+import com.onegini.mobile.sdk.reactnative.util.PreferencesUtils;
 
 import static com.onegini.mobile.sdk.reactnative.Constants.PIN_NOTIFICATION_CLOSE_VIEW;
 
@@ -48,7 +49,8 @@ public class CreatePinRequestHandler implements OneginiCreatePinRequestHandler {
         pinWithConfirmationHandler = new PinWithConfirmationHandler(oneginiPinCallback, oneginiSDK, context);
         pinWithConfirmationHandler.setLastFlow(lastPinFlow);
         pinWithConfirmationHandler.setPinNotificationObserver(pinNotificationHandler);
-        pinWithConfirmationHandler.notifyOnOpen();
+        pinWithConfirmationHandler.notifyOnOpen(pinLength);
+        PreferencesUtils.setPinLength(userProfile.getProfileId(), pinLength);
     }
 
     @Override
