@@ -18,7 +18,7 @@ struct ProfilePinConfig: Codable{
 
 class DefaultKeysUtil {
     
-    static func setPinLength(profileId: String, pinLength: UInt){
+    static func setPinLength(profileId: String, pinLength: UInt) throws{
         var allConfigs = getAllPinConfigs()
         var existingConfig = allConfigs.first(where: { $0.profileId == profileId })
         
@@ -29,15 +29,10 @@ class DefaultKeysUtil {
             existingConfig?.pinLength = pinLength
         }
         
-        do {
-            let encoder = JSONEncoder()
-            let data = try encoder.encode(allConfigs)
-            
-            UserDefaults.standard.set(data, forKey: DefaultKeys.PinLengthKey)
-        } catch {
-            //TODO do something with error
-            print("Error")
-        }
+        let encoder = JSONEncoder()
+        let data = try encoder.encode(allConfigs)
+        
+        UserDefaults.standard.set(data, forKey: DefaultKeys.PinLengthKey)
     }
     
     static func getAllPinConfigs() -> [ProfilePinConfig] {
