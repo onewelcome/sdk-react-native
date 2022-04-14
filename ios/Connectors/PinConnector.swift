@@ -3,7 +3,7 @@ protocol BridgeToPinConnectorProtocol: AnyObject {
     var pinHandler: PinConnectorToPinHandler { get }
 
     func handlePinAction(_ flow: (NSString), _ action: (NSString), _ pin: (NSString)) -> Void
-    func sendNotification(event: PinNotification, flow: PinFlow?, error: NSError?, userInfo: [String: Any]?) -> Void
+    func sendNotification(event: PinNotification, flow: PinFlow?, error: NSError?, userInfo: [String: Any]?, data: Any?) -> Void
 }
 
 //@todo handle change and auth flows
@@ -29,19 +29,19 @@ class PinConnector : BridgeToPinConnectorProtocol {
         }
     }
 
-    func sendNotification(event: PinNotification, flow: PinFlow?, error: NSError?, userInfo: [String: Any]? = nil) {
+    func sendNotification(event: PinNotification, flow: PinFlow?, error: NSError?, userInfo: [String: Any]? = nil, data: Any?) {
         switch (event){
             case .open:
-                sendEvent(data: ["flow": flow?.rawValue ?? "", "action": PinNotification.open.rawValue, "userInfo": userInfo ?? [:]])
+                sendEvent(data: ["flow": flow?.rawValue ?? "", "action": PinNotification.open.rawValue, "userInfo": userInfo ?? [:], "data": data])
                 break
             case .confirm:
-                sendEvent(data: ["flow": flow?.rawValue ?? "", "action": PinNotification.confirm.rawValue])
+                sendEvent(data: ["flow": flow?.rawValue ?? "", "action": PinNotification.confirm.rawValue, "data": data])
                 break;
             case .close:
-                sendEvent(data: ["flow": flow?.rawValue ?? "", "action": PinNotification.close.rawValue])
+                sendEvent(data: ["flow": flow?.rawValue ?? "", "action": PinNotification.close.rawValue, "data": data])
                 break;
             case .showError:
-                sendEvent(data: ["flow": flow?.rawValue ?? "", "action": PinNotification.showError.rawValue, "errorMsg": error?.localizedDescription ?? "", "userInfo": userInfo ?? [:]])
+                sendEvent(data: ["flow": flow?.rawValue ?? "", "action": PinNotification.showError.rawValue, "errorMsg": error?.localizedDescription ?? "", "userInfo": userInfo ?? [:], "data": data ?? [:]])
                 break
         }
     }

@@ -1,5 +1,6 @@
-import {useState, useEffect, useCallback} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import OneginiSdk, {Events} from './index';
+import {PinAction, PinFlow} from "./events";
 
 const usePinFlow = () => {
   const [flow, setFlow] = useState<Events.PinFlow>(Events.PinFlow.Create);
@@ -8,9 +9,10 @@ const usePinFlow = () => {
   const [userInfo, setUserInfo] = useState(null);
   const [error, setError] = useState<string | null>(null);
   const [isConfirmMode, setConfirmMode] = useState(false);
+  const [pinLength, setPinLength] = useState<number | null>(null);
 
   const provideNewPinKey = (newKey: string) =>
-    onNewPinKey(newKey, pin, setPin, flow, setError);
+    onNewPinKey(newKey, pin, setPin, flow, setError, pinLength || 5);
 
   const cancelPinFlow = () => onCancelPinFlow(flow);
 
@@ -29,10 +31,13 @@ const usePinFlow = () => {
   }, []);
 
   const handleOpen = useCallback(
-    (newFlow: Events.PinFlow) => {
+    (newFlow: Events.PinFlow, pinLength?: number) => {
       setVisible(true);
       if (flow !== newFlow) {
         setFlow(newFlow);
+      }
+      if(pinLength){
+        setPinLength(pinLength);
       }
     },
     [flow],
@@ -51,7 +56,7 @@ const usePinFlow = () => {
 
       switch (event.action) {
         case Events.PinNotification.Open:
-          handleOpen(event.flow);
+          handleOpen(event.flow, event.data);
           break;
         case Events.PinNotification.Confirm:
           setConfirmState();
@@ -86,6 +91,7 @@ const usePinFlow = () => {
     error,
     provideNewPinKey,
     cancelPinFlow,
+    pinLength,
     userInfo,
   };
 };
@@ -98,6 +104,7 @@ const onNewPinKey = (
   setPin: (pin: string) => void,
   flow: Events.PinFlow,
   setError: (error: string | null) => void,
+  requiredPinLength: number,
 ) => {
   setError(null);
 
@@ -106,7 +113,7 @@ const onNewPinKey = (
   } else {
     const newValue = pin + newKey;
     setPin(newValue);
-    if (newValue.length === 5) {
+    if (newValue.length === requiredPinLength) {
       OneginiSdk.submitPinAction(flow, Events.PinAction.ProvidePin, newValue);
     }
   }
