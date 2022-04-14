@@ -45,16 +45,12 @@ const AuthScreen: React.FC<Props> = (props) => {
 
     const fetchProfiles = useCallback(async () => {
         try {
-<<<<<<< feat/RNP09_pin_error_msg
-            hasProfile().then(() => authenticateUser());
-=======
             dispatch({type: AuthActionTypes.AUTH_LOAD_PROFILE_IDS});
             const userProfiles = await OneginiSdk.getUserProfiles();
             dispatch({
                 type: AuthActionTypes.AUTH_SET_PROFILE_IDS,
                 payload: userProfiles?.map(({profileId}) => profileId) || []
             });
->>>>>>> release_1.0.0-rc1
         } catch (e: any) {
             setError(e.message);
             dispatch({type: AuthActionTypes.AUTH_SET_PROFILE_IDS, payload: []});
