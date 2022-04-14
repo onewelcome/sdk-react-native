@@ -189,8 +189,13 @@ extension PinHandler: ONGChangePinDelegate {
         if pinError == nil {
             closeFlow()
         }
-        DefaultKeysUtil.setPinLength(profileId: challenge.userProfile.profileId, pinLength: challenge.pinLength)
-        handleFlowUpdate(PinFlow.create, error: pinError, receiver: self, data: challenge.pinLength)
+        
+        do {
+            try DefaultKeysUtil.setPinLength(profileId: challenge.userProfile.profileId, pinLength: challenge.pinLength)
+            handleFlowUpdate(PinFlow.create, error: pinError, receiver: self, data: challenge.pinLength)
+        } catch let err{
+            handleFlowUpdate(PinFlow.create, error: err as NSError, receiver: self, data: nil)
+        }
     }
     
     func userClient(_: ONGUserClient, didFailToChangePinForUser _: ONGUserProfile, error: Error) {
