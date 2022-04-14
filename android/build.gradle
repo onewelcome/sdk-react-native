@@ -81,3 +81,38 @@ dependencies {
         transitive = true
     }
 }
+
+allprojects {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven {
+            // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
+            url("$rootDir/../../node_modules/react-native/android")
+        }
+        maven {
+            // Android JSC is installed from npm
+            url("$rootDir/../../node_modules/jsc-android/dist")
+        }
+
+        google()
+        jcenter()
+        maven { url 'https://www.jitpack.io' }
+        if (project.hasProperty('onegini_artifactory_user') && project.hasProperty('onegini_artifactory_password')) {
+            maven {
+                /*
+                Before the release please change the url below to: https://repo.onegini.com/artifactory/onegini-sdk
+                Please change it back to https://repo.onegini.com/artifactory/public after the release
+                */
+                url "https://repo.onegini.com/artifactory/onegini-sdk"
+                credentials {
+                    username "${onegini_artifactory_user}"
+                    password "${onegini_artifactory_password}"
+                }
+            }
+        } else {
+            throw new InvalidUserDataException("You must configure the 'artifactory_user' and 'artifactory_password' properties in your project before you can " +
+                    "build it.")
+        }
+    }
+}
