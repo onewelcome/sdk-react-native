@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {Modal, StyleSheet, Text, View} from 'react-native';
 import {Events, usePinFlow} from 'onegini-react-native-sdk';
 import PinInput from './PinInput';
@@ -28,6 +28,7 @@ const PinModal: React.FC<{}> = () => {
     provideNewPinKey,
     cancelPinFlow,
     userInfo,
+    pinLength
   } = usePinFlow();
 
   const title = isConfirmMode ? 'Confirm Pin' : getTitle(flow);
@@ -44,8 +45,8 @@ const PinModal: React.FC<{}> = () => {
       <View style={styles.container}>
         <View style={styles.topContainer}>
           <Text style={styles.title}>{title}</Text>
-          <PinInput pinLength={pin.length} />
-          {error && <Text style={styles.error}>{`Pin is incorrect${userInfo && userInfo?.['remainingFailureCount'] ? `, you have ${userInfo?.['remainingFailureCount']} attempts remaining` : ''}`}</Text>}
+          <PinInput currentPinLength={pin.length} requiredPinLength={pinLength || 5}/>
+          {error && <Text style={styles.error}>{`Pin is incorrect${userInfo && userInfo['remainingFailureCount'] ? `, you have ${userInfo['remainingFailureCount']} attempts remaining` : ''}`}</Text>}
         </View>
         <View style={styles.bottomContainer}>
           <PinKeyboard

@@ -2,7 +2,7 @@ protocol PinConnectorToPinHandler: AnyObject {
     func onPinProvided(pin: (NSString))
     func onChangePinCalled(completion: @escaping (Bool, NSError?) -> Void)
     func onCancel()
-    func handleFlowUpdate(_ flow: PinFlow, error: NSError?, receiver: PinHandlerToReceiverProtocol, userInfo: [String: Any]?)
+    func handleFlowUpdate(_ flow: PinFlow, error: NSError?, receiver: PinHandlerToReceiverProtocol, userInfo: [String: Any]?, data: Any?)
     func closeFlow()
 }
 
@@ -52,7 +52,7 @@ class PinHandler: NSObject {
     private func handleRegistrationPin(_ pinEntry: Array<String>) {
         pinEntryToVerify = pinEntry
         mode = .registrationConfirm
-        sendConnectorNotification(PinNotification.confirm, flow, nil)
+        sendConnectorNotification(PinNotification.confirm, flow, nil, nil, nil)
     }
 
     private func handleConfirmRegistrationPin(_ pinEntry: Array<String>, _ pincode: String) {
@@ -67,21 +67,21 @@ class PinHandler: NSObject {
     }
 
     func notifyOnError(_ error: NSError, userInfo: [String: Any]? = nil) {
-        sendConnectorNotification(PinNotification.showError, flow, error, userInfo)
+        sendConnectorNotification(PinNotification.showError, flow, error, userInfo, nil)
 
         if(mode == PINEntryMode.registrationConfirm) {
             mode = .registration
         }
     }
 
-    private func sendConnectorNotification(_ event: PinNotification, _ flow: PinFlow?, _ error: NSError?,  _ userInfo: [String: Any]? = nil) {
-        BridgeConnector.shared?.toPinHandlerConnector.sendNotification(event: event, flow: flow, error: error, userInfo: userInfo)
+    private func sendConnectorNotification(_ event: PinNotification, _ flow: PinFlow?, _ error: NSError?,  _ userInfo: [String: Any]? = nil, _ data: Any?) {
+        BridgeConnector.shared?.toPinHandlerConnector.sendNotification(event: event, flow: flow, error: error, userInfo: userInfo, data: data)
     }
 }
 
 extension PinHandler : PinConnectorToPinHandler {
     // @todo Support different pinLength
-    func handleFlowUpdate(_ flow: PinFlow, error: NSError?, receiver: PinHandlerToReceiverProtocol, userInfo:[String: Any]? = nil) {
+    func handleFlowUpdate(_ flow: PinFlow, error: NSError?, receiver: PinHandlerToReceiverProtocol, userInfo:[String: Any]? = nil, data: Any? = nil) {
         if(self.flow == nil){
             self.flow = flow
             pinReceiver = receiver
@@ -104,7 +104,7 @@ extension PinHandler : PinConnectorToPinHandler {
                         break
                 }
 
-                sendConnectorNotification(PinNotification.open, flow, nil, userInfo)
+                sendConnectorNotification(PinNotification.open, flow, nil, userInfo, data)
             }
         }
     }
@@ -113,7 +113,7 @@ extension PinHandler : PinConnectorToPinHandler {
         if(flow != nil){
             mode = nil
             flow = nil
-            sendConnectorNotification(PinNotification.close, flow, nil)
+            sendConnectorNotification(PinNotification.close, flow, nil, nil, nil)
         }
     }
 
@@ -190,7 +190,12 @@ extension PinHandler: ONGChangePinDelegate {
             closeFlow()
         }
         
-        handleFlowUpdate(PinFlow.create, error: pinError, receiver: self)
+        do {
+            try DefaultKeysUtil.setPinLength(profileId: challenge.userProfile.profileId, pinLength: challenge.pinLength)
+            handleFlowUpdate(PinFlow.create, error: pinError, receiver: self, data: challenge.pinLength)
+        } catch let err{
+            handleFlowUpdate(PinFlow.create, error: err as NSError, receiver: self, data: nil)
+        }
     }
     
     func userClient(_: ONGUserClient, didFailToChangePinForUser _: ONGUserProfile, error: Error) {
@@ -201,6 +206,8 @@ extension PinHandler: ONGChangePinDelegate {
     }
     
     func userClient(_ userClient: ONGUserClient, didStartPinChangeForUser userProfile: ONGUserProfile) {
+        let pinConfig = DefaultKeysUtil.getPinConfig(profileId: userProfile.profileId)
+        handleFlowUpdate(PinFlow.change, error: nil, receiver: self, userInfo: nil, data: pinConfig?.pinLength)
     }
 
     func userClient(_: ONGUserClient, didChangePinForUser _: ONGUserProfile) {
