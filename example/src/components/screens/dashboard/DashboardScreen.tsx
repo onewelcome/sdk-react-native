@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {StyleSheet, View, Text, Image, Alert} from 'react-native';
+import {StyleSheet, View, Text, Image, Alert, ScrollView} from 'react-native';
 import {Assets} from '../../../../assets';
 import BackButton from '../../general/BackButton';
 import SettingsActionsView from './components/SettingsActionsView';
@@ -25,7 +25,7 @@ const DashboardScreen: React.FC<Props> = (props) => {
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.header}>
         {contentView === CONTENT_VIEW.DASHBOARD_ACTIONS ? (
           <Image style={styles.headerIcon} source={Assets.oneginiIcon} />
@@ -44,7 +44,7 @@ const DashboardScreen: React.FC<Props> = (props) => {
         props.onLogout,
         onShowAccessToken,
       )}
-    </View>
+    </ScrollView>
   );
 };
 
@@ -137,7 +137,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f8f8f8',
-    paddingHorizontal: '4%',
   },
   header: {
     position: 'absolute',
