@@ -45,8 +45,8 @@ const PinModal: React.FC<{}> = () => {
       <View style={styles.container}>
         <View style={styles.topContainer}>
           <Text style={styles.title}>{title}</Text>
-          <PinInput currentPinLength={pin.length} requiredPinLength={pinLength || 5}/>
-          {error && <Text style={styles.error}>{`Pin is incorrect${userInfo && userInfo['remainingFailureCount'] ? `, you have ${userInfo['remainingFailureCount']} attempts remaining` : ''}`}</Text>}
+          <PinInput pinLength={pin.length} />
+          {error && <Text style={styles.error}>{`Pin is incorrect${userInfo && userInfo?.['remainingFailureCount'] ? `, you have ${userInfo?.['remainingFailureCount']} attempts remaining` : ''}`}</Text>}
         </View>
         <View style={styles.bottomContainer}>
           <PinKeyboard
