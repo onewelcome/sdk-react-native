@@ -77,6 +77,7 @@ const RegisterButton: React.FC<Props> = (props) => {
               props.onRegistered,
             )
           }
+          onCancelPressed={() => setShowCustomRegistration(false)}
         />
       ) : (
         <View />

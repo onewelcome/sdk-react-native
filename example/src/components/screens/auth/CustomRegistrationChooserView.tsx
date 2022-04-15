@@ -1,11 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {Modal, StyleSheet, Text, View} from 'react-native';
 import Button from '../../general/Button';
 import OneginiSdk, {Types} from 'onegini-react-native-sdk';
 import AppColors from '../../constants/AppColors';
 
 interface Props {
   onProviderSelected?: (providerId: string) => void;
+  onCancelPressed?: () => void;
 }
 
 const CustomRegistrationChooserView: React.FC<Props> = (props) => {
@@ -28,20 +29,32 @@ const CustomRegistrationChooserView: React.FC<Props> = (props) => {
   }, []);
 
   return (
-    <View style={styles.container}>
-      {providers?.map((provider) => {
-        return (
-          <View key={provider.id} style={styles.buttonConteiner}>
+      <Modal transparent={false}>
+        <View style={styles.container}>
+          <Text style={styles.title}>Register with ...</Text>
+          {providers?.map((provider) => {
+            return (
+                <View key={provider.id} style={styles.buttonConteiner}>
+                  <Button
+                      name={provider.name + '(' + provider.id + ')'}
+                      onPress={() => {
+                        props.onProviderSelected?.(provider.id);
+                      }}
+                  />
+                </View>
+            );
+          })}
+
+          <View style={styles.buttonConteiner}>
             <Button
-              name={provider.name + '(' + provider.id + ')'}
-              onPress={() => {
-                props.onProviderSelected?.(provider.id);
-              }}
+                name='Cancel'
+                onPress={() => {
+                  props.onCancelPressed?.();
+                }}
             />
           </View>
-        );
-      })}
-    </View>
+        </View>
+      </Modal>
   );
 };
 
@@ -53,9 +66,15 @@ const styles = StyleSheet.create({
     paddingTop: '10%',
     marginBottom: 80,
     overflow: 'hidden',
+    paddingHorizontal: '4%'
+  },
+  title: {
+    color: AppColors.blue,
+    fontSize: 32,
+    marginTop: '10%',
   },
   buttonConteiner: {
-    paddingTop: 40,
+    flex:1,
   },
 });
 
