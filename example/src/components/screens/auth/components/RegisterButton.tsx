@@ -4,9 +4,10 @@ import PropTypes from 'prop-types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Button from '../../../general/Button';
 import Switch from '../../../general/Switch';
-import OneginiSdk from 'onegini-react-native-sdk';
+import OneginiSdk, {Events} from 'onegini-react-native-sdk';
 import CustomRegistrationChooserView from '../CustomRegistrationChooserView';
 import {CurrentUser} from '../../../../auth/auth';
+import {CustomRegistrationAction} from "../../../../../../ts/events";
 
 //
 
@@ -23,6 +24,25 @@ const RegisterButton: React.FC<Props> = (props) => {
   const [isShownCustomRegistration, setShowCustomRegistration] = useState(
     false,
   );
+
+  const handleCustomRegistrationCallback = (event: any) => {
+    switch(event["identityProviderId"]) {
+      case "qr_registration":
+        OneginiSdk.submitCustomRegistrationAction(CustomRegistrationAction.ProvideToken, event.identifyProviderId, "Onegini");
+        break;
+      default:
+        return;
+    }
+  }
+
+  useEffect(() => {
+    const listener = OneginiSdk.addEventListener(
+      Events.SdkNotification.CustomRegistration,
+      handleCustomRegistrationCallback,
+    );
+
+    return () => {listener.remove();};
+  }, [handleCustomRegistrationCallback]);
 
   useEffect(() => {
     const handleOpenURL = (event: any) => {
