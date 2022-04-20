@@ -3,7 +3,7 @@ protocol BridgeToPinConnectorProtocol: AnyObject {
     var pinHandler: PinConnectorToPinHandler { get }
 
     func handlePinAction(_ flow: (NSString), _ action: (NSString), _ pin: (NSString)) -> Void
-    func sendNotification(event: PinNotification, flow: PinFlow?, error: NSError?, userInfo: [String: Any]?, data: Any?) -> Void
+    func sendNotification(event: PinNotification, flow: PinFlow?, error: NSError?, profileId: String?, userInfo: [String: Any]?, data: Any?) -> Void
 }
 
 //@todo handle change and auth flows
@@ -29,19 +29,19 @@ class PinConnector : BridgeToPinConnectorProtocol {
         }
     }
 
-    func sendNotification(event: PinNotification, flow: PinFlow?, error: NSError?, userInfo: [String: Any]? = nil, data: Any?) {
+    func sendNotification(event: PinNotification, flow: PinFlow?, error: NSError?, profileId: String?, userInfo: [String: Any]? = nil, data: Any?) {
         switch (event){
             case .open:
-                sendEvent(data: ["flow": flow?.rawValue ?? "", "action": PinNotification.open.rawValue, "userInfo": userInfo ?? [:], "data": data])
+            sendEvent(data: ["flow": flow?.rawValue ?? "", "action": PinNotification.open.rawValue, "profileId": profileId ?? "", "userInfo": userInfo ?? [:], "data": data ?? [:]])
                 break
             case .confirm:
-                sendEvent(data: ["flow": flow?.rawValue ?? "", "action": PinNotification.confirm.rawValue, "data": data])
+                sendEvent(data: ["flow": flow?.rawValue ?? "", "action": PinNotification.confirm.rawValue, "profileId": profileId ?? "", "data": data ?? [:]])
                 break;
             case .close:
-                sendEvent(data: ["flow": flow?.rawValue ?? "", "action": PinNotification.close.rawValue, "data": data])
+                sendEvent(data: ["flow": flow?.rawValue ?? "", "action": PinNotification.close.rawValue, "profileId": profileId ?? "", "data": data ?? [:]])
                 break;
             case .showError:
-                sendEvent(data: ["flow": flow?.rawValue ?? "", "action": PinNotification.showError.rawValue, "errorMsg": error?.localizedDescription ?? "", "userInfo": userInfo ?? [:], "data": data ?? [:]])
+                sendEvent(data: ["flow": flow?.rawValue ?? "", "action": PinNotification.showError.rawValue, "errorMsg": error?.localizedDescription ?? "", "profileId": profileId ?? "", "userInfo": userInfo ?? [:], "data": data ?? [:]])
                 break
         }
     }
