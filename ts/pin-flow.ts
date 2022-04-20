@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useState} from 'react';
 import OneginiSdk, {Events} from './index';
-import {PinAction, PinFlow} from "./events";
+import {useProfileStorage} from "../example/src/components/hooks/useProfileStorage";
 
 const usePinFlow = () => {
   const [flow, setFlow] = useState<Events.PinFlow>(Events.PinFlow.Create);
@@ -10,6 +10,7 @@ const usePinFlow = () => {
   const [error, setError] = useState<string | null>(null);
   const [isConfirmMode, setConfirmMode] = useState(false);
   const [pinLength, setPinLength] = useState<number | null>(null);
+  const {getPinProfile, setPinProfile} = useProfileStorage();
 
   const provideNewPinKey = (newKey: string) =>
     onNewPinKey(newKey, pin, setPin, flow, setError, pinLength || 5);
@@ -31,14 +32,17 @@ const usePinFlow = () => {
   }, []);
 
   const handleOpen = useCallback(
-    (newFlow: Events.PinFlow, pinLength?: number) => {
+    async (newFlow: Events.PinFlow, profileId: string, pinLength?: number) => {
       setVisible(true);
       if (flow !== newFlow) {
         setFlow(newFlow);
       }
-      if(pinLength){
-        setPinLength(pinLength);
+      if(pinLength && !isNaN(Number(pinLength))){
+        await setPinProfile(profileId, pinLength);
+      } else {
+        pinLength = await getPinProfile(profileId);
       }
+      setPinLength(pinLength);
     },
     [flow],
   );
@@ -51,12 +55,12 @@ const usePinFlow = () => {
   }, []);
 
   const handleNotification = useCallback(
-    (event: any) => {
+    async (event: any) => {
       console.log('handle PIN notification event: ', event);
 
       switch (event.action) {
         case Events.PinNotification.Open:
-          handleOpen(event.flow, event.data);
+          await handleOpen(event.flow, event.profileId, event.data);
           break;
         case Events.PinNotification.Confirm:
           setConfirmState();
