@@ -13,7 +13,7 @@ class ChangePinHandler(private val oneginiSDK: OneginiSDK) : OneginiChangePinHan
     private var response: ChangePinHandlerResponse? = null
 
     override fun onSuccess() {
-        pinNotificationObserver?.onNotify(PIN_NOTIFICATION_CHANGED, PinFlow.Change, null)
+        pinNotificationObserver?.onNotify(PIN_NOTIFICATION_CHANGED, PinFlow.Change, null, null)
         oneginiSDK.createPinRequestHandler.setPinFlow(PinFlow.Create)
         response?.onSuccess()
     }

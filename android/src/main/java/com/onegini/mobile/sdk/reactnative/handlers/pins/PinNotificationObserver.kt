@@ -10,7 +10,7 @@ import com.onegini.mobile.sdk.reactnative.mapers.OneginiErrorMapper
 import com.onegini.mobile.sdk.android.handlers.error.OneginiError
 
 interface IPinNotificationObserver {
-    fun onNotify(event: String, flow: PinFlow, data: Any?)
+    fun onNotify(event: String, flow: PinFlow, profileId: String?, data: Any?)
     fun onError(error: OneginiError?, flow: PinFlow)
 }
 
@@ -18,7 +18,7 @@ interface IPinNotificationObserver {
 
 class PinNotificationObserver(private val reactApplicationContext: ReactApplicationContext) : IPinNotificationObserver {
 
-    override fun onNotify(event: String, flow: PinFlow, data: Any?) {
+    override fun onNotify(event: String, flow: PinFlow, profileId: String?, data: Any?) {
         val dataMap = Arguments.createMap()
         when (event) {
             Constants.PIN_NOTIFICATION_OPEN_VIEW -> {
@@ -31,6 +31,10 @@ class PinNotificationObserver(private val reactApplicationContext: ReactApplicat
                     } else {
                         dataMap.putString("data", data.toString())
                     }
+                }
+
+                if(profileId != null) {
+                    dataMap.putString("profileId", profileId);
                 }
             }
             Constants.PIN_NOTIFICATION_CONFIRM_VIEW -> {
