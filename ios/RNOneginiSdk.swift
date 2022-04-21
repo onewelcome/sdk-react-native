@@ -1,6 +1,7 @@
 import Foundation
 import React
 import OneginiSDKiOS
+import LocalAuthentication
 
 
 protocol ConnectorToRNBridgeProtocol: NSObject {
@@ -311,7 +312,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
         let allAuthenticators: Array<ONGAuthenticator> = bridgeConnector.toAuthenticatorsHandler.getAuthenticatorsListForUserProfile(profile)
 
-        var result: NSMutableArray  = []
+        let result: NSMutableArray  = []
 
         for authenticator in allAuthenticators {
             result.add(["id": authenticator.identifier, "name": authenticator.name, "type": authenticator.type, "isRegistered": authenticator.isRegistered, "isPreferred": authenticator.isPreferred])
@@ -328,7 +329,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
         let registeredAuthenticators: Array<ONGAuthenticator> = bridgeConnector.toAuthenticatorsHandler.getAuthenticatorsListForUserProfile(profile).filter {$0.isRegistered == true}
 
-        var result: NSMutableArray  = []
+        let result: NSMutableArray  = []
 
         for authenticator in registeredAuthenticators {
             result.add(["id": authenticator.identifier, "name": authenticator.name, "type": authenticator.type, "isRegistered": authenticator.isRegistered, "isPreferred": authenticator.isPreferred])
