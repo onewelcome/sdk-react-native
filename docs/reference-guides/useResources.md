@@ -7,6 +7,7 @@ function useResources(
   type: ResourceRequestType,
   details: ResourcesDetails,
   shouldAuthenticate: boolean,
+  scopes?: string[],
   profileId?: string | null,
 ) 
 ```
@@ -26,11 +27,13 @@ const implicitResource = useResources(
       method: 'GET'
     },
     true,
+    [],
     profileId,
   )
 ```
 
 **Returns**
+
 | Property | Example | Description |
 | ------ | ------ |  ----------- |
 | loading   | true   |  Are resources begin loaded |
