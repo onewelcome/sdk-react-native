@@ -55,7 +55,7 @@ const ChangeAuthView: React.FC<Props> = () => {
   const hasFingerprintAuthenticator =
     allAuthenticators.findIndex(
       (auth) =>
-        auth.id.toUpperCase() === 'FINGERPRINT' ||
+        auth.name.toUpperCase() === 'TOUCHID' ||
         auth.name.toUpperCase() === 'FINGERPRINT',
     ) > -1;
 
