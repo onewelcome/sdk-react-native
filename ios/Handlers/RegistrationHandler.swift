@@ -102,12 +102,7 @@ extension RegistrationHandler: ONGRegistrationDelegate {
         createPinChallenge = challenge
         var pinError = mapErrorFromPinChallenge(challenge)
         
-        do {
-            try DefaultKeysUtil.setPinLength(profileId: challenge.userProfile.profileId, pinLength: challenge.pinLength)
-        } catch let err {
-            pinError = err as NSError
-        }
-        BridgeConnector.shared?.toPinHandlerConnector.pinHandler.handleFlowUpdate(PinFlow.create, error: pinError, receiver: self, userInfo: nil, data: challenge.pinLength)
+        BridgeConnector.shared?.toPinHandlerConnector.pinHandler.handleFlowUpdate(PinFlow.create, error: pinError, receiver: self, profileId: challenge.userProfile.profileId, userInfo: nil, data: challenge.pinLength)
         
     }
 
