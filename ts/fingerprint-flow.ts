@@ -1,13 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Platform } from 'react-native';
-import OneginiSdk, {Events} from './index';
+import OnewelcomeSdk, {Events} from './index';
 
 const onCancelFlow = () => Platform.OS === 'android'
-  ? OneginiSdk.submitFingerprintDenyAuthenticationRequest()
+  ? OnewelcomeSdk.submitFingerprintDenyAuthenticationRequest()
   : null; // iOS handled natively
 
 const onFallbackToPin = () => Platform.OS === 'android'
-  ? OneginiSdk.submitFingerprintFallbackToPin()
+  ? OnewelcomeSdk.submitFingerprintFallbackToPin()
   : null; // iOS handled natively
 
 const useFingerprintFlow = () => {
@@ -17,7 +17,7 @@ const useFingerprintFlow = () => {
   const onStart = () => {
     setStage(Events.FingerprintStage.Started);
     setActive(true);
-    OneginiSdk.submitFingerprintAcceptAuthenticationRequest();
+    OnewelcomeSdk.submitFingerprintAcceptAuthenticationRequest();
   };
   const cancelFlow = () => {
     setActive(false);
@@ -59,7 +59,7 @@ const useFingerprintFlow = () => {
   );
 
   useEffect(() => {
-    const listener = OneginiSdk.addEventListener(
+    const listener = OnewelcomeSdk.addEventListener(
       Events.SdkNotification.Fingerprint,
       handleNotification,
     );

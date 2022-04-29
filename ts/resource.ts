@@ -1,5 +1,5 @@
 import {useState, useEffect, Dispatch, SetStateAction} from 'react';
-import OneginiSdk from './index';
+import OnewelcomeSdk from './index';
 import {ResourceRequestType, ResourcesDetails} from './data-types';
 
 //
@@ -22,13 +22,13 @@ const fetchResource = async (
   try {
     if (shouldAuthenticate) {
       if (type === ResourceRequestType.Implicit && profileId) {
-        await OneginiSdk.authenticateUserImplicitly(profileId, scopes);
+        await OnewelcomeSdk.authenticateUserImplicitly(profileId, scopes);
       } else if (type === ResourceRequestType.Anonymous) {
-        await OneginiSdk.authenticateDeviceForResource(scopes);
+        await OnewelcomeSdk.authenticateDeviceForResource(scopes);
       }
     }
 
-    const data = await OneginiSdk.resourceRequest(type, resourceDetails);
+    const data = await OnewelcomeSdk.resourceRequest(type, resourceDetails);
 
     setData(data);
     setLoading(false);

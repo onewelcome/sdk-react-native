@@ -1,6 +1,6 @@
 import {NativeModules, Platform} from 'react-native';
 
-import OneginiSdk, {
+import OnewelcomeSdk, {
   DefaultConfig,
   useResources,
   Types,
@@ -8,7 +8,7 @@ import OneginiSdk, {
 
 import {renderHook} from '@testing-library/react-hooks/native';
 
-const {RNOneginiSdk} = NativeModules;
+const {RNOnewelcomeSdk} = NativeModules;
 
 // //
 
@@ -58,8 +58,8 @@ describe('useResources', () => {
 
       await waitForNextUpdate();
 
-      expect(RNOneginiSdk.resourceRequest).toBeCalledTimes(1);
-      expect(RNOneginiSdk.resourceRequest).toBeCalledWith(
+      expect(RNOnewelcomeSdk.resourceRequest).toBeCalledTimes(1);
+      expect(RNOnewelcomeSdk.resourceRequest).toBeCalledWith(
         Types.ResourceRequestType.Anonymous,
         {
           method: 'GET',
@@ -76,8 +76,8 @@ describe('useResources', () => {
 
       await waitForNextUpdate();
 
-      expect(RNOneginiSdk.authenticateUserImplicitly).not.toBeCalled();
-      expect(RNOneginiSdk.authenticateDeviceForResource).not.toBeCalled();
+      expect(RNOnewelcomeSdk.authenticateUserImplicitly).not.toBeCalled();
+      expect(RNOnewelcomeSdk.authenticateDeviceForResource).not.toBeCalled();
     });
   });
 

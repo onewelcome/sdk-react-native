@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useState} from 'react';
-import OneginiSdk, {Events} from './index';
+import OnewelcomeSdk, {Events} from './index';
 import {useProfileStorage} from "../example/src/components/hooks/useProfileStorage";
 
 const usePinFlow = () => {
@@ -77,7 +77,7 @@ const usePinFlow = () => {
   );
 
   useEffect(() => {
-    const listener = OneginiSdk.addEventListener(
+    const listener = OnewelcomeSdk.addEventListener(
       Events.SdkNotification.Pin,
       handleNotification,
     );
@@ -118,12 +118,12 @@ const onNewPinKey = (
     const newValue = pin + newKey;
     setPin(newValue);
     if (newValue.length === requiredPinLength) {
-      OneginiSdk.submitPinAction(flow, Events.PinAction.ProvidePin, newValue);
+      OnewelcomeSdk.submitPinAction(flow, Events.PinAction.ProvidePin, newValue);
     }
   }
 };
 
 const onCancelPinFlow = (flow: Events.PinFlow) =>
-  OneginiSdk.submitPinAction(flow, Events.PinAction.Cancel, null);
+  OnewelcomeSdk.submitPinAction(flow, Events.PinAction.Cancel, null);
 
 export {usePinFlow};

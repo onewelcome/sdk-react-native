@@ -13,11 +13,11 @@ import {useResources} from './resource';
 
 //
 
-const {RNOneginiSdk} = NativeModules;
+const {RNOnewelcomeSdk} = NativeModules;
 
-const OneginiEventEmitter =
+const OnewelcomeEventEmitter =
   Platform.OS === 'ios'
-    ? new NativeEventEmitter(RNOneginiSdk)
+    ? new NativeEventEmitter(RNOnewelcomeSdk)
     : DeviceEventEmitter;
 
 // helpers
@@ -71,7 +71,7 @@ interface NativeMethods {
   getAllAuthenticators(profileId: string): Promise<Types.Authenticator[]>;
   setPreferredAuthenticator(
     profileId: string,
-    idOneginiAuthenticator: string,
+    idOnewelcomeAuthenticator: string,
   ): Promise<any>; // TODO: check this path and check if resolve is called on Native side
 
   // PIN
@@ -109,7 +109,7 @@ interface NativeMethods {
 const DefaultConfig: Types.Config = {
   enableFingerprint: true,
   securityControllerClassName:
-    'com.onegini.mobile.rnexampleapp.SecurityController',
+    'com.onewelcome.mobile.rnexampleapp.SecurityController',
   enableMobileAuthenticationOtp: true,
   customProviders: [{id: '2-way-otp-api', isTwoStep: true}],
   configModelClassName: null,
@@ -118,7 +118,7 @@ const DefaultConfig: Types.Config = {
 //
 
 const nativeMethods: NativeMethods = {
-  ...(RNOneginiSdk as NativeMethods),
+  ...(RNOnewelcomeSdk as NativeMethods),
 
   //
   // Listeners
@@ -128,7 +128,7 @@ const nativeMethods: NativeMethods = {
     eventType: string,
     callback: (event: any) => void,
   ): EmitterSubscription => {
-    return OneginiEventEmitter.addListener(eventType, callback);
+    return OnewelcomeEventEmitter.addListener(eventType, callback);
   },
 
   //
@@ -139,31 +139,31 @@ const nativeMethods: NativeMethods = {
     sdkConfig: Types.Config = DefaultConfig,
   ): Promise<string | null> => {
     if (isIOS()) {
-      return RNOneginiSdk.startClient();
+      return RNOnewelcomeSdk.startClient();
     }
 
-    return RNOneginiSdk.startClient(sdkConfig);
+    return RNOnewelcomeSdk.startClient(sdkConfig);
   },
 
   submitFingerprintAcceptAuthenticationRequest: (): Promise<any> => {
     if (isIOS()) {
       return Promise.reject('This method is Android only');
     }
-    return RNOneginiSdk.submitFingerprintAcceptAuthenticationRequest();
+    return RNOnewelcomeSdk.submitFingerprintAcceptAuthenticationRequest();
   },
 
   submitFingerprintDenyAuthenticationRequest: (): Promise<any> => {
     if (isIOS()) {
       return Promise.reject('This method is Android only');
     }
-    return RNOneginiSdk.submitFingerprintDenyAuthenticationRequest();
+    return RNOnewelcomeSdk.submitFingerprintDenyAuthenticationRequest();
   },
 
   submitFingerprintFallbackToPin: (): Promise<any> => {
     if (isIOS()) {
       return Promise.reject('This method is Android only');
     }
-    return RNOneginiSdk.submitFingerprintFallbackToPin();
+    return RNOnewelcomeSdk.submitFingerprintFallbackToPin();
   },
   //
   resourceRequest: (
@@ -171,7 +171,7 @@ const nativeMethods: NativeMethods = {
     details: Types.ResourcesDetails,
   ): Promise<any> => {
     return new Promise((resolve, reject) => {
-      RNOneginiSdk.resourceRequest(type, details)
+      RNOnewelcomeSdk.resourceRequest(type, details)
         .then(
           (results: string) =>
             isAndroid() ? resolve(JSON.parse(results)) : resolve(results), // on Android we send string - we need to parse it
@@ -183,7 +183,7 @@ const nativeMethods: NativeMethods = {
 
 //
 
-const OneginiSdk = {
+const OnewelcomeSdk = {
   ...nativeMethods,
 };
 
@@ -196,4 +196,4 @@ export {
   DefaultConfig,
 };
 
-export default OneginiSdk;
+export default OnewelcomeSdk;

@@ -1,8 +1,8 @@
 import {NativeModules, Platform} from 'react-native';
 
-import OneginiSdk, {DefaultConfig} from '../ts/index';
+import OnewelcomeSdk, {DefaultConfig} from '../ts/index';
 
-const {RNOneginiSdk} = NativeModules;
+const {RNOnewelcomeSdk} = NativeModules;
 
 //
 
@@ -16,16 +16,16 @@ afterEach(() => {
   jest.clearAllMocks();
 });
 
-describe('OneginiSdk', () => {
+describe('OnewelcomeSdk', () => {
   describe('startClient', () => {
     describe('on iOS', () => {
       it('should call native method with no parameters', () => {
         Platform.OS = 'ios';
 
-        OneginiSdk.startClient();
+        OnewelcomeSdk.startClient();
 
-        expect(RNOneginiSdk.startClient).toBeCalledTimes(1);
-        expect(RNOneginiSdk.startClient).toBeCalledWith();
+        expect(RNOnewelcomeSdk.startClient).toBeCalledTimes(1);
+        expect(RNOnewelcomeSdk.startClient).toBeCalledWith();
       });
     });
 
@@ -33,10 +33,10 @@ describe('OneginiSdk', () => {
       it('should call native method with default parameters', () => {
         Platform.OS = 'android';
 
-        OneginiSdk.startClient();
+        OnewelcomeSdk.startClient();
 
-        expect(RNOneginiSdk.startClient).toBeCalledTimes(1);
-        expect(RNOneginiSdk.startClient).toBeCalledWith(DefaultConfig);
+        expect(RNOnewelcomeSdk.startClient).toBeCalledTimes(1);
+        expect(RNOnewelcomeSdk.startClient).toBeCalledWith(DefaultConfig);
       });
     });
   });
