@@ -1,16 +1,16 @@
 import { NativeModules, Platform, NativeEventEmitter, DeviceEventEmitter } from 'react-native';
-const { RNOneginiSdk } = NativeModules;
+const { RNOneWelcomeSdk } = NativeModules;
 
-const OneginiEventEmitter =
+const OneWelcomeEventEmitter =
   Platform.OS === 'ios'
-    ? new NativeEventEmitter(RNOneginiSdk)
+    ? new NativeEventEmitter(RNOneWelcomeSdk)
     : DeviceEventEmitter;
 
-export const ONEGINI_SDK_EVENTS = {
-  ONEGINI_PIN_NOTIFICATION: 'ONEGINI_PIN_NOTIFICATION',
-  ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION: 'ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION',
-  ONEGINI_MOBILE_AUTH_OTP_NOTIFICATION: 'ONEGINI_MOBILE_AUTH_OTP_NOTIFICATION',
-  ONEGINI_FINGERPRINT_NOTIFICATION: 'ONEGINI_FINGERPRINT_NOTIFICATION'
+export const ONEWELCOME_SDK_EVENTS = {
+  ONEWELCOME_PIN_NOTIFICATION: 'ONEWELCOME_PIN_NOTIFICATION',
+  ONEWELCOME_CUSTOM_REGISTRATION_NOTIFICATION: 'ONEWELCOME_CUSTOM_REGISTRATION_NOTIFICATION',
+  ONEWELCOME_MOBILE_AUTH_OTP_NOTIFICATION: 'ONEWELCOME_MOBILE_AUTH_OTP_NOTIFICATION',
+  ONEWELCOME_FINGERPRINT_NOTIFICATION: 'ONEWELCOME_FINGERPRINT_NOTIFICATION'
 };
 
 export const CUSTOM_REGISTRATION_NOTIFICATIONS = {
@@ -28,26 +28,26 @@ export const MOBILE_AUTH_OTP_NOTIFICATION = {
   FINISH_AUTHENTICATION: 'finishAuthentication',
 };
 
-const OneginiSdk = {
+const OneWelcomeSdk = {
   config: {
     configModelClassName: null,
-    securityControllerClassName: "com.onegini.mobile.rnexampleapp.SecurityController",
+    securityControllerClassName: "com.onewelcome.mobile.rnexampleapp.SecurityController",
     customProviders: [{ id: '2-way-otp-api', isTwoStep: true }],
     enableMobileAuthenticationOtp: true,
     enableFingerprint: true
   },
   listeners: {
-    [ONEGINI_SDK_EVENTS.ONEGINI_PIN_NOTIFICATION]: null,
-    [ONEGINI_SDK_EVENTS.ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION]: null,
-    [ONEGINI_SDK_EVENTS.ONEGINI_MOBILE_AUTH_OTP_NOTIFICATION]: null,
-    [ONEGINI_SDK_EVENTS.ONEGINI_FINGERPRINT_NOTIFICATION]: null,
+    [ONEWELCOME_SDK_EVENTS.ONEWELCOME_PIN_NOTIFICATION]: null,
+    [ONEWELCOME_SDK_EVENTS.ONEWELCOME_CUSTOM_REGISTRATION_NOTIFICATION]: null,
+    [ONEWELCOME_SDK_EVENTS.ONEWELCOME_MOBILE_AUTH_OTP_NOTIFICATION]: null,
+    [ONEWELCOME_SDK_EVENTS.ONEWELCOME_FINGERPRINT_NOTIFICATION]: null,
   },
-  addEventListener: (eventType, cb) => { // eventType = ONEGINI_SDK_EVENTS
-    if (OneginiSdk.listeners[eventType]) {
+  addEventListener: (eventType, cb) => { // eventType = ONEWELCOME_SDK_EVENTS
+    if (OneWelcomeSdk.listeners[eventType]) {
       this.removeEventListener(eventType);
     }
 
-    OneginiSdk.listeners[eventType] = OneginiEventEmitter.addListener(
+    OneWelcomeSdk.listeners[eventType] = OneWelcomeEventEmitter.addListener(
       eventType,
       (item) => {
         cb(item);
@@ -55,70 +55,70 @@ const OneginiSdk = {
     );
   },
   removeEventListener: (eventType) => {
-    if (OneginiSdk.listeners[eventType]) {
-      OneginiSdk.listeners[eventType].remove();
-      OneginiSdk.listeners[eventType] = null;
+    if (OneWelcomeSdk.listeners[eventType]) {
+      OneWelcomeSdk.listeners[eventType].remove();
+      OneWelcomeSdk.listeners[eventType] = null;
     }
   },
-  startClient: (sdkConfig = OneginiSdk.config) => Platform.OS === 'ios'
-    ? RNOneginiSdk.startClient()
-    : RNOneginiSdk.startClient(sdkConfig),
+  startClient: (sdkConfig = OneWelcomeSdk.config) => Platform.OS === 'ios'
+    ? RNOneWelcomeSdk.startClient()
+    : RNOneWelcomeSdk.startClient(sdkConfig),
 
   // Data getters
-  getIdentityProviders: () => RNOneginiSdk.getIdentityProviders(),
-  getAccessToken: () => RNOneginiSdk.getAccessToken(),
-  getAuthenticatedUserProfile: () => RNOneginiSdk.getAuthenticatedUserProfile(),
-  getUserProfiles: () => RNOneginiSdk.getUserProfiles(),
-  getRedirectUri: () => RNOneginiSdk.getRedirectUri(),
+  getIdentityProviders: () => RNOneWelcomeSdk.getIdentityProviders(),
+  getAccessToken: () => RNOneWelcomeSdk.getAccessToken(),
+  getAuthenticatedUserProfile: () => RNOneWelcomeSdk.getAuthenticatedUserProfile(),
+  getUserProfiles: () => RNOneWelcomeSdk.getUserProfiles(),
+  getRedirectUri: () => RNOneWelcomeSdk.getRedirectUri(),
 
   // Resource getters
-  authenticateUserImplicitly: (profileId, scopes) => RNOneginiSdk.authenticateUserImplicitly(profileId, scopes),
-  authenticateDeviceForResource: (scopes) => RNOneginiSdk.authenticateDeviceForResource(scopes),
-  resourceRequest: (isImplicit = false, details = {}) => RNOneginiSdk.resourceRequest(isImplicit, details),
+  authenticateUserImplicitly: (profileId, scopes) => RNOneWelcomeSdk.authenticateUserImplicitly(profileId, scopes),
+  authenticateDeviceForResource: (scopes) => RNOneWelcomeSdk.authenticateDeviceForResource(scopes),
+  resourceRequest: (isImplicit = false, details = {}) => RNOneWelcomeSdk.resourceRequest(isImplicit, details),
 
   // User register/deregister
-  registerUser: (identityProvider) => RNOneginiSdk.registerUser(identityProvider), //@todo return whole user + pass userName from RN
-  deregisterUser: (profileId) => RNOneginiSdk.deregisterUser(profileId),
-  handleRegistrationCallback: (uri) => RNOneginiSdk.handleRegistrationCallback(uri),
-  cancelRegistration: () => RNOneginiSdk.cancelRegistration(),
+  registerUser: (identityProvider) => RNOneWelcomeSdk.registerUser(identityProvider), //@todo return whole user + pass userName from RN
+  deregisterUser: (profileId) => RNOneWelcomeSdk.deregisterUser(profileId),
+  handleRegistrationCallback: (uri) => RNOneWelcomeSdk.handleRegistrationCallback(uri),
+  cancelRegistration: () => RNOneWelcomeSdk.cancelRegistration(),
 
   // Authentication
-  authenticateUser: (profileId) => RNOneginiSdk.authenticateUser(profileId),
-  logout: () => RNOneginiSdk.logout(),
-  getAllAuthenticators: (profileId) => RNOneginiSdk.getAllAuthenticators(profileId),
-  getRegisteredAuthenticators: (profileId) => RNOneginiSdk.getRegisteredAuthenticators(profileId),
-  setPreferredAuthenticator: (profileId, idOneginiAuthenticator) =>
-    RNOneginiSdk.setPreferredAuthenticator(profileId, idOneginiAuthenticator),
+  authenticateUser: (profileId) => RNOneWelcomeSdk.authenticateUser(profileId),
+  logout: () => RNOneWelcomeSdk.logout(),
+  getAllAuthenticators: (profileId) => RNOneWelcomeSdk.getAllAuthenticators(profileId),
+  getRegisteredAuthenticators: (profileId) => RNOneWelcomeSdk.getRegisteredAuthenticators(profileId),
+  setPreferredAuthenticator: (profileId, idOneWelcomeAuthenticator) =>
+    RNOneWelcomeSdk.setPreferredAuthenticator(profileId, idOneWelcomeAuthenticator),
 
   // PIN
-  submitPinAction: (flow, action, pin = null) => RNOneginiSdk.submitPinAction(flow, action, pin),
-  changePin: () => RNOneginiSdk.changePin(),
+  submitPinAction: (flow, action, pin = null) => RNOneWelcomeSdk.submitPinAction(flow, action, pin),
+  changePin: () => RNOneWelcomeSdk.changePin(),
 
   // OTP
-  enrollMobileAuthentication: () => RNOneginiSdk.enrollMobileAuthentication(),
-  acceptMobileAuthConfirmation: () => RNOneginiSdk.acceptMobileAuthConfirmation(),
-  denyMobileAuthConfirmation: () => RNOneginiSdk.denyMobileAuthConfirmation(),
-  handleMobileAuthWithOtp: (otpCode) => RNOneginiSdk.handleMobileAuthWithOtp(otpCode),
+  enrollMobileAuthentication: () => RNOneWelcomeSdk.enrollMobileAuthentication(),
+  acceptMobileAuthConfirmation: () => RNOneWelcomeSdk.acceptMobileAuthConfirmation(),
+  denyMobileAuthConfirmation: () => RNOneWelcomeSdk.denyMobileAuthConfirmation(),
+  handleMobileAuthWithOtp: (otpCode) => RNOneWelcomeSdk.handleMobileAuthWithOtp(otpCode),
   submitCustomRegistrationAction: (action, identityProviderId, token = null) =>
-    RNOneginiSdk.submitCustomRegistrationAction(action, identityProviderId, token),
+    RNOneWelcomeSdk.submitCustomRegistrationAction(action, identityProviderId, token),
 
   //Fingerprint
-  registerFingerprintAuthenticator: (profileId) => RNOneginiSdk.registerFingerprintAuthenticator(profileId),
-  deregisterFingerprintAuthenticator: (profileId) => RNOneginiSdk.deregisterFingerprintAuthenticator(profileId),
-  isFingerprintAuthenticatorRegistered: (profileId) => RNOneginiSdk.isFingerprintAuthenticatorRegistered(profileId),
+  registerFingerprintAuthenticator: (profileId) => RNOneWelcomeSdk.registerFingerprintAuthenticator(profileId),
+  deregisterFingerprintAuthenticator: (profileId) => RNOneWelcomeSdk.deregisterFingerprintAuthenticator(profileId),
+  isFingerprintAuthenticatorRegistered: (profileId) => RNOneWelcomeSdk.isFingerprintAuthenticatorRegistered(profileId),
   submitFingerprintAcceptAuthenticationRequest: () => Platform.OS === 'ios'
     ? Promise.reject('This method is Android only')
-    : RNOneginiSdk.submitFingerprintAcceptAuthenticationRequest(),
+    : RNOneWelcomeSdk.submitFingerprintAcceptAuthenticationRequest(),
   submitFingerprintDenyAuthenticationRequest: () => Platform.OS === 'ios'
     ? Promise.reject('This method is Android only')
-    : RNOneginiSdk.submitFingerprintDenyAuthenticationRequest(),
+    : RNOneWelcomeSdk.submitFingerprintDenyAuthenticationRequest(),
   submitFingerprintFallbackToPin: () => Platform.OS === 'ios'
     ? Promise.reject('This method is Android only')
-    : RNOneginiSdk.submitFingerprintFallbackToPin(),
+    : RNOneWelcomeSdk.submitFingerprintFallbackToPin(),
 
   // App to Web
-  startSingleSignOn: (url) => RNOneginiSdk.startSingleSignOn(url),
+  startSingleSignOn: (url) => RNOneWelcomeSdk.startSingleSignOn(url),
 };
-Object.freeze(OneginiSdk);
+Object.freeze(OneWelcomeSdk);
 
-export default OneginiSdk;
+export default OneWelcomeSdk;

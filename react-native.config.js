@@ -8,7 +8,7 @@ module.exports = {
     },
   },
   dependencies: {
-    'onegini-react-native-sdk' : {
+    'onewelcome-react-native-sdk' : {
       platforms : {
         android : null,
         ios     : null,
