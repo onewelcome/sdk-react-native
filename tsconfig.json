@@ -17,7 +17,7 @@
     "target": "esnext",
     "baseUrl": "./",
     "paths": {
-      "onegini-react-native-sdk": ["ts/index"]
+      "onewelcome-react-native-sdk": ["ts/index"]
     },
   },
   "exclude": [

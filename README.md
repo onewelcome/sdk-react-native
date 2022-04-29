@@ -1,12 +1,12 @@
-# onegini-react-native-sdk
+# OneWelcome ReactNative SDK
 
 ## Getting started
 
-`npm install onegini-react-native-sdk --save`
+`npm install onewelcome-react-native-sdk --save`
 
 OR
 
-`yarn add onegini-react-native-sdk`
+`yarn add onewelcome-react-native-sdk`
 
 ## SDK Configuration
 
@@ -60,10 +60,6 @@ OR
    mavenCentral()
    if (project.hasProperty('onegini_artifactory_user') && project.hasProperty('onegini_artifactory_password')) {
        maven {
-           /*
-           Before the release please change the url below to: https://repo.onegini.com/artifactory/onegini-sdk
-           Please change it back to https://repo.onegini.com/artifactory/public after the release
-           */
            url "https://repo.onegini.com/artifactory/onegini-sdk"
            credentials {
                username "${onegini_artifactory_user}"

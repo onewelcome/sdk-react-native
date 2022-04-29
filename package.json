@@ -1,8 +1,8 @@
 {
-  "name": "onegini-react-native-sdk",
-  "title": "Onegini React Native SDK",
+  "name": "onewelcome-react-native-sdk",
+  "title": "Onewelcome React Native SDK",
   "version": "0.6.0",
-  "description": "Onegini SDK component for React Native (iOS and Android)",
+  "description": "OneWelcome SDK component for React Native (iOS and Android)",
   "main": "ts/index.ts",
   "files": [
     "README.md",
@@ -10,7 +10,7 @@
     "android/build.gradle",
     "ios/",
     "ts/",
-    "onegini-react-native-sdk.podspec"
+    "onewelcome-react-native-sdk.podspec"
   ],
   "scripts": {
     "android": "tsc && react-native run-android",
@@ -21,19 +21,20 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://gitlab.com/develocraft/onegini-react-native-sdk.git",
-    "baseUrl": "https://www.npmjs.com/package/onegini-react-native-sdk"
+    "url": "git+https://github.com/onewelcome/sdk-react-native.git",
+    "baseUrl": "https://www.npmjs.com/package/onewelcome-react-native-sdk"
   },
   "keywords": [
     "react-native",
     "react native",
-    "onegini-sdk",
-    "onegini sdk",
-    "sdk"
+    "onewelcome-sdk",
+    "onewelcome sdk",
+    "sdk",
+    "oauth"
   ],
   "author": {
-    "name": "Onegini",
-    "email": "contact@onegini.com"
+    "name": "OneWelcome",
+    "email": "developers@onewelcome.com"
   },
   "license": "MIT",
   "licenseFilename": "LICENSE",
