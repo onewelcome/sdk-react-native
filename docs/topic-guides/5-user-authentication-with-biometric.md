@@ -55,7 +55,7 @@ OneginiSdk.setPreferredAuthenticator(profileId, authenticatorId)
     console.log('setPreferredAuthenticator failed!: ', error.message)
   })
 ```
-> To set FaceID as the preferred authenticator authenticatorType should be set as "Fingerprint"
+> To set FaceID as the preferred authenticator authenticatorType should be set as "Biometric"
 
 
 ## Authenticating a user with fingerprint

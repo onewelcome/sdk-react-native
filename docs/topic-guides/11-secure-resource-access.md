@@ -40,6 +40,7 @@ const implicitResource = useResources(
       method: 'GET'
     },
     true,
+    scopes,
     profileId,
   )
 ```
@@ -73,6 +74,7 @@ const implicitResource = useResources(
       method: 'GET'
     },
     true,
+    scopes,
     profileId,
   )
 ```
@@ -107,6 +109,7 @@ const implicitResource = useResources(
       method: 'GET'
     },
     true,
+    scopes,
     profileId,
   )
 ```

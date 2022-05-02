@@ -11,7 +11,8 @@ OneginiSdk.changePin()
 
 // ...
 
-const [ flow, pin, visible, isConfirmMode, error, provideNewPinKey, cancelPinFlow] = usePinFlow()
+const [ flow, pin, visible, isConfirmMode, error, provideNewPinKey, cancelPinFlow, pinLength, userInfo] = usePinFlow()
 ```
 
 Note that the PIN entered by the user should **not** be stored on the device or elsewhere in any shape or form. The Onegini React Native plugin takes care of this for you in a secure manner.
+
