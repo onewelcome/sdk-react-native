@@ -5,7 +5,7 @@ import RegisterButton from './components/RegisterButton';
 import AuthButton from './components/AuthButton';
 import Button from '../../general/Button';
 import InfoView from '../info/InfoView';
-import OneginiSdk from "onewelcome-react-native-sdk";
+import OneWelcomeSdk from "onewelcome-react-native-sdk";
 import {CurrentUser} from "../../../auth/auth";
 import ModalSelector from "react-native-modal-selector";
 import {AuthContext} from "../../../providers/auth.provider";
@@ -16,7 +16,7 @@ interface Props {
 }
 
 async function fetchProfiles(): Promise<boolean> {
-    const userProfiles = await OneginiSdk.getUserProfiles();
+    const userProfiles = await OneWelcomeSdk.getUserProfiles();
     return userProfiles.length > 0;
 }
 
@@ -33,7 +33,7 @@ const AuthScreen: React.FC<Props> = (props) => {
 
     const authenticateProfile = useCallback(async (id: string) => {
         try {
-            const authenticated = await OneginiSdk.authenticateUser(id);
+            const authenticated = await OneWelcomeSdk.authenticateUser(id);
             if (!authenticated) return;
             CurrentUser.id = id;
 
@@ -46,7 +46,7 @@ const AuthScreen: React.FC<Props> = (props) => {
     const fetchProfiles = useCallback(async () => {
         try {
             dispatch({type: AuthActionTypes.AUTH_LOAD_PROFILE_IDS});
-            const userProfiles = await OneginiSdk.getUserProfiles();
+            const userProfiles = await OneWelcomeSdk.getUserProfiles();
             dispatch({
                 type: AuthActionTypes.AUTH_SET_PROFILE_IDS,
                 payload: userProfiles?.map(({profileId}) => profileId) || []

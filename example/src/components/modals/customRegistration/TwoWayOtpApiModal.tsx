@@ -2,28 +2,28 @@ import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Modal, Text, TextInput} from 'react-native';
 import AppColors from '../../constants/AppColors';
 import Button from '../../general/Button';
-import OneginiSdk, {Events} from 'onewelcome-react-native-sdk';
+import OneWelcomeSdk, {Events} from 'onewelcome-react-native-sdk';
 
 const IdProvider = '2-way-otp-api';
 
 const TwoWayOtpApiModal: React.FC<{}> = ({}) => {
-  const [codeFromOnegini, setCodeFromOnegini] = useState<string | null>(null);
+  const [codeFromOneWelcome, setCodeFromOneWelcome] = useState<string | null>(null);
   const [responseCode, setResponseCode] = useState<string | null>(null);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const listener = OneginiSdk.addEventListener(Events.SdkNotification.CustomRegistration, (event: any) => {
+    const listener = OneWelcomeSdk.addEventListener(Events.SdkNotification.CustomRegistration, (event: any) => {
       if (event.identityProviderId === IdProvider) {
         switch (event.action) {
           case Events.CustomRegistrationNotification.InitRegistration:
-            OneginiSdk.submitCustomRegistrationAction(
+            OneWelcomeSdk.submitCustomRegistrationAction(
               Events.CustomRegistrationAction.ProvideToken,
               event.identityProviderId,
               null,
             );
             break;
           case Events.CustomRegistrationNotification.FinishRegistration:
-            setCodeFromOnegini(event.customInfo.data);
+            setCodeFromOneWelcome(event.customInfo.data);
             setVisible(true);
             break;
         }
@@ -44,7 +44,7 @@ const TwoWayOtpApiModal: React.FC<{}> = ({}) => {
       <View style={styles.container}>
         <Text style={styles.title}>{'2-way-otp-api'}</Text>
         <Text style={styles.cahalangeCode}>{'Cahalange Code: '}</Text>
-        <Text style={styles.codeFromOnegini}>{codeFromOnegini}</Text>
+        <Text style={styles.codeFromOneWelcome}>{codeFromOneWelcome}</Text>
         <Text style={styles.responseCodeTitle}>{'Response Code:'}</Text>
         <TextInput
           keyboardType={'numeric'}
@@ -58,7 +58,7 @@ const TwoWayOtpApiModal: React.FC<{}> = ({}) => {
           <Button
             name={'OK'}
             onPress={() => {
-              OneginiSdk.submitCustomRegistrationAction(
+              OneWelcomeSdk.submitCustomRegistrationAction(
                 Events.CustomRegistrationAction.ProvideToken,
                 IdProvider,
                 responseCode,
@@ -71,7 +71,7 @@ const TwoWayOtpApiModal: React.FC<{}> = ({}) => {
           <Button
             name={'CANCEL'}
             onPress={() => {
-              OneginiSdk.submitCustomRegistrationAction(
+              OneWelcomeSdk.submitCustomRegistrationAction(
                 Events.CustomRegistrationAction.Cancel,
                 IdProvider,
                 'Cancelled by user',
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
     marginTop: '10%',
   },
-  codeFromOnegini: {
+  codeFromOneWelcome: {
     color: AppColors.black,
     fontSize: 32,
     marginTop: '1%',

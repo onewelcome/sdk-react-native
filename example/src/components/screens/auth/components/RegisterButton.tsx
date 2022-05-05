@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Button from '../../../general/Button';
 import Switch from '../../../general/Switch';
-import OneginiSdk, {Events} from 'onewelcome-react-native-sdk';
+import OneWelcomeSdk, {Events} from 'onewelcome-react-native-sdk';
 import CustomRegistrationChooserView from '../CustomRegistrationChooserView';
 import {CurrentUser} from '../../../../auth/auth';
 import {CustomRegistrationAction} from "../../../../../../ts/events";
@@ -28,7 +28,7 @@ const RegisterButton: React.FC<Props> = (props) => {
   const handleCustomRegistrationCallback = (event: any) => {
     switch(event["identityProviderId"]) {
       case "qr_registration":
-        OneginiSdk.submitCustomRegistrationAction(CustomRegistrationAction.ProvideToken, event.identifyProviderId, "Onegini");
+        OneWelcomeSdk.submitCustomRegistrationAction(CustomRegistrationAction.ProvideToken, event.identifyProviderId, "Onegini");
         break;
       default:
         return;
@@ -36,7 +36,7 @@ const RegisterButton: React.FC<Props> = (props) => {
   }
 
   useEffect(() => {
-    const listener = OneginiSdk.addEventListener(
+    const listener = OneWelcomeSdk.addEventListener(
       Events.SdkNotification.CustomRegistration,
       handleCustomRegistrationCallback,
     );
@@ -47,7 +47,7 @@ const RegisterButton: React.FC<Props> = (props) => {
   useEffect(() => {
     const handleOpenURL = (event: any) => {
       if (event.url.substr(0, event.url.indexOf(':')) === linkUri) {
-        OneginiSdk.handleRegistrationCallback(event.url);
+        OneWelcomeSdk.handleRegistrationCallback(event.url);
       }
     };
 
@@ -92,7 +92,7 @@ const RegisterButton: React.FC<Props> = (props) => {
         }
         onPress={() =>
           isRegistering
-            ? OneginiSdk.cancelRegistration()
+            ? OneWelcomeSdk.cancelRegistration()
             : isDefaultProvider
             ? startRegister(null, setRegistering, setError, props.onRegistered)
             : setShowCustomRegistration(!isShownCustomRegistration)
@@ -143,7 +143,7 @@ const startRegister = async (
   setRegistering?.(true);
 
   try {
-    const profile = await OneginiSdk.registerUser(providerId, ['read']);
+    const profile = await OneWelcomeSdk.registerUser(providerId, ['read']);
     CurrentUser.id = profile.profileId;
     setRegistering?.(false);
     onRegisterSuccess?.();

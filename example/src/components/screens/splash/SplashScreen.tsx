@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {StyleSheet, View, Image, Alert} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import OneginiSdk from 'onewelcome-react-native-sdk';
+import OneWelcomeSdk from 'onewelcome-react-native-sdk';
 import {Assets} from '../../../../assets';
 
 interface Props {
@@ -23,9 +23,9 @@ const SplashScreen: React.FC<Props> = (props) => {
 
 const startSdk = async (onStarted?: Props['onSdkStarted'], onError?: Props['onSdkError']) => {
   try {
-    await OneginiSdk.startClient();
+    await OneWelcomeSdk.startClient();
 
-    const linkUriResult = await OneginiSdk.getRedirectUri();
+    const linkUriResult = await OneWelcomeSdk.getRedirectUri();
 
     await AsyncStorage.setItem(
       '@redirectUri',
