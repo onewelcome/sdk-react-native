@@ -5,7 +5,7 @@ import Layout from '../../constants/Layout';
 import {
   useResources,
   Types,
-} from 'onegini-react-native-sdk';
+} from 'onewelcome-react-native-sdk';
 
 interface RenderDevice {
     id: string;

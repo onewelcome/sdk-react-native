@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Button from '../../../general/Button';
 import Switch from '../../../general/Switch';
-import OneginiSdk, {Events} from 'onegini-react-native-sdk';
+import OneginiSdk, {Events} from 'onewelcome-react-native-sdk';
 import CustomRegistrationChooserView from '../CustomRegistrationChooserView';
 import {CurrentUser} from '../../../../auth/auth';
 import {CustomRegistrationAction} from "../../../../../../ts/events";

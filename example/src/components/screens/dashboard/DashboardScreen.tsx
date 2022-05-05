@@ -6,7 +6,7 @@ import SettingsActionsView from './components/SettingsActionsView';
 import DashboardActionsView from './components/DashboardActionsView';
 import ChangeAuthView from './components/ChangeAuthView';
 import OtpCodeView from './components/OtpCodeView';
-import OneginiSdk, {Events} from 'onegini-react-native-sdk';
+import OneginiSdk, {Events} from 'onewelcome-react-native-sdk';
 import DevicesView from '../devices/DevicesView';
 
 interface Props {
@@ -28,7 +28,7 @@ const DashboardScreen: React.FC<Props> = (props) => {
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         {contentView === CONTENT_VIEW.DASHBOARD_ACTIONS ? (
-          <Image style={styles.headerIcon} source={Assets.oneginiIcon} />
+          <Image style={styles.headerIcon} source={Assets.onewelcomeIcon} />
         ) : (
           <BackButton
             onPress={() => backButtonHandler(contentView, setContentView)}
