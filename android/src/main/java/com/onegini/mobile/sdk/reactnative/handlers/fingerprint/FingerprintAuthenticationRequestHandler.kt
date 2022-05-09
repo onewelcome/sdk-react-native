@@ -9,7 +9,7 @@ class FingerprintAuthenticationRequestHandler : OneginiFingerprintAuthentication
     private var callback: OneginiFingerprintCallback? = null
     var observer: FingerprintAuthenticationObserver? = null
 
-    override fun startAuthentication(user: UserProfile?, callback: OneginiFingerprintCallback) {
+    override fun startAuthentication(user: UserProfile, callback: OneginiFingerprintCallback) {
         this.callback = callback
         observer?.startAuthentication(user)
     }

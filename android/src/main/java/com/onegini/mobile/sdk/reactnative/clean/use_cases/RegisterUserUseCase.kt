@@ -27,7 +27,7 @@ class RegisterUserUseCase(private val oneginiSDK: OneginiSDK) {
         oneginiSDK.oneginiClient.userClient.registerUser(
             identityProvider, scopesArray,
             object : OneginiRegistrationHandler {
-                override fun onSuccess(userProfile: UserProfile?, customInfo: CustomInfo?) {
+                override fun onSuccess(userProfile: UserProfile, customInfo: CustomInfo?) {
                     promise.resolve(UserProfileMapper.toWritableMap(userProfile))
                 }
 

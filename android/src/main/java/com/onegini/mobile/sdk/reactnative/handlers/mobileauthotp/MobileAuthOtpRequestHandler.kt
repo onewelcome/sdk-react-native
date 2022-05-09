@@ -10,7 +10,7 @@ class MobileAuthOtpRequestHandler : OneginiMobileAuthWithOtpRequestHandler {
 
     private var callback: OneginiAcceptDenyCallback? = null
 
-    override fun startAuthentication(request: OneginiMobileAuthenticationRequest?, callback: OneginiAcceptDenyCallback?) {
+    override fun startAuthentication(request: OneginiMobileAuthenticationRequest, callback: OneginiAcceptDenyCallback) {
         this.callback = callback
         observer?.startAuthentication(request)
     }
