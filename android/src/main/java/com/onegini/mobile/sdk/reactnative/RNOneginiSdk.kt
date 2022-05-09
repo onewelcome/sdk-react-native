@@ -28,7 +28,7 @@ import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.mapers.*
 import com.onegini.mobile.sdk.reactnative.handlers.pins.ChangePinHandler
-import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 
 //
 // TODO: codeStyle will by applied in next PR

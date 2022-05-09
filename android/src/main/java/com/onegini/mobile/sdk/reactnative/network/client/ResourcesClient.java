@@ -23,7 +23,7 @@ import com.google.gson.JsonObject;
 
 import java.util.Map;
 
-import io.reactivex.Single;
+import io.reactivex.rxjava3.core.Single;
 import retrofit2.http.DELETE;
 import retrofit2.http.FieldMap;
 import retrofit2.http.GET;
