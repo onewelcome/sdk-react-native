@@ -1,5 +1,5 @@
 protocol BridgeToLoginHandlerProtocol: AnyObject {
-    func authenticateUser(_ profile: ONGUserProfile, completion: @escaping (ONGUserProfile?, NSError?) -> Void)
+    func authenticateUser(_ profile: ONGUserProfile, authenticator: ONGAuthenticator?, completion: @escaping (ONGUserProfile?, NSError?) -> Void)
 }
 
 
@@ -29,10 +29,9 @@ class LoginHandler: NSObject, PinHandlerToReceiverProtocol {
 }
 
 extension LoginHandler : BridgeToLoginHandlerProtocol {
-    //@todo add support for multiple authenticators in the future
-    func authenticateUser(_ profile: ONGUserProfile, completion: @escaping (ONGUserProfile?, NSError?) -> Void) {
+    func authenticateUser(_ profile: ONGUserProfile, authenticator: ONGAuthenticator? = nil, completion: @escaping (ONGUserProfile?, NSError?) -> Void) {
         loginCompletion = completion
-        ONGUserClient.sharedInstance().authenticateUser(profile, delegate: self)
+        ONGUserClient.sharedInstance().authenticateUser(profile, authenticator: authenticator, delegate: self)
     }
 }
 
@@ -48,16 +47,16 @@ extension LoginHandler: ONGAuthenticationDelegate {
     }
 
     func userClient(_: ONGUserClient, didReceive challenge: ONGBiometricChallenge) {
-        challenge.sender.respondWithDefaultPrompt(for: challenge)
+        challenge.sender.respondWithPinFallback(for: challenge)
     }
-
-    func userClient(_: ONGUserClient, didAuthenticateUser userProfile: ONGUserProfile, info _: ONGCustomInfo?) {
+    
+    func userClient(_ userClient: ONGUserClient, didAuthenticateUser userProfile: ONGUserProfile, authenticator: ONGAuthenticator, info customAuthInfo: ONGCustomInfo?) {
         pinChallenge = nil
         loginCompletion!(userProfile, nil)
         BridgeConnector.shared?.toPinHandlerConnector.pinHandler.closeFlow()
     }
-
-    func userClient(_: ONGUserClient, didFailToAuthenticateUser profile: ONGUserProfile, error: Error) {
+    
+    func userClient(_ userClient: ONGUserClient, didFailToAuthenticateUser userProfile: ONGUserProfile, authenticator: ONGAuthenticator, error: Error) {
         pinChallenge = nil
         BridgeConnector.shared?.toPinHandlerConnector.pinHandler.closeFlow()
         loginCompletion!(nil, error as NSError)

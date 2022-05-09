@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
 
   s.license      = package['license']
   s.authors      = { "Develocraft" => "valeriy.rumak@develocraft.com" }
-  s.platforms    = { :ios => "10.0" }
+  s.platforms    = { :ios => "13.0" }
   s.source       = { :git => "git@gitlab.com:develocraft/onegini-react-native-sdk.git", :tag => "v#{s.version}" }
 
   s.swift_version   = "5.0"
@@ -18,6 +18,6 @@ Pod::Spec.new do |s|
   s.requires_arc    = true
 
   s.dependency "React"
-  s.dependency "OneginiSDKiOS", "9.6.0"
+  s.dependency "OneginiSDKiOS", "~> 11.0.0"
 end
 
