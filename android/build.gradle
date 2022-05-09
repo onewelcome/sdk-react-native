@@ -77,7 +77,7 @@ dependencies {
     testImplementation "io.mockk:mockk:1.10.6"
 
     // Onegini SDK
-    api('com.onegini.mobile.sdk.android:onegini-sdk:11.0.0@aar') {
+    api('com.onegini.mobile.sdk.android:onegini-sdk:11.2.0@aar') {
         transitive = true
     }
 }
