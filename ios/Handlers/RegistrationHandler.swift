@@ -106,13 +106,6 @@ extension RegistrationHandler: ONGRegistrationDelegate {
         
     }
 
-    func userClient(_: ONGUserClient, didRegisterUser userProfile: ONGUserProfile, info _: ONGCustomInfo?) {
-        createPinChallenge = nil
-        customRegistrationChallenge = nil
-        signUpCompletion!(true, userProfile, nil)
-        BridgeConnector.shared?.toPinHandlerConnector.pinHandler.closeFlow()
-    }
-
     func userClient(_: ONGUserClient, didReceiveCustomRegistrationInitChallenge challenge: ONGCustomRegistrationChallenge) {
         customRegistrationChallenge = challenge
 
@@ -138,12 +131,20 @@ extension RegistrationHandler: ONGRegistrationDelegate {
 
         sendCustomRegistrationNotification(CustomRegistrationNotification.finishRegistration, result)
     }
+    
+    func userClient(_ userClient: ONGUserClient, didRegisterUser userProfile: ONGUserProfile, identityProvider: ONGIdentityProvider, info: ONGCustomInfo?) {
+        createPinChallenge = nil
+        customRegistrationChallenge = nil
+        signUpCompletion!(true, userProfile, nil)
+        BridgeConnector.shared?.toPinHandlerConnector.pinHandler.closeFlow()
+    }
 
-    func userClient(_: ONGUserClient, didFailToRegisterWithError error: Error) {
+    func userClient(_ userClient: ONGUserClient, didFailToRegisterWith identityProvider: ONGIdentityProvider, error: Error) {
         createPinChallenge = nil
         customRegistrationChallenge = nil
         BridgeConnector.shared?.toPinHandlerConnector.pinHandler.closeFlow()
 
         signUpCompletion!(false, nil, error as NSError)
     }
+
 }
