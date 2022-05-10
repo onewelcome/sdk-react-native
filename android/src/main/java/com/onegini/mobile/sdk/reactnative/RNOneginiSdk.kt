@@ -28,7 +28,7 @@ import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.mapers.*
 import com.onegini.mobile.sdk.reactnative.handlers.pins.ChangePinHandler
-import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 
 //
 // TODO: codeStyle will by applied in next PR
@@ -118,7 +118,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                         promise.resolve(CustomInfoMapper.toWritableMap(info))
                     }
 
-                    override fun onError(error: OneginiAuthenticatorRegistrationError?) {
+                    override fun onError(error: OneginiAuthenticatorRegistrationError) {
                         promise.reject(error?.errorType.toString(), error?.message)
                     }
                 }
@@ -147,7 +147,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                         promise.resolve(null)
                     }
 
-                    override fun onError(error: OneginiAuthenticatorDeregistrationError?) {
+                    override fun onError(error: OneginiAuthenticatorDeregistrationError) {
                         promise.reject(error?.errorType.toString(), error?.message)
                     }
                 }
@@ -205,7 +205,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                     promise.resolve(null)
                 }
 
-                override fun onError(error: OneginiDeregistrationError?) {
+                override fun onError(error: OneginiDeregistrationError) {
                     promise.reject(error?.errorType.toString(), error?.message)
                 }
             }
@@ -328,7 +328,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         oneginiSDK.oneginiClient.userClient.authenticateUser(
             userProfile,
             object : OneginiAuthenticationHandler {
-                override fun onSuccess(userProfile: UserProfile?, customInfo: CustomInfo?) {
+                override fun onSuccess(userProfile: UserProfile, customInfo: CustomInfo?) {
                     val result = Arguments.createMap()
                     add(result, userProfile)
                     add(result, customInfo)
@@ -349,7 +349,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                 promise.resolve(null)
             }
 
-            override fun onError(error: OneginiMobileAuthEnrollmentError?) {
+            override fun onError(error: OneginiMobileAuthEnrollmentError) {
                 promise.reject(error?.errorType.toString(), error?.message)
             }
         })
@@ -382,7 +382,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                     promise.resolve(null)
                 }
 
-                override fun onError(error: OneginiMobileAuthWithOtpError?) {
+                override fun onError(error: OneginiMobileAuthWithOtpError) {
                     promise.reject(error?.errorType.toString(), error?.message)
                 }
             }
@@ -404,7 +404,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                     promise.resolve(null)
                 }
 
-                override fun onError(error: OneginiLogoutError?) {
+                override fun onError(error: OneginiLogoutError) {
                     promise.reject(error?.errorType.toString(), error?.message)
                 }
             }

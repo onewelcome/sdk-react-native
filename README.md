@@ -30,7 +30,7 @@ OR
    1.2 Add to `android` -> `defaultConfig` section:
 
    ```
-   minSdkVersion 19
+   minSdkVersion 23
    multiDexEnabled true
    ```
 
