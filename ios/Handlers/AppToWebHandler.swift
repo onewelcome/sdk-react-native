@@ -1,6 +1,5 @@
 import Foundation
 import OneginiSDKiOS
-import OneginiCrypto
 
 protocol AppToWebHandlerProtocol: AnyObject {
     func signInAppToWeb(targetURL: URL?, completion: @escaping (NSMutableDictionary?, NSError?) -> Void)

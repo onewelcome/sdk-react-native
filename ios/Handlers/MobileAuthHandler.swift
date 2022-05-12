@@ -66,6 +66,14 @@ extension MobileAuthHandler : MobileAuthConnectorToHandlerProtocol {
 }
 
 extension MobileAuthHandler: ONGMobileAuthRequestDelegate {
+    func userClient(_ userClient: ONGUserClient, didFailToHandle request: ONGMobileAuthRequest, authenticator: ONGAuthenticator?, error: Error) {
+        mobileAuthCompletion!(false, error as NSError)
+    }
+    
+    func userClient(_ userClient: ONGUserClient, didHandle request: ONGMobileAuthRequest, authenticator: ONGAuthenticator?, info customAuthenticatorInfo: ONGCustomInfo?) {
+        mobileAuthCompletion!(true, nil)
+    }
+    
     func userClient(_: ONGUserClient, didReceiveConfirmationChallenge confirmation: @escaping (Bool) -> Void, for request: ONGMobileAuthRequest) {
         message = request.message
         userProfile = request.userProfile
@@ -86,11 +94,4 @@ extension MobileAuthHandler: ONGMobileAuthRequestDelegate {
         //@todo will need this for PUSH Custom?
     }
 
-    func userClient(_: ONGUserClient, didFailToHandle _: ONGMobileAuthRequest, error: Error) {
-        mobileAuthCompletion!(false, error as NSError)
-    }
-
-    func userClient(_: ONGUserClient, didHandle _: ONGMobileAuthRequest, info _: ONGCustomInfo?) {
-        mobileAuthCompletion!(true, nil)
-    }
 }

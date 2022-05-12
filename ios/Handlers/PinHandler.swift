@@ -6,7 +6,7 @@ protocol PinConnectorToPinHandler: AnyObject {
     func closeFlow()
 }
 
-protocol PinHandlerToReceiverProtocol: class {
+protocol PinHandlerToReceiverProtocol: AnyObject {
     func handlePin(pin: String?)
 }
 

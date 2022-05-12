@@ -47,7 +47,7 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
     fileprivate func authenticateProfileImplicitly(_ profile: ONGUserProfile, scopes: [String], completion: @escaping (Bool, NSError?) -> Void) {
         ONGUserClient.sharedInstance().implicitlyAuthenticateUser(profile, scopes: scopes) { success, error in
             if !success {
-                completion(success, error as NSError)
+                completion(success, error as NSError?)
             }
             completion(success, nil)
         }
