@@ -2,15 +2,15 @@ package com.onegini.mobile.sdk.reactnative.clean.use_cases
 
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReadableArray
-import com.onegini.mobile.sdk.reactnative.OneginiSDK
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
-import com.onegini.mobile.sdk.reactnative.mapers.RegistrationScopesMapper
-import com.onegini.mobile.sdk.reactnative.mapers.UserProfileMapper
 import com.onegini.mobile.sdk.android.handlers.OneginiRegistrationHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiRegistrationError
 import com.onegini.mobile.sdk.android.model.OneginiIdentityProvider
 import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
+import com.onegini.mobile.sdk.reactnative.OneginiSDK
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
+import com.onegini.mobile.sdk.reactnative.mapers.ScopesMapper
+import com.onegini.mobile.sdk.reactnative.mapers.UserProfileMapper
 
 class RegisterUserUseCase(private val oneginiSDK: OneginiSDK) {
 
@@ -22,7 +22,7 @@ class RegisterUserUseCase(private val oneginiSDK: OneginiSDK) {
             return
         }
 
-        val scopesArray = RegistrationScopesMapper.toStringArray(scopes)
+        val scopesArray = ScopesMapper.toStringArray(scopes)
 
         oneginiSDK.oneginiClient.userClient.registerUser(
             identityProvider, scopesArray,
