@@ -3,7 +3,38 @@ package com.onegini.mobile.sdk.reactnative
 
 import android.net.Uri
 import android.util.Log
-import com.facebook.react.bridge.*
+import com.facebook.react.bridge.Arguments
+import com.facebook.react.bridge.Promise
+import com.facebook.react.bridge.ReactApplicationContext
+import com.facebook.react.bridge.ReactContextBaseJavaModule
+import com.facebook.react.bridge.ReactMethod
+import com.facebook.react.bridge.ReadableArray
+import com.facebook.react.bridge.ReadableMap
+import com.onegini.mobile.sdk.android.handlers.OneginiAppToWebSingleSignOnHandler
+import com.onegini.mobile.sdk.android.handlers.OneginiAuthenticationHandler
+import com.onegini.mobile.sdk.android.handlers.OneginiAuthenticatorDeregistrationHandler
+import com.onegini.mobile.sdk.android.handlers.OneginiAuthenticatorRegistrationHandler
+import com.onegini.mobile.sdk.android.handlers.OneginiDeregisterUserProfileHandler
+import com.onegini.mobile.sdk.android.handlers.OneginiDeviceAuthenticationHandler
+import com.onegini.mobile.sdk.android.handlers.OneginiImplicitAuthenticationHandler
+import com.onegini.mobile.sdk.android.handlers.OneginiLogoutHandler
+import com.onegini.mobile.sdk.android.handlers.OneginiMobileAuthEnrollmentHandler
+import com.onegini.mobile.sdk.android.handlers.OneginiMobileAuthWithOtpHandler
+import com.onegini.mobile.sdk.android.handlers.error.OneginiAppToWebSingleSignOnError
+import com.onegini.mobile.sdk.android.handlers.error.OneginiAuthenticationError
+import com.onegini.mobile.sdk.android.handlers.error.OneginiAuthenticatorDeregistrationError
+import com.onegini.mobile.sdk.android.handlers.error.OneginiAuthenticatorRegistrationError
+import com.onegini.mobile.sdk.android.handlers.error.OneginiChangePinError
+import com.onegini.mobile.sdk.android.handlers.error.OneginiDeregistrationError
+import com.onegini.mobile.sdk.android.handlers.error.OneginiDeviceAuthenticationError
+import com.onegini.mobile.sdk.android.handlers.error.OneginiError
+import com.onegini.mobile.sdk.android.handlers.error.OneginiImplicitTokenRequestError
+import com.onegini.mobile.sdk.android.handlers.error.OneginiLogoutError
+import com.onegini.mobile.sdk.android.handlers.error.OneginiMobileAuthEnrollmentError
+import com.onegini.mobile.sdk.android.handlers.error.OneginiMobileAuthWithOtpError
+import com.onegini.mobile.sdk.android.model.OneginiAppToWebSingleSignOn
+import com.onegini.mobile.sdk.android.model.entity.CustomInfo
+import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.Constants.PinFlow
 import com.onegini.mobile.sdk.reactnative.OneginiComponets.init
 import com.onegini.mobile.sdk.reactnative.clean.wrapper.IOneginiSdkWrapper
@@ -12,22 +43,22 @@ import com.onegini.mobile.sdk.reactnative.exception.OneginReactNativeException
 import com.onegini.mobile.sdk.reactnative.exception.OneginReactNativeException.Companion.AUTHENTICATE_DEVICE_ERROR
 import com.onegini.mobile.sdk.reactnative.exception.OneginReactNativeException.Companion.FINGERPRINT_IS_NOT_ENABLED
 import com.onegini.mobile.sdk.reactnative.exception.OneginReactNativeException.Companion.MOBILE_AUTH_OTP_IS_DISABLED
+import com.onegini.mobile.sdk.reactnative.handlers.pins.ChangePinHandler
 import com.onegini.mobile.sdk.reactnative.managers.AuthenticatorManager
 import com.onegini.mobile.sdk.reactnative.managers.RegistrationManager
+import com.onegini.mobile.sdk.reactnative.mapers.CustomInfoMapper
 import com.onegini.mobile.sdk.reactnative.mapers.CustomInfoMapper.add
+import com.onegini.mobile.sdk.reactnative.mapers.JsonMapper
+import com.onegini.mobile.sdk.reactnative.mapers.OneginiAppToWebSingleSignOnMapper
+import com.onegini.mobile.sdk.reactnative.mapers.OneginiAuthenticatorMapper
+import com.onegini.mobile.sdk.reactnative.mapers.ResourceRequestDetailsMapper
+import com.onegini.mobile.sdk.reactnative.mapers.ScopesMapper
 import com.onegini.mobile.sdk.reactnative.mapers.UserProfileMapper.add
 import com.onegini.mobile.sdk.reactnative.mapers.UserProfileMapper.toUserProfile
 import com.onegini.mobile.sdk.reactnative.mapers.UserProfileMapper.toWritableMap
 import com.onegini.mobile.sdk.reactnative.network.AnonymousService
 import com.onegini.mobile.sdk.reactnative.network.ImplicitUserService
 import com.onegini.mobile.sdk.reactnative.network.UserService
-import com.onegini.mobile.sdk.android.handlers.*
-import com.onegini.mobile.sdk.android.handlers.error.*
-import com.onegini.mobile.sdk.android.model.OneginiAppToWebSingleSignOn
-import com.onegini.mobile.sdk.android.model.entity.CustomInfo
-import com.onegini.mobile.sdk.android.model.entity.UserProfile
-import com.onegini.mobile.sdk.reactnative.mapers.*
-import com.onegini.mobile.sdk.reactnative.handlers.pins.ChangePinHandler
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 
 //
@@ -412,7 +443,8 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    private fun authenticateUserImplicitly(profileId: String?, scopes: Array<String>?, promise: Promise) {
+    private fun authenticateUserImplicitly(profileId: String, scopes: ReadableArray, promise: Promise) {
+        val scopesArray = ScopesMapper.toStringArray(scopes)
         Log.d(LOG_TAG, "authenticateUserImplicitly profileId: $profileId")
 
         val userProfile = authenticatorManager.getUserProfile(profileId)
@@ -421,7 +453,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         } else {
             oneginiSDK.oneginiClient.userClient
                 .authenticateUserImplicitly(
-                    userProfile, scopes,
+                    userProfile, scopesArray,
                     object : OneginiImplicitAuthenticationHandler {
                         override fun onSuccess(profile: UserProfile) {
                             promise.resolve(null)
@@ -436,11 +468,12 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    private fun authenticateDeviceForResource(scopes: Array<String>, promise: Promise) {
+    private fun authenticateDeviceForResource(scopes: ReadableArray, promise: Promise) {
+        val scopesArray = ScopesMapper.toStringArray(scopes)
         Log.d(LOG_TAG, "authenticateDeviceForResource scopes: $scopes")
 
         oneginiSDK.oneginiClient.deviceClient.authenticateDevice(
-            scopes,
+            scopesArray,
             object : OneginiDeviceAuthenticationHandler {
                 override fun onSuccess() {
                     promise.resolve(null)
