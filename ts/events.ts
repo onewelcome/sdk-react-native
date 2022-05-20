@@ -17,10 +17,10 @@ export enum PinNotification {
 }
 
 export enum SdkNotification {
-  Pin = 'ONEGINI_PIN_NOTIFICATION',
+  Pin = 'ONEWELCOME_PIN_NOTIFICATION',
   CustomRegistration = 'ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION',
-  MobileAuthOtp = 'ONEGINI_MOBILE_AUTH_OTP_NOTIFICATION',
-  Fingerprint = 'ONEGINI_FINGERPRINT_NOTIFICATION',
+  MobileAuthOtp = 'ONEWELCOME_MOBILE_AUTH_OTP_NOTIFICATION',
+  Fingerprint = 'ONEWELCOME_FINGERPRINT_NOTIFICATION',
 }
 
 export enum CustomRegistrationAction {

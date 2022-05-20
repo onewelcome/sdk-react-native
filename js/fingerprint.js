@@ -10,7 +10,7 @@ const ONEGINI_FINGERPRINT_STAGE = {
   FINISHED: 'finished',
 };
 
-const ONEGINI_FINGERPRINT_NOTIFICATIONS = {
+const ONEWELCOME_FINGERPRINT_NOTIFICATIONS = {
   START_AUTH : "startAuthentication",
   ON_NEXT_AUTH_ATTEMPT : "onNextAuthenticationAttempt",
   ON_CAPTURED : "onFingerprintCaptured",
@@ -19,47 +19,47 @@ const ONEGINI_FINGERPRINT_NOTIFICATIONS = {
 
 const FingerprintEventHandler = {
   listeners: {
-    [ONEGINI_FINGERPRINT_NOTIFICATIONS.START_AUTH]: null,
-    [ONEGINI_FINGERPRINT_NOTIFICATIONS.ON_NEXT_AUTH_ATTEMPT]: null,
-    [ONEGINI_FINGERPRINT_NOTIFICATIONS.ON_CAPTURED]: null,
-    [ONEGINI_FINGERPRINT_NOTIFICATIONS.FINISH_AUTH]: null,
+    [ONEWELCOME_FINGERPRINT_NOTIFICATIONS.START_AUTH]: null,
+    [ONEWELCOME_FINGERPRINT_NOTIFICATIONS.ON_NEXT_AUTH_ATTEMPT]: null,
+    [ONEWELCOME_FINGERPRINT_NOTIFICATIONS.ON_CAPTURED]: null,
+    [ONEWELCOME_FINGERPRINT_NOTIFICATIONS.FINISH_AUTH]: null,
   },
 
   registerStartAuthNotification: (cb) =>
-    FingerprintEventHandler.listeners[ONEGINI_FINGERPRINT_NOTIFICATIONS.START_AUTH] = cb,
+    FingerprintEventHandler.listeners[ONEWELCOME_FINGERPRINT_NOTIFICATIONS.START_AUTH] = cb,
   registerOnNextAuthAttemptNotification: (cb) =>
-    FingerprintEventHandler.listeners[ONEGINI_FINGERPRINT_NOTIFICATIONS.ON_NEXT_AUTH_ATTEMPT] = cb,
+    FingerprintEventHandler.listeners[ONEWELCOME_FINGERPRINT_NOTIFICATIONS.ON_NEXT_AUTH_ATTEMPT] = cb,
   registerOnCapturedNotification: (cb) =>
-    FingerprintEventHandler.listeners[ONEGINI_FINGERPRINT_NOTIFICATIONS.ON_CAPTURED] = cb,
+    FingerprintEventHandler.listeners[ONEWELCOME_FINGERPRINT_NOTIFICATIONS.ON_CAPTURED] = cb,
   registerFinishAuthNotification: (cb) =>
-    FingerprintEventHandler.listeners[ONEGINI_FINGERPRINT_NOTIFICATIONS.FINISH_AUTH] = cb,
+    FingerprintEventHandler.listeners[ONEWELCOME_FINGERPRINT_NOTIFICATIONS.FINISH_AUTH] = cb,
 
   deregisterStartAuthNotification: () =>
-    FingerprintEventHandler.listeners[ONEGINI_FINGERPRINT_NOTIFICATIONS.START_AUTH] = null,
+    FingerprintEventHandler.listeners[ONEWELCOME_FINGERPRINT_NOTIFICATIONS.START_AUTH] = null,
   deregisterOnNextAuthAttemptNotification: () =>
-    FingerprintEventHandler.listeners[ONEGINI_FINGERPRINT_NOTIFICATIONS.ON_NEXT_AUTH_ATTEMPT] = null,
+    FingerprintEventHandler.listeners[ONEWELCOME_FINGERPRINT_NOTIFICATIONS.ON_NEXT_AUTH_ATTEMPT] = null,
   deregisterOnCapturedNotification: () =>
-    FingerprintEventHandler.listeners[ONEGINI_FINGERPRINT_NOTIFICATIONS.ON_CAPTURED] = null,
+    FingerprintEventHandler.listeners[ONEWELCOME_FINGERPRINT_NOTIFICATIONS.ON_CAPTURED] = null,
   deregisterFinishAuthNotification: () =>
-    FingerprintEventHandler.listeners[ONEGINI_FINGERPRINT_NOTIFICATIONS.FINISH_AUTH] = null,
+    FingerprintEventHandler.listeners[ONEWELCOME_FINGERPRINT_NOTIFICATIONS.FINISH_AUTH] = null,
 
   handleNotificationEvent: (event) => {
     switch (event.action) {
-      case ONEGINI_FINGERPRINT_NOTIFICATIONS.START_AUTH:
-        FingerprintEventHandler.listeners[ONEGINI_FINGERPRINT_NOTIFICATIONS.START_AUTH]();
+      case ONEWELCOME_FINGERPRINT_NOTIFICATIONS.START_AUTH:
+        FingerprintEventHandler.listeners[ONEWELCOME_FINGERPRINT_NOTIFICATIONS.START_AUTH]();
         break;
-      case ONEGINI_FINGERPRINT_NOTIFICATIONS.ON_NEXT_AUTH_ATTEMPT:
-        FingerprintEventHandler.listeners[ONEGINI_FINGERPRINT_NOTIFICATIONS.ON_NEXT_AUTH_ATTEMPT]();
+      case ONEWELCOME_FINGERPRINT_NOTIFICATIONS.ON_NEXT_AUTH_ATTEMPT:
+        FingerprintEventHandler.listeners[ONEWELCOME_FINGERPRINT_NOTIFICATIONS.ON_NEXT_AUTH_ATTEMPT]();
         break;
-      case ONEGINI_FINGERPRINT_NOTIFICATIONS.ON_CAPTURED:
-        FingerprintEventHandler.listeners[ONEGINI_FINGERPRINT_NOTIFICATIONS.ON_CAPTURED]();
+      case ONEWELCOME_FINGERPRINT_NOTIFICATIONS.ON_CAPTURED:
+        FingerprintEventHandler.listeners[ONEWELCOME_FINGERPRINT_NOTIFICATIONS.ON_CAPTURED]();
         break;
-      case ONEGINI_FINGERPRINT_NOTIFICATIONS.FINISH_AUTH:
-        FingerprintEventHandler.listeners[ONEGINI_FINGERPRINT_NOTIFICATIONS.FINISH_AUTH]();
+      case ONEWELCOME_FINGERPRINT_NOTIFICATIONS.FINISH_AUTH:
+        FingerprintEventHandler.listeners[ONEWELCOME_FINGERPRINT_NOTIFICATIONS.FINISH_AUTH]();
         break;
       default:
         console.log(
-          'Got unsupported ONEGINI_FINGERPRINT_NOTIFICATIONS action:',
+          'Got unsupported ONEWELCOME_FINGERPRINT_NOTIFICATIONS action:',
           event.action,
         );
         break;
@@ -109,9 +109,9 @@ const useFingerprintFlow = () => {
     FingerprintEventHandler.registerOnNextAuthAttemptNotification(onNextAuthAttempt);
     FingerprintEventHandler.registerOnCapturedNotification(onCaptured);
     FingerprintEventHandler.registerFinishAuthNotification(onFinish);
-    OneginiSdk.addEventListener(ONEGINI_SDK_EVENTS.ONEGINI_FINGERPRINT_NOTIFICATION, FingerprintEventHandler.handleNotificationEvent)
+    OneginiSdk.addEventListener(ONEGINI_SDK_EVENTS.ONEWELCOME_FINGERPRINT_NOTIFICATION, FingerprintEventHandler.handleNotificationEvent)
     return () => {
-      OneginiSdk.removeEventListener(ONEGINI_SDK_EVENTS.ONEGINI_FINGERPRINT_NOTIFICATION)
+      OneginiSdk.removeEventListener(ONEGINI_SDK_EVENTS.ONEWELCOME_FINGERPRINT_NOTIFICATION)
       FingerprintEventHandler.deregisterStartAuthNotification();
       FingerprintEventHandler.deregisterOnNextAuthAttemptNotification();
       FingerprintEventHandler.deregisterOnCapturedNotification();

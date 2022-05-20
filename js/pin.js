@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import OneginiSdk, { ONEGINI_SDK_EVENTS } from "./index";
 
-const ONEGINI_PIN_NOTIFICATIONS = {
+const ONEWELCOME_PIN_NOTIFICATIONS = {
   OPEN: 'open',
   CONFIRM: 'confirm',
   CLOSE: 'close',
@@ -22,39 +22,39 @@ const ONEGINI_PIN_FLOW = {
 
 const EventHandler = {
   listeners: {
-    [ONEGINI_PIN_NOTIFICATIONS.OPEN]    : null,
-    [ONEGINI_PIN_NOTIFICATIONS.CONFIRM] : null,
-    [ONEGINI_PIN_NOTIFICATIONS.CLOSE]   : null,
-    [ONEGINI_PIN_NOTIFICATIONS.ERROR]   : null,
+    [ONEWELCOME_PIN_NOTIFICATIONS.OPEN]    : null,
+    [ONEWELCOME_PIN_NOTIFICATIONS.CONFIRM] : null,
+    [ONEWELCOME_PIN_NOTIFICATIONS.CLOSE]   : null,
+    [ONEWELCOME_PIN_NOTIFICATIONS.ERROR]   : null,
   },
 
-  registerPinOpenNotification: (cb) => EventHandler.listeners[ONEGINI_PIN_NOTIFICATIONS.OPEN] = cb,
-  registerPinConfirmNotification: (cb) => EventHandler.listeners[ONEGINI_PIN_NOTIFICATIONS.CONFIRM] = cb,
-  registerPinErrorNotification: (cb) => EventHandler.listeners[ONEGINI_PIN_NOTIFICATIONS.ERROR] = cb,
-  registerPinCloseNotification: (cb) => EventHandler.listeners[ONEGINI_PIN_NOTIFICATIONS.CLOSE] = cb,
+  registerPinOpenNotification: (cb) => EventHandler.listeners[ONEWELCOME_PIN_NOTIFICATIONS.OPEN] = cb,
+  registerPinConfirmNotification: (cb) => EventHandler.listeners[ONEWELCOME_PIN_NOTIFICATIONS.CONFIRM] = cb,
+  registerPinErrorNotification: (cb) => EventHandler.listeners[ONEWELCOME_PIN_NOTIFICATIONS.ERROR] = cb,
+  registerPinCloseNotification: (cb) => EventHandler.listeners[ONEWELCOME_PIN_NOTIFICATIONS.CLOSE] = cb,
 
-  deregisterPinOpenNotification: () => EventHandler.listeners[ONEGINI_PIN_NOTIFICATIONS.OPEN] = null,
-  deregisterPinConfirmNotification: () => EventHandler.listeners[ONEGINI_PIN_NOTIFICATIONS.CONFIRM] = null,
-  deregisterPinErrorNotification: () => EventHandler.listeners[ONEGINI_PIN_NOTIFICATIONS.ERROR] = null,
-  deregisterPinCloseNotification: () => EventHandler.listeners[ONEGINI_PIN_NOTIFICATIONS.CLOSE] = null,
+  deregisterPinOpenNotification: () => EventHandler.listeners[ONEWELCOME_PIN_NOTIFICATIONS.OPEN] = null,
+  deregisterPinConfirmNotification: () => EventHandler.listeners[ONEWELCOME_PIN_NOTIFICATIONS.CONFIRM] = null,
+  deregisterPinErrorNotification: () => EventHandler.listeners[ONEWELCOME_PIN_NOTIFICATIONS.ERROR] = null,
+  deregisterPinCloseNotification: () => EventHandler.listeners[ONEWELCOME_PIN_NOTIFICATIONS.CLOSE] = null,
 
   handleNotificationEvent: (event) => {
     switch (event.action) {
-      case ONEGINI_PIN_NOTIFICATIONS.OPEN:
-        EventHandler.listeners[ONEGINI_PIN_NOTIFICATIONS.OPEN](event.flow);
+      case ONEWELCOME_PIN_NOTIFICATIONS.OPEN:
+        EventHandler.listeners[ONEWELCOME_PIN_NOTIFICATIONS.OPEN](event.flow);
         break;
-      case ONEGINI_PIN_NOTIFICATIONS.CONFIRM:
-        EventHandler.listeners[ONEGINI_PIN_NOTIFICATIONS.CONFIRM]();
+      case ONEWELCOME_PIN_NOTIFICATIONS.CONFIRM:
+        EventHandler.listeners[ONEWELCOME_PIN_NOTIFICATIONS.CONFIRM]();
         break;
-      case ONEGINI_PIN_NOTIFICATIONS.ERROR:
-        EventHandler.listeners[ONEGINI_PIN_NOTIFICATIONS.ERROR](event.errorMsg);
+      case ONEWELCOME_PIN_NOTIFICATIONS.ERROR:
+        EventHandler.listeners[ONEWELCOME_PIN_NOTIFICATIONS.ERROR](event.errorMsg);
         break;
-      case ONEGINI_PIN_NOTIFICATIONS.CLOSE:
-        EventHandler.listeners[ONEGINI_PIN_NOTIFICATIONS.CLOSE]();
+      case ONEWELCOME_PIN_NOTIFICATIONS.CLOSE:
+        EventHandler.listeners[ONEWELCOME_PIN_NOTIFICATIONS.CLOSE]();
         break;
       default:
         console.log(
-          'Got unsupported ONEGINI_PIN_NOTIFICATIONS action:',
+          'Got unsupported ONEWELCOME_PIN_NOTIFICATIONS action:',
           event.action,
         );
         break;
@@ -124,9 +124,9 @@ const usePinFlow = () => {
     EventHandler.registerPinConfirmNotification(setConfirmState);
     EventHandler.registerPinErrorNotification(handleError);
     EventHandler.registerPinCloseNotification(setInitialState);
-    OneginiSdk.addEventListener(ONEGINI_SDK_EVENTS.ONEGINI_PIN_NOTIFICATION, EventHandler.handleNotificationEvent)
+    OneginiSdk.addEventListener(ONEGINI_SDK_EVENTS.ONEWELCOME_PIN_NOTIFICATION, EventHandler.handleNotificationEvent)
     return () => {
-      OneginiSdk.removeEventListener(ONEGINI_SDK_EVENTS.ONEGINI_PIN_NOTIFICATION)
+      OneginiSdk.removeEventListener(ONEGINI_SDK_EVENTS.ONEWELCOME_PIN_NOTIFICATION)
       EventHandler.deregisterPinOpenNotification();
       EventHandler.deregisterPinConfirmNotification();
       EventHandler.deregisterPinErrorNotification();
