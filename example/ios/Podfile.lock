@@ -93,7 +93,7 @@ PODS:
     - glog
   - glog (0.3.5)
   - libevent (2.1.12)
-  - onegini-react-native-sdk (0.6.0):
+  - onewelcome-react-native-sdk (0.6.0):
     - OneginiSDKiOS (~> 11.0.0)
     - React
   - OneginiSDKiOS (11.0.2):
@@ -365,7 +365,7 @@ DEPENDENCIES:
   - FlipperKit/SKIOSNetworkPlugin (= 0.87.0)
   - Folly (from `../../node_modules/react-native/third-party-podspecs/Folly.podspec`)
   - glog (from `../../node_modules/react-native/third-party-podspecs/glog.podspec`)
-  - onegini-react-native-sdk (from `../..`)
+  - onewelcome-react-native-sdk (from `../..`)
   - RCTRequired (from `../../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../../node_modules/react-native/Libraries/TypeSafety`)
   - React (from `../../node_modules/react-native/`)
@@ -421,7 +421,7 @@ EXTERNAL SOURCES:
     :podspec: "../../node_modules/react-native/third-party-podspecs/Folly.podspec"
   glog:
     :podspec: "../../node_modules/react-native/third-party-podspecs/glog.podspec"
-  onegini-react-native-sdk:
+  onewelcome-react-native-sdk:
     :path: "../.."
   RCTRequired:
     :path: "../../node_modules/react-native/Libraries/RCTRequired"
@@ -485,7 +485,7 @@ SPEC CHECKSUMS:
   Folly: b73c3869541e86821df3c387eb0af5f65addfab4
   glog: 40a13f7840415b9a77023fbcae0f1e6f43192af3
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
-  onegini-react-native-sdk: 684eefab817270d975f8ee65cd4262b5097c847d
+  onewelcome-react-native-sdk: 684eefab817270d975f8ee65cd4262b5097c847d
   OneginiSDKiOS: 11c47c9b19b86e6ee6c2758d532b31e6220f0431
   OpenSSL-Universal: 1aa4f6a6ee7256b83db99ec1ccdaa80d10f9af9b
   RCTRequired: 48884c74035a0b5b76dbb7a998bd93bcfc5f2047

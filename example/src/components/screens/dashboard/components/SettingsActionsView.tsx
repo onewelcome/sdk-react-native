@@ -3,7 +3,7 @@ import {Text, StyleSheet, Alert} from 'react-native';
 import ContentContainer from './ContentContainer';
 import Button from '../../../general/Button';
 import {enrollMobileAuthentication} from '../../../helpers/MobileAuthenticationHelper';
-import OneginiSdk from 'onegini-react-native-sdk';
+import OneginiSdk from 'onewelcome-react-native-sdk';
 import {AuthContext} from "../../../../providers/auth.provider";
 import {AuthActionTypes} from "../../../../providers/auth.actions";
 

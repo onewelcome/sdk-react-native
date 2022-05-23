@@ -5,7 +5,7 @@ import RegisterButton from './components/RegisterButton';
 import AuthButton from './components/AuthButton';
 import Button from '../../general/Button';
 import InfoView from '../info/InfoView';
-import OneginiSdk from "onegini-react-native-sdk";
+import OneginiSdk from "onewelcome-react-native-sdk";
 import {CurrentUser} from "../../../auth/auth";
 import ModalSelector from "react-native-modal-selector";
 import {AuthContext} from "../../../providers/auth.provider";

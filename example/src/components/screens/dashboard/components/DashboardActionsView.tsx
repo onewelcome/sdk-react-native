@@ -3,7 +3,7 @@ import {StyleSheet, Text, Linking, Alert} from 'react-native';
 import ContentContainer from './ContentContainer';
 import Button from '../../../general/Button';
 import {logout, deregisterUser} from '../../../helpers/DashboardHelpers';
-import OneginiSdk from 'onegini-react-native-sdk';
+import OneginiSdk from 'onewelcome-react-native-sdk';
 import {CurrentUser} from '../../../../auth/auth';
 
 const onSingleSingOn = () => {

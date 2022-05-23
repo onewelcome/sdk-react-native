@@ -1,12 +1,12 @@
-# onegini-react-native-sdk
+# onewelcome-react-native-sdk
 
 ## Getting started
 
-`npm install onegini-react-native-sdk --save`
+`npm install onewelcome-react-native-sdk --save`
 
 OR
 
-`yarn add onegini-react-native-sdk`
+`yarn add onewelcome-react-native-sdk`
 
 ## SDK Configuration
 
@@ -166,14 +166,14 @@ OR
 
 ##### Auto linking
 
-`react-native link onegini-react-native-sdk`
+`react-native link onewelcome-react-native-sdk`
 
 ##### Manual installation
 
 #### iOS
 
 1. In XCode, in the project navigator, right click `Libraries` ➜ `Add Files to [your project's name]`
-2. Go to `node_modules` ➜ `onegini-react-native-sdk` and add `RNOneginiSdk.xcodeproj`
+2. Go to `node_modules` ➜ `onewelcome-react-native-sdk` and add `RNOneginiSdk.xcodeproj`
 3. In XCode, in the project navigator, select your project. Add `libRNOneginiSdk.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
 4. Run your project (`Cmd+R`)<
 
@@ -186,12 +186,12 @@ OR
 
 2. Append the following lines to `android/settings.gradle`:
    ```
-   include ':onegini-react-native-sdk'
-   project(':onegini-react-native-sdk').projectDir = new File(rootProject.projectDir,     '../node_modules/onegini-react-native-sdk/android')
+   include ':onewelcome-react-native-sdk'
+   project(':onewelcome-react-native-sdk').projectDir = new File(rootProject.projectDir,     '../node_modules/onewelcome-react-native-sdk/android')
    ```
 3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
    ```
-     compile project(':onegini-react-native-sdk')
+     compile project(':onewelcome-react-native-sdk')
    ```
 
 # How to run Example App

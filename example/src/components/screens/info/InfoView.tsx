@@ -6,7 +6,7 @@ import AppColors from '../../constants/AppColors';
 import OneginiSdk, {
   useResources,
   Types,
-} from 'onegini-react-native-sdk';
+} from 'onewelcome-react-native-sdk';
 
 interface Props {
   onFinished?: () => void;

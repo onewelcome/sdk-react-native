@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import Button from '../../../general/Button';
-import OneginiSdk from 'onegini-react-native-sdk';
+import OneginiSdk from 'onewelcome-react-native-sdk';
 import {CurrentUser} from '../../../../auth/auth';
 
 interface Props {
