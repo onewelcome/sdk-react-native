@@ -28,7 +28,7 @@ export const MOBILE_AUTH_OTP_NOTIFICATION = {
   FINISH_AUTHENTICATION: 'finishAuthentication',
 };
 
-const OneginiSdk = {
+const OneWelcomeSdk = {
   config: {
     configModelClassName: null,
     securityControllerClassName: "com.onegini.mobile.rnexampleapp.SecurityController",
@@ -43,11 +43,11 @@ const OneginiSdk = {
     [ONEGINI_SDK_EVENTS.ONEWELCOME_FINGERPRINT_NOTIFICATION]: null,
   },
   addEventListener: (eventType, cb) => { // eventType = ONEGINI_SDK_EVENTS
-    if (OneginiSdk.listeners[eventType]) {
+    if (OneWelcomeSdk.listeners[eventType]) {
       this.removeEventListener(eventType);
     }
 
-    OneginiSdk.listeners[eventType] = OneginiEventEmitter.addListener(
+    OneWelcomeSdk.listeners[eventType] = OneginiEventEmitter.addListener(
       eventType,
       (item) => {
         cb(item);
@@ -55,12 +55,12 @@ const OneginiSdk = {
     );
   },
   removeEventListener: (eventType) => {
-    if (OneginiSdk.listeners[eventType]) {
-      OneginiSdk.listeners[eventType].remove();
-      OneginiSdk.listeners[eventType] = null;
+    if (OneWelcomeSdk.listeners[eventType]) {
+      OneWelcomeSdk.listeners[eventType].remove();
+      OneWelcomeSdk.listeners[eventType] = null;
     }
   },
-  startClient: (sdkConfig = OneginiSdk.config) => Platform.OS === 'ios'
+  startClient: (sdkConfig = OneWelcomeSdk.config) => Platform.OS === 'ios'
     ? RNOneginiSdk.startClient()
     : RNOneginiSdk.startClient(sdkConfig),
 
@@ -119,6 +119,6 @@ const OneginiSdk = {
   // App to Web
   startSingleSignOn: (url) => RNOneginiSdk.startSingleSignOn(url),
 };
-Object.freeze(OneginiSdk);
+Object.freeze(OneWelcomeSdk);
 
-export default OneginiSdk;
+export default OneWelcomeSdk;

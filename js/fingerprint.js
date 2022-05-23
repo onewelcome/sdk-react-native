@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { Platform } from 'react-native';
-import OneginiSdk, { ONEGINI_SDK_EVENTS } from "./index";
+import OneWelcomeSdk, { ONEWELCOME_SDK_EVENTS } from "./index";
 
-const ONEGINI_FINGERPRINT_STAGE = {
+const ONEWELCOME_FINGERPRINT_STAGE = {
   IDLE: 'idle',
   STARTED: 'started',
   NEXT_ATTEMPT: 'nextAttempt',
@@ -70,38 +70,38 @@ Object.freeze(FingerprintEventHandler);
 
 
 const onCancelFlow = () => Platform.OS === 'android'
-  ? OneginiSdk.submitFingerprintDenyAuthenticationRequest()
+  ? OneWelcomeSdk.submitFingerprintDenyAuthenticationRequest()
   : null; // iOS handled natively
 
 const onFallbackToPin = () => Platform.OS === 'android'
-  ? OneginiSdk.submitFingerprintFallbackToPin()
+  ? OneWelcomeSdk.submitFingerprintFallbackToPin()
   : null; // iOS handled natively
 
 const useFingerprintFlow = () => {
   const [active, setActive] = useState(false);
-  const [stage, setStage] = useState(ONEGINI_FINGERPRINT_STAGE.IDLE);
+  const [stage, setStage] = useState(ONEWELCOME_FINGERPRINT_STAGE.IDLE);
 
   const onStart = () => {
-    setStage(ONEGINI_FINGERPRINT_STAGE.STARTED);
+    setStage(ONEWELCOME_FINGERPRINT_STAGE.STARTED);
     setActive(true);
-    OneginiSdk.submitFingerprintAcceptAuthenticationRequest();
+    OneWelcomeSdk.submitFingerprintAcceptAuthenticationRequest();
   };
   const cancelFlow = () => {
     setActive(false);
-    setStage(ONEGINI_FINGERPRINT_STAGE.IDLE)
+    setStage(ONEWELCOME_FINGERPRINT_STAGE.IDLE)
     onCancelFlow();
   };
   const fallbackToPin = () => {
     setActive(false);
-    setStage(ONEGINI_FINGERPRINT_STAGE.IDLE)
+    setStage(ONEWELCOME_FINGERPRINT_STAGE.IDLE)
     onFallbackToPin();
   }
   const onFinish = () => {
     setActive(false);
-    setStage(ONEGINI_FINGERPRINT_STAGE.FINISHED);
+    setStage(ONEWELCOME_FINGERPRINT_STAGE.FINISHED);
   }
-  const onNextAuthAttempt = () => setStage(ONEGINI_FINGERPRINT_STAGE.NEXT_ATTEMPT);
-  const onCaptured = () => setStage(ONEGINI_FINGERPRINT_STAGE.CAPTURED);
+  const onNextAuthAttempt = () => setStage(ONEWELCOME_FINGERPRINT_STAGE.NEXT_ATTEMPT);
+  const onCaptured = () => setStage(ONEWELCOME_FINGERPRINT_STAGE.CAPTURED);
 
 
   useEffect(() => {
@@ -109,9 +109,9 @@ const useFingerprintFlow = () => {
     FingerprintEventHandler.registerOnNextAuthAttemptNotification(onNextAuthAttempt);
     FingerprintEventHandler.registerOnCapturedNotification(onCaptured);
     FingerprintEventHandler.registerFinishAuthNotification(onFinish);
-    OneginiSdk.addEventListener(ONEGINI_SDK_EVENTS.ONEWELCOME_FINGERPRINT_NOTIFICATION, FingerprintEventHandler.handleNotificationEvent)
+    OneWelcomeSdk.addEventListener(ONEWELCOME_SDK_EVENTS.ONEWELCOME_FINGERPRINT_NOTIFICATION, FingerprintEventHandler.handleNotificationEvent)
     return () => {
-      OneginiSdk.removeEventListener(ONEGINI_SDK_EVENTS.ONEWELCOME_FINGERPRINT_NOTIFICATION)
+      OneWelcomeSdk.removeEventListener(ONEWELCOME_SDK_EVENTS.ONEWELCOME_FINGERPRINT_NOTIFICATION)
       FingerprintEventHandler.deregisterStartAuthNotification();
       FingerprintEventHandler.deregisterOnNextAuthAttemptNotification();
       FingerprintEventHandler.deregisterOnCapturedNotification();
@@ -127,4 +127,4 @@ const useFingerprintFlow = () => {
   ];
 }
 
-export { useFingerprintFlow, ONEGINI_FINGERPRINT_STAGE }
+export { useFingerprintFlow, ONEWELCOME_FINGERPRINT_STAGE }

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import OneginiSdk, { ONEGINI_SDK_EVENTS } from "./index";
+import OneWelcomeSdk, { ONEWELCOME_SDK_EVENTS } from "./index";
 
 const ONEWELCOME_PIN_NOTIFICATIONS = {
   OPEN: 'open',
@@ -8,12 +8,12 @@ const ONEWELCOME_PIN_NOTIFICATIONS = {
   ERROR: 'show_error'
 };
 
-const ONEGINI_PIN_ACTIONS = {
+const ONEWELCOME_PIN_ACTIONS = {
   PROVIDE_PIN: 'provide',
   CANCEL: 'cancel',
 };
 
-const ONEGINI_PIN_FLOW = {
+const ONEWELCOME_PIN_FLOW = {
   AUTHENTICATION: 'authentication',
   CREATE: 'create',
   CHANGE: 'change',
@@ -73,19 +73,19 @@ const onNewPinKey = (newKey, pin, setPin, flow, setError) => {
     const newValue = pin + newKey;
     setPin(newValue);
     if (newValue.length === 5) {
-      OneginiSdk.submitPinAction(
+      OneWelcomeSdk.submitPinAction(
         flow,
-        ONEGINI_PIN_ACTIONS.PROVIDE_PIN,
+        ONEWELCOME_PIN_ACTIONS.PROVIDE_PIN,
         newValue,
       );
     }
   }
 }
 
-const onCancelPinFlow = (flow) => OneginiSdk.submitPinAction(flow, ONEGINI_PIN_ACTIONS.CANCEL, null);
+const onCancelPinFlow = (flow) => OneWelcomeSdk.submitPinAction(flow, ONEWELCOME_PIN_ACTIONS.CANCEL, null);
 
 const usePinFlow = () => {
-  const [flow, setFlow] = useState(ONEGINI_PIN_FLOW.CREATE);
+  const [flow, setFlow] = useState(ONEWELCOME_PIN_FLOW.CREATE);
   const [pin, setPin] = useState('');
   const [visible, setVisible] = useState(false);
   const [error, setError] = useState(null);
@@ -124,9 +124,9 @@ const usePinFlow = () => {
     EventHandler.registerPinConfirmNotification(setConfirmState);
     EventHandler.registerPinErrorNotification(handleError);
     EventHandler.registerPinCloseNotification(setInitialState);
-    OneginiSdk.addEventListener(ONEGINI_SDK_EVENTS.ONEWELCOME_PIN_NOTIFICATION, EventHandler.handleNotificationEvent)
+    OneWelcomeSdk.addEventListener(ONEWELCOME_SDK_EVENTS.ONEWELCOME_PIN_NOTIFICATION, EventHandler.handleNotificationEvent)
     return () => {
-      OneginiSdk.removeEventListener(ONEGINI_SDK_EVENTS.ONEWELCOME_PIN_NOTIFICATION)
+      OneWelcomeSdk.removeEventListener(ONEWELCOME_SDK_EVENTS.ONEWELCOME_PIN_NOTIFICATION)
       EventHandler.deregisterPinOpenNotification();
       EventHandler.deregisterPinConfirmNotification();
       EventHandler.deregisterPinErrorNotification();
@@ -145,4 +145,4 @@ const usePinFlow = () => {
   ];
 }
 
-export { usePinFlow, ONEGINI_PIN_FLOW }
+export { usePinFlow, ONEWELCOME_PIN_FLOW }

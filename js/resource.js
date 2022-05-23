@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import OneginiSdk  from "./index";
+import OneWelcomeSDK  from "./index";
 
 const DEFAULT_RESOURCE_DETAILS = {
   path: 'test',
@@ -13,10 +13,10 @@ const fetchResource = async (setLoading, setError, setData, shouldAuthenticate, 
   try {
     if (shouldAuthenticate) {
       isImplicit
-        ? await OneginiSdk.authenticateUserImplicitly(profileId, scopes)
-        : await OneginiSdk.authenticateDeviceForResource(scopes);
+        ? await OneWelcomeSDK.authenticateUserImplicitly(profileId, scopes)
+        : await OneWelcomeSDK.authenticateDeviceForResource(scopes);
     }
-    const data = await OneginiSdk.resourceRequest(isImplicit, resourceDetails);
+    const data = await OneWelcomeSDK.resourceRequest(isImplicit, resourceDetails);
 
     console.log("FETCH DATA = ", data)
     
