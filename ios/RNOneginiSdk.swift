@@ -12,7 +12,7 @@ protocol ConnectorToRNBridgeProtocol: NSObject {
 enum OneginiBridgeEvents : String {
     case pinNotification = "ONEWELCOME_PIN_NOTIFICATION"
     case fingerprintNotification = "ONEWELCOME_FINGERPRINT_NOTIFICATION"
-    case customRegistrationNotification = "ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION"
+    case customRegistrationNotification = "ONEWELCOME_CUSTOM_REGISTRATION_NOTIFICATION"
     case authWithOtpNotification = "ONEWELCOME_MOBILE_AUTH_OTP_NOTIFICATION"
 }
 
