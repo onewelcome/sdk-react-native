@@ -12,6 +12,7 @@ import com.onegini.mobile.sdk.android.handlers.error.OneginiError
 interface IPinNotificationObserver {
     fun onNotify(event: String, flow: PinFlow, profileId: String?, data: Any?)
     fun onError(error: OneginiError?, flow: PinFlow)
+    fun onWrongPin(error: OneginiError, remainingAttempts: Int)
 }
 
 //
@@ -62,5 +63,20 @@ class PinNotificationObserver(private val reactApplicationContext: ReactApplicat
         data.putString("flow", flow.flowString)
         OneginiErrorMapper.update(data, error)
         reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit(Constants.ONEGINI_PIN_NOTIFICATION, data)
+    }
+
+    // This isn't the most logical way to send the remaining attempts to the plugin,
+    // but I did it to not have to modify iOS/JS parts as well
+    override fun onWrongPin(error: OneginiError, remainingAttempts: Int) {
+        val userInfo = Arguments.createMap()
+        userInfo.putString("remainingFailureCount", remainingAttempts.toString())
+
+        val dataMap = Arguments.createMap()
+        dataMap.putString("action", Constants.PIN_NOTIFICATION_SHOW_ERROR)
+        dataMap.putString("flow", Constants.PinFlow.Authentication.flowString)
+        dataMap.putMap("userInfo", userInfo)
+        OneginiErrorMapper.update(dataMap, error)
+        reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+                .emit(Constants.ONEGINI_PIN_NOTIFICATION, dataMap)
     }
 }

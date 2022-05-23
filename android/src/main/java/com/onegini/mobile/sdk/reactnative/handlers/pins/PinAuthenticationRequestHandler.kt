@@ -38,7 +38,7 @@ class PinAuthenticationRequestHandler(private val oneginiSDK: OneginiSDK) : Oneg
                 AuthenticationAttemptCounterMapper.toErrorString(attemptCounter),
                 null
             )
-            pinNotificationObserver!!.onError(exeption, Constants.PinFlow.Authentication)
+            pinNotificationObserver!!.onWrongPin(exeption, attemptCounter.remainingAttempts)
         }
     }
 
