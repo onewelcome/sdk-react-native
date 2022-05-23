@@ -2,14 +2,14 @@ import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Modal, Text, TextInput} from 'react-native';
 import AppColors from '../../constants/AppColors';
 import Button from '../../general/Button';
-import OneginiSdk, {Events} from 'onewelcome-react-native-sdk';
+import OneWelcomeSdk, {Events} from 'onewelcome-react-native-sdk';
 
 const MobileAuthOTPModal: React.FC<{}> = () => {
   const [message, setMessage] = useState('');
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const listener = OneginiSdk.addEventListener(
+    const listener = OneWelcomeSdk.addEventListener(
       Events.SdkNotification.MobileAuthOtp,
       (event: any) => {
         switch (event.action) {
@@ -42,7 +42,7 @@ const MobileAuthOTPModal: React.FC<{}> = () => {
           <Button
             name={'OK'}
             onPress={() => {
-              OneginiSdk.acceptMobileAuthConfirmation();
+              OneWelcomeSdk.acceptMobileAuthConfirmation();
               setVisible(false);
             }}
           />
@@ -51,7 +51,7 @@ const MobileAuthOTPModal: React.FC<{}> = () => {
           <Button
             name={'CANCEL'}
             onPress={() => {
-              OneginiSdk.denyMobileAuthConfirmation();
+              OneWelcomeSdk.denyMobileAuthConfirmation();
               setVisible(false);
             }}
           />

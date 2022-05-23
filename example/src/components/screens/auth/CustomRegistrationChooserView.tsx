@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {Modal, StyleSheet, Text, View} from 'react-native';
 import Button from '../../general/Button';
-import OneginiSdk, {Types} from 'onewelcome-react-native-sdk';
+import OneWelcomeSdk, {Types} from 'onewelcome-react-native-sdk';
 import AppColors from '../../constants/AppColors';
 
 interface Props {
@@ -16,7 +16,7 @@ const CustomRegistrationChooserView: React.FC<Props> = (props) => {
     // ugly!
     let isMounted = true;
 
-    OneginiSdk.getIdentityProviders().then((identityProviders) => {
+    OneWelcomeSdk.getIdentityProviders().then((identityProviders) => {
       console.log('identityProviders: ', identityProviders);
       if (isMounted) {
         setProviders(identityProviders);

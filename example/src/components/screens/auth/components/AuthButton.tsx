@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import Button from '../../../general/Button';
-import OneginiSdk from 'onewelcome-react-native-sdk';
+import OneWelcomeSdk from 'onewelcome-react-native-sdk';
 import {CurrentUser} from '../../../../auth/auth';
 
 interface Props {
@@ -35,8 +35,8 @@ function onPressClicked(
   onAuthorized?: (success: boolean) => void,
   setError?: (error: string) => void,
 ) {
-  OneginiSdk.getUserProfiles().then((profiles) =>
-    OneginiSdk.authenticateUser(profiles[0].profileId)
+  OneWelcomeSdk.getUserProfiles().then((profiles) =>
+    OneWelcomeSdk.authenticateUser(profiles[0].profileId)
       .then((result) => {
         CurrentUser.id = profiles[0].profileId;
 
@@ -51,7 +51,7 @@ function onPressClicked(
 
 function hasProfile(): Promise<boolean> {
   return new Promise((resolve, reject) =>
-    OneginiSdk.getUserProfiles()
+    OneWelcomeSdk.getUserProfiles()
       .then((profiles) => {
         console.log('Profiles: ', profiles);
         resolve(profiles.length === 0);
