@@ -15,7 +15,7 @@ import {useResources} from './resource';
 
 const {RNOneginiSdk} = NativeModules;
 
-const OneginiEventEmitter =
+const OneWelcomeEventEmitter =
   Platform.OS === 'ios'
     ? new NativeEventEmitter(RNOneginiSdk)
     : DeviceEventEmitter;
@@ -128,7 +128,7 @@ const nativeMethods: NativeMethods = {
     eventType: string,
     callback: (event: any) => void,
   ): EmitterSubscription => {
-    return OneginiEventEmitter.addListener(eventType, callback);
+    return OneWelcomeEventEmitter.addListener(eventType, callback);
   },
 
   //

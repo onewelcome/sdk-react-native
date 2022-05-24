@@ -47,7 +47,7 @@ class PinConnector : BridgeToPinConnectorProtocol {
     }
 
   private func sendEvent(data: Any!) {
-      bridgeConnector?.sendBridgeEvent(eventName: OneginiBridgeEvents.pinNotification, data: data)
+      bridgeConnector?.sendBridgeEvent(eventName: OneWelcomeBridgeEvents.pinNotification, data: data)
   }
 }
 

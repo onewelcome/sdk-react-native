@@ -1,7 +1,7 @@
 import { NativeModules, Platform, NativeEventEmitter, DeviceEventEmitter } from 'react-native';
 const { RNOneginiSdk } = NativeModules;
 
-const OneginiEventEmitter =
+const OneWelcomeEventEmitter =
   Platform.OS === 'ios'
     ? new NativeEventEmitter(RNOneginiSdk)
     : DeviceEventEmitter;
@@ -47,7 +47,7 @@ const OneWelcomeSdk = {
       this.removeEventListener(eventType);
     }
 
-    OneWelcomeSdk.listeners[eventType] = OneginiEventEmitter.addListener(
+    OneWelcomeSdk.listeners[eventType] = OneWelcomeEventEmitter.addListener(
       eventType,
       (item) => {
         cb(item);

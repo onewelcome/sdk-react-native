@@ -5,11 +5,11 @@ import LocalAuthentication
 
 
 protocol ConnectorToRNBridgeProtocol: NSObject {
-  func sendBridgeEvent(eventName: OneginiBridgeEvents, data: Any!) -> Void
+  func sendBridgeEvent(eventName: OneWelcomeBridgeEvents, data: Any!) -> Void
 }
 
 // Pin notification actions for RN Bridge
-enum OneginiBridgeEvents : String {
+enum OneWelcomeBridgeEvents : String {
     case pinNotification = "ONEWELCOME_PIN_NOTIFICATION"
     case fingerprintNotification = "ONEWELCOME_FINGERPRINT_NOTIFICATION"
     case customRegistrationNotification = "ONEWELCOME_CUSTOM_REGISTRATION_NOTIFICATION"
@@ -30,10 +30,10 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     override func supportedEvents() -> [String]! {
-        return [OneginiBridgeEvents.pinNotification.rawValue, OneginiBridgeEvents.fingerprintNotification.rawValue, OneginiBridgeEvents.customRegistrationNotification.rawValue, OneginiBridgeEvents.authWithOtpNotification.rawValue]
+        return [OneWelcomeBridgeEvents.pinNotification.rawValue, OneWelcomeBridgeEvents.fingerprintNotification.rawValue, OneWelcomeBridgeEvents.customRegistrationNotification.rawValue, OneWelcomeBridgeEvents.authWithOtpNotification.rawValue]
     }
 
-    func sendBridgeEvent(eventName: OneginiBridgeEvents, data: Any!) -> Void {
+    func sendBridgeEvent(eventName: OneWelcomeBridgeEvents, data: Any!) -> Void {
       self.sendEvent(withName: eventName.rawValue, body: data)
     }
 
