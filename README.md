@@ -91,19 +91,19 @@ OR
    </intent-filter>
    ```
 
-6. <a name="android-setup-config"/>Setup the Onegini config: Generate a 'OneginiConfigModel' and 'keystore.bks' with [SDK Configurator](https://github.com/Onegini/onegini-sdk-configurator#android).
+6. <a name="android-setup-config"/>Setup the config: Generate a 'OneginiConfigModel' and 'keystore.bks' with [SDK Configurator](https://github.com/Onegini/onegini-sdk-configurator#android).
 
    Configurator will put `OneginiConfigModel` into `[RN_application_package_classpath.OneginiConfigModel]` (e.g. `com.exampleapp.OneginiConfigModel`) and the `keystore.bks` into '/res/raw'.
    After configurator used - you have 2 options:
 
    - Keep it as it is.
-   - If there is a need to move `OneginiConfigModel` to another place - it's **required** to specify custom classpath for OneginiSdk: [Supported Methods:](#supported-methods) setConfigModelClassName(className).
+   - If there is a need to move `OneginiConfigModel` to another place - it's **required** to specify custom classpath for OneWelcomeSdk: [Supported Methods:](#supported-methods) setConfigModelClassName(className).
 
    More information [HERE](https://docs.onegini.com/msp/stable/android-sdk/topics/setting-up-the-project#verifying), section: Running the SDK Configurator.
 
 7. <a name="android-setup-security-controller"/>Setup the SecurityController(<u>not required</u>).
 
-   In order to change security options you should create your own instance SecurityController and handle it to OneginiSdk - See the [Supported Methods:](#supported-methods) setSecurityControllerClassName(className).
+   In order to change security options you should create your own instance SecurityController and handle it to OneWelcomeSdk - See the [Supported Methods:](#supported-methods) setSecurityControllerClassName(className).
    Example SecurityController implementation you can find inside library source code("com.onegini.mobile.SecurityController").
    By default security options brought from `com.onegini.mobile.SecurityController`.
 
@@ -111,11 +111,11 @@ OR
 
 #### iOS:
 
-1. The Onegini SDK is uploaded to the Onegini Artifactory repository. In order to let CocoaPods use an Artifactory repository you need to install a specific plugin.
+1. The OneWelcome SDK is uploaded to the OneWelcome Artifactory repository. In order to let CocoaPods use an Artifactory repository you need to install a specific plugin.
    ```
    gem install cocoapods-art
    ```
-2. The Onegini SDK repository is not a public repository. You must provide credentials in order to access the repo. Create a file named .netrc in your Home folder (~/) and add the following contents to it:
+2. The OneWelcome SDK repository is not a public repository. You must provide credentials in order to access the repo. Create a file named .netrc in your Home folder (~/) and add the following contents to it:
 
    ```
    machine repo.onegini.com
@@ -125,7 +125,7 @@ OR
 
    Replace the <username> and <password> with the credentials that you use to login to support.onegini.com.
 
-3. The Onegini CocoaPods repository must be added to your local machine using the following command:
+3. The OneWelcome CocoaPods repository must be added to your local machine using the following command:
 
    ```
    pod repo-art add onegini https://repo.onegini.com/artifactory/api/pods/cocoapods-public
@@ -202,7 +202,7 @@ OR
 
 # Known RN issues
 
-These are the issues that are not connected to Onegini React Native SDK but you may encounter them during integration.
+These are the issues that are not connected to OneWelcome React Native SDK but you may encounter them during integration.
 
 ## Xcode 12.5 with Flipper
 
