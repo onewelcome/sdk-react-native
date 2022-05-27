@@ -25,9 +25,11 @@ const pinRegisteredAuthenticator: Types.Authenticator = {
   type: '',
 };
 
-interface Props {}
+interface Props {
+  onLogout: () => void;
+}
 
-const ChangeAuthView: React.FC<Props> = () => {
+const ChangeAuthView: React.FC<Props> = (props) => {
   const [isFigerprintEnable, setFingerprintEnable] = useState(false);
   const [message, setMessage] = useState('');
   const [registeredAuthenticators, setRegisteredAuthenticators] = useState<
@@ -118,6 +120,7 @@ const ChangeAuthView: React.FC<Props> = () => {
                 setMessage,
                 setRegisteredAuthenticators,
                 setPreferred,
+                props.onLogout
               )
             }
             value={isFigerprintEnable}
@@ -153,6 +156,7 @@ const onSwithFingerprint = (
   setMessage: (message: string) => void,
   setRegisteredAuthenticators: (authenticators: Types.Authenticator[]) => void,
   setPreferred: (authenticator: Types.Authenticator) => void,
+  logout: () => void
 ) => {
   setMessage('');
   if (isEnable) {
@@ -164,7 +168,11 @@ const onSwithFingerprint = (
         setPreferred,
       );
     }, (error: any) => {
-      setMessage(error.message)
+      if (error.code == "9002" || error.code == "9003") {
+        logout();
+      } else {
+        setMessage(error.message)
+      }
     });
   } else {
     deregisterFingerprintAuthenticator(() => {
@@ -175,7 +183,11 @@ const onSwithFingerprint = (
         setPreferred,
       );
     }, (error: any) => {
-      setMessage(error.message)
+      if (error.code == "9002" || error.code == "9003") {
+        logout();
+      } else {
+        setMessage(error.message)
+      }
     });
   }
 };
