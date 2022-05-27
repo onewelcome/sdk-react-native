@@ -156,27 +156,27 @@ const onSwithFingerprint = (
 ) => {
   setMessage('');
   if (isEnable) {
-    registerFingerprintAuthenticator((successful) => {
-      if (successful) {
-        setFigerprintEnable(true);
-      }
+    registerFingerprintAuthenticator(() => {
+      setFigerprintEnable(true);
       getRegisteredAuthenticators(
         setRegisteredAuthenticators,
         () => {},
         setPreferred,
       );
-    }, setMessage);
+    }, (error: any) => {
+      setMessage(error.message)
+    });
   } else {
-    deregisterFingerprintAuthenticator((successful) => {
-      if (successful) {
-        setFigerprintEnable(false);
-      }
+    deregisterFingerprintAuthenticator(() => {
+      setFigerprintEnable(false);
       getRegisteredAuthenticators(
         setRegisteredAuthenticators,
         () => {},
         setPreferred,
       );
-    }, setMessage);
+    }, (error: any) => {
+      setMessage(error.message)
+    });
   }
 };
 
