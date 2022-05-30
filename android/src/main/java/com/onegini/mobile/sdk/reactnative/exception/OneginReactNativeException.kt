@@ -14,7 +14,6 @@ class OneginReactNativeException(errorType: Int, errorDetails: OneginiErrorDetai
         const val AUTHENTICATE_DEVICE_ERROR = 8005
         const val ATTEMPT_COUNTER_ERROR = 8007
         const val PIN_ERROR_NOT_EQUAL = 8008
-        const val MOBILE_AUTH_OTP_IS_DISABLED = 8009
     }
 
     override fun getErrorType(): Int {

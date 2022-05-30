@@ -42,7 +42,7 @@ import com.onegini.mobile.sdk.reactnative.clean.wrapper.OneginiSdkWrapper
 import com.onegini.mobile.sdk.reactnative.exception.OneginReactNativeException
 import com.onegini.mobile.sdk.reactnative.exception.OneginReactNativeException.Companion.AUTHENTICATE_DEVICE_ERROR
 import com.onegini.mobile.sdk.reactnative.exception.OneginReactNativeException.Companion.FINGERPRINT_IS_NOT_ENABLED
-import com.onegini.mobile.sdk.reactnative.exception.OneginReactNativeException.Companion.MOBILE_AUTH_OTP_IS_DISABLED
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.reactnative.handlers.pins.ChangePinHandler
 import com.onegini.mobile.sdk.reactnative.managers.AuthenticatorManager
 import com.onegini.mobile.sdk.reactnative.managers.RegistrationManager
@@ -390,7 +390,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     fun acceptMobileAuthConfirmation(promise: Promise) {
         val handler = oneginiSDK.mobileAuthOtpRequestHandler
         if (handler == null) {
-            promise.reject(MOBILE_AUTH_OTP_IS_DISABLED.toString(), "The Mobile auth Otp is disabled")
+            promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.code, OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.message)
         }
         handler!!.acceptAuthenticationRequest()
     }
@@ -399,7 +399,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     fun denyMobileAuthConfirmation(promise: Promise) {
         val handler = oneginiSDK.mobileAuthOtpRequestHandler
         if (handler == null) {
-            promise.reject(MOBILE_AUTH_OTP_IS_DISABLED.toString(), "The Mobile auth Otp is disabled")
+            promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.code, OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.message)
         }
         handler!!.denyAuthenticationRequest()
     }
