@@ -10,5 +10,6 @@ enum class OneginiWrapperErrors(val code: String, val message: String) {
     METHOD_TO_CALL_NOT_FOUND("8007", "method to call not found"),
     URL_CANT_BE_NULL("8008", "url can`t be null"),
     URL_IS_NOT_WEB_PATH("8009", "incorrect url format"),
-    PREFERRED_AUTHENTICATOR_ERROR("8010", "something went wrong")
+    PREFERRED_AUTHENTICATOR_ERROR("8010", "something went wrong"),
+    WRONG_CONFIG_MODEL("8011", "Provided config model parameters are wrong")
 }
