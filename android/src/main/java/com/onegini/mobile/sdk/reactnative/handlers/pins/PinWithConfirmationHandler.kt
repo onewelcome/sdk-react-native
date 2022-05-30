@@ -49,6 +49,8 @@ class PinWithConfirmationHandler(
         )
     }
 
+    // TODO the second pin should be implemented in the app, not the plugin
+    // https://onewelcome.atlassian.net/browse/RNP-75
     fun secondPinProvided(pin: CharArray?) {
         val pinsEqual = Arrays.equals(this.pin, pin)
         nullifyPinArray()
