@@ -10,7 +10,6 @@ class OneginReactNativeException(errorType: Int, errorDetails: OneginiErrorDetai
         const val PROFILE_DOES_NOT_EXIST = 8001
         const val AUTHENTICATOR_DOES_NOT_EXIST = 8002
         const val FINGERPRINT_IS_NOT_ENABLED = 8003
-        const val IMPLICIT_USER_DETAILS_ERROR = 8004
         const val PIN_ERROR_NOT_EQUAL = 8008
     }
 

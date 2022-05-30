@@ -499,7 +499,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                         .getResource(requestDetails)
                         .subscribe({
                             promise.resolve(JsonMapper.toWritableMap(it))
-                        }) { throwable -> promise.reject(OneginReactNativeException.IMPLICIT_USER_DETAILS_ERROR.toString(), throwable.message) }
+                        }) { throwable -> promise.reject(OneginiWrapperErrors.RESOURCE_CALL_ERROR.code, throwable) }
                 )
             }
             "ImplicitUser" -> {
@@ -508,7 +508,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                         .getResource(requestDetails)
                         .subscribe({
                             promise.resolve(JsonMapper.toWritableMap(it))
-                        }) { throwable -> promise.reject(OneginReactNativeException.IMPLICIT_USER_DETAILS_ERROR.toString(), throwable.message) }
+                        }) { throwable -> promise.reject(OneginiWrapperErrors.RESOURCE_CALL_ERROR.code, throwable) }
                 )
             }
             "Anonymous" -> {
