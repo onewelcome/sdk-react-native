@@ -1,32 +1,28 @@
 import OneWelcomeSdk, {Types} from 'onewelcome-react-native-sdk';
 
 const registerFingerprintAuthenticator = async (
-  successful: (success: boolean) => void,
-  message: (msg: string) => void,
+  onSuccess: () => void,
+  onError: (error: any) => void,
 ) => {
   try {
     const profile = await OneWelcomeSdk.getAuthenticatedUserProfile();
     await OneWelcomeSdk.registerFingerprintAuthenticator(profile.profileId);
-    message('Fingerprint is enabled');
-    successful(true);
+    onSuccess();
   } catch (error: any) {
-    message(error.message);
-    successful(false);
+    onError(error);
   }
 };
 
 const deregisterFingerprintAuthenticator = async (
-  successful: (success: boolean) => void,
-  message: (msg: string) => void,
+  onSuccess: () => void,
+  onError: (error: any) => void,
 ) => {
   try {
     const profile = await OneWelcomeSdk.getAuthenticatedUserProfile();
     await OneWelcomeSdk.deregisterFingerprintAuthenticator(profile.profileId);
-    message('Fingerprint is disabled');
-    successful(true);
+    onSuccess();
   } catch (error: any) {
-    message(error.message);
-    successful(false);
+    onError(error);
   }
 };
 
