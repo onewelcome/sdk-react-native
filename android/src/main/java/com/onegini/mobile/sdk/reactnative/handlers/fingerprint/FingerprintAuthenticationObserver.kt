@@ -25,24 +25,24 @@ class FingerprintAuthenticationObserver(private val reactApplicationContext: Rea
         val map = Arguments.createMap()
         UserProfileMapper.add(map, user)
         map.putString("action", Constants.FINGERPRINT_NOTIFICATION_START_AUTHENTICATION)
-        reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit(Constants.ONEGINI_FINGERPRINT_NOTIFICATION, map)
+        reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit(Constants.ONEWELCOME_FINGERPRINT_NOTIFICATION, map)
     }
 
     override fun onNextAuthenticationAttempt() {
         val map = Arguments.createMap()
         map.putString("action", Constants.FINGERPRINT_NOTIFICATION_ON_NEXT_AUTHENTICATION_ATTEMPT)
-        reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit(Constants.ONEGINI_FINGERPRINT_NOTIFICATION, map)
+        reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit(Constants.ONEWELCOME_FINGERPRINT_NOTIFICATION, map)
     }
 
     override fun onFingerprintCaptured() {
         val map = Arguments.createMap()
         map.putString("action", Constants.FINGERPRINT_NOTIFICATION_ON_FINGERPRINT_CAPTURED)
-        reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit(Constants.ONEGINI_FINGERPRINT_NOTIFICATION, map)
+        reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit(Constants.ONEWELCOME_FINGERPRINT_NOTIFICATION, map)
     }
 
     override fun finishAuthentication() {
         val map = Arguments.createMap()
         map.putString("action", Constants.FINGERPRINT_NOTIFICATION_FINISH_AUTHENTICATION)
-        reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit(Constants.ONEGINI_FINGERPRINT_NOTIFICATION, map)
+        reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit(Constants.ONEWELCOME_FINGERPRINT_NOTIFICATION, map)
     }
 }

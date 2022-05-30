@@ -3,10 +3,10 @@ import {StyleSheet, Text, View} from 'react-native';
 import Button from '../../general/Button';
 import ContentContainer from '../dashboard/components/ContentContainer';
 import AppColors from '../../constants/AppColors';
-import OneginiSdk, {
+import OneWelcomeSdk, {
   useResources,
   Types,
-} from 'onegini-react-native-sdk';
+} from 'onewelcome-react-native-sdk';
 
 interface Props {
   onFinished?: () => void;
@@ -17,7 +17,7 @@ const getProfileData = async (
   setProfileId: (profileId: string | null) => void,
 ) => {
   try {
-    const profiles = await OneginiSdk.getUserProfiles();
+    const profiles = await OneWelcomeSdk.getUserProfiles();
 
     if (profiles[0]) {
       setProfileId(profiles[0].profileId);

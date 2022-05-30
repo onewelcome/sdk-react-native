@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, View, Modal, Text} from 'react-native';
-import {Events, useFingerprintFlow} from 'onegini-react-native-sdk';
+import {Events, useFingerprintFlow} from 'onewelcome-react-native-sdk';
 import AppColors from '../../constants/AppColors';
 import Button from '../../general/Button';
 

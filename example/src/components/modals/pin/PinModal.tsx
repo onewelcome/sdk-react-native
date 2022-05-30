@@ -1,6 +1,6 @@
 import React from 'react';
 import {Modal, StyleSheet, Text, View} from 'react-native';
-import {Events, usePinFlow} from 'onegini-react-native-sdk';
+import {Events, usePinFlow} from 'onewelcome-react-native-sdk';
 import PinInput from './PinInput';
 import PinKeyboard from './PinKeyboard';
 import Button from '../../general/Button';

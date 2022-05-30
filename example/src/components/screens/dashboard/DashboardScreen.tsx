@@ -6,7 +6,7 @@ import SettingsActionsView from './components/SettingsActionsView';
 import DashboardActionsView from './components/DashboardActionsView';
 import ChangeAuthView from './components/ChangeAuthView';
 import OtpCodeView from './components/OtpCodeView';
-import OneginiSdk, {Events} from 'onegini-react-native-sdk';
+import OneWelcomeSdk, {Events} from 'onewelcome-react-native-sdk';
 import DevicesView from '../devices/DevicesView';
 
 interface Props {
@@ -19,7 +19,7 @@ const DashboardScreen: React.FC<Props> = (props) => {
   );
 
   function onShowAccessToken() {
-    OneginiSdk.getAccessToken()
+    OneWelcomeSdk.getAccessToken()
       .then((token) => Alert.alert('Access Token', token))
       .catch(() => Alert.alert('Error!', 'Could not get AccessToken!'));
   }
@@ -113,7 +113,7 @@ const renderContent = (
         <SettingsActionsView
           onChangeAuthPressed={() => setContentView(CONTENT_VIEW.CHANGE_AUTH)}
           onChangePinPressed={() =>
-            OneginiSdk.submitPinAction(
+            OneWelcomeSdk.submitPinAction(
               Events.PinFlow.Change,
               Events.PinAction.Cancel, // ONEGINI_PIN_ACTIONS.CHANGE - why it was CHANGE here? there is no such action
               null,

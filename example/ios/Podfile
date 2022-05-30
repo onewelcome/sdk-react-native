@@ -38,7 +38,7 @@ target 'RNExampleApp' do
   use_react_native!(:path => '../../node_modules/react-native')
 
   pod 'RNCAsyncStorage', :podspec => '../../node_modules/@react-native-async-storage/async-storage'
-  pod 'onegini-react-native-sdk', :path => '../..'
+  pod 'onewelcome-react-native-sdk', :path => '../..'
   
   target 'RNExampleAppTests' do
     inherit! :complete

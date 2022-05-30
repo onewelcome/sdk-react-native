@@ -1,16 +1,16 @@
 import { NativeModules, Platform, NativeEventEmitter, DeviceEventEmitter } from 'react-native';
 const { RNOneginiSdk } = NativeModules;
 
-const OneginiEventEmitter =
+const OneWelcomeEventEmitter =
   Platform.OS === 'ios'
     ? new NativeEventEmitter(RNOneginiSdk)
     : DeviceEventEmitter;
 
-export const ONEGINI_SDK_EVENTS = {
-  ONEGINI_PIN_NOTIFICATION: 'ONEGINI_PIN_NOTIFICATION',
-  ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION: 'ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION',
-  ONEGINI_MOBILE_AUTH_OTP_NOTIFICATION: 'ONEGINI_MOBILE_AUTH_OTP_NOTIFICATION',
-  ONEGINI_FINGERPRINT_NOTIFICATION: 'ONEGINI_FINGERPRINT_NOTIFICATION'
+export const ONEWELCOME_SDK_EVENTS = {
+  ONEWELCOME_PIN_NOTIFICATION: 'ONEWELCOME_PIN_NOTIFICATION',
+  ONEWELCOME_CUSTOM_REGISTRATION_NOTIFICATION: 'ONEWELCOME_CUSTOM_REGISTRATION_NOTIFICATION',
+  ONEWELCOME_MOBILE_AUTH_OTP_NOTIFICATION: 'ONEWELCOME_MOBILE_AUTH_OTP_NOTIFICATION',
+  ONEWELCOME_FINGERPRINT_NOTIFICATION: 'ONEWELCOME_FINGERPRINT_NOTIFICATION'
 };
 
 export const CUSTOM_REGISTRATION_NOTIFICATIONS = {
@@ -28,7 +28,7 @@ export const MOBILE_AUTH_OTP_NOTIFICATION = {
   FINISH_AUTHENTICATION: 'finishAuthentication',
 };
 
-const OneginiSdk = {
+const OneWelcomeSdk = {
   config: {
     configModelClassName: null,
     securityControllerClassName: "com.onegini.mobile.rnexampleapp.SecurityController",
@@ -37,17 +37,17 @@ const OneginiSdk = {
     enableFingerprint: true
   },
   listeners: {
-    [ONEGINI_SDK_EVENTS.ONEGINI_PIN_NOTIFICATION]: null,
-    [ONEGINI_SDK_EVENTS.ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION]: null,
-    [ONEGINI_SDK_EVENTS.ONEGINI_MOBILE_AUTH_OTP_NOTIFICATION]: null,
-    [ONEGINI_SDK_EVENTS.ONEGINI_FINGERPRINT_NOTIFICATION]: null,
+    [ONEWELCOME_SDK_EVENTS.ONEWELCOME_PIN_NOTIFICATION]: null,
+    [ONEWELCOME_SDK_EVENTS.ONEWELCOME_CUSTOM_REGISTRATION_NOTIFICATION]: null,
+    [ONEWELCOME_SDK_EVENTS.ONEWELCOME_MOBILE_AUTH_OTP_NOTIFICATION]: null,
+    [ONEWELCOME_SDK_EVENTS.ONEWELCOME_FINGERPRINT_NOTIFICATION]: null,
   },
-  addEventListener: (eventType, cb) => { // eventType = ONEGINI_SDK_EVENTS
-    if (OneginiSdk.listeners[eventType]) {
+  addEventListener: (eventType, cb) => { // eventType = ONEWELCOME_SDK_EVENTS
+    if (OneWelcomeSdk.listeners[eventType]) {
       this.removeEventListener(eventType);
     }
 
-    OneginiSdk.listeners[eventType] = OneginiEventEmitter.addListener(
+    OneWelcomeSdk.listeners[eventType] = OneWelcomeEventEmitter.addListener(
       eventType,
       (item) => {
         cb(item);
@@ -55,12 +55,12 @@ const OneginiSdk = {
     );
   },
   removeEventListener: (eventType) => {
-    if (OneginiSdk.listeners[eventType]) {
-      OneginiSdk.listeners[eventType].remove();
-      OneginiSdk.listeners[eventType] = null;
+    if (OneWelcomeSdk.listeners[eventType]) {
+      OneWelcomeSdk.listeners[eventType].remove();
+      OneWelcomeSdk.listeners[eventType] = null;
     }
   },
-  startClient: (sdkConfig = OneginiSdk.config) => Platform.OS === 'ios'
+  startClient: (sdkConfig = OneWelcomeSdk.config) => Platform.OS === 'ios'
     ? RNOneginiSdk.startClient()
     : RNOneginiSdk.startClient(sdkConfig),
 
@@ -119,6 +119,6 @@ const OneginiSdk = {
   // App to Web
   startSingleSignOn: (url) => RNOneginiSdk.startSingleSignOn(url),
 };
-Object.freeze(OneginiSdk);
+Object.freeze(OneWelcomeSdk);
 
-export default OneginiSdk;
+export default OneWelcomeSdk;

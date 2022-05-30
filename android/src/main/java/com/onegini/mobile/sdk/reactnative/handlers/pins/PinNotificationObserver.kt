@@ -53,7 +53,7 @@ class PinNotificationObserver(private val reactApplicationContext: ReactApplicat
             else -> Log.e("PinNotificationObserver", "Got unsupported PIN notification type: $event")
         }
         if (dataMap.getString("action") != null) {
-            reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit(Constants.ONEGINI_PIN_NOTIFICATION, dataMap)
+            reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit(Constants.ONEWELCOME_PIN_NOTIFICATION, dataMap)
         }
     }
 
@@ -62,7 +62,7 @@ class PinNotificationObserver(private val reactApplicationContext: ReactApplicat
         data.putString("action", Constants.PIN_NOTIFICATION_SHOW_ERROR)
         data.putString("flow", flow.flowString)
         OneginiErrorMapper.update(data, error)
-        reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit(Constants.ONEGINI_PIN_NOTIFICATION, data)
+        reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit(Constants.ONEWELCOME_PIN_NOTIFICATION, data)
     }
 
     // This isn't the most logical way to send the remaining attempts to the plugin,
@@ -77,6 +77,6 @@ class PinNotificationObserver(private val reactApplicationContext: ReactApplicat
         dataMap.putMap("userInfo", userInfo)
         OneginiErrorMapper.update(dataMap, error)
         reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
-                .emit(Constants.ONEGINI_PIN_NOTIFICATION, dataMap)
+                .emit(Constants.ONEWELCOME_PIN_NOTIFICATION, dataMap)
     }
 }
