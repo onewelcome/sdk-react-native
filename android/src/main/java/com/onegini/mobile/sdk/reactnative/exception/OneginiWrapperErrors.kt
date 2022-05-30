@@ -14,5 +14,6 @@ enum class OneginiWrapperErrors(val code: String, val message: String) {
     WRONG_CONFIG_MODEL("8011", "Provided config model parameters are wrong"),
     MOBILE_AUTH_OTP_IS_DISABLED("8012", "The Mobile auth Otp is disabled"),
     ATTEMPT_COUNTER_ERROR("8013", "Wrong pin provided"),
-    RESOURCE_CALL_ERROR("8014", "Resource call finished with error")
+    RESOURCE_CALL_ERROR("8014", "Resource call finished with error"),
+    FINGERPRINT_IS_NOT_ENABLED("8015", "The fingerprint is not enabled. Please check your configuration")
 }

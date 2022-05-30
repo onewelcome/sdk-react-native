@@ -40,7 +40,6 @@ import com.onegini.mobile.sdk.reactnative.OneginiComponets.init
 import com.onegini.mobile.sdk.reactnative.clean.wrapper.IOneginiSdkWrapper
 import com.onegini.mobile.sdk.reactnative.clean.wrapper.OneginiSdkWrapper
 import com.onegini.mobile.sdk.reactnative.exception.OneginReactNativeException
-import com.onegini.mobile.sdk.reactnative.exception.OneginReactNativeException.Companion.FINGERPRINT_IS_NOT_ENABLED
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.reactnative.handlers.pins.ChangePinHandler
 import com.onegini.mobile.sdk.reactnative.managers.AuthenticatorManager
@@ -190,7 +189,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     @ReactMethod
     fun submitFingerprintAcceptAuthenticationRequest(promise: Promise) {
         if (oneginiSDK.fingerprintAuthenticationRequestHandler == null) {
-            promise.reject(FINGERPRINT_IS_NOT_ENABLED.toString(), " The fingerprint is no enabled. Please check your configuration")
+            promise.reject(OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.code, OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.message)
         }
         oneginiSDK.fingerprintAuthenticationRequestHandler!!.acceptAuthenticationRequest()
     }
@@ -198,7 +197,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     @ReactMethod
     fun submitFingerprintDenyAuthenticationRequest(promise: Promise) {
         if (oneginiSDK.fingerprintAuthenticationRequestHandler == null) {
-            promise.reject(FINGERPRINT_IS_NOT_ENABLED.toString(), " The fingerprint is no enabled. Please check your configuration")
+            promise.reject(OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.code, OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.message)
         }
         oneginiSDK.fingerprintAuthenticationRequestHandler!!.denyAuthenticationRequest()
     }
@@ -206,7 +205,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     @ReactMethod
     fun submitFingerprintFallbackToPin(promise: Promise) {
         if (oneginiSDK.fingerprintAuthenticationRequestHandler == null) {
-            promise.reject(FINGERPRINT_IS_NOT_ENABLED.toString(), " The fingerprint is no enabled. Please check your configuration")
+            promise.reject(OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.code, OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.message)
         }
         oneginiSDK.fingerprintAuthenticationRequestHandler!!.fallbackToPin()
     }
