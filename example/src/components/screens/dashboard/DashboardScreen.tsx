@@ -10,7 +10,7 @@ import OneWelcomeSdk, {Events} from 'onewelcome-react-native-sdk';
 import DevicesView from '../devices/DevicesView';
 
 interface Props {
-  onLogout?: () => void;
+  onLogout: () => void;
 }
 
 const DashboardScreen: React.FC<Props> = (props) => {
@@ -90,7 +90,7 @@ const backButtonHandler = (
 const renderContent = (
   currentContentView: CONTENT_VIEW,
   setContentView: (contentView: CONTENT_VIEW) => void,
-  onLogout?: () => void,
+  onLogout: () => void,
   onShowAccessToken?: () => void,
 ) => {
   switch (currentContentView) {
@@ -122,7 +122,9 @@ const renderContent = (
         />
       );
     case CONTENT_VIEW.CHANGE_AUTH:
-      return <ChangeAuthView />;
+      return <ChangeAuthView
+                onLogout={onLogout}
+             />;
     case CONTENT_VIEW.OTP_CODE:
       return <OtpCodeView />;
     case CONTENT_VIEW.DEVICES:
