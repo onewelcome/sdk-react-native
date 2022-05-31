@@ -3,6 +3,7 @@ package com.onegini.mobile.sdk.reactnative.exception
 import com.onegini.mobile.sdk.android.handlers.error.OneginiError
 import com.onegini.mobile.sdk.android.handlers.error.OneginiErrorDetails
 
+@Deprecated("Please use OneginiWrapperErrors if possible")
 class OneginReactNativeException(errorType: Int, errorDetails: OneginiErrorDetails, message: String, throwable: Throwable?) :
     OneginiError(errorType, errorDetails, message, throwable) {
 

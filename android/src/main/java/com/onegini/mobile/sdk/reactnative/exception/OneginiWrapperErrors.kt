@@ -15,5 +15,7 @@ enum class OneginiWrapperErrors(val code: String, val message: String) {
     MOBILE_AUTH_OTP_IS_DISABLED("8012", "The Mobile auth Otp is disabled"),
     ATTEMPT_COUNTER_ERROR("8013", "Wrong pin provided"),
     RESOURCE_CALL_ERROR("8014", "Resource call finished with error"),
-    FINGERPRINT_IS_NOT_ENABLED("8015", "The fingerprint is not enabled. Please check your configuration")
+    FINGERPRINT_IS_NOT_ENABLED("8015", "The fingerprint is not enabled. Please check your configuration"),
+    AUTHENTICATOR_DOES_NOT_EXIST("8016", "The Fingerprint authenticator does not exist"),
+    PROFILE_DOES_NOT_EXIST("8017", "The profileId does not exist")
 }

@@ -3,34 +3,70 @@ package com.onegini.mobile.sdk.reactnative.managers
 import com.onegini.mobile.sdk.reactnative.OneginiSDK
 import com.onegini.mobile.sdk.reactnative.exception.EmptyOneginiErrorDetails
 import com.onegini.mobile.sdk.reactnative.exception.OneginReactNativeException
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
+import com.onegini.mobile.sdk.reactnative.mapers.CustomInfoMapper
 import com.onegini.mobile.sdk.android.handlers.OneginiAuthenticatorDeregistrationHandler
 import com.onegini.mobile.sdk.android.handlers.OneginiAuthenticatorRegistrationHandler
+import com.onegini.mobile.sdk.android.handlers.error.OneginiAuthenticatorRegistrationError
+import com.onegini.mobile.sdk.android.handlers.error.OneginiAuthenticatorDeregistrationError
 import com.onegini.mobile.sdk.android.handlers.error.OneginiError
 import com.onegini.mobile.sdk.android.model.OneginiAuthenticator
+import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 
 class AuthenticatorManager(private val oneginiSDK: OneginiSDK) {
 
-    @Throws(OneginiError::class)
-    fun registerFingerprintAuthenticator(profileId: String, handler: OneginiAuthenticatorRegistrationHandler) {
+    fun registerFingerprintAuthenticator(profileId: String, callback: RegistrationCallback) {
         val userProfile = getUserProfile(profileId)
-            ?: throw OneginReactNativeException(OneginReactNativeException.PROFILE_DOES_NOT_EXIST, EmptyOneginiErrorDetails(), "The profileId $profileId does not exist", null)
+        if (userProfile == null) {
+            callback.onError(OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.code, OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.message)
+            return
+        }
 
         val authenticator = getNotRegisteredAuthenticators(userProfile, OneginiAuthenticator.FINGERPRINT)
-            ?: throw OneginReactNativeException(OneginReactNativeException.AUTHENTICATOR_DOES_NOT_EXIST, EmptyOneginiErrorDetails(), "The Fingerprint authenticator does not exist", null)
+        if (authenticator == null) {
+            callback.onError(OneginiWrapperErrors.AUTHENTICATOR_DOES_NOT_EXIST.code, OneginiWrapperErrors.AUTHENTICATOR_DOES_NOT_EXIST.message)
+            return
+        }
 
-        oneginiSDK.oneginiClient.userClient.registerAuthenticator(authenticator, handler)
+        oneginiSDK.oneginiClient.userClient.registerAuthenticator(
+            authenticator,
+            object : OneginiAuthenticatorRegistrationHandler {
+                override fun onSuccess(info: CustomInfo?) {
+                    callback.onSuccess(info)
+                }
+
+                override fun onError(error: OneginiAuthenticatorRegistrationError) {
+                    callback.onError(error?.errorType.toString(), error?.message)
+                }
+            }
+        )
     }
 
-    @Throws(OneginiError::class)
-    fun deregisterFingerprintAuthenticator(profileId: String, handler: OneginiAuthenticatorDeregistrationHandler) {
+    fun deregisterFingerprintAuthenticator(profileId: String, callback: DeregistrationCallback) {
         val userProfile = getUserProfile(profileId)
-            ?: throw OneginReactNativeException(OneginReactNativeException.PROFILE_DOES_NOT_EXIST, EmptyOneginiErrorDetails(), "The profileId $profileId does not exist", null)
+        if (userProfile == null) {
+            callback.onError(OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.code, OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.message)
+            return
+        }
 
         val authenticator = getRegisteredAuthenticators(userProfile, OneginiAuthenticator.FINGERPRINT)
-            ?: throw OneginReactNativeException(OneginReactNativeException.AUTHENTICATOR_DOES_NOT_EXIST, EmptyOneginiErrorDetails(), "The Fingerprint authenticator does not exist", null)
+        if (authenticator == null) {
+            callback.onError(OneginiWrapperErrors.AUTHENTICATOR_DOES_NOT_EXIST.code, OneginiWrapperErrors.AUTHENTICATOR_DOES_NOT_EXIST.message)
+            return
+        }
 
-        oneginiSDK.oneginiClient.userClient.deregisterAuthenticator(authenticator, handler)
+        oneginiSDK.oneginiClient.userClient.deregisterAuthenticator(
+            authenticator,
+            object : OneginiAuthenticatorDeregistrationHandler {
+                override fun onSuccess() {
+                    callback.onSuccess()
+                }
+
+                override fun onError(error: OneginiAuthenticatorDeregistrationError) {
+                    callback.onError(error?.errorType.toString(), error?.message)
+                }
+            })
     }
 
     @Throws(OneginiError::class)
@@ -110,5 +146,15 @@ class AuthenticatorManager(private val oneginiSDK: OneginiSDK) {
             ?: throw OneginReactNativeException(OneginReactNativeException.AUTHENTICATOR_DOES_NOT_EXIST, EmptyOneginiErrorDetails(), "The $id authenticator does not exist", null)
 
         oneginiSDK.oneginiClient.userClient.setPreferredAuthenticator(authenticator)
+    }
+
+    interface RegistrationCallback {
+        fun onSuccess(customInfo: CustomInfo?)
+        fun onError(code: String?, message: String?)
+    }
+
+    interface DeregistrationCallback {
+        fun onSuccess()
+        fun onError(code: String?, message: String?)
     }
 }
