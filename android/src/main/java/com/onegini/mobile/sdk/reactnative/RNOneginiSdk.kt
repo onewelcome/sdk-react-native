@@ -182,29 +182,17 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     fun submitFingerprintAcceptAuthenticationRequest(promise: Promise) {
-        if (oneginiSDK.fingerprintAuthenticationRequestHandler == null) {
-            promise.reject(OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.code, OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.message)
-            return
-        }
-        oneginiSDK.fingerprintAuthenticationRequestHandler!!.acceptAuthenticationRequest()
+        oneginiSDK.fingerprintAuthenticationRequestHandler?.acceptAuthenticationRequest()
     }
 
     @ReactMethod
     fun submitFingerprintDenyAuthenticationRequest(promise: Promise) {
-        if (oneginiSDK.fingerprintAuthenticationRequestHandler == null) {
-            promise.reject(OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.code, OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.message)
-            return
-        }
-        oneginiSDK.fingerprintAuthenticationRequestHandler!!.denyAuthenticationRequest()
+        oneginiSDK.fingerprintAuthenticationRequestHandler?.denyAuthenticationRequest()
     }
 
     @ReactMethod
     fun submitFingerprintFallbackToPin(promise: Promise) {
-        if (oneginiSDK.fingerprintAuthenticationRequestHandler == null) {
-            promise.reject(OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.code, OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.message)
-            return
-        }
-        oneginiSDK.fingerprintAuthenticationRequestHandler!!.fallbackToPin()
+        oneginiSDK.fingerprintAuthenticationRequestHandler?.fallbackToPin()
     }
 
     @ReactMethod

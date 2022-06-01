@@ -12,7 +12,7 @@ import com.onegini.mobile.sdk.android.handlers.error.OneginiError
 
 interface IPinNotificationObserver {
     fun onNotify(event: String, flow: PinFlow, profileId: String?, data: Any?)
-    fun onError(error: OneginiError?, flow: PinFlow)
+    fun onError(errorCode: Int, errorMessage: String, flow: PinFlow)
     fun onWrongPin(remainingAttempts: Int)
 }
 
@@ -58,11 +58,12 @@ class PinNotificationObserver(private val reactApplicationContext: ReactApplicat
         }
     }
 
-    override fun onError(error: OneginiError?, flow: PinFlow) {
+    override fun onError(errorCode: Int, errorMessage: String, flow: PinFlow) {
         val data = Arguments.createMap()
         data.putString("action", Constants.PIN_NOTIFICATION_SHOW_ERROR)
         data.putString("flow", flow.flowString)
-        OneginiErrorMapper.update(data, error)
+        data.putInt("errorType", errorCode)
+        data.putString("errorMsg", errorMessage)
         reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit(Constants.ONEWELCOME_PIN_NOTIFICATION, data)
     }
 
@@ -76,8 +77,8 @@ class PinNotificationObserver(private val reactApplicationContext: ReactApplicat
         dataMap.putString("action", Constants.PIN_NOTIFICATION_SHOW_ERROR)
         dataMap.putString("flow", Constants.PinFlow.Authentication.flowString)
         dataMap.putMap("userInfo", userInfo)
-        dataMap.putInt("errorType", OneginiWrapperErrors.ATTEMPT_COUNTER_ERROR.code.toInt())
-        dataMap.putString("errorMsg", OneginiWrapperErrors.ATTEMPT_COUNTER_ERROR.message)
+        dataMap.putInt("errorType", OneginiWrapperErrors.WRONG_PIN_ERROR.code.toInt())
+        dataMap.putString("errorMsg", OneginiWrapperErrors.WRONG_PIN_ERROR.message)
         reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
                 .emit(Constants.ONEWELCOME_PIN_NOTIFICATION, dataMap)
     }

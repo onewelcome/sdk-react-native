@@ -72,7 +72,7 @@ class AuthenticatorManager(private val oneginiSDK: OneginiSDK) {
     @Throws(OneginiError::class)
     fun isFingerprintAuthenticatorRegistered(profileId: String): Boolean {
         val userProfile = getUserProfile(profileId)
-            ?: throw OneginReactNativeException(OneginReactNativeException.PROFILE_DOES_NOT_EXIST, EmptyOneginiErrorDetails(), "The profileId $profileId does not exist", null)
+            ?: throw OneginReactNativeException(OneginReactNativeException.PROFILE_DOES_NOT_EXIST, "The profileId $profileId does not exist")
 
         val authenticator = getRegisteredAuthenticators(userProfile, OneginiAuthenticator.FINGERPRINT)
 
@@ -124,7 +124,7 @@ class AuthenticatorManager(private val oneginiSDK: OneginiSDK) {
     @Throws(OneginiError::class)
     fun getAllAuthenticators(profileId: String): Set<OneginiAuthenticator> {
         val userProfile = getUserProfile(profileId)
-            ?: throw OneginReactNativeException(OneginReactNativeException.PROFILE_DOES_NOT_EXIST, EmptyOneginiErrorDetails(), "The profileId $profileId does not exist", null)
+            ?: throw OneginReactNativeException(OneginReactNativeException.PROFILE_DOES_NOT_EXIST, "The profileId $profileId does not exist")
 
         return oneginiSDK.oneginiClient.userClient.getAllAuthenticators(userProfile)
     }
@@ -132,7 +132,7 @@ class AuthenticatorManager(private val oneginiSDK: OneginiSDK) {
     @Throws(OneginiError::class)
     fun getRegisteredAuthenticators(profileId: String): Set<OneginiAuthenticator> {
         val userProfile = getUserProfile(profileId)
-            ?: throw OneginReactNativeException(OneginReactNativeException.PROFILE_DOES_NOT_EXIST, EmptyOneginiErrorDetails(), "The profileId $profileId does not exist", null)
+            ?: throw OneginReactNativeException(OneginReactNativeException.PROFILE_DOES_NOT_EXIST, "The profileId $profileId does not exist")
 
         return oneginiSDK.oneginiClient.userClient.getRegisteredAuthenticators(userProfile)
     }
@@ -140,10 +140,10 @@ class AuthenticatorManager(private val oneginiSDK: OneginiSDK) {
     @Throws(OneginiError::class)
     fun setPreferredAuthenticator(profileId: String, id: String) {
         val userProfile = getUserProfile(profileId)
-            ?: throw OneginReactNativeException(OneginReactNativeException.PROFILE_DOES_NOT_EXIST, EmptyOneginiErrorDetails(), "The profileId $profileId does not exist", null)
+            ?: throw OneginReactNativeException(OneginReactNativeException.PROFILE_DOES_NOT_EXIST, "The profileId $profileId does not exist")
 
         val authenticator = getRegisteredAuthenticators(userProfile, id)
-            ?: throw OneginReactNativeException(OneginReactNativeException.AUTHENTICATOR_DOES_NOT_EXIST, EmptyOneginiErrorDetails(), "The $id authenticator does not exist", null)
+            ?: throw OneginReactNativeException(OneginReactNativeException.AUTHENTICATOR_DOES_NOT_EXIST, "The $id authenticator does not exist")
 
         oneginiSDK.oneginiClient.userClient.setPreferredAuthenticator(authenticator)
     }
