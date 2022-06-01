@@ -434,7 +434,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
         val userProfile = authenticatorManager.getUserProfile(profileId)
         if (userProfile == null) {
-            promise.reject(OneginReactNativeException.PROFILE_DOES_NOT_EXIST.toString(), "The profileId $profileId does not exist")
+            promise.reject(OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.code, OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.message)
         } else {
             oneginiSDK.oneginiClient.userClient
                 .authenticateUserImplicitly(
