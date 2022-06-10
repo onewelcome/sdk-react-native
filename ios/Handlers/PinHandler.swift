@@ -99,9 +99,9 @@ extension PinHandler : PinConnectorToPinHandler {
                     case PinFlow.create:
                         mode = .registration
                         break
-                    default:
-                        mode = .registration
-                        break
+                    case PinFlow.change:
+                        mode = .login
+
                 }
 
                 sendConnectorNotification(PinNotification.open, flow, nil, profileId, userInfo, data)
@@ -177,7 +177,7 @@ extension PinHandler: ONGChangePinDelegate {
     func userClient(_ userClient: ONGUserClient, didReceive challenge: ONGPinChallenge) {
         authPinChallenge = challenge
         let pinError = mapErrorFromPinChallenge(challenge)
-        handleFlowUpdate(PinFlow.authentication, error: pinError, receiver: self, profileId: challenge.userProfile.profileId)
+        handleFlowUpdate(PinFlow.authentication, error: pinError, receiver: self, profileId: challenge.userProfile.profileId, userInfo: challenge.userInfo)
     }
 
     func userClient(_: ONGUserClient, didReceive challenge: ONGCreatePinChallenge) {
@@ -190,7 +190,7 @@ extension PinHandler: ONGChangePinDelegate {
             closeFlow()
         }
         
-        handleFlowUpdate(PinFlow.create, error: pinError, receiver: self, profileId: challenge.userProfile.profileId, data: challenge.pinLength)
+        handleFlowUpdate(PinFlow.create, error: pinError, receiver: self, profileId: challenge.userProfile.profileId, userInfo: pinError?.userInfo, data: challenge.pinLength)
     }
     
     func userClient(_: ONGUserClient, didFailToChangePinForUser profile: ONGUserProfile, error: Error) {
