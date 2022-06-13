@@ -1,14 +1,13 @@
 package com.onegini.mobile.sdk.reactnative.handlers.pins
 
 import android.content.Context
+import com.onegini.mobile.sdk.android.handlers.OneginiPinValidationHandler
+import com.onegini.mobile.sdk.android.handlers.error.OneginiPinValidationError
+import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiPinCallback
 import com.onegini.mobile.sdk.reactnative.Constants
 import com.onegini.mobile.sdk.reactnative.Constants.PinFlow
 import com.onegini.mobile.sdk.reactnative.OneginiSDK
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
-import com.onegini.mobile.sdk.android.handlers.OneginiPinValidationHandler
-import com.onegini.mobile.sdk.android.handlers.error.OneginiError
-import com.onegini.mobile.sdk.android.handlers.error.OneginiPinValidationError
-import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiPinCallback
 import java.util.*
 
 class PinWithConfirmationHandler(

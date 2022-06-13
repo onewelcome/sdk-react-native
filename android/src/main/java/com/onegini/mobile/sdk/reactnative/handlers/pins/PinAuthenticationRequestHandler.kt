@@ -1,11 +1,11 @@
 package com.onegini.mobile.sdk.reactnative.handlers.pins
 
-import com.onegini.mobile.sdk.reactnative.Constants
-import com.onegini.mobile.sdk.reactnative.OneginiSDK
 import com.onegini.mobile.sdk.android.handlers.request.OneginiPinAuthenticationRequestHandler
 import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiPinCallback
 import com.onegini.mobile.sdk.android.model.entity.AuthenticationAttemptCounter
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
+import com.onegini.mobile.sdk.reactnative.Constants
+import com.onegini.mobile.sdk.reactnative.OneginiSDK
 
 class PinAuthenticationRequestHandler(private val oneginiSDK: OneginiSDK) : OneginiPinAuthenticationRequestHandler {
     private var callback: OneginiPinCallback? = null

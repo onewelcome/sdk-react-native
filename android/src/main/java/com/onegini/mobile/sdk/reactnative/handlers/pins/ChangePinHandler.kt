@@ -1,10 +1,10 @@
 package com.onegini.mobile.sdk.reactnative.handlers.pins
 
+import com.onegini.mobile.sdk.android.handlers.OneginiChangePinHandler
+import com.onegini.mobile.sdk.android.handlers.error.OneginiChangePinError
 import com.onegini.mobile.sdk.reactnative.Constants.PIN_NOTIFICATION_CHANGED
 import com.onegini.mobile.sdk.reactnative.Constants.PinFlow
 import com.onegini.mobile.sdk.reactnative.OneginiSDK
-import com.onegini.mobile.sdk.android.handlers.OneginiChangePinHandler
-import com.onegini.mobile.sdk.android.handlers.error.OneginiChangePinError
 
 class ChangePinHandler(private val oneginiSDK: OneginiSDK) : OneginiChangePinHandler {
 

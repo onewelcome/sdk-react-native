@@ -3,9 +3,9 @@ package com.onegini.mobile.sdk.reactnative.handlers.fingerprint
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.modules.core.DeviceEventManagerModule
+import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.Constants
 import com.onegini.mobile.sdk.reactnative.mapers.UserProfileMapper
-import com.onegini.mobile.sdk.android.model.entity.UserProfile
 
 interface IFingerprintAuthenticationObserver {
 

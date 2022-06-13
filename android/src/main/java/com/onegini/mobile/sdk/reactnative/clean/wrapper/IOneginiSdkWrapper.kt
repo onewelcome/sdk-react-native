@@ -3,8 +3,6 @@ package com.onegini.mobile.sdk.reactnative.clean.wrapper
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
-import com.onegini.mobile.sdk.reactnative.mapers.*
-import com.onegini.mobile.sdk.reactnative.handlers.*
 
 interface IOneginiSdkWrapper {
 

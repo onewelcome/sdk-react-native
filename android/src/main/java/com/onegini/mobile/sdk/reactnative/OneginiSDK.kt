@@ -2,7 +2,6 @@
 package com.onegini.mobile.sdk.reactnative
 
 import android.content.Context
-import com.onegini.mobile.sdk.reactnative.model.rn.OneginiReactNativeConfig
 import com.onegini.mobile.sdk.android.client.OneginiClient
 import com.onegini.mobile.sdk.android.client.OneginiClientBuilder
 import com.onegini.mobile.sdk.android.model.OneginiClientConfigModel
@@ -18,7 +17,7 @@ import com.onegini.mobile.sdk.reactnative.handlers.pins.ChangePinHandler
 import com.onegini.mobile.sdk.reactnative.handlers.pins.CreatePinRequestHandler
 import com.onegini.mobile.sdk.reactnative.handlers.pins.PinAuthenticationRequestHandler
 import com.onegini.mobile.sdk.reactnative.handlers.pins.PinNotificationObserver
-import java.util.*
+import com.onegini.mobile.sdk.reactnative.model.rn.OneginiReactNativeConfig
 import java.util.concurrent.TimeUnit
 
 class OneginiSDK(private val appContext: Context) {

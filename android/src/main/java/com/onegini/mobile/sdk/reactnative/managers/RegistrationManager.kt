@@ -1,10 +1,10 @@
 package com.onegini.mobile.sdk.reactnative.managers
 
 import android.net.Uri
-import com.onegini.mobile.sdk.reactnative.Constants.DEFAULT_SCOPES
-import com.onegini.mobile.sdk.reactnative.OneginiSDK
 import com.onegini.mobile.sdk.android.handlers.OneginiRegistrationHandler
 import com.onegini.mobile.sdk.android.model.OneginiIdentityProvider
+import com.onegini.mobile.sdk.reactnative.Constants.DEFAULT_SCOPES
+import com.onegini.mobile.sdk.reactnative.OneginiSDK
 import com.onegini.mobile.sdk.reactnative.handlers.customregistration.SimpleCustomRegistrationAction
 
 class RegistrationManager(private val oneginiSDK: OneginiSDK) {

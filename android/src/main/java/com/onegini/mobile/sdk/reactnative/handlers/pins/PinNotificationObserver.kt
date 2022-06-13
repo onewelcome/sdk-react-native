@@ -7,8 +7,6 @@ import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.onegini.mobile.sdk.reactnative.Constants
 import com.onegini.mobile.sdk.reactnative.Constants.PinFlow
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
-import com.onegini.mobile.sdk.reactnative.mapers.OneginiErrorMapper
-import com.onegini.mobile.sdk.android.handlers.error.OneginiError
 
 interface IPinNotificationObserver {
     fun onNotify(event: String, flow: PinFlow, profileId: String?, data: Any?)

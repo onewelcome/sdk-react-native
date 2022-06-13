@@ -3,10 +3,10 @@ package com.onegini.mobile.sdk.reactnative.handlers.customregistration
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.modules.core.DeviceEventManagerModule
+import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 import com.onegini.mobile.sdk.reactnative.Constants
 import com.onegini.mobile.sdk.reactnative.mapers.CustomInfoMapper
 import com.onegini.mobile.sdk.reactnative.mapers.OneginiIdentityProviderMapper
-import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 
 interface ICustomRegistrationObserver {
 

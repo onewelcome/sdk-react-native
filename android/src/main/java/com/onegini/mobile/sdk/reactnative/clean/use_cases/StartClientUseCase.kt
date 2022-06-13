@@ -3,18 +3,17 @@ package com.onegini.mobile.sdk.reactnative.clean.use_cases
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReadableMap
-import com.onegini.mobile.sdk.reactnative.OneginiSDK
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
-import com.onegini.mobile.sdk.reactnative.mapers.OneginiReactNativeConfigMapper
-import com.onegini.mobile.sdk.reactnative.model.rn.OneginiReactNativeConfig
 import com.onegini.mobile.sdk.android.handlers.OneginiInitializationHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiInitializationError
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
+import com.onegini.mobile.sdk.reactnative.OneginiSDK
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.reactnative.handlers.customregistration.CustomRegistrationObserver
 import com.onegini.mobile.sdk.reactnative.handlers.fingerprint.FingerprintAuthenticationObserver
 import com.onegini.mobile.sdk.reactnative.handlers.mobileauthotp.MobileAuthOtpRequestObserver
 import com.onegini.mobile.sdk.reactnative.handlers.pins.PinNotificationObserver
-import java.lang.Exception
+import com.onegini.mobile.sdk.reactnative.mapers.OneginiReactNativeConfigMapper
+import com.onegini.mobile.sdk.reactnative.model.rn.OneginiReactNativeConfig
 
 class StartClientUseCase(private val oneginiSDK: OneginiSDK, private val reactApplicationContext: ReactApplicationContext) {
 

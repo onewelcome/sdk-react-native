@@ -1,19 +1,17 @@
 //@todo Later will be transferred to RN Wrapper
 package com.onegini.mobile.sdk.reactnative.handlers.pins;
 
-import android.content.Context;
+import static com.onegini.mobile.sdk.reactnative.Constants.PIN_NOTIFICATION_CLOSE_VIEW;
 
+import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import com.onegini.mobile.sdk.reactnative.Constants;
-import com.onegini.mobile.sdk.reactnative.OneginiSDK;
 import com.onegini.mobile.sdk.android.handlers.error.OneginiPinValidationError;
 import com.onegini.mobile.sdk.android.handlers.request.OneginiCreatePinRequestHandler;
 import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiPinCallback;
 import com.onegini.mobile.sdk.android.model.entity.UserProfile;
-
-import static com.onegini.mobile.sdk.reactnative.Constants.PIN_NOTIFICATION_CLOSE_VIEW;
+import com.onegini.mobile.sdk.reactnative.Constants;
+import com.onegini.mobile.sdk.reactnative.OneginiSDK;
 
 public class CreatePinRequestHandler implements OneginiCreatePinRequestHandler {
 
