@@ -22,32 +22,22 @@ class PinAuthenticationRequestHandler(private val oneginiSDK: OneginiSDK) : Oneg
     ) {
         userProfileId = userProfile.profileId // @todo Might need this in the future
         callback = oneginiPinCallback
-        if (pinNotificationObserver != null) {
-            pinNotificationObserver!!.onNotify(Constants.PIN_NOTIFICATION_OPEN_VIEW, Constants.PinFlow.Authentication, userProfileId, null)
-        }
+        pinNotificationObserver?.onNotify(Constants.PIN_NOTIFICATION_OPEN_VIEW, Constants.PinFlow.Authentication, userProfileId, null)
     }
 
     override fun onNextAuthenticationAttempt(attemptCounter: AuthenticationAttemptCounter) {
-        if (pinNotificationObserver != null) {
-            pinNotificationObserver!!.onWrongPin(attemptCounter.remainingAttempts)
-        }
+        pinNotificationObserver?.onWrongPin(attemptCounter.remainingAttempts)
     }
 
     override fun finishAuthentication() {
-        if (pinNotificationObserver != null) {
-            pinNotificationObserver!!.onNotify(Constants.PIN_NOTIFICATION_CLOSE_VIEW, Constants.PinFlow.Authentication, null, null)
-        }
+        pinNotificationObserver?.onNotify(Constants.PIN_NOTIFICATION_CLOSE_VIEW, Constants.PinFlow.Authentication, null, null)
     }
 
     fun acceptAuthenticationRequest(var1: CharArray?) {
-        if (callback != null) {
-            callback!!.acceptAuthenticationRequest(var1)
-        }
+        callback?.acceptAuthenticationRequest(var1)
     }
 
     fun denyAuthenticationRequest() {
-        if (callback != null) {
-            callback!!.denyAuthenticationRequest()
-        }
+        callback?.denyAuthenticationRequest()
     }
 }

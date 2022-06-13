@@ -37,7 +37,7 @@ class AuthenticatorManager(private val oneginiSDK: OneginiSDK) {
                 }
 
                 override fun onError(error: OneginiAuthenticatorRegistrationError) {
-                    callback.onError(error?.errorType.toString(), error?.message)
+                    callback.onError(error.errorType.toString(), error.message)
                 }
             }
         )
@@ -64,7 +64,7 @@ class AuthenticatorManager(private val oneginiSDK: OneginiSDK) {
                 }
 
                 override fun onError(error: OneginiAuthenticatorDeregistrationError) {
-                    callback.onError(error?.errorType.toString(), error?.message)
+                    callback.onError(error.errorType.toString(), error.message)
                 }
             })
     }
