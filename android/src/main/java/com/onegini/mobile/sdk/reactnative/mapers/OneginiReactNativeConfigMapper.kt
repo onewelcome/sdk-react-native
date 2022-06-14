@@ -4,7 +4,6 @@ import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
 import com.onegini.mobile.sdk.reactnative.model.rn.OneginiReactNativeConfig
 import com.onegini.mobile.sdk.reactnative.model.rn.ReactNativeIdentityProvider
-import java.lang.NullPointerException
 
 object OneginiReactNativeConfigMapper {
 

@@ -3,10 +3,10 @@ package com.onegini.mobile.sdk.reactnative
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
-import com.onegini.mobile.sdk.reactnative.clean.use_cases.StartClientUseCase
-import com.onegini.mobile.sdk.reactnative.exception.OneginReactNativeException
 import com.onegini.mobile.sdk.android.handlers.OneginiInitializationHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiInitializationError
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.StartClientUseCase
+import com.onegini.mobile.sdk.reactnative.exception.OneginReactNativeException
 import org.junit.*
 import org.junit.runner.RunWith
 import org.mockito.Answers

@@ -1,20 +1,29 @@
 package com.onegini.mobile.sdk.reactnative
 
-import com.facebook.react.bridge.*
-import com.onegini.mobile.sdk.reactnative.clean.use_cases.RegisterUserUseCase
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
+import com.facebook.react.bridge.JavaOnlyArray
+import com.facebook.react.bridge.JavaOnlyMap
+import com.facebook.react.bridge.Promise
+import com.facebook.react.bridge.ReadableArray
 import com.onegini.mobile.sdk.android.handlers.OneginiRegistrationHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiRegistrationError
 import com.onegini.mobile.sdk.android.model.OneginiIdentityProvider
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
-import org.junit.*
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.RegisterUserUseCase
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
+import org.junit.Assert
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Answers
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.lenient
 import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.kotlin.*
+import org.mockito.kotlin.any
+import org.mockito.kotlin.anyOrNull
+import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.verify
 
 @RunWith(MockitoJUnitRunner::class)
 class RegisterUserUseCaseTests {

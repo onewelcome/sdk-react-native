@@ -1,7 +1,7 @@
 package com.onegini.mobile.sdk.reactnative.network.client
 
-import com.onegini.mobile.sdk.reactnative.OneginiSDK
 import com.onegini.mobile.sdk.android.client.OneginiClient
+import com.onegini.mobile.sdk.reactnative.OneginiSDK
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory

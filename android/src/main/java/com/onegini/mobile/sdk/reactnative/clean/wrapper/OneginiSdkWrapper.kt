@@ -5,7 +5,11 @@ import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
 import com.onegini.mobile.sdk.reactnative.OneginiSDK
-import com.onegini.mobile.sdk.reactnative.clean.use_cases.*
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAccessTokenUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAuthenticatedUserProfileUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetIdentityProvidersUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.RegisterUserUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.StartClientUseCase
 
 class OneginiSdkWrapper(
         private val oneginiSDK: OneginiSDK,

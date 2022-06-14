@@ -4,7 +4,6 @@ package com.onegini.mobile.sdk.reactnative.handlers;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-
 import com.onegini.mobile.sdk.android.handlers.request.OneginiBrowserRegistrationRequestHandler;
 import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiBrowserRegistrationCallback;
 

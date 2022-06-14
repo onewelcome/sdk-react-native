@@ -1,9 +1,16 @@
 package com.onegini.mobile.sdk.reactnative
 
-import com.facebook.react.bridge.*
+import com.facebook.react.bridge.Arguments
+import com.facebook.react.bridge.JavaOnlyArray
+import com.facebook.react.bridge.JavaOnlyMap
+import com.facebook.react.bridge.Promise
+import com.facebook.react.bridge.ReactApplicationContext
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAccessTokenUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAuthenticatedUserProfileUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetIdentityProvidersUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.RegisterUserUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.StartClientUseCase
 import com.onegini.mobile.sdk.reactnative.clean.wrapper.OneginiSdkWrapper
-import com.onegini.mobile.sdk.reactnative.OneginiSDK
-import com.onegini.mobile.sdk.reactnative.clean.use_cases.*
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockkStatic

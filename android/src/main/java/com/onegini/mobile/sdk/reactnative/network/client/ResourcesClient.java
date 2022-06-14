@@ -1,12 +1,7 @@
 package com.onegini.mobile.sdk.reactnative.network.client;
 
 
-
 import com.google.gson.JsonObject;
-
-
-import java.util.Map;
-
 import io.reactivex.rxjava3.core.Single;
 import retrofit2.http.DELETE;
 import retrofit2.http.FieldMap;
@@ -15,6 +10,8 @@ import retrofit2.http.HeaderMap;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Url;
+
+import java.util.Map;
 
 public interface ResourcesClient {
 

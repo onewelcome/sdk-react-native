@@ -1,15 +1,13 @@
 package com.onegini.mobile.sdk.reactnative.handlers.pins
 
 import android.content.Context
+import com.onegini.mobile.sdk.android.handlers.OneginiPinValidationHandler
+import com.onegini.mobile.sdk.android.handlers.error.OneginiPinValidationError
+import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiPinCallback
 import com.onegini.mobile.sdk.reactnative.Constants
 import com.onegini.mobile.sdk.reactnative.Constants.PinFlow
 import com.onegini.mobile.sdk.reactnative.OneginiSDK
-import com.onegini.mobile.sdk.reactnative.exception.EmptyOneginiErrorDetails
-import com.onegini.mobile.sdk.reactnative.exception.OneginReactNativeException
-import com.onegini.mobile.sdk.android.handlers.OneginiPinValidationHandler
-import com.onegini.mobile.sdk.android.handlers.error.OneginiError
-import com.onegini.mobile.sdk.android.handlers.error.OneginiPinValidationError
-import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiPinCallback
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 import java.util.*
 
 class PinWithConfirmationHandler(
@@ -49,20 +47,15 @@ class PinWithConfirmationHandler(
         )
     }
 
+    // TODO the second pin should be implemented in the app, not the plugin
+    // https://onewelcome.atlassian.net/browse/RNP-75
     fun secondPinProvided(pin: CharArray?) {
         val pinsEqual = Arrays.equals(this.pin, pin)
         nullifyPinArray()
         if (pinsEqual) {
             originalHandler.acceptAuthenticationRequest(pin)
         } else {
-            notifyOnError(
-                OneginReactNativeException(
-                    OneginReactNativeException.PIN_ERROR_NOT_EQUAL,
-                    EmptyOneginiErrorDetails(),
-                    "PIN was not the same, choose PIN",
-                    null
-                )
-            )
+            notifyOnError(OneginiWrapperErrors.PIN_ERROR_NOT_EQUAL)
         }
     }
 
@@ -93,11 +86,11 @@ class PinWithConfirmationHandler(
         pinNotificationObserver?.onNotify(Constants.PIN_NOTIFICATION_OPEN_VIEW, lastFlow, profileId, data)
     }
 
-    fun notifyOnError(error: OneginiError?) {
-        pinNotificationObserver?.onError(error, lastFlow)
+    fun notifyOnError(error: OneginiWrapperErrors) {
+        pinNotificationObserver?.onError(error.code.toInt(), error.message, lastFlow)
     }
 
     fun handlePinValidationError(error: OneginiPinValidationError) {
-        notifyOnError(error)
+        pinNotificationObserver?.onError(error.getErrorType(), error.message ?: "", lastFlow)
     }
 }

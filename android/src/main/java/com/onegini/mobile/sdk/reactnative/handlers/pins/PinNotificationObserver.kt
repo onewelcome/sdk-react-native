@@ -6,13 +6,12 @@ import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.onegini.mobile.sdk.reactnative.Constants
 import com.onegini.mobile.sdk.reactnative.Constants.PinFlow
-import com.onegini.mobile.sdk.reactnative.mapers.OneginiErrorMapper
-import com.onegini.mobile.sdk.android.handlers.error.OneginiError
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 
 interface IPinNotificationObserver {
     fun onNotify(event: String, flow: PinFlow, profileId: String?, data: Any?)
-    fun onError(error: OneginiError?, flow: PinFlow)
-    fun onWrongPin(error: OneginiError, remainingAttempts: Int)
+    fun onError(errorCode: Int, errorMessage: String, flow: PinFlow)
+    fun onWrongPin(remainingAttempts: Int)
 }
 
 //
@@ -57,17 +56,18 @@ class PinNotificationObserver(private val reactApplicationContext: ReactApplicat
         }
     }
 
-    override fun onError(error: OneginiError?, flow: PinFlow) {
+    override fun onError(errorCode: Int, errorMessage: String, flow: PinFlow) {
         val data = Arguments.createMap()
         data.putString("action", Constants.PIN_NOTIFICATION_SHOW_ERROR)
         data.putString("flow", flow.flowString)
-        OneginiErrorMapper.update(data, error)
+        data.putInt("errorType", errorCode)
+        data.putString("errorMsg", errorMessage)
         reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java).emit(Constants.ONEWELCOME_PIN_NOTIFICATION, data)
     }
 
     // This isn't the most logical way to send the remaining attempts to the plugin,
     // but I did it to not have to modify iOS/JS parts as well
-    override fun onWrongPin(error: OneginiError, remainingAttempts: Int) {
+    override fun onWrongPin(remainingAttempts: Int) {
         val userInfo = Arguments.createMap()
         userInfo.putString("remainingFailureCount", remainingAttempts.toString())
 
@@ -75,7 +75,8 @@ class PinNotificationObserver(private val reactApplicationContext: ReactApplicat
         dataMap.putString("action", Constants.PIN_NOTIFICATION_SHOW_ERROR)
         dataMap.putString("flow", Constants.PinFlow.Authentication.flowString)
         dataMap.putMap("userInfo", userInfo)
-        OneginiErrorMapper.update(dataMap, error)
+        dataMap.putInt("errorType", OneginiWrapperErrors.WRONG_PIN_ERROR.code.toInt())
+        dataMap.putString("errorMsg", OneginiWrapperErrors.WRONG_PIN_ERROR.message)
         reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
                 .emit(Constants.ONEWELCOME_PIN_NOTIFICATION, dataMap)
     }

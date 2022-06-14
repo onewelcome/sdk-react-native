@@ -1,6 +1,8 @@
 package com.onegini.mobile.sdk.reactnative.mapers
 
-import com.facebook.react.bridge.*
+import com.facebook.react.bridge.Arguments
+import com.facebook.react.bridge.WritableArray
+import com.facebook.react.bridge.WritableMap
 import com.onegini.mobile.sdk.android.model.OneginiIdentityProvider
 
 object OneginiIdentityProviderMapper {
