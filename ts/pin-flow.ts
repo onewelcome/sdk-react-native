@@ -62,9 +62,6 @@ const usePinFlow = () => {
         case Events.PinNotification.Open:
           await handleOpen(event.flow, event.profileId, event.data);
           break;
-        case Events.PinNotification.Confirm:
-          setConfirmState();
-          break;
         case Events.PinNotification.Error:
           handleError(event.errorMsg, event.userInfo ?? undefined);
           break;
