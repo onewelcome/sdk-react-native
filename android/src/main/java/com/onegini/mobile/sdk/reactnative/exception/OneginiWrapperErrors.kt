@@ -7,6 +7,5 @@ enum class OneginiWrapperErrors(val code: String, val message: String) {
     WRONG_PIN_ERROR("8004", "Wrong pin provided"),
     RESOURCE_CALL_ERROR("8005", "Resource call finished with error"),
     AUTHENTICATOR_DOES_NOT_EXIST("8006", "The Fingerprint authenticator does not exist"),
-    PROFILE_DOES_NOT_EXIST("8007", "The profileId does not exist"),
-    PIN_ERROR_NOT_EQUAL("8008", "PIN was not the same, choose PIN")
+    PROFILE_DOES_NOT_EXIST("8007", "The profileId does not exist")
 }
