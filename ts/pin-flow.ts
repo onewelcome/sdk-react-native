@@ -5,6 +5,7 @@ import {useProfileStorage} from "../example/src/components/hooks/useProfileStora
 const usePinFlow = () => {
   const [flow, setFlow] = useState<Events.PinFlow>(Events.PinFlow.Create);
   const [pin, setPin] = useState('');
+  const [firstPin, setFirstPin] = useState('');
   const [visible, setVisible] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
   const [error, setError] = useState<string | null>(null);
@@ -13,7 +14,7 @@ const usePinFlow = () => {
   const {getPinProfile, setPinProfile} = useProfileStorage();
 
   const provideNewPinKey = (newKey: string) =>
-    onNewPinKey(newKey, pin, setPin, flow, setError, pinLength || 5);
+    onNewPinKey(newKey, pin, setPin, flow, setError, pinLength || 5, isConfirmMode, setConfirmMode, firstPin, setFirstPin);
 
   const cancelPinFlow = () => onCancelPinFlow(flow);
 
@@ -97,8 +98,6 @@ const usePinFlow = () => {
   };
 };
 
-//
-
 const onNewPinKey = (
   newKey: string,
   pin: string,
@@ -106,16 +105,49 @@ const onNewPinKey = (
   flow: Events.PinFlow,
   setError: (error: string | null) => void,
   requiredPinLength: number,
+  isConfirmMode: boolean,
+  setConfirmMode: (mode: boolean) => void,
+  firstPin: string,
+  setFirstPin: (pin: string) => void
 ) => {
   setError(null);
-
   if (newKey === '<' && pin.length > 0) {
     setPin(pin.substring(0, pin.length - 1));
-  } else {
-    const newValue = pin + newKey;
-    setPin(newValue);
+    return;
+  }
+  const newValue = pin + newKey;
+  setPin(newValue);
+  switch (flow) {
+    case Events.PinFlow.Authentication:
+      if (newValue.length === requiredPinLength) {
+          OnewelcomeSdk.submitPinAction(flow, Events.PinAction.ProvidePin, newValue);
+      }
+      break;
+    case Events.PinFlow.Create:
+    case Events.PinFlow.Change:
+      if (isConfirmMode) {
+        handleConfirmPin();
+      } else {
+        handleFirstPin();
+      }
+      break;
+  }
+  function handleConfirmPin() {
     if (newValue.length === requiredPinLength) {
-      OnewelcomeSdk.submitPinAction(flow, Events.PinAction.ProvidePin, newValue);
+      if (firstPin === newValue) {
+        OnewelcomeSdk.submitPinAction(flow, Events.PinAction.ProvidePin, newValue);
+      } else {
+        setError('Pins do not match');
+        setConfirmMode(false);
+        setPin('');
+      }
+    }
+  }
+  function handleFirstPin() {
+    setFirstPin(newValue);
+    if (newValue.length === requiredPinLength) {
+      setConfirmMode(true);
+      setPin('');
     }
   }
 };
