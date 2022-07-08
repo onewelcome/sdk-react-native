@@ -13,7 +13,7 @@ protocol PinHandlerToReceiverProtocol: AnyObject {
 enum PINEntryMode {
     case login
     case registration
-    case registrationConfirm
+    
 }
 
 class PinHandler: NSObject {
@@ -21,7 +21,6 @@ class PinHandler: NSObject {
     var createPinChallenge: ONGCreatePinChallenge?
     var flow: PinFlow?
     var mode: PINEntryMode?
-    var pinEntryToVerify = Array<String>()
     var changePinCompletion: ((Bool, NSError?) -> Void)?
     unowned var pinReceiver: PinHandlerToReceiverProtocol?
 
@@ -29,10 +28,7 @@ class PinHandler: NSObject {
         let pincode = pinEntry.joined()
         switch mode {
           case .registration:
-              handleRegistrationPin(pinEntry)
-              break
-          case .registrationConfirm:
-              handleConfirmRegistrationPin(pinEntry, pincode)
+              handleRegistrationPin(pincode)
               break
           case .login:
                 pinReceiver?.handlePin(pin: pincode)
@@ -49,29 +45,12 @@ class PinHandler: NSObject {
         pinReceiver?.handlePin(pin: nil)
     }
 
-    private func handleRegistrationPin(_ pinEntry: Array<String>) {
-        pinEntryToVerify = pinEntry
-        mode = .registrationConfirm
-        sendConnectorNotification(PinNotification.confirm, flow, nil, nil, nil, nil)
-    }
-
-    private func handleConfirmRegistrationPin(_ pinEntry: Array<String>, _ pincode: String) {
-        let pincodeConfirm = pinEntryToVerify.joined()
-        if pincode == pincodeConfirm {
-            pinReceiver?.handlePin(pin: pincode)
-        } else {
-            mode = .registration
-            let error = NSError(domain: ONGPinValidationErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey : "The confirmation PIN does not match."])
-            notifyOnError(error)
-        }
+    private func handleRegistrationPin(_ pincode: String) {
+        pinReceiver?.handlePin(pin: pincode)
     }
 
     func notifyOnError(_ error: NSError, userInfo: [String: Any]? = nil) {
         sendConnectorNotification(PinNotification.showError, flow, error, nil, userInfo, nil)
-
-        if(mode == PINEntryMode.registrationConfirm) {
-            mode = .registration
-        }
     }
 
     private func sendConnectorNotification(_ event: PinNotification, _ flow: PinFlow?, _ error: NSError?,  _ profileId: String?, _ userInfo: [String: Any]? = nil, _ data: Any?) {
