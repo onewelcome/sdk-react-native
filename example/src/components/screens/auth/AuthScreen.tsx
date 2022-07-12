@@ -40,6 +40,7 @@ const AuthScreen: React.FC<Props> = (props) => {
             props.onAuthorized?.(true);
         } catch (e: any) {
             setError(e.message);
+            fetchProfiles();
         }
     }, []);
 
