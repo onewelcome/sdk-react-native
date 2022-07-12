@@ -65,8 +65,6 @@ extension PinHandler : PinConnectorToPinHandler {
             self.flow = flow
             pinReceiver = receiver
         }
-
-
         if(error != nil){
             notifyOnError(error!, userInfo: userInfo)
         } else {
@@ -82,7 +80,6 @@ extension PinHandler : PinConnectorToPinHandler {
                         mode = .login
 
                 }
-
                 sendConnectorNotification(PinNotification.open, flow, nil, profileId, userInfo, data)
             }
         }
@@ -180,15 +177,12 @@ extension PinHandler: ONGChangePinDelegate {
     }
     
     func userClient(_ userClient: ONGUserClient, didStartPinChangeForUser userProfile: ONGUserProfile) {
-        handleFlowUpdate(PinFlow.change, error: nil, receiver: self, profileId: userProfile.profileId, userInfo: nil, data: nil)
+        // handle change pin start if needed
     }
 
-    func userClient(_: ONGUserClient, didChangePinForUser _: ONGUserProfile) {
+    func userClient(_ : ONGUserClient, didChangePinForUser _: ONGUserProfile) {
         createPinChallenge = nil
         closeFlow()
         changePinCompletion!(true, nil)
-        
-        // Fix: dont update when this flow is done
-//        handleFlowUpdate(PinFlow.change, nil, receiver: self)
     }
 }
