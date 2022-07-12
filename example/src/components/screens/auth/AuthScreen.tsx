@@ -15,11 +15,6 @@ interface Props {
     onAuthorized?: (success?: boolean) => void;
 }
 
-async function fetchProfiles(): Promise<boolean> {
-    const userProfiles = await OneWelcomeSdk.getUserProfiles();
-    return userProfiles.length > 0;
-}
-
 const AuthScreen: React.FC<Props> = (props) => {
     const {
         state: {authenticated: {loading, profiles}},
@@ -27,8 +22,6 @@ const AuthScreen: React.FC<Props> = (props) => {
     } = useContext(AuthContext);
     const [isInfoVisible, setIsInfoVisible] = useState(false);
     const [error, setError] = useState('');
-    const [selectedProfileId, setSelectedProfileId] = useState<string | null>(null);
-    // because react-native-modal-selector is broken and calls onChange when unmount
     const isModalOpen = useRef(false);
 
     const authenticateProfile = useCallback(async (id: string) => {
@@ -44,7 +37,7 @@ const AuthScreen: React.FC<Props> = (props) => {
         }
     }, []);
 
-    const fetchProfiles = useCallback(async () => {
+    const fetchProfiles = async () => {
         try {
             dispatch({type: AuthActionTypes.AUTH_LOAD_PROFILE_IDS});
             const userProfiles = await OneWelcomeSdk.getUserProfiles();
@@ -56,7 +49,7 @@ const AuthScreen: React.FC<Props> = (props) => {
             setError(e.message);
             dispatch({type: AuthActionTypes.AUTH_SET_PROFILE_IDS, payload: []});
         }
-    }, [dispatch, setError]);
+    };
 
     useEffect(() => {
         if (!loading) {
@@ -73,56 +66,50 @@ const AuthScreen: React.FC<Props> = (props) => {
     return isInfoVisible ? (
         <InfoView onFinished={() => setIsInfoVisible(false)}/>
     ) : (
-        basView()
+        <View style={styles.container}>
+        <View style={styles.logoHolder}>
+            <Image source={Assets.logo}/>
+            <Text style={styles.logoText}>Example App</Text>
+        </View>
+        <Text style={styles.errorText}>{error}</Text>
+
+        {profiles && profiles.length > 1 ? (
+            <ModalSelector
+                data={profiles.map(p => p.id)}
+                initValue={profiles[0].id}
+                selectedKey={profiles[0].id}
+                keyExtractor={(item) => item}
+                labelExtractor={(item) => item}
+                selectedItemTextStyle={{fontWeight: '700'}}
+                onModalClose={() => {
+                    isModalOpen.current = false;
+                }}
+                onModalOpen={() => {
+                    isModalOpen.current = true;
+                }}
+                onChange={(option) => {
+                    if (isModalOpen.current) {
+                        authenticateProfile(option);
+                    }
+                }}>
+
+                <Button name='LOG IN WITH ...'>Log in</Button>
+            </ModalSelector>) : (<AuthButton onAuthorized={props.onAuthorized}/>)
+        }
+
+        <View style={styles.registerContainer}>
+            <RegisterButton onRegistered={props.onAuthorized}/>
+        </View>
+        <View style={styles.infoContainer}>
+            <Button
+                name={'INFO'}
+                onPress={() => {
+                    setIsInfoVisible(true);
+                }}
+            />
+        </View>
+    </View>
     );
-
-    function basView() {
-        return (
-            <View style={styles.container}>
-                <View style={styles.logoHolder}>
-                    <Image source={Assets.logo}/>
-                    <Text style={styles.logoText}>Example App</Text>
-                </View>
-                <Text style={styles.errorText}>{error}</Text>
-
-                {profiles && profiles.length > 1 ? (
-                    <ModalSelector
-                        data={profiles.map(p => p.id)}
-                        initValue={profiles[0].id}
-                        selectedKey={profiles[0].id}
-                        keyExtractor={(item) => item}
-                        labelExtractor={(item) => item}
-                        selectedItemTextStyle={{fontWeight: '700'}}
-                        onModalClose={() => {
-                            isModalOpen.current = false;
-                        }}
-                        onModalOpen={() => {
-                            isModalOpen.current = true;
-                        }}
-                        onChange={(option) => {
-                            if (isModalOpen.current) {
-                                authenticateProfile(option);
-                            }
-                        }}>
-
-                        <Button name='LOG IN WITH ...'>Log in</Button>
-                    </ModalSelector>) : (<AuthButton onAuthorized={props.onAuthorized}/>)
-                }
-
-                <View style={styles.registerContainer}>
-                    <RegisterButton onRegistered={props.onAuthorized}/>
-                </View>
-                <View style={styles.infoContainer}>
-                    <Button
-                        name={'INFO'}
-                        onPress={() => {
-                            setIsInfoVisible(true);
-                        }}
-                    />
-                </View>
-            </View>
-        );
-    }
 };
 
 const styles = StyleSheet.create({
