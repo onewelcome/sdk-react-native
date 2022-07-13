@@ -198,7 +198,6 @@ extension PinHandler: ONGChangePinDelegate {
         createPinChallenge = nil
         closeFlow()
         changePinCompletion!(false, error as NSError)
-        handleFlowUpdate(PinFlow.change, error: error as NSError, receiver: self, profileId: profile.profileId)
     }
     
     func userClient(_ userClient: ONGUserClient, didStartPinChangeForUser userProfile: ONGUserProfile) {
