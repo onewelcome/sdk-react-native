@@ -3,15 +3,14 @@
   "title": "React Native SDK",
   "version": "0.6.0",
   "description": "Onegini SDK component for React Native (iOS and Android)",
-  "main": "js/index.js",
+  "main": "index.js",
   "files": [
     "README.md",
     "android/src",
     "android/build.gradle",
     "ios/",
-    "js/index.js",
-    "js/pin.js",
-    "js/config.js",
+    "js/",
+    "index.js",
     "react-native-sdk-beta.podspec"
   ],
   "scripts": {

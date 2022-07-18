@@ -8,22 +8,23 @@ import OneginiSdk from 'react-native-sdk-beta';
 import CustomRegistrationChooserView from '../CustomRegistrationChooserView';
 
 const startRegister = async (
-    providerId,
-    setRegistering,
-    setError,
-    onRegisterSuccess = () => null,
+  providerId,
+  setRegistering,
+  setError,
+  onRegisterSuccess = () => null,
 ) => {
-    setError(null);
-    setRegistering(true);
+  setError(null);
+  setRegistering(true);
 
-    try {
-        await OneginiSdk.registerUser(providerId);
-        setRegistering(false);
-        onRegisterSuccess();
-    } catch (e) {
-        setRegistering(false);
-        setError(e.message ? e.message : 'Something strange happened');
-    }
+  const result = await OneginiSdk.registerUser(providerId);
+
+  if (result.success) {
+    setRegistering(false);
+    onRegisterSuccess();
+  } else {
+    setRegistering(false);
+    setError(result.errorMsg ? result.errorMsg : 'Something strange happened');
+  }
 };
 
 //@todo add providers selector

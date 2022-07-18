@@ -53,10 +53,6 @@ object Constants {
     const val CUSTOM_REGISTRATION_NOTIFICATION_INIT_REGISTRATION = "initRegistration"
     const val CUSTOM_REGISTRATION_NOTIFICATION_FINISH_REGISTRATION = "finishRegistration"
 
-    // Custom registration actions for RN Bridge
-    const val CUSTOM_REGISTRATION_ACTION_CANCEL = "cancel"
-    const val CUSTOM_REGISTRATION_ACTION_PROVIDE = "provide"
-
     const val MOBILE_AUTH_OTP_NOTIFICATION = "ONEGINI_MOBILE_AUTH_OTP_NOTIFICATION"
     const val MOBILE_AUTH_OTP_START_AUTHENTICATION = "startAuthentication"
     const val MOBILE_AUTH_OTP_FINISH_AUTHENTICATION = "finishAuthentication"

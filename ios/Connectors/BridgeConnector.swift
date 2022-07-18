@@ -3,20 +3,15 @@ protocol BridgeConnectorProtocol: AnyObject {
 }
 
 class BridgeConnector : BridgeConnectorProtocol {
-    let toRegistrationConnector: BridgeToRegistrationConnectorProtocol = RegistrationConnector()
-    let toPinHandlerConnector: BridgeToPinConnectorProtocol = PinConnector()
-    let toMobileAuthConnector: BridgeToMobileAuthConnectorProtocol = MobileAuthConnector()
+    let toRegistrationHandler: BridgeToRegisterHandlerProtocol = RegistrationHandler()
     let toLoginHandler: BridgeToLoginHandlerProtocol = LoginHandler()
-    let toAuthenticatorsHandler: BridgeToAuthenticatorsHandlerProtocol = AuthenticatorsHandler()
-    let toAppToWebHandler: AppToWebHandlerProtocol = AppToWebHandler()
-    let toResourceFetchHandler: BridgeToResourceFetchHandlerProtocol = ResourceFetchHandler()
+    var toPinHandlerConnector: BridgeToPinConnectorProtocol
     unowned var bridge: ConnectorToRNBridgeProtocol?
     public static var shared:BridgeConnector?
 
     init() {
-        self.toRegistrationConnector.bridgeConnector = self
+        self.toPinHandlerConnector = PinConnector()
         self.toPinHandlerConnector.bridgeConnector = self
-        self.toMobileAuthConnector.bridgeConnector = self
         BridgeConnector.shared = self
     }
 

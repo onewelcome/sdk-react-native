@@ -11,15 +11,8 @@ object OneginiErrorMapper {
         if (oneginiError == null) {
             return map
         }
-        return update(map, oneginiError)
-    }
-
-    fun update(map: WritableMap, oneginiError: OneginiError?): WritableMap {
-        if (oneginiError == null) {
-            return map
-        }
         map.putInt("errorType", oneginiError.errorType)
-        map.putString("errorMsg", oneginiError.message)
+        map.putString("errorType", oneginiError.message)
         return map
     }
 }

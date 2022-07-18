@@ -45,10 +45,7 @@ class AuthenticatorManager(private val oneginiSDK: OneginiSDK) {
         return authenticator != null
     }
 
-    fun getUserProfile(profileId: String?): UserProfile? {
-        if (profileId == null) {
-            return null
-        }
+    fun getUserProfile(profileId: String): UserProfile? {
         oneginiSDK.oneginiClient.userClient.userProfiles.forEach {
             if (it.profileId == profileId) {
                 return it
