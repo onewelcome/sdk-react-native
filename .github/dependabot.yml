@@ -1,0 +1,7 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    target-branch: "release_1.0.0-rc1"
+    schedule:
+      interval: "daily"
