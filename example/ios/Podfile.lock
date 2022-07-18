@@ -70,7 +70,7 @@ PODS:
   - local-react-native-sdk-beta (0.6.0):
     - OneginiSDKiOS (= 9.6.0)
     - React
-  - OneginiSDKiOS (9.6.0)
+  - OneginiSDKiOS (9.0.0)
   - OpenSSL-Universal (1.0.2.20):
     - OpenSSL-Universal/Static (= 1.0.2.20)
   - OpenSSL-Universal/Static (1.0.2.20)

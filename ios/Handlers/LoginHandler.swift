@@ -29,7 +29,7 @@ class LoginHandler: NSObject, PinHandlerToReceiverProtocol {
 }
 
 extension LoginHandler : BridgeToLoginHandlerProtocol {
-    //@todo add support for multiple authenticators in the future
+    //@todo add support for multiple authenticators
     func authenticateUser(_ profile: ONGUserProfile, completion: @escaping (ONGUserProfile?, SdkError?) -> Void) {
         loginCompletion = completion
         ONGUserClient.sharedInstance().authenticateUser(profile, delegate: self)
@@ -45,10 +45,6 @@ extension LoginHandler: ONGAuthenticationDelegate {
 
     func userClient(_: ONGUserClient, didReceive challenge: ONGCustomAuthFinishAuthenticationChallenge) {
         // Will need this in the future
-    }
-    
-    func userClient(_: ONGUserClient, didReceive challenge: ONGBiometricChallenge) {
-        challenge.sender.respondWithDefaultPrompt(for: challenge)
     }
 
     func userClient(_: ONGUserClient, didAuthenticateUser userProfile: ONGUserProfile, info _: ONGCustomInfo?) {

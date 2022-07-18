@@ -43,9 +43,14 @@ class OneginiSDK(private val appContext: Context) {
         private set
 
     private lateinit var config: OneginiReactNativeConfig
+    private var configModelClassName: String? = null
+    private var securityControllerClassName: String? = null
 
-    fun init(oneginiReactNativeConfig: OneginiReactNativeConfig) {
+
+    fun init(oneginiReactNativeConfig: OneginiReactNativeConfig, configModelClassName: String?, securityControllerClassName: String?) {
         this.config = oneginiReactNativeConfig
+        this.configModelClassName = configModelClassName
+        this.securityControllerClassName = securityControllerClassName
         buildSDK(appContext)
     }
 
@@ -121,11 +126,11 @@ class OneginiSDK(private val appContext: Context) {
     }
 
     private fun setConfigModel(clientBuilder: OneginiClientBuilder) {
-        if (config.configModelClassName == null) {
+        if (configModelClassName == null) {
             return
         }
         try {
-            val clazz = Class.forName(config.configModelClassName!!)
+            val clazz = Class.forName(configModelClassName!!)
             val ctor = clazz.getConstructor()
             val `object` = ctor.newInstance()
             if (`object` is OneginiClientConfigModel) {
@@ -145,11 +150,11 @@ class OneginiSDK(private val appContext: Context) {
     }
 
     private fun setSecurityController(clientBuilder: OneginiClientBuilder) {
-        if (config.securityControllerClassName == null) {
+        if (securityControllerClassName == null) {
             return
         }
         try {
-            val securityController = Class.forName(config.securityControllerClassName!!)
+            val securityController = Class.forName(securityControllerClassName!!)
             clientBuilder.setSecurityController(securityController)
         } catch (e: ClassNotFoundException) {
             e.printStackTrace()

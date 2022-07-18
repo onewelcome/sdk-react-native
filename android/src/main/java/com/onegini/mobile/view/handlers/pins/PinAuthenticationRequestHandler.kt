@@ -2,8 +2,6 @@ package com.onegini.mobile.view.handlers.pins
 
 import com.onegini.mobile.Constants
 import com.onegini.mobile.OneginiSDK
-import com.onegini.mobile.exception.EmptyOneginiErrorDetails
-import com.onegini.mobile.exception.OneginReactNativeException
 import com.onegini.mobile.mapers.AuthenticationAttemptCounterMapper
 import com.onegini.mobile.sdk.android.handlers.request.OneginiPinAuthenticationRequestHandler
 import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiPinCallback
@@ -29,11 +27,7 @@ class PinAuthenticationRequestHandler(private val oneginiSDK: OneginiSDK) : Oneg
 
     override fun onNextAuthenticationAttempt(attemptCounter: AuthenticationAttemptCounter) {
         if (pinNotificationObserver != null) {
-            val exeption = OneginReactNativeException(OneginReactNativeException.ATTEMPT_COUNTER_ERROR,
-                    EmptyOneginiErrorDetails(),
-                    AuthenticationAttemptCounterMapper.toErrorString(attemptCounter),
-                    null)
-            pinNotificationObserver!!.onError(exeption, Constants.PinFlow.Authentication)
+            pinNotificationObserver!!.onError(AuthenticationAttemptCounterMapper.toErrorString(attemptCounter), Constants.PinFlow.Authentication)
         }
     }
 

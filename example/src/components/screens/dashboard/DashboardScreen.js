@@ -11,21 +11,18 @@ import OneginiSdk, {
   ONEGINI_PIN_FLOW,
   ONEGINI_PIN_ACTIONS,
 } from 'react-native-sdk-beta';
-import DevicesView from "../devices/DevicesView";
 
 const CONTENT_VIEW = {
   DASHBOARD_ACTIONS: 'DASHBOARD_ACTIONS',
   SETTINGS_ACTIONS: 'SETTINGS_ACTIONS',
   CHANGE_AUTH: 'CHANGE_AUTH',
   OTP_CODE: 'OTP_CODE',
-  DEVICES: 'DEVICES',
 };
 
 const TITLE_BY_CONTENT_VIEW = {
   [CONTENT_VIEW.DASHBOARD_ACTIONS]: 'Example App',
   [CONTENT_VIEW.SETTINGS_ACTIONS]: 'Settings',
   [CONTENT_VIEW.CHANGE_AUTH]: 'Change Auth',
-  [CONTENT_VIEW.DEVICES]: 'Devices',
 };
 
 const backButtonHandler = (currentContentView, setContentView) => {
@@ -38,9 +35,6 @@ const backButtonHandler = (currentContentView, setContentView) => {
       break;
     case CONTENT_VIEW.OTP_CODE:
       setContentView(CONTENT_VIEW.SETTINGS_ACTIONS);
-      break;
-    case CONTENT_VIEW.DEVICES:
-      setContentView(CONTENT_VIEW.DASHBOARD_ACTIONS);
       break;
     default:
       console.log('Unsupported CONTENT_VIEW for [BackButton]');
@@ -57,11 +51,9 @@ const renderContent = (currentContentView, setContentView, onLogout) => {
           onSettingsPressed={() =>
             setContentView(CONTENT_VIEW.SETTINGS_ACTIONS)
           }
-          onMobileAuthWithOTPPressed={() =>
+          onMoblieAuthWithOTPPressed={() =>
             setContentView(CONTENT_VIEW.OTP_CODE)
           }
-          onYourDevicesPressed={()=>
-              setContentView(CONTENT_VIEW.DEVICES)}
         />
       );
     case CONTENT_VIEW.SETTINGS_ACTIONS:
@@ -75,8 +67,6 @@ const renderContent = (currentContentView, setContentView, onLogout) => {
       return <ChangeAuthView />;
     case CONTENT_VIEW.OTP_CODE:
       return <OtpCodeView />;
-    case CONTENT_VIEW.DEVICES:
-      return <DevicesView />;
     default:
       console.log('Unsupported CONTENT_VIEW for [renderContent]');
       break;

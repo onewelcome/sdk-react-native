@@ -7,9 +7,15 @@ import com.onegini.mobile.sdk.android.handlers.OneginiInitializationHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiInitializationError
 import com.onegini.mobile.sdk.android.handlers.error.OneginiInitializationError.InitializationErrorType
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
+import com.onegini.mobile.storage.UserStorage
+import com.onegini.mobile.util.DeregistrationUtil
 import com.onegini.mobile.view.handlers.InitializationHandler
 
-class OneginiClientInitializer(private val oneginiSDK: OneginiSDK) {
+class OneginiClientInitializer(private val oneginiSDK: OneginiSDK,
+                               private val configModelClassName: String?,
+                               private val securityControllerClassName: String?,
+                               private val deregistrationUtil: DeregistrationUtil,
+                               private val userStorage: UserStorage) {
     fun startOneginiClient(config: OneginiReactNativeConfig, initializationHandler: InitializationHandler) {
         if (!oneginiSDK.isInitialized) {
             start(config, initializationHandler)
@@ -19,17 +25,29 @@ class OneginiClientInitializer(private val oneginiSDK: OneginiSDK) {
     }
 
     private fun start(config: OneginiReactNativeConfig, initializationHandler: InitializationHandler) {
-        oneginiSDK.init(config)
+        oneginiSDK.init(config, configModelClassName, securityControllerClassName)
         val oneginiClient = oneginiSDK.oneginiClient
         oneginiClient.start(object : OneginiInitializationHandler {
             override fun onSuccess(removedUserProfiles: Set<UserProfile>) {
                 setInitialized()
+                if (!removedUserProfiles.isEmpty()) {
+                    removeUserProfiles(removedUserProfiles)
+                }
                 initializationHandler.onSuccess()
             }
 
             override fun onError(error: OneginiInitializationError) {
                 @InitializationErrorType val errorType = error.errorType
-                initializationHandler.onError(error)
+                if (errorType == OneginiInitializationError.DEVICE_DEREGISTERED) {
+                    deregistrationUtil.onDeviceDeregistered()
+                }
+                initializationHandler.onError(error.message)
+            }
+
+            private fun removeUserProfiles(removedUserProfiles: Set<UserProfile>) {
+                for (userProfile in removedUserProfiles) {
+                    userStorage.removeUser(userProfile)
+                }
             }
 
             @Synchronized

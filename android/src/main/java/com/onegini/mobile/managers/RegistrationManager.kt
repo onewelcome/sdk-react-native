@@ -59,6 +59,24 @@ class RegistrationManager(private val oneginiSDK: OneginiSDK) {
         return null
     }
 
+    fun getErrorMessageByCode(@RegistrationErrorType errorType: Int): String? {
+        val errorMessage: String?
+        errorMessage = when (errorType) {
+            OneginiRegistrationError.DEVICE_DEREGISTERED -> "The device was deregistered, please try registering again"
+            OneginiRegistrationError.ACTION_CANCELED -> "Registration was cancelled"
+            OneginiAuthenticationError.NETWORK_CONNECTIVITY_PROBLEM -> "No internet connection."
+            OneginiAuthenticationError.SERVER_NOT_REACHABLE -> "The server is not reachable."
+            OneginiRegistrationError.OUTDATED_APP -> "Please update this application in order to use it."
+            OneginiRegistrationError.OUTDATED_OS -> "Please update your Android version to use this application."
+            OneginiRegistrationError.INVALID_IDENTITY_PROVIDER -> "The Identity provider you were trying to use is invalid."
+            OneginiRegistrationError.CUSTOM_REGISTRATION_EXPIRED -> "Custom registration request has expired. Please retry."
+            OneginiRegistrationError.CUSTOM_REGISTRATION_FAILURE -> "Custom registration request has failed, see logcat for more details."
+            OneginiRegistrationError.GENERAL_ERROR -> "General error"
+            else -> null
+        }
+        return errorMessage
+    }
+
     fun handleRegistrationCallback(uri: String?) {
         oneginiSDK.registrationRequestHandler.handleRegistrationCallback(Uri.parse(uri))
     }
