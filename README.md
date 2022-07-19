@@ -242,3 +242,125 @@ https://github.com/facebook/react-native/issues/31180
 ### Solution
 
 `yarn add --dev react-native-codegen`
+# Functional scope
+### Milestone 1:
+    - Start
+    - Security Controls and Configuration of the SDK
+    - User registration
+       - Browser
+### Milestone 2:
+    - User registration
+           - Custom
+    - User deregistration
+### Milestone 3:
+    - User authentication with PIN
+    - Fetch user access token
+    - Logout
+### Milestone 4:
+    - Mobile authenticator enrollment
+    - Mobile authentication with OTP
+### Milestone 5:
+    - Fingerprint enrollment
+    - Fingerprint authentication
+### Milestone 6:
+    - Change PIN
+### Milestone 7:
+    - App2Web
+### Milestone 8:
+    - Secure resource access
+
+# Usage
+- import OneginiSdk from 'react-native-sdk-beta';
+
+## Configuration
+### Config structure
+   {
+      customProviders: [],
+      enableMobileAuthenticationOtp: true,
+      enableFingerprint: true
+   }
+   
+   - customProviders - conteins the custom registration providers with app want to support. 
+   - enableMobileAuthenticationOtp - true if you want to use the authentication by Otp. If true then the events MOBILE_AUTH_OTP_NOTIFICATION are triggered.
+   - enableFingerprint - true if you want to use the fingerprint in-app as the Authentication method. If true then the events ONEGINI_FINGERPRINT_NOTIFICATION are triggered.
+
+### CustomProviders structure
+   [{id:"id1", isTwoStep: true}, ...]
+
+   - id - this is identity provider id. if the id provider is supported, then the events ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION are triggered.
+   - isTwoStep:
+      - true - possible actions initRegistration, initRegistration are sent by ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION
+      - false - possible actions finishRegistration are sent by ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION
+      
+
+## Hooks
+### `usePinFlow`. For easiest PIN flow implementation. Example:
+```
+import { usePinFlow, ONEGINI_PIN_FLOW } from "react-native-sdk-beta/pin";
+const [ flow, pin, visible, isConfirmMode, error, provideNewPinKey, cancelPinFlow] = usePinFlow();
+```
+Where:
+- **flow**: ONEGINI_PIN_FLOW(On of ['authentication', 'create', 'change']).
+- **pin**: string. Current pin value.
+- **visible**: boolean. Defines wheather show PIN flow or not.
+- **isConfirmMode**: boolean. For `create` and `change` user should confirm inserted PIN, this boolean helps to know current state.
+- **error**: string || null. Contains error or empty if no error.
+- **provideNewPinKey**: func. Function to supply next PIN char. Supply '<' key to remove last PIN char.
+- **cancelPinFlow**: func. Helper function to set error to `null`.
+
+
+## Supported Methods
+
+| Methods                     | Description                                                                                                                                                                               |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`setConfigModelClassName(className)`**                  |  (Android only) Sets the path to OneginiConfigModel class(e.g. `com.exampleapp.OneginiConfigModel`). By default SDK looking for config at `[RN_application_package_classpath].OneginiConfigModel`. This has to be set **before** startClient(). More information [HERE](#android-setup-config)                                                |
+| **`setSecurityControllerClassName(className)`**           |  (Android only) Sets the path to SecurityController class(e.g. `com.exampleapp.SecurityController`). By default controller brought from `com.onegini.mobile.SecurityController`. This has to be set **before** startClient(). More information [HERE](#android-setup-security-controller)
+| **`startClient(config):Promise`**                         |  Method init the OriginiSDK. Config is optional. Example object is in "js/config.js". See structure [HERE](#config-structure). If the config is not set the app uses the "js/config.js" as the default.                                                             |                                      |
+| **`addEventListener(eventType, cb)`**                     |  Adds listener for certain event type(ONEGINI_PIN_NOTIFICATION, ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION).        |
+| **`removeEventListener(eventType, cb)`**                  |  Removes listener for certain event type(ONEGINI_PIN_NOTIFICATION, ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION)       |
+|                                                           |
+| **=== Data getters ===**                                  |
+| **`getIdentityProviders()`**                              |  Returns the identity Providers with are registered int the lib.  |
+| **`getAccessToken()`**                                    |  Returns the access token if exist. |
+| **`getRedirectUri():Promise`**                            |  Returns an object with the redirect Uri field. |
+| **`getUserProfiles():Promise`**                           |  Returns all registered profiles id. |
+| **`getAuthenticatedUserProfile()`**                       |  Returns user who is logged in. |
+|                                                           |
+| **=== Resource getters ===**                              |
+| **`getAppDetailsResource()`**                             |  Returns an object with app details(fetched from the server).  |
+| **`getDeviceListResource()`**                             |  Returns an array with device objects witch registered by this user(fetched from the server).  |
+|                                                           |
+| **=== User register/deregister ===**                      |
+| **`registerUser(identityProviderId):Promise`**            |  Starts the process of registration user. If success then the response contain the success = true if not then contain success = false. |
+| **`deregisterUser(profileId):Promise`**                   |  Starts the process of deregistration user. If success then the response contain the success = true if not then contain success = false. |
+| **`handleRegistrationCallback(uri)`**                     |  Pass a url for the registration process which obtained from browser redirect action. |
+| **`cancelRegistration():Promise`**                        |  Interrupts process of registration. |
+|                                                           |
+| **=== Authentication ===**                                |
+| **`authenticateUser(profileId):Promise`**                 |  Starts the process of authentication user.  |
+| **`logout():Promise`**                                    |  Starts the process of logout user.  |
+| **`getAllAuthenticators():Promise`**                      |  Returns all supported authenticators.  |
+| **`getRegisteredAuthenticators():Promise`**               |  Returns all authenticators which are registered. One of the authenticators can be set as preferred authenticator.|
+| **`setPreferredAuthenticator(profileId, idOneginiAuthenticator):Promise`** |  Sets an authenticator that is used at the process of user authentication |
+|                                                           |
+| **=== PIN ===**                                           |
+| **`submitPinAction(flow, action, pin):Promise`**          |  Triggers the process of the pin. A callback can be return by event("ONEGINI_PIN_NOTIFICATION"). |
+| **`changePin():Promise`**                                 |  Starts the process of changin PIN for currently authenticated user.  |
+|                                                           |
+| **=== Fingerprint ===**                                   |
+| **`registerFingerprintAuthenticator(profileId):Promise`**     | Starts the process of registration a fingerprint |
+| **`deregisterFingerprintAuthenticator(profileId):Promise`**   | Starts the process of deregistration a fingerprint |
+| **`isFingerprintAuthenticatorRegistered(profileId):Promise`** | Returns boolean value which defines weather fingerprint authenticator already registered |
+| **`submitFingerprintAcceptAuthenticationRequest():Promise`**  | (Android only) User can return  accept authentication request |
+| **`submitFingerprintDenyAuthenticationRequest():Promise`**    | (Android only) User can return  deny authentication request |
+| **`submitFingerprintFallbackToPin():Promise`**                | (Android only) User can return  fallback to authentication by pin |
+|                                                           |
+| **=== OTP ===**                                           |
+| **`enrollMobileAuthentication()`**                        |  The first enrollment step. |
+| **`acceptMobileAuthConfirmation()`**                      |  User can return accept authentication request. |
+| **`denyMobileAuthConfirmation()`**                        |  User can return deny authentication request. |
+| **`handleMobileAuthWithOtp()`**                           |  User can return otpCode. |
+| **`submitCustomRegistrationAction(action, identityProviderId, token)`**|  Triggers the process of the custom registration. Where **action** = CUSTOM_REGISTRATION_ACTIONS and **token** = obtained from the server. If the identityProviderId does not exist then an error occurs. |
+|                                                           |
+| **=== App2Web ===**                                       |
+| **`startSingleSignOn()`**                                 |  Redirects user to Web app with loggin in user. |
