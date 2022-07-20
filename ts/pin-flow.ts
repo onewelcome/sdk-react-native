@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useState} from 'react';
 import OnewelcomeSdk, {Events} from './index';
-import {useProfileStorage} from "../example/src/components/hooks/useProfileStorage";
+import {useProfileStorage} from "./useProfileStorage";
 
 const usePinFlow = () => {
   const [flow, setFlow] = useState<Events.PinFlow>(Events.PinFlow.Create);
