@@ -29,14 +29,11 @@ class PinHandler: NSObject {
         switch mode {
           case .registration:
               handleRegistrationPin(pincode)
-              break
           case .login:
                 pinReceiver?.handlePin(pin: pincode)
-              break
           case .none:
             let error = NSError(domain: ONGPinValidationErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey : "Unexpected PIN mode."])
               notifyOnError(error)
-              break
         }
     }
 
