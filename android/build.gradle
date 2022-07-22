@@ -1,7 +1,7 @@
 buildscript {
         repositories {
             google()
-            jcenter()
+            mavenCentral()
 
             maven {
                 url "https://plugins.gradle.org/m2/"
@@ -55,7 +55,7 @@ repositories {
         // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
         url "$rootDir/../node_modules/react-native/android"
     }
-    jcenter()
+    mavenCentral()
     google()
 }
 
@@ -95,7 +95,6 @@ allprojects {
         }
 
         google()
-        jcenter()
         maven { url 'https://www.jitpack.io' }
         if (project.hasProperty('onegini_artifactory_user') && project.hasProperty('onegini_artifactory_password')) {
             maven {
