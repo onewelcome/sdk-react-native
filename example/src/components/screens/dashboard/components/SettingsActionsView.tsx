@@ -36,15 +36,17 @@ const SettingsActionsView: React.FC<Props> = (props) => {
   const [message, setMessage] = useState('');
 
     const onChangePinPressed = useCallback(async () => {
-        try {
-            await OneWelcomeSdk.changePin();
-            Alert.alert('Success', 'PIN changed successfully');
-        } catch (e: any) {
-            if (e.code !== '9006') {
-                Alert.alert('error', JSON.stringify(e));
-                dispatch({type: AuthActionTypes.AUTH_SET_AUTHORIZATION, payload: false});
-            }
+      try {
+        await OneWelcomeSdk.changePin();
+        Alert.alert('Success', 'PIN changed successfully');
+      } catch (e: any) {
+        if (e.message && e.code !== 9006) {
+          Alert.alert('Error', e.message);
         }
+        if (e.code == '9003') {
+          dispatch({type: AuthActionTypes.AUTH_SET_AUTHORIZATION, payload: false});
+        }
+      }
     }, [dispatch]);
 
   return (
