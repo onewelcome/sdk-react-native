@@ -27,8 +27,8 @@ const PinModal: React.FC<{}> = () => {
     error,
     provideNewPinKey,
     cancelPinFlow,
+    pinLength,
     userInfo,
-    pinLength
   } = usePinFlow();
 
   const title = isConfirmMode ? 'Confirm Pin' : getTitle(flow);

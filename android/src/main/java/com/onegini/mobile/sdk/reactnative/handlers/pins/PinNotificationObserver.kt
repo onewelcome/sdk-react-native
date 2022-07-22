@@ -37,10 +37,6 @@ class PinNotificationObserver(private val reactApplicationContext: ReactApplicat
                     dataMap.putString("profileId", profileId);
                 }
             }
-            Constants.PIN_NOTIFICATION_CONFIRM_VIEW -> {
-                dataMap.putString("action", Constants.PIN_NOTIFICATION_CONFIRM_VIEW)
-                dataMap.putString("flow", flow.flowString)
-            }
             Constants.PIN_NOTIFICATION_CLOSE_VIEW -> {
                 dataMap.putString("action", Constants.PIN_NOTIFICATION_CLOSE_VIEW)
                 dataMap.putString("flow", flow.flowString)
