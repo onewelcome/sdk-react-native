@@ -55,7 +55,7 @@ class OneginiSDK(private val appContext: Context) {
         val applicationContext = context.applicationContext
         registrationRequestHandler = RegistrationRequestHandler(applicationContext)
         pinAuthenticationRequestHandler = PinAuthenticationRequestHandler(this)
-        createPinRequestHandler = CreatePinRequestHandler(applicationContext, this)
+        createPinRequestHandler = CreatePinRequestHandler(this)
         changePinHandler = ChangePinHandler(this)
 
         // twoWayOtpIdentityProvider = TwoWayOtpIdentityProvider(context)
