@@ -66,8 +66,4 @@ class CreatePinRequestHandler(private val oneginiSDK: OneginiSDK) :
     fun notifyOnOpen(profileId: String? = null, data: Any? = null) {
         pinNotificationHandler?.onNotify(Constants.PIN_NOTIFICATION_OPEN_VIEW, lastPinFlow, profileId, data)
     }
-
-    fun notifyOnError(error: OneginiWrapperErrors) {
-        pinNotificationHandler?.onError(error.code.toInt(), error.message, lastPinFlow)
-    }
 }
