@@ -1,7 +1,6 @@
 //@todo Later will be transferred to RN Wrapper
 package com.onegini.mobile.sdk.reactnative.handlers.pins
 
-import com.onegini.mobile.sdk.reactnative.OneginiSDK
 import com.onegini.mobile.sdk.android.handlers.request.OneginiCreatePinRequestHandler
 import com.onegini.mobile.sdk.reactnative.Constants.PinFlow
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
@@ -9,10 +8,8 @@ import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiPinCallba
 import com.onegini.mobile.sdk.android.handlers.error.OneginiPinValidationError
 import com.onegini.mobile.sdk.reactnative.Constants
 import com.onegini.mobile.sdk.reactnative.Constants.PIN_NOTIFICATION_CLOSE_VIEW
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 
-class CreatePinRequestHandler(private val oneginiSDK: OneginiSDK) :
-    OneginiCreatePinRequestHandler {
+class CreatePinRequestHandler : OneginiCreatePinRequestHandler {
     private var pinCallback: OneginiPinCallback? = null
 
 
