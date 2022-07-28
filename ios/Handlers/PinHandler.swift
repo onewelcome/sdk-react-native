@@ -197,7 +197,7 @@ extension PinHandler: ONGChangePinDelegate {
         authPinChallenge = nil
         createPinChallenge = nil
         closeFlow()
-        handleFlowUpdate(PinFlow.change, error: error as NSError, receiver: self, profileId: profile.profileId)
+        changePinCompletion!(false, error as NSError)
     }
     
     func userClient(_ userClient: ONGUserClient, didStartPinChangeForUser userProfile: ONGUserProfile) {
