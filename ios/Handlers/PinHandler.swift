@@ -64,22 +64,20 @@ extension PinHandler : PinConnectorToPinHandler {
         }
         if(error != nil){
             notifyOnError(error!, userInfo: userInfo)
-        } else {
-            if(mode == nil) {
-                switch flow {
-                    case PinFlow.authentication:
-                        mode = .login
-                        break
-                    case PinFlow.create:
-                        mode = .registration
-                        break
-                    case PinFlow.change:
-                        mode = .login
-
-                }
-                sendConnectorNotification(PinNotification.open, flow, nil, profileId, userInfo, data)
-            }
+            return
         }
+        if(mode == nil) {
+            switch flow {
+                case PinFlow.authentication:
+                    mode = .login
+                case PinFlow.create:
+                    mode = .registration
+                case PinFlow.change:
+                    mode = .login
+            }
+            sendConnectorNotification(PinNotification.open, flow, nil, profileId, userInfo, data)
+        }
+    
     }
 
     func closeFlow() {
@@ -174,7 +172,7 @@ extension PinHandler: ONGChangePinDelegate {
     }
     
     func userClient(_ userClient: ONGUserClient, didStartPinChangeForUser userProfile: ONGUserProfile) {
-        // handle change pin start if needed
+        //TODO: Notify react-native that we are starting a pinChange.
     }
 
     func userClient(_ : ONGUserClient, didChangePinForUser _: ONGUserProfile) {
