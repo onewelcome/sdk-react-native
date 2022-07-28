@@ -19,13 +19,10 @@ class PinConnector : BridgeToPinConnectorProtocol {
         switch action {
             case PinAction.provide.rawValue:
                 pinHandler.onPinProvided(pin: pin)
-                break
             case PinAction.cancel.rawValue:
                 pinHandler.onCancel()
-                break
             default:
                 sendEvent(data: ["flow": flow, "action": PinNotification.showError.rawValue, "errorMsg": "Unsupported pin action. Contact SDK maintainer."])
-                break
         }
     }
 
@@ -33,16 +30,10 @@ class PinConnector : BridgeToPinConnectorProtocol {
         switch (event){
             case .open:
             sendEvent(data: ["flow": flow?.rawValue ?? "", "action": PinNotification.open.rawValue, "profileId": profileId ?? "", "userInfo": userInfo ?? [:], "data": data ?? [:]])
-                break
-            case .confirm:
-                sendEvent(data: ["flow": flow?.rawValue ?? "", "action": PinNotification.confirm.rawValue, "profileId": profileId ?? "", "data": data ?? [:]])
-                break;
             case .close:
                 sendEvent(data: ["flow": flow?.rawValue ?? "", "action": PinNotification.close.rawValue, "profileId": profileId ?? "", "data": data ?? [:]])
-                break;
             case .showError:
                 sendEvent(data: ["flow": flow?.rawValue ?? "", "action": PinNotification.showError.rawValue, "errorMsg": error?.localizedDescription ?? "", "profileId": profileId ?? "", "userInfo": userInfo ?? [:], "data": data ?? [:]])
-                break
         }
     }
 
@@ -54,7 +45,6 @@ class PinConnector : BridgeToPinConnectorProtocol {
 // Pin notification actions for RN Bridge
 enum PinNotification : String {
     case open = "open",
-         confirm = "confirm",
          close = "close",
          showError = "show_error"
 }

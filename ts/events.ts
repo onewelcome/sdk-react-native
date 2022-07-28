@@ -11,7 +11,6 @@ export enum PinFlow {
 
 export enum PinNotification {
   Open = 'open',
-  Confirm = 'confirm',
   Close = 'close',
   Error = 'show_error',
 }
