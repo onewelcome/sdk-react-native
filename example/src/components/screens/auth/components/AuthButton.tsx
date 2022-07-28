@@ -1,66 +1,106 @@
-import React, {useState, useEffect} from 'react';
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useContext,
+  useRef,
+} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import Button from '../../../general/Button';
 import OneWelcomeSdk from 'onewelcome-react-native-sdk';
 import {CurrentUser} from '../../../../auth/auth';
+import {AuthContext} from '../../../../providers/auth.provider';
+import {AuthActionTypes} from '../../../../providers/auth.actions';
+import ModalSelector from 'react-native-modal-selector';
 
 interface Props {
   onAuthorized?: (success: boolean) => void;
 }
 
 const AuthButton: React.FC<Props> = (props) => {
-  const [isDefaultProvider, setIsDefaultProvider] = useState(true);
-  const [isDisable, setDisable] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const isModalOpen = useRef(false);
+  const {
+    state: {
+      authenticated: {loading, profiles},
+    },
+    dispatch,
+  } = useContext(AuthContext);
+
+  const fetchProfiles = useCallback(async () => {
+    try {
+      dispatch({type: AuthActionTypes.AUTH_LOAD_PROFILE_IDS});
+      const userProfiles = await OneWelcomeSdk.getUserProfiles();
+      dispatch({
+        type: AuthActionTypes.AUTH_SET_PROFILE_IDS,
+        payload: userProfiles?.map(({profileId}) => profileId) || [],
+      });
+    } catch (e: any) {
+      setError(e.message);
+      dispatch({type: AuthActionTypes.AUTH_SET_PROFILE_IDS, payload: []});
+    }
+  }, [dispatch]);
+
+  const authenticateProfile = useCallback(
+    async (id: string) => {
+      try {
+        const authenticated = await OneWelcomeSdk.authenticateUser(id);
+        if (!authenticated) {
+          return;
+        }
+        CurrentUser.id = id;
+        props.onAuthorized?.(true);
+      } catch (e: any) {
+        setError(e.message);
+        fetchProfiles();
+      }
+    },
+    [fetchProfiles, props],
+  );
 
   useEffect(() => {
-    hasProfile()
-      .then((result) => setDisable(result))
-      .catch((err) => setError(err));
-  }, [error]);
+    if (!profiles && !loading) {
+      fetchProfiles();
+    }
+  }, [profiles, loading, fetchProfiles]);
 
   return (
     <View style={styles.container}>
-      <Button
-        name={isDefaultProvider ? 'LOG IN' : 'LOG IN WITH...'}
-        disabled={isDisable}
-        onPress={() => onPressClicked(props.onAuthorized, setError)}
-      />
+      {profiles && profiles.length > 1 ? (
+        <ModalSelector
+          data={profiles.map((p) => p.id)}
+          initValue={profiles[0].id}
+          selectedKey={profiles[0].id}
+          keyExtractor={(item) => item}
+          labelExtractor={(item) => item}
+          selectedItemTextStyle={{fontWeight: '700'}}
+          style={styles.modal}
+          onModalClose={() => {
+            isModalOpen.current = false;
+          }}
+          onModalOpen={() => {
+            isModalOpen.current = true;
+          }}
+          onChange={(option) => {
+            if (isModalOpen.current) {
+              authenticateProfile(option);
+            }
+          }}>
+          <Button name="LOG IN WITH ...">Log in</Button>
+        </ModalSelector>
+      ) : (
+        <Button
+          name={'LOG IN'}
+          disabled={!profiles || profiles.length < 1}
+          onPress={() =>
+            profiles && profiles.length && authenticateProfile(profiles[0].id)
+          }
+        />
+      )}
       <Text style={styles.errorText}>{error}</Text>
     </View>
   );
 };
-
-function onPressClicked(
-  onAuthorized?: (success: boolean) => void,
-  setError?: (error: string) => void,
-) {
-  OneWelcomeSdk.getUserProfiles().then((profiles) =>
-    OneWelcomeSdk.authenticateUser(profiles[0].profileId)
-      .then((result) => {
-        CurrentUser.id = profiles[0].profileId;
-
-        console.log('AUTH: ', JSON.stringify(result));
-        onAuthorized?.(true);
-      })
-      .catch((error) => {
-        setError?.('' + error);
-      }),
-  );
-}
-
-function hasProfile(): Promise<boolean> {
-  return new Promise((resolve, reject) =>
-    OneWelcomeSdk.getUserProfiles()
-      .then((profiles) => {
-        console.log('Profiles: ', profiles);
-        resolve(profiles.length === 0);
-      })
-      .catch((err) => {
-        reject(`Failed to get profiles: ${err}`);
-      }),
-  );
-}
 
 const styles = StyleSheet.create({
   container: {
@@ -75,6 +115,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 15,
     color: '#c82d2d',
+  },
+  modal: {
+    width: '100%',
   },
 });
 
