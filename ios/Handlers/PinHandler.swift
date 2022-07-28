@@ -13,7 +13,7 @@ protocol PinHandlerToReceiverProtocol: AnyObject {
 enum PINEntryMode {
     case login
     case registration
-    case registrationConfirm
+    
 }
 
 class PinHandler: NSObject {
@@ -21,7 +21,6 @@ class PinHandler: NSObject {
     var createPinChallenge: ONGCreatePinChallenge?
     var flow: PinFlow?
     var mode: PINEntryMode?
-    var pinEntryToVerify = Array<String>()
     var changePinCompletion: ((Bool, NSError?) -> Void)?
     unowned var pinReceiver: PinHandlerToReceiverProtocol?
 
@@ -29,18 +28,12 @@ class PinHandler: NSObject {
         let pincode = pinEntry.joined()
         switch mode {
           case .registration:
-              handleRegistrationPin(pinEntry)
-              break
-          case .registrationConfirm:
-              handleConfirmRegistrationPin(pinEntry, pincode)
-              break
+              handleRegistrationPin(pincode)
           case .login:
                 pinReceiver?.handlePin(pin: pincode)
-              break
           case .none:
             let error = NSError(domain: ONGPinValidationErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey : "Unexpected PIN mode."])
               notifyOnError(error)
-              break
         }
     }
 
@@ -49,29 +42,12 @@ class PinHandler: NSObject {
         pinReceiver?.handlePin(pin: nil)
     }
 
-    private func handleRegistrationPin(_ pinEntry: Array<String>) {
-        pinEntryToVerify = pinEntry
-        mode = .registrationConfirm
-        sendConnectorNotification(PinNotification.confirm, flow, nil, nil, nil, nil)
-    }
-
-    private func handleConfirmRegistrationPin(_ pinEntry: Array<String>, _ pincode: String) {
-        let pincodeConfirm = pinEntryToVerify.joined()
-        if pincode == pincodeConfirm {
-            pinReceiver?.handlePin(pin: pincode)
-        } else {
-            mode = .registration
-            let error = NSError(domain: ONGPinValidationErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey : "The confirmation PIN does not match."])
-            notifyOnError(error)
-        }
+    private func handleRegistrationPin(_ pincode: String) {
+        pinReceiver?.handlePin(pin: pincode)
     }
 
     func notifyOnError(_ error: NSError, userInfo: [String: Any]? = nil) {
         sendConnectorNotification(PinNotification.showError, flow, error, nil, userInfo, nil)
-
-        if(mode == PINEntryMode.registrationConfirm) {
-            mode = .registration
-        }
     }
 
     private func sendConnectorNotification(_ event: PinNotification, _ flow: PinFlow?, _ error: NSError?,  _ profileId: String?, _ userInfo: [String: Any]? = nil, _ data: Any?) {
@@ -86,27 +62,22 @@ extension PinHandler : PinConnectorToPinHandler {
             self.flow = flow
             pinReceiver = receiver
         }
-
-
         if(error != nil){
             notifyOnError(error!, userInfo: userInfo)
-        } else {
-            if(mode == nil) {
-                switch flow {
-                    case PinFlow.authentication:
-                        mode = .login
-                        break
-                    case PinFlow.create:
-                        mode = .registration
-                        break
-                    case PinFlow.change:
-                        mode = .login
-
-                }
-
-                sendConnectorNotification(PinNotification.open, flow, nil, profileId, userInfo, data)
-            }
+            return
         }
+        if(mode == nil) {
+            switch flow {
+                case PinFlow.authentication:
+                    mode = .login
+                case PinFlow.create:
+                    mode = .registration
+                case PinFlow.change:
+                    mode = .login
+            }
+            sendConnectorNotification(PinNotification.open, flow, nil, profileId, userInfo, data)
+        }
+    
     }
 
     func closeFlow() {
@@ -197,19 +168,16 @@ extension PinHandler: ONGChangePinDelegate {
         authPinChallenge = nil
         createPinChallenge = nil
         closeFlow()
-        handleFlowUpdate(PinFlow.change, error: error as NSError, receiver: self, profileId: profile.profileId)
+        changePinCompletion!(false, error as NSError)
     }
     
     func userClient(_ userClient: ONGUserClient, didStartPinChangeForUser userProfile: ONGUserProfile) {
-        handleFlowUpdate(PinFlow.change, error: nil, receiver: self, profileId: userProfile.profileId, userInfo: nil, data: nil)
+        //TODO: Notify react-native that we are starting a pinChange.
     }
 
-    func userClient(_: ONGUserClient, didChangePinForUser _: ONGUserProfile) {
+    func userClient(_ : ONGUserClient, didChangePinForUser _: ONGUserProfile) {
         createPinChallenge = nil
         closeFlow()
         changePinCompletion!(true, nil)
-        
-        // Fix: dont update when this flow is done
-//        handleFlowUpdate(PinFlow.change, nil, receiver: self)
     }
 }
