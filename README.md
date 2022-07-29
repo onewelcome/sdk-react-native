@@ -2,11 +2,11 @@
 
 ## Getting started
 
-`npm install onewelcome-react-native-sdk --save`
+`npm install @onewelcome/react-native-sdk --save`
 
 OR
 
-`yarn add onewelcome-react-native-sdk`
+`yarn add @onewelcome/react-native-sdk`
 
 ## SDK Configuration
 
@@ -19,13 +19,6 @@ OR
 
 1. Modify `android/app/build.gradle`:
 
-   1.1. Add to `android` section:
-
-   ```
-   lintOptions {
-       abortOnError false
-   }
-   ```
 
    1.2 Add to `android` -> `defaultConfig` section:
 
@@ -47,14 +40,6 @@ OR
    ```
 
 3. Add to `android/build.gradle`[allprojects.repositories]:
-
-   ```
-   dependencies {
-           classpath("com.android.tools.build:gradle:4.1.1")
-           classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.10")
-       }
-
-   ```
 
    ```
    mavenCentral()
@@ -200,77 +185,6 @@ OR
 - **iOS**: `yarn ios` or `npm run ios`
 - **Android**: `yarn android` or `npm run android`
 
-# Known RN issues
-
-These are the issues that are not connected to OneWelcome React Native SDK but you may encounter them during integration.
-
-## Xcode 12.5 with Flipper
-
-### Discussion
-
-https://github.com/facebook/flipper/issues/2215
-
-### Solution
-
-In `ios/Podfile` change `use_flipper!` into `use_flipper!({ 'Flipper-Folly' => '2.5.3', 'Flipper' => '0.87.0', 'Flipper-RSocket' => '1.3.1' })`
-
-## Undefined symbols for architecture
-
-### Discussion
-
-https://github.com/facebookarchive/react-native-fbsdk/issues/794
-
-### Solution
-
-Open Xcode project (.xcworkspace) and add empty Swift file (NotUsed.swift). When prompt for creating Create Bridging Header - accept.
-
-## Podfile
-
-### Discussion
-
-### Solution
-
-In iOS/Pofile add at the top
-`add source 'https://github.com/CocoaPods/Specs.git'`
-
-## Codegen / Invalid regular expression
-
-### Discussion
-
-https://github.com/facebook/react-native/issues/31180
-
-### Solution
-
-`yarn add --dev react-native-codegen`
-# Functional scope
-### Milestone 1:
-    - Start
-    - Security Controls and Configuration of the SDK
-    - User registration
-       - Browser
-### Milestone 2:
-    - User registration
-           - Custom
-    - User deregistration
-### Milestone 3:
-    - User authentication with PIN
-    - Fetch user access token
-    - Logout
-### Milestone 4:
-    - Mobile authenticator enrollment
-    - Mobile authentication with OTP
-### Milestone 5:
-    - Fingerprint enrollment
-    - Fingerprint authentication
-### Milestone 6:
-    - Change PIN
-### Milestone 7:
-    - App2Web
-### Milestone 8:
-    - Secure resource access
-
-# Usage
-- import OneginiSdk from 'react-native-sdk-beta';
 
 ## Configuration
 ### Config structure
@@ -292,22 +206,6 @@ https://github.com/facebook/react-native/issues/31180
       - true - possible actions initRegistration, initRegistration are sent by ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION
       - false - possible actions finishRegistration are sent by ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION
       
-
-## Hooks
-### `usePinFlow`. For easiest PIN flow implementation. Example:
-```
-import { usePinFlow, ONEGINI_PIN_FLOW } from "react-native-sdk-beta/pin";
-const [ flow, pin, visible, isConfirmMode, error, provideNewPinKey, cancelPinFlow] = usePinFlow();
-```
-Where:
-- **flow**: ONEGINI_PIN_FLOW(On of ['authentication', 'create', 'change']).
-- **pin**: string. Current pin value.
-- **visible**: boolean. Defines wheather show PIN flow or not.
-- **isConfirmMode**: boolean. For `create` and `change` user should confirm inserted PIN, this boolean helps to know current state.
-- **error**: string || null. Contains error or empty if no error.
-- **provideNewPinKey**: func. Function to supply next PIN char. Supply '<' key to remove last PIN char.
-- **cancelPinFlow**: func. Helper function to set error to `null`.
-
 
 ## Supported Methods
 
