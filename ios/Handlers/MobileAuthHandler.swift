@@ -1,7 +1,7 @@
 protocol MobileAuthConnectorToHandlerProtocol: AnyObject {
     func enrollForMobileAuth(_ completion: @escaping (Bool?, NSError?) -> Void)
     func isUserEnrolledForMobileAuth() -> Bool
-    func handleMobileAuthConfirmation(cancelled: Bool)
+    func handleMobileAuthConfirmation(accepted: Bool)
     func handleOTPMobileAuth(_ otp: String, _ completion: @escaping (Bool, NSError?) -> Void)
 }
 
@@ -18,10 +18,10 @@ class MobileAuthHandler: NSObject {
     var confirmation: ((Bool) -> Void)?
     var mobileAuthCompletion: ((Bool, NSError?) -> Void)?
 
-    fileprivate func handleConfirmationMobileAuth(_ cancelled: Bool) {
+    fileprivate func handleConfirmationMobileAuth(_ accepted: Bool) {
         guard let confirmation = confirmation else { fatalError() }
 
-        confirmation(cancelled)
+        confirmation(accepted)
     }
 
 
@@ -49,11 +49,11 @@ extension MobileAuthHandler : MobileAuthConnectorToHandlerProtocol {
         return false
     }
 
-    func handleMobileAuthConfirmation(cancelled: Bool) {
+    func handleMobileAuthConfirmation(accepted: Bool) {
         if authenticatorType == .fingerprint {
             //@todo
         } else if authenticatorType == .confirmation {
-            handleConfirmationMobileAuth(cancelled)
+            handleConfirmationMobileAuth(accepted)
         } else if authenticatorType == .pin {
             //@todo
         }
@@ -66,6 +66,14 @@ extension MobileAuthHandler : MobileAuthConnectorToHandlerProtocol {
 }
 
 extension MobileAuthHandler: ONGMobileAuthRequestDelegate {
+    func userClient(_ userClient: ONGUserClient, didFailToHandle request: ONGMobileAuthRequest, authenticator: ONGAuthenticator?, error: Error) {
+        mobileAuthCompletion!(false, error as NSError)
+    }
+    
+    func userClient(_ userClient: ONGUserClient, didHandle request: ONGMobileAuthRequest, authenticator: ONGAuthenticator?, info customAuthenticatorInfo: ONGCustomInfo?) {
+        mobileAuthCompletion!(true, nil)
+    }
+    
     func userClient(_: ONGUserClient, didReceiveConfirmationChallenge confirmation: @escaping (Bool) -> Void, for request: ONGMobileAuthRequest) {
         message = request.message
         userProfile = request.userProfile
@@ -86,11 +94,4 @@ extension MobileAuthHandler: ONGMobileAuthRequestDelegate {
         //@todo will need this for PUSH Custom?
     }
 
-    func userClient(_: ONGUserClient, didFailToHandle _: ONGMobileAuthRequest, error: Error) {
-        mobileAuthCompletion!(false, error as NSError)
-    }
-
-    func userClient(_: ONGUserClient, didHandle _: ONGMobileAuthRequest, info _: ONGCustomInfo?) {
-        mobileAuthCompletion!(true, nil)
-    }
 }

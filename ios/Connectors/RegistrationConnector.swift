@@ -43,7 +43,7 @@ class RegistrationConnector : BridgeToRegistrationConnectorProtocol {
     }
 
   private func sendEvent(data: Any!) {
-      bridgeConnector?.sendBridgeEvent(eventName: OneginiBridgeEvents.customRegistrationNotification, data: data)
+      bridgeConnector?.sendBridgeEvent(eventName: OneWelcomeBridgeEvents.customRegistrationNotification, data: data)
   }
 }
 

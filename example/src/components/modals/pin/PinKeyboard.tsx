@@ -68,7 +68,8 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   keyContainer: {
-    width: '32%',
+    minWidth: '30%',
+    maxWidth: '32%',
     height: '24%',
     margin: 2,
     backgroundColor: '#ffffff',

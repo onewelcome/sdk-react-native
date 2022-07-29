@@ -19,8 +19,7 @@ class BrowserViewController: NSObject, BrowserHandlerProtocol {
     }
 
     func handleUrl(url: URL) {
-        let scheme = "reactnativeexample";
-
+        let scheme = URL(string: ONGClient.sharedInstance().configModel.redirectURL)!.scheme
         webAuthSession = ASWebAuthenticationSession(url: url, callbackURLScheme: scheme, completionHandler: { callbackURL, error in
           guard error == nil, let successURL = callbackURL else {
             self.cancelButtonPressed()
@@ -33,11 +32,11 @@ class BrowserViewController: NSObject, BrowserHandlerProtocol {
         if #available(iOS 13.0, *) {
             webAuthSession?.prefersEphemeralWebBrowserSession = true
             webAuthSession?.presentationContextProvider = self;
-        } else {
-          // Fallback on earlier versions
-        };
+        }
 
-        webAuthSession?.start()
+        DispatchQueue.main.async {
+            self.webAuthSession?.start()
+        }
     }
 
     private func handleSuccessUrl(url: URL) {
@@ -53,18 +52,6 @@ class BrowserViewController: NSObject, BrowserHandlerProtocol {
 @available(iOS 12.0, *)
 extension BrowserViewController: ASWebAuthenticationPresentationContextProviding {
     func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
-        var anchor: ASPresentationAnchor?;
-        let group = DispatchGroup()
-        group.enter()
-
-        DispatchQueue.global(qos: .default).async {
-            anchor = UIApplication.shared.keyWindow!
-            group.leave()
-        }
-
-        // wait ...
-        group.wait()
-
-        return anchor!
+        return UIApplication.shared.windows.first { $0.isKeyWindow }!
     }
 }

@@ -9,4 +9,4 @@
 
 # Add any project specific keep options here:
 
--keep class com.rnexampleapp.SecurityController { *; }
+-keep class com.onegini.mobile.rnexampleapp.SecurityController { *; }

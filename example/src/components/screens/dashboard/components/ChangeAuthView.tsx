@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import ContentContainer from './ContentContainer';
 import Row from '../../../general/Row';
@@ -11,7 +11,7 @@ import {
   getRegisteredAuthenticators,
   setPreferredAuthenticator,
 } from '../../../helpers/FingerprintHelper';
-import {Types} from 'react-native-sdk-beta';
+import {Types} from 'onewelcome-react-native-sdk';
 
 const emptyRegisteredAuthenticators: Types.Authenticator[] = [
   {id: '0', name: '', isPreferred: true, isRegistered: false, type: ''},
@@ -25,22 +25,41 @@ const pinRegisteredAuthenticator: Types.Authenticator = {
   type: '',
 };
 
-interface Props {}
+interface Props {
+  onLogout: () => void;
+}
 
-const ChangeAuthView: React.FC<Props> = () => {
+const ChangeAuthView: React.FC<Props> = (props) => {
   const [isFigerprintEnable, setFingerprintEnable] = useState(false);
   const [message, setMessage] = useState('');
   const [registeredAuthenticators, setRegisteredAuthenticators] = useState<
+    Types.Authenticator[]
+  >(emptyRegisteredAuthenticators);
+  const [allAuthenticators, setAllAuthenticators] = useState<
     Types.Authenticator[]
   >(emptyRegisteredAuthenticators);
   const [preferred, setPreferred] = useState<Types.Authenticator>(
     pinRegisteredAuthenticator,
   );
 
+  // because react-native-modal-selector is broken and calls onChange when unmount
+  const isModalOpen = useRef(false);
+
   useEffect(() => {
     isFingerprintAuthenticatorRegistered(setFingerprintEnable);
-    getRegisteredAuthenticators(setRegisteredAuthenticators, setPreferred);
+    getRegisteredAuthenticators(
+      setRegisteredAuthenticators,
+      setAllAuthenticators,
+      setPreferred,
+    );
   }, []);
+
+  const hasFingerprintAuthenticator =
+    allAuthenticators.findIndex(
+      (auth) =>
+        auth.name.toUpperCase() === 'TOUCHID' ||
+        auth.name.toUpperCase() === 'FINGERPRINT',
+    ) > -1;
 
   const renderMessage = (msg: string) => {
     if (msg !== '') {
@@ -62,13 +81,21 @@ const ChangeAuthView: React.FC<Props> = () => {
           keyExtractor={(item) => item.id}
           labelExtractor={(item) => item.name}
           selectedItemTextStyle={{fontWeight: '700'}}
+          onModalClose={() => {
+            isModalOpen.current = false;
+          }}
+          onModalOpen={() => {
+            isModalOpen.current = true;
+          }}
           onChange={(option) => {
-            onPreferredChanged(
-              option,
-              setMessage,
-              setPreferred,
-              setRegisteredAuthenticators,
-            );
+            if (isModalOpen.current) {
+              onPreferredChanged(
+                option,
+                setMessage,
+                setPreferred,
+                setRegisteredAuthenticators,
+              );
+            }
           }}
         />
       </Row>
@@ -81,21 +108,24 @@ const ChangeAuthView: React.FC<Props> = () => {
           value={true}
           disabled={true}
         />
-        <Switch
-          containerStyle={styles.fingerprintSwitchContainer}
-          labelStyle={styles.switchLabel}
-          label={'Fingerprint'}
-          onSwitch={(enabled: boolean) =>
-            onSwithFingerprint(
-              enabled,
-              setFingerprintEnable,
-              setMessage,
-              setRegisteredAuthenticators,
-              setPreferred,
-            )
-          }
-          value={isFigerprintEnable}
-        />
+        {hasFingerprintAuthenticator && (
+          <Switch
+            containerStyle={styles.fingerprintSwitchContainer}
+            labelStyle={styles.switchLabel}
+            label={'Fingerprint'}
+            onSwitch={(enabled: boolean) =>
+              onSwithFingerprint(
+                enabled,
+                setFingerprintEnable,
+                setMessage,
+                setRegisteredAuthenticators,
+                setPreferred,
+                props.onLogout
+              )
+            }
+            value={isFigerprintEnable}
+          />
+        )}
       </View>
     </ContentContainer>
   );
@@ -110,7 +140,11 @@ const onPreferredChanged = (
   setPreferredAuthenticator(
     preferred,
     (success: boolean) => {
-      getRegisteredAuthenticators(setRegisteredAuthenticators, setPreferred);
+      getRegisteredAuthenticators(
+        setRegisteredAuthenticators,
+        () => {},
+        setPreferred,
+      );
     },
     setMessage,
   );
@@ -122,22 +156,39 @@ const onSwithFingerprint = (
   setMessage: (message: string) => void,
   setRegisteredAuthenticators: (authenticators: Types.Authenticator[]) => void,
   setPreferred: (authenticator: Types.Authenticator) => void,
+  logout: () => void
 ) => {
   setMessage('');
   if (isEnable) {
-    registerFingerprintAuthenticator((successful) => {
-      if (successful) {
-        setFigerprintEnable(true);
+    registerFingerprintAuthenticator(() => {
+      setFigerprintEnable(true);
+      getRegisteredAuthenticators(
+        setRegisteredAuthenticators,
+        () => {},
+        setPreferred,
+      );
+    }, (error: any) => {
+      if (error.code == "9002" || error.code == "9003") {
+        logout();
+      } else {
+        setMessage(error.message)
       }
-      getRegisteredAuthenticators(setRegisteredAuthenticators, setPreferred);
-    }, setMessage);
+    });
   } else {
-    deregisterFingerprintAuthenticator((successful) => {
-      if (successful) {
-        setFigerprintEnable(false);
+    deregisterFingerprintAuthenticator(() => {
+      setFigerprintEnable(false);
+      getRegisteredAuthenticators(
+        setRegisteredAuthenticators,
+        () => {},
+        setPreferred,
+      );
+    }, (error: any) => {
+      if (error.code == "9002" || error.code == "9003") {
+        logout();
+      } else {
+        setMessage(error.message)
       }
-      getRegisteredAuthenticators(setRegisteredAuthenticators, setPreferred);
-    }, setMessage);
+    });
   }
 };
 

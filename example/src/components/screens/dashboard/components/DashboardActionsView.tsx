@@ -3,17 +3,18 @@ import {StyleSheet, Text, Linking, Alert} from 'react-native';
 import ContentContainer from './ContentContainer';
 import Button from '../../../general/Button';
 import {logout, deregisterUser} from '../../../helpers/DashboardHelpers';
-import OneginiSdk from 'react-native-sdk-beta';
+import OneWelcomeSdk from 'onewelcome-react-native-sdk';
+import {CurrentUser} from '../../../../auth/auth';
 
 const onSingleSingOn = () => {
-  OneginiSdk.startSingleSignOn(
+  OneWelcomeSdk.startSingleSignOn(
     'https://login-mobile.test.onegini.com/personal/dashboard',
   )
     .then((it) => {
       Linking.openURL(it.url);
     })
     .catch((error) => {
-      Alert.alert('Error', error);
+      Alert.alert('Error', JSON.stringify(error));
     });
 };
 
@@ -37,12 +38,13 @@ interface Props {
   onSettingsPressed?: () => void;
   onMobileAuthWithOTPPressed?: () => void;
   onYourDevicesPressed?: () => void;
+  onAccessTokenPressed?: () => void;
 }
 
 const DashboardActionsView: React.FC<Props> = (props) => {
   return (
     <ContentContainer>
-      <Text style={styles.helloText}>Hello, $userName!</Text>
+      <Text style={styles.helloText}>{`Hello user: ${CurrentUser.id}`}</Text>
       {renderButton('YOUR DEVICES', props.onYourDevicesPressed, false)}
       {renderButton(
         'MOBILE AUTH WITH OTP',
@@ -51,8 +53,13 @@ const DashboardActionsView: React.FC<Props> = (props) => {
       )}
       {renderButton('SINGLE SIGN-ON', () => onSingleSingOn(), false)}
       {renderButton('SETTINGS', props.onSettingsPressed, false)}
-      {renderButton('LOGOUT', () => logout(props.onLogout), false)}
       {renderButton('DEREGISTER', () => deregisterUser(props.onLogout), false)}
+      {renderButton('LOGOUT', () => logout(props.onLogout), false)}
+      {renderButton(
+        'ACCESS TOKEN',
+        () => props.onAccessTokenPressed?.(),
+        false,
+      )}
     </ContentContainer>
   );
 };
@@ -68,6 +75,7 @@ const styles = StyleSheet.create({
   },
   button: {
     marginVertical: 14,
+    flex:1,
   },
 });
 

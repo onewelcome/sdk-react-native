@@ -42,7 +42,7 @@ const Button: React.FC<Props> = ({
 const styles = StyleSheet.create({
   button: {
     width: '100%',
-    padding: 15,
+    padding: 10,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 3,
@@ -51,6 +51,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '400',
     color: '#ffffff',
+    textAlign: 'center',
   },
 });
 
