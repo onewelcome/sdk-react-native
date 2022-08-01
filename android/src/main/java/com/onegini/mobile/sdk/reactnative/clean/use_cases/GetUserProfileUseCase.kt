@@ -1,6 +1,6 @@
-package com.onegini.mobile.clean.use_cases
+package com.onegini.mobile.sdk.reactnative.clean.use_cases
 
-import com.onegini.mobile.OneginiSDK
+import com.onegini.mobile.sdk.reactnative.OneginiSDK
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 
 class GetUserProfileUseCase(private val oneginiSDK: OneginiSDK) {

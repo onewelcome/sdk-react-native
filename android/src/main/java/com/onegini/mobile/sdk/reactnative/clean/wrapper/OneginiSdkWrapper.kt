@@ -4,12 +4,12 @@ import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
-import com.onegini.mobile.clean.use_cases.AuthenticateUserUseCase
-import com.onegini.mobile.clean.use_cases.DeregisterUserUseCase
-import com.onegini.mobile.clean.use_cases.GetAllAuthenticatorsUseCase
-import com.onegini.mobile.clean.use_cases.GetRedirectUriUseCase
-import com.onegini.mobile.clean.use_cases.GetRegisteredAuthenticatorsUseCase
-import com.onegini.mobile.clean.use_cases.GetUserProfilesUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.AuthenticateUserUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.DeregisterUserUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAllAuthenticatorsUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetRedirectUriUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetRegisteredAuthenticatorsUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetUserProfilesUseCase
 import com.onegini.mobile.sdk.reactnative.OneginiSDK
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAccessTokenUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAuthenticatedUserProfileUseCase
@@ -41,11 +41,11 @@ class OneginiSdkWrapper(
         authenticateUserUseCase(profileId, authenticatorId, promise)
     }
 
-    override fun authenticateUserImplicitly(profileId: String?, scopes: Array<String>?, promise: Promise) {
+    override fun authenticateUserImplicitly(profileId: String?, scopes: ReadableArray, promise: Promise) {
         TODO("Not yet implemented")
     }
 
-    override fun authenticateDeviceForResource(scopes: Array<String>, promise: Promise) {
+    override fun authenticateDeviceForResource(scopes: ReadableArray, promise: Promise) {
         TODO("Not yet implemented")
     }
 

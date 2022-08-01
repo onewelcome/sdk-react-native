@@ -1,8 +1,8 @@
-package com.onegini.mobile.clean.use_cases
+package com.onegini.mobile.sdk.reactnative.clean.use_cases
 
 import com.facebook.react.bridge.Promise
-import com.onegini.mobile.OneginiSDK
-import com.onegini.mobile.mapers.UserProfileMapper
+import com.onegini.mobile.sdk.reactnative.OneginiSDK
+import com.onegini.mobile.sdk.reactnative.mapers.UserProfileMapper
 
 class GetUserProfilesUseCase(private val oneginiSDK: OneginiSDK) {
 

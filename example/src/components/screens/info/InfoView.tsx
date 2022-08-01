@@ -69,7 +69,7 @@ const InfoView: React.FC<Props> = (props) => {
       path: 'application-details',
     },
     true,
-    ['application-details']
+    ['application-details'],
   );
 
   // get profileId at start

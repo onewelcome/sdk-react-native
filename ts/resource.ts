@@ -74,7 +74,7 @@ function useResources(
       scopes,
       profileId,
     );
-  }, [type, shouldAuthenticate, profileId, currentDetails, scopes]);
+  }, [type, shouldAuthenticate, profileId, currentDetails]);
 
   return {
     loading,

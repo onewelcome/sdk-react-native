@@ -377,7 +377,9 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         sdkWrapper.authenticateUser(profileId, authenticatorId, promise)
     }
 
-    override fun authenticateUserImplicitly(profileId: String?, scopes: Array<String>?, promise: Promise) {
+    @ReactMethod
+    override fun authenticateUserImplicitly(profileId: String?, scopes: ReadableArray, promise: Promise) {
+        val scopesArray = ScopesMapper.toStringArray(scopes)
         Log.d(LOG_TAG, "authenticateUserImplicitly profileId: $profileId")
 
         val userProfile = authenticatorManager.getUserProfile(profileId)
@@ -386,7 +388,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         } else {
             oneginiSDK.oneginiClient.userClient
                 .authenticateUserImplicitly(
-                    userProfile, scopes,
+                    userProfile, scopesArray,
                     object : OneginiImplicitAuthenticationHandler {
                         override fun onSuccess(profile: UserProfile) {
                             promise.resolve(null)
@@ -401,11 +403,12 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    override fun authenticateDeviceForResource(scopes: Array<String>, promise: Promise) {
+    override fun authenticateDeviceForResource(scopes: ReadableArray, promise: Promise) {
+        val scopesArray = ScopesMapper.toStringArray(scopes)
         Log.d(LOG_TAG, "authenticateDeviceForResource scopes: $scopes")
 
         oneginiSDK.oneginiClient.deviceClient.authenticateDevice(
-            scopes,
+            scopesArray,
             object : OneginiDeviceAuthenticationHandler {
                 override fun onSuccess() {
                     promise.resolve(null)

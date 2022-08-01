@@ -1,9 +1,9 @@
-package com.onegini.mobile.clean.use_cases
+package com.onegini.mobile.sdk.reactnative.clean.use_cases
 
 import com.facebook.react.bridge.Promise
-import com.onegini.mobile.OneginiSDK
-import com.onegini.mobile.exception.OneginiWrapperErrors
-import com.onegini.mobile.mapers.OneginiAuthenticatorMapper
+import com.onegini.mobile.sdk.reactnative.OneginiSDK
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
+import com.onegini.mobile.sdk.reactnative.mapers.OneginiAuthenticatorMapper
 
 class GetAllAuthenticatorsUseCase(
     private val oneginiSDK: OneginiSDK,
