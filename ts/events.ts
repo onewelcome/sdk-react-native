@@ -51,7 +51,7 @@ export type CustomRegistrationNotificationEvent =
   | finishRegistrationEvent;
 
 export type initRegistrationEvent = {
-  action: CustomRegistrationNotification;
+  action: CustomRegistrationNotification.InitRegistration;
   identityProviderId: string;
   customInfo?: {
     data: string;
@@ -60,7 +60,7 @@ export type initRegistrationEvent = {
 };
 
 export type finishRegistrationEvent = {
-  action: CustomRegistrationNotification;
+  action: CustomRegistrationNotification.FinishRegistration;
   identityProviderId: string;
   customInfo?: {
     data: string;
