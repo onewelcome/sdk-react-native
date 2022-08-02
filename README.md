@@ -76,7 +76,7 @@ OR
    </intent-filter>
    ```
 
-6. <a name="android-setup-config"/>Setup the config: Generate a 'OneginiConfigModel' and 'keystore.bks' with [SDK Configurator](https://github.com/Onegini/onegini-sdk-configurator#android).
+6. Setup the config: Generate a 'OneginiConfigModel' and 'keystore.bks' with [SDK Configurator](https://github.com/Onegini/onegini-sdk-configurator#android).
 
    Configurator will put `OneginiConfigModel` into `[RN_application_package_classpath.OneginiConfigModel]` (e.g. `com.exampleapp.OneginiConfigModel`) and the `keystore.bks` into '/res/raw'.
    After configurator used - you have 2 options:
@@ -86,7 +86,7 @@ OR
 
    More information [HERE](https://docs.onegini.com/msp/stable/android-sdk/topics/setting-up-the-project#verifying), section: Running the SDK Configurator.
 
-7. <a name="android-setup-security-controller"/>Setup the SecurityController(<u>not required</u>).
+7. Setup the SecurityController(not required).
 
    In order to change security options you should create your own instance SecurityController and handle it to OneWelcomeSdk - See the [Supported Methods:](#supported-methods) setSecurityControllerClassName(className).
    Example SecurityController implementation you can find inside library source code("com.onegini.mobile.SecurityController").
@@ -108,7 +108,7 @@ OR
    password <password>
    ```
 
-   Replace the <username> and <password> with the credentials that you use to login to support.onegini.com.
+   Replace the `<username>` and `<password>` with the credentials that you use to login to support.onegini.com.
 
 3. The OneWelcome CocoaPods repository must be added to your local machine using the following command:
 
@@ -262,3 +262,33 @@ OR
 |                                                           |
 | **=== App2Web ===**                                       |
 | **`startSingleSignOn()`**                                 |  Redirects user to Web app with loggin in user. |
+  
+## Local Development of SDK
+  
+The SDK can be developed locally using the [example app](https://github.com/onewelcome/example-app-react-native). 
+React Native does not support symlinking with dependencies in the node_modules folder because of the metro bundler see [issue](https://github.com/facebook/metro/issues/1).
+
+In order to develop the sdk you can link the project in the metro.config.js which can be done in the following way. Make sure to update the `packagePath`.
+
+Make sure to close out of your metro instance and rerun your application. 
+
+
+```
+const packagePath = '<absolute path to folder containing the sdk>/sdk-react-native';
+module.exports = {
+  projectRoot: __dirname,
+  watchFolders: [__dirname, packagePath],
+  transformer: {
+    getTransformOptions: async () => ({
+      transform: {
+        experimentalImportSupport: false,
+        inlineRequires: true,
+      },
+    }),
+  },
+  resolver: {
+    nodeModulesPaths: [packagePath],
+  },
+};
+```
+
