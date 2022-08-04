@@ -55,14 +55,14 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
     @objc
     func getRedirectUri(_ resolve: RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
-        let redirectUri = ONGClient.sharedInstance().configModel.redirectURL;
+        let redirectUri = ONGClient.sharedInstance().configModel.redirectURL
 
         resolve([ "redirectUri" : redirectUri!])
     }
 
     @objc
     func getAccessToken(_ resolve: RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
-        let accessToken = userClient.accessToken;
+        let accessToken = userClient.accessToken
 
         resolve(accessToken ?? nil)
     }
@@ -83,8 +83,8 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func getAuthenticatedUserProfile(_ resolve: RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
         guard let authenticatedProfile = userClient.authenticatedUserProfile() else {
             let error = NSError(domain: ONGGenericErrorDomain, code: ONGGenericError.serverNotReachable.rawValue, userInfo: [NSLocalizedDescriptionKey : "No authenticated user profiles found."])
-            reject("\(error.code)", error.localizedDescription, error);
-            return;
+            reject("\(error.code)", error.localizedDescription, error)
+            return
         }
 
         resolve(["profileId": authenticatedProfile.value(forKey: "profileId")])
@@ -110,7 +110,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
         var provider: ONGIdentityProvider? = nil
 
         if identityProviderId != nil {
-            provider = userClient.identityProviders().first(where: { $0.value(forKey: "identifier") as? NSString == identityProviderId })!;
+            provider = userClient.identityProviders().first(where: { $0.value(forKey: "identifier") as? NSString == identityProviderId })!
         }
 
         bridgeConnector.toRegistrationConnector.registrationHandler.signUp(identityProvider: provider, scopes: scopes) {
@@ -134,7 +134,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func deregisterUser(_ profileId: (NSString),
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        let profile = userClient.userProfiles().first(where: { $0.value(forKey: "profileId") as! NSObject == profileId })!;
+        let profile = userClient.userProfiles().first(where: { $0.value(forKey: "profileId") as! NSObject == profileId })!
 
         userClient.deregisterUser(profile) {
             (result: Bool, error) -> Void in
@@ -224,7 +224,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                                     scopes: [String],
                                     resolver resolve: @escaping RCTPromiseResolveBlock,
                                     rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        let profile = userClient.userProfiles().first(where: { $0.value(forKey: "profileId") as! NSObject == profileId })!;
+        let profile = userClient.userProfiles().first(where: { $0.value(forKey: "profileId") as! NSObject == profileId })!
 
         bridgeConnector.toResourceHandler.authenticateImplicitly(profile, scopes: scopes) {
             (success, error) -> Void in
@@ -311,11 +311,11 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func getAllAuthenticators(_ profileId: (NSString),
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        let profile = userClient.userProfiles().first(where: { $0.value(forKey: "profileId") as! NSObject == profileId })!;
+        let profile = userClient.userProfiles().first(where: { $0.value(forKey: "profileId") as! NSObject == profileId })!
 
         let allAuthenticators: Array<ONGAuthenticator> = bridgeConnector.toAuthenticatorsHandler.getAuthenticatorsListForUserProfile(profile)
 
-        let result: NSMutableArray  = []
+        let result: NSMutableArray = []
 
         for authenticator in allAuthenticators {
             result.add(["id": authenticator.identifier, "name": authenticator.name, "type": authenticator.type, "isRegistered": authenticator.isRegistered, "isPreferred": authenticator.isPreferred])
@@ -328,11 +328,11 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func getRegisteredAuthenticators(_ profileId: (NSString),
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        let profile = userClient.userProfiles().first(where: { $0.value(forKey: "profileId") as! NSObject == profileId })!;
+        let profile = userClient.userProfiles().first(where: { $0.value(forKey: "profileId") as! NSObject == profileId })!
 
         let registeredAuthenticators: Array<ONGAuthenticator> = bridgeConnector.toAuthenticatorsHandler.getAuthenticatorsListForUserProfile(profile).filter {$0.isRegistered == true}
 
-        let result: NSMutableArray  = []
+        let result: NSMutableArray = []
 
         for authenticator in registeredAuthenticators {
             result.add(["id": authenticator.identifier, "name": authenticator.name, "type": authenticator.type, "isRegistered": authenticator.isRegistered, "isPreferred": authenticator.isPreferred])

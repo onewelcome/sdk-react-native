@@ -1,5 +1,5 @@
 protocol RegistrationConnectorToHandlerProtocol: AnyObject {
-    func signUp(identityProvider: ONGIdentityProvider?, scopes:[String], completion: @escaping (Bool, ONGUserProfile?, NSError?) -> Void)
+    func signUp(identityProvider: ONGIdentityProvider?, scopes: [String], completion: @escaping (Bool, ONGUserProfile?, NSError?) -> Void)
     func processRedirectURL(url: URL)
     func processOTPCode(code: String?)
     func cancelRegistration()
@@ -70,7 +70,7 @@ class RegistrationHandler: NSObject, BrowserHandlerToRegisterHandlerProtocol, Pi
 }
 
 extension RegistrationHandler : RegistrationConnectorToHandlerProtocol {
-    func signUp(identityProvider: ONGIdentityProvider? = nil, scopes:[String], completion: @escaping (Bool, ONGUserProfile?, NSError?) -> Void) {
+    func signUp(identityProvider: ONGIdentityProvider? = nil, scopes: [String], completion: @escaping (Bool, ONGUserProfile?, NSError?) -> Void) {
         signUpCompletion = completion
         ONGUserClient.sharedInstance().registerUser(with: identityProvider, scopes: scopes, delegate: self)
     }
