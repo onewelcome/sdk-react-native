@@ -28,7 +28,7 @@ class AuthenticateUserUseCase(
         val authenticator = allAuthenticators.find { it.id == authenticatorId }
 
         val handler = object : OneginiAuthenticationHandler {
-            override fun onSuccess(userProfile: UserProfile, customInfo: CustomInfo) {
+            override fun onSuccess(userProfile: UserProfile, customInfo: CustomInfo?) {
                 val result = Arguments.createMap()
                 UserProfileMapper.add(result, userProfile)
                 CustomInfoMapper.add(result, customInfo)
