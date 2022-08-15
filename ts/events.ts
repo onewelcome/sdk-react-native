@@ -1,42 +1,42 @@
-export type SdkNotificationEvent =
-  | PinNotificationEvent
-  | CustomRegistrationNotificationEvent
-  | FingerprintNotificationEvent
-  | MobileAuthOtpNotificationEvent;
+export type SdkEvent =
+  | PinEvent
+  | CustomRegistrationEvent
+  | FingerprintEvent
+  | MobileAuthOtpEvent;
 
-// PinNotification
-export type PinNotificationEvent =
-  | PinNotificationCloseEvent
-  | PinNotificationChangedEvent
-  | PinNotificationConfirmEvent
-  | PinNotificationOpenEvent
-  | PinNotificationErrorEvent;
+// Pin
+export type PinEvent =
+  | PinCloseEvent
+  | PinChangedEvent
+  | PinConfirmEvent
+  | PinOpenEvent
+  | PinErrorEvent;
 
-export type PinNotificationCloseEvent = {
-  action: PinNotification.Close;
+export type PinCloseEvent = {
+  action: Pin.Close;
   flow: PinFlow;
 };
 
-export type PinNotificationChangedEvent = {
-  action: PinNotification.Changed;
+export type PinChangedEvent = {
+  action: Pin.Changed;
   flow: PinFlow;
 };
 
 // TODO: Remove this, it is only here so it compiles but will be removed when the SDK/example app remove this event.
-export type PinNotificationConfirmEvent = {
-  action: PinNotification.Confirm;
+export type PinConfirmEvent = {
+  action: Pin.Confirm;
   flow: PinFlow;
 };
 
-export type PinNotificationOpenEvent = {
-  action: PinNotification.Open;
+export type PinOpenEvent = {
+  action: Pin.Open;
   flow: PinFlow;
   profileId: string;
   data?: number; //pin length
 };
 
-export type PinNotificationErrorEvent = {
-  action: PinNotification.Error;
+export type PinErrorEvent = {
+  action: Pin.Error;
   flow: PinFlow;
   errorType: number;
   errorMsg: string;
@@ -45,13 +45,13 @@ export type PinNotificationErrorEvent = {
   };
 };
 
-//CustomRegistrationNotification
-export type CustomRegistrationNotificationEvent =
+//CustomRegistration
+export type CustomRegistrationEvent =
   | initRegistrationEvent
   | finishRegistrationEvent;
 
 export type initRegistrationEvent = {
-  action: CustomRegistrationNotification.InitRegistration;
+  action: CustomRegistration.InitRegistration;
   identityProviderId: string;
   customInfo?: {
     data: string;
@@ -60,7 +60,7 @@ export type initRegistrationEvent = {
 };
 
 export type finishRegistrationEvent = {
-  action: CustomRegistrationNotification.FinishRegistration;
+  action: CustomRegistration.FinishRegistration;
   identityProviderId: string;
   customInfo?: {
     data: string;
@@ -68,13 +68,13 @@ export type finishRegistrationEvent = {
   };
 };
 
-//MobileAuthOtpNotification
-export type MobileAuthOtpNotificationEvent =
+//MobileAuthOtp
+export type MobileAuthOtpEvent =
   | startOtpAuthenticationEvent
   | finishOtpAuthenticationEvent;
 
 export type startOtpAuthenticationEvent = {
-  action: MobileAuthOtpNotification.StartAuthentication;
+  action: MobileAuthOtp.StartAuthentication;
   mobileAuthenticationRequest: {
     message: string;
     type: string;
@@ -84,7 +84,7 @@ export type startOtpAuthenticationEvent = {
 };
 
 export type finishOtpAuthenticationEvent = {
-  action: MobileAuthOtpNotification.FinishAuthentication;
+  action: MobileAuthOtp.FinishAuthentication;
   mobileAuthenticationRequest: {
     message: string;
     type: string;
@@ -93,26 +93,26 @@ export type finishOtpAuthenticationEvent = {
   };
 };
 
-//FingerPrintNotification
-export type FingerprintNotificationEvent =
+//FingerPrint
+export type FingerprintEvent =
   | startFingerprintAuthenticationEvent
   | onNextFingerprintAuthenticationAttemptEvent
   | onFingerprintCapturedEvent
   | finishFingerprintAuthenticationEvent;
 export type startFingerprintAuthenticationEvent = {
-  action: FingerprintNotification.StartAuthentication;
+  action: Fingerprint.StartAuthentication;
   userProfile: {
     profileId: string;
   };
 };
 export type onNextFingerprintAuthenticationAttemptEvent = {
-  action: FingerprintNotification.OnNextAuthenticationAttempt;
+  action: Fingerprint.OnNextAuthenticationAttempt;
 };
 export type onFingerprintCapturedEvent = {
-  action: FingerprintNotification.OnFingerprintCaptured;
+  action: Fingerprint.OnFingerprintCaptured;
 };
 export type finishFingerprintAuthenticationEvent = {
-  action: FingerprintNotification.FinishAuthentication;
+  action: Fingerprint.FinishAuthentication;
 };
 
 export enum SdkNotification {
@@ -133,7 +133,7 @@ export enum PinFlow {
   Change = 'change',
 }
 
-export enum PinNotification {
+export enum Pin {
   Open = 'open',
   Confirm = 'confirm',
   Close = 'close',
@@ -146,12 +146,12 @@ export enum CustomRegistrationAction {
   Cancel = 'cancel',
 }
 
-export enum CustomRegistrationNotification {
+export enum CustomRegistration {
   InitRegistration = 'initRegistration',
   FinishRegistration = 'finishRegistration',
 }
 
-export enum FingerprintNotification {
+export enum Fingerprint {
   StartAuthentication = 'startAuthentication',
   OnNextAuthenticationAttempt = 'onNextAuthenticationAttempt',
   OnFingerprintCaptured = 'onFingerprintCaptured',
@@ -166,7 +166,7 @@ export enum FingerprintStage {
   Finished = 'finished',
 }
 
-export enum MobileAuthOtpNotification {
+export enum MobileAuthOtp {
   StartAuthentication = 'startAuthentication',
   FinishAuthentication = 'finishAuthentication',
 }

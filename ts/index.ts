@@ -27,27 +27,27 @@ interface NativeMethods {
   // listeners
   addEventListener(
     eventType: Events.SdkNotification,
-    callback?: (event: Events.SdkNotificationEvent) => void,
+    callback?: (event: Events.SdkEvent) => void,
   ): EmitterSubscription;
 
   addEventListener(
     eventType: Events.SdkNotification.Pin,
-    callback?: (event: Events.PinNotificationEvent) => void,
+    callback?: (event: Events.PinEvent) => void,
   ): EmitterSubscription;
 
   addEventListener(
     eventType: Events.SdkNotification.CustomRegistration,
-    callback?: (event: Events.CustomRegistrationNotificationEvent) => void,
+    callback?: (event: Events.CustomRegistrationEvent) => void,
   ): EmitterSubscription;
 
   addEventListener(
     eventType: Events.SdkNotification.MobileAuthOtp,
-    callback?: (event: Events.MobileAuthOtpNotificationEvent) => void,
+    callback?: (event: Events.MobileAuthOtpEvent) => void,
   ): EmitterSubscription;
 
   addEventListener(
     eventType: Events.SdkNotification.Fingerprint,
-    callback?: (event: Events.FingerprintNotificationEvent) => void,
+    callback?: (event: Events.FingerprintEvent) => void,
   ): EmitterSubscription;
 
   // Setup
@@ -146,7 +146,7 @@ const nativeMethods: NativeMethods = {
 
   addEventListener: (
     eventType: string,
-    callback: (event: Events.SdkNotificationEvent) => void,
+    callback: (event: Events.SdkEvent) => void,
   ): EmitterSubscription => {
     return OneWelcomeEventEmitter.addListener(eventType, callback);
   },
