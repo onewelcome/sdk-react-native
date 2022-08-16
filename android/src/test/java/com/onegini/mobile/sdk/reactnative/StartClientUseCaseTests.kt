@@ -52,8 +52,8 @@ class StartClientUseCaseTests {
         argumentCaptor<String> {
             verify(promiseMock).reject(this.capture(), this.capture())
 
-            Assert.assertEquals(OneginiWrapperErrors.WRONG_CONFIG_MODEL.toString(), this.firstValue)
-            Assert.assertEquals("Provided config model parameters are wrong", this.secondValue)
+            Assert.assertEquals(OneginiWrapperErrors.WRONG_CONFIG_MODEL.code, this.firstValue)
+            Assert.assertEquals(OneginiWrapperErrors.WRONG_CONFIG_MODEL.message, this.secondValue)
         }
     }
 
