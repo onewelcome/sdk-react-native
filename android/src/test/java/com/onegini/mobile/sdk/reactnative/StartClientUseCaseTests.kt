@@ -4,9 +4,7 @@ import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.onegini.mobile.sdk.android.handlers.OneginiInitializationHandler
-import com.onegini.mobile.sdk.android.handlers.error.OneginiInitializationError
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.StartClientUseCase
-import com.onegini.mobile.sdk.reactnative.exception.OneginReactNativeException
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 import org.junit.*
 import org.junit.runner.RunWith
@@ -56,14 +54,14 @@ class StartClientUseCaseTests {
             Assert.assertEquals(OneginiWrapperErrors.WRONG_CONFIG_MODEL.message, this.secondValue)
         }
     }
-
+//  @todo: Fix this test
+    
 //    @Test
 //    fun `when oneginiClient_start fails should reject and pass proper errors`() {
 //        val error = mock<OneginiInitializationError>()
 //        val errorType = OneginiInitializationError.CONFIGURATION_ERROR
 //        `when`(error.errorType).thenReturn(errorType)
 //        `when`(error.message).thenReturn("Problem with smth")
-//
 //        // mock SDK start error
 //        `when`(oneginiSdk.oneginiClient.start(any())).thenAnswer {
 //            it.getArgument<OneginiInitializationHandler>(0).onError(error)

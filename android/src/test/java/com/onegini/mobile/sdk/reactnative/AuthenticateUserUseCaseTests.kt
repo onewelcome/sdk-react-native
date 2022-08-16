@@ -1,4 +1,4 @@
-package com.onegini.mobile
+package com.onegini.mobile.sdk.reactnative
 
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.Promise
@@ -11,8 +11,6 @@ import com.onegini.mobile.sdk.android.handlers.error.OneginiAuthenticationError
 import com.onegini.mobile.sdk.android.model.OneginiAuthenticator
 import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
-import com.onegini.mobile.sdk.reactnative.OneginiSDK
-import com.onegini.mobile.sdk.reactnative.ReactArgumentsTestRule
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule

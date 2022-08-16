@@ -1,11 +1,9 @@
-package com.onegini.mobile
+package com.onegini.mobile.sdk.reactnative
 
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.Promise
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetUserProfilesUseCase
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
-import com.onegini.mobile.sdk.reactnative.OneginiSDK
-import com.onegini.mobile.sdk.reactnative.ReactArgumentsTestRule
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
