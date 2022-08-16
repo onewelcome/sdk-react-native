@@ -2,6 +2,8 @@ package com.onegini.mobile
 
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetUserProfileUseCase
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
+import com.onegini.mobile.sdk.reactnative.OneginiSDK
+import com.onegini.mobile.sdk.reactnative.ReactArgumentsTestRule
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test

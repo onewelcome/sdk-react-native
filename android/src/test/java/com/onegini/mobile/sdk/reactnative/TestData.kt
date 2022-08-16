@@ -143,5 +143,9 @@ object TestData {
         override fun getDeviceName(): String {
             return "Szamszung"
         }
+
+        override fun getServerPublicKey(): String? {
+            TODO("Not yet implemented")
+        }
     }
 }

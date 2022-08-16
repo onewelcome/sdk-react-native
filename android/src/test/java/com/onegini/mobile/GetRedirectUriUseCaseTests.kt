@@ -2,6 +2,9 @@ package com.onegini.mobile
 
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.Promise
+import com.onegini.mobile.sdk.reactnative.OneginiSDK
+import com.onegini.mobile.sdk.reactnative.ReactArgumentsTestRule
+import com.onegini.mobile.sdk.reactnative.TestData
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetRedirectUriUseCase
 import org.junit.Assert
 import org.junit.Rule
