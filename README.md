@@ -39,7 +39,7 @@ OR
    -keep class com.onegini.mobile.SecurityController { *; }
    ```
 
-3. Add to `android/build.gradle`[allprojects.repositories]:
+3. Add to `android/build.gradle`[buildscript]:
 
    ```
    mavenCentral()
@@ -164,9 +164,9 @@ OR
 
 #### Android
 
-1. Open up `android/app/src/main/java/[...]/MainActivity.java`
+1. Open up `android/app/src/main/java/[...]/MainApplication.java`
 
-- Add `import com.onegini.mobile.RNOneginiSdkPackage;` to the imports at the top of the file
+- Add `import com.onegini.mobile.sdk.reactnative.RNOneginiSdkPackage;` to the imports at the top of the file
 - Add `new RNOneginiSdkPackage()` to the list returned by the `getPackages()` method
 
 2. Append the following lines to `android/settings.gradle`:
