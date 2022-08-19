@@ -8,7 +8,6 @@ export type SdkEvent =
 export type PinEvent =
   | PinCloseEvent
   | PinChangedEvent
-  | PinConfirmEvent
   | PinOpenEvent
   | PinErrorEvent;
 
@@ -19,12 +18,6 @@ export type PinCloseEvent = {
 
 export type PinChangedEvent = {
   action: Pin.Changed;
-  flow: PinFlow;
-};
-
-// TODO: Remove this, it is only here so it compiles but will be removed when the SDK/example app remove this event.
-export type PinConfirmEvent = {
-  action: Pin.Confirm;
   flow: PinFlow;
 };
 
