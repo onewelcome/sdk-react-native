@@ -2,8 +2,8 @@ package com.onegini.mobile
 
 import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.Promise
-import com.onegini.mobile.clean.use_cases.GetAllAuthenticatorsUseCase
-import com.onegini.mobile.clean.use_cases.GetUserProfileUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAllAuthenticatorsUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetUserProfileUseCase
 import com.onegini.mobile.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import org.junit.Assert.*

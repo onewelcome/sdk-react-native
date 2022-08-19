@@ -1,14 +1,6 @@
 import {useState, useEffect, Dispatch, SetStateAction} from 'react';
-import OneginiSdk from './index';
+import OnewelcomeSdk from './index';
 import {ResourceRequestType, ResourcesDetails} from './data-types';
-
-const DefaultResourcesDetails: ResourcesDetails = {
-  path: 'test',
-  method: 'GET',
-  parameters: {'custom-param1': 'p1', 'custom-param2': 'p2'},
-  encoding: 'application/json',
-  headers: {'custom-header1': 'val1', 'custom-header2': 'val2'},
-};
 
 //
 
@@ -19,6 +11,7 @@ const fetchResource = async (
   shouldAuthenticate: boolean,
   type: ResourceRequestType,
   resourceDetails: ResourcesDetails,
+  scopes: string[],
   profileId: string | null = null,
 ) => {
   // when type is ResourceRequestType.Implicit we require profileId
@@ -29,15 +22,13 @@ const fetchResource = async (
   try {
     if (shouldAuthenticate) {
       if (type === ResourceRequestType.Implicit && profileId) {
-        await OneginiSdk.authenticateUserImplicitly(profileId, ['read']);
+        await OnewelcomeSdk.authenticateUserImplicitly(profileId, scopes);
       } else if (type === ResourceRequestType.Anonymous) {
-        await OneginiSdk.authenticateDeviceForResource(resourceDetails.path);
+        await OnewelcomeSdk.authenticateDeviceForResource(scopes);
       }
     }
 
-    const data = await OneginiSdk.resourceRequest(type, resourceDetails);
-
-    console.log('fetchResource = ', data);
+    const data = await OnewelcomeSdk.resourceRequest(type, resourceDetails);
 
     setData(data);
     setLoading(false);
@@ -55,6 +46,7 @@ function useResources(
   type: ResourceRequestType,
   details: ResourcesDetails,
   shouldAuthenticate: boolean,
+  scopes: string[],
   profileId?: string | null,
 ) {
   const [loading, setLoading] = useState(true);
@@ -79,6 +71,7 @@ function useResources(
       shouldAuthenticate,
       type,
       currentDetails,
+      scopes,
       profileId,
     );
   }, [type, shouldAuthenticate, profileId, currentDetails]);
@@ -90,4 +83,4 @@ function useResources(
   };
 }
 
-export {useResources, DefaultResourcesDetails};
+export {useResources};

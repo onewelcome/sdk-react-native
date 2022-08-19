@@ -1,8 +1,8 @@
 package com.onegini.mobile
 
 import com.facebook.react.bridge.Promise
-import com.onegini.mobile.clean.use_cases.DeregisterUserUseCase
-import com.onegini.mobile.clean.use_cases.GetUserProfileUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.DeregisterUserUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetUserProfileUseCase
 import com.onegini.mobile.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.android.handlers.OneginiDeregisterUserProfileHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiDeregistrationError

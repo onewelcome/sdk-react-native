@@ -129,7 +129,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.rnexampleapp"
+        applicationId "com.onegini.mobile.rnexampleapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -198,8 +198,8 @@ dependencies {
     // Support for multidex
     implementation "androidx.multidex:multidex:2.0.1"
 
-    // Onegini RN SDK wrapper
-    implementation project(':react-native-sdk-beta')
+    // OneWelcome RN SDK wrapper
+    implementation project(':onewelcome-react-native-sdk')
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'

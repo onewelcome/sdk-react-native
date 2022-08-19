@@ -11,7 +11,7 @@ RCT_EXTERN_METHOD(getAccessToken:(RCTPromiseResolveBlock)resolve rejecter:(RCTPr
 RCT_EXTERN_METHOD(getUserProfiles:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 RCT_EXTERN_METHOD(getIdentityProviders:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 RCT_EXTERN_METHOD(getAuthenticatedUserProfile:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
-RCT_EXTERN_METHOD(registerUser:(NSString *)identityProviderId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(registerUser:(NSString *)identityProviderId scopes:(NSArray<NSString*>*)scopes resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 RCT_EXTERN_METHOD(submitCustomRegistrationAction:(NSString *)action identityProviderId:(NSString *)identityProviderId token:(NSString *)token)
 RCT_EXTERN_METHOD(deregisterUser:(NSString *)profileId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 RCT_EXTERN_METHOD(handleRegistrationCallback:(NSString *)url)
@@ -30,8 +30,8 @@ RCT_EXTERN_METHOD(acceptMobileAuthConfirmation:(RCTPromiseResolveBlock)resolve r
 RCT_EXTERN_METHOD(denyMobileAuthConfirmation:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 
 // Resources
-RCT_EXTERN_METHOD(authenticateUserImplicitly:(NSString *)profileId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
-RCT_EXTERN_METHOD(authenticateDeviceForResource:(NSString *)resourcePath resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(authenticateUserImplicitly:(NSString *)profileId scopes:(NSArray<NSString*>*)scopes resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(authenticateDeviceForResource:(NSArray<NSString*>*)scopes resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 RCT_EXTERN_METHOD(resourceRequest:(NSString *)type details:(NSDictionary *)details resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 
 // Authenticators management

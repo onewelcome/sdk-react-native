@@ -1,5 +1,5 @@
 protocol BridgeConnectorProtocol: AnyObject {
-    func sendBridgeEvent(eventName: OneginiBridgeEvents, data: Any!) -> Void
+    func sendBridgeEvent(eventName: OneWelcomeBridgeEvents, data: Any!) -> Void
 }
 
 class BridgeConnector : BridgeConnectorProtocol {
@@ -20,7 +20,7 @@ class BridgeConnector : BridgeConnectorProtocol {
         BridgeConnector.shared = self
     }
 
-    func sendBridgeEvent(eventName: OneginiBridgeEvents, data: Any!) {
+    func sendBridgeEvent(eventName: OneWelcomeBridgeEvents, data: Any!) {
         bridge?.sendBridgeEvent(eventName: eventName, data: data)
     }
 }

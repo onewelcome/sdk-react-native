@@ -2,9 +2,9 @@ package com.onegini.mobile
 
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.Promise
-import com.onegini.mobile.clean.use_cases.AuthenticateUserUseCase
-import com.onegini.mobile.clean.use_cases.GetRegisteredAuthenticatorsUseCase
-import com.onegini.mobile.clean.use_cases.GetUserProfileUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.AuthenticateUserUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetRegisteredAuthenticatorsUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetUserProfileUseCase
 import com.onegini.mobile.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.android.handlers.OneginiAuthenticationHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiAuthenticationError

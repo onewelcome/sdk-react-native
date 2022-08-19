@@ -1,7 +1,7 @@
 rootProject.name = 'RNExampleApp'
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
 
-include ':react-native-sdk-beta'
-project(':react-native-sdk-beta').projectDir = new File(rootProject.projectDir, '../../android')
+include ':onewelcome-react-native-sdk'
+project(':onewelcome-react-native-sdk').projectDir = new File(rootProject.projectDir, '../../android')
 
 include ':app'

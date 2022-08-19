@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Modal, Text, TextInput} from 'react-native';
 import AppColors from '../../constants/AppColors';
 import Button from '../../general/Button';
-import OneginiSdk, {Events} from 'react-native-sdk-beta';
+import OneWelcomeSdk, {Events} from 'onewelcome-react-native-sdk';
 
 const IdProvider = '2-way-otp-api';
 
@@ -12,11 +12,11 @@ const TwoWayOtpApiModal: React.FC<{}> = ({}) => {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const listener = OneginiSdk.addEventListener(Events.SdkNotification.CustomRegistration, (event: any) => {
+    const listener = OneWelcomeSdk.addEventListener(Events.SdkNotification.CustomRegistration, (event: any) => {
       if (event.identityProviderId === IdProvider) {
         switch (event.action) {
           case Events.CustomRegistrationNotification.InitRegistration:
-            OneginiSdk.submitCustomRegistrationAction(
+            OneWelcomeSdk.submitCustomRegistrationAction(
               Events.CustomRegistrationAction.ProvideToken,
               event.identityProviderId,
               null,
@@ -58,7 +58,7 @@ const TwoWayOtpApiModal: React.FC<{}> = ({}) => {
           <Button
             name={'OK'}
             onPress={() => {
-              OneginiSdk.submitCustomRegistrationAction(
+              OneWelcomeSdk.submitCustomRegistrationAction(
                 Events.CustomRegistrationAction.ProvideToken,
                 IdProvider,
                 responseCode,
@@ -71,7 +71,7 @@ const TwoWayOtpApiModal: React.FC<{}> = ({}) => {
           <Button
             name={'CANCEL'}
             onPress={() => {
-              OneginiSdk.submitCustomRegistrationAction(
+              OneWelcomeSdk.submitCustomRegistrationAction(
                 Events.CustomRegistrationAction.Cancel,
                 IdProvider,
                 'Cancelled by user',

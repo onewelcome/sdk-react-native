@@ -15,11 +15,11 @@ const ContentContainer: React.FC<Props> = (props) => {
 
 const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
+    position: 'relative',
     alignSelf: 'center',
     top: '10%',
     width: '100%',
-    height: '75%',
+    flex:1,
     borderRadius: 4,
     backgroundColor: '#ffffff',
     shadowColor: '#000',
@@ -32,6 +32,7 @@ const styles = StyleSheet.create({
     elevation: 3,
     paddingHorizontal: '12%',
     paddingTop: '18%',
+    paddingBottom: 80
   },
 });
 

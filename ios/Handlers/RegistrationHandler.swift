@@ -1,5 +1,5 @@
 protocol RegistrationConnectorToHandlerProtocol: AnyObject {
-    func signUp(identityProvider: ONGIdentityProvider?, completion: @escaping (Bool, ONGUserProfile?, NSError?) -> Void)
+    func signUp(identityProvider: ONGIdentityProvider?, scopes: [String], completion: @escaping (Bool, ONGUserProfile?, NSError?) -> Void)
     func processRedirectURL(url: URL)
     func processOTPCode(code: String?)
     func cancelRegistration()
@@ -70,9 +70,9 @@ class RegistrationHandler: NSObject, BrowserHandlerToRegisterHandlerProtocol, Pi
 }
 
 extension RegistrationHandler : RegistrationConnectorToHandlerProtocol {
-    func signUp(identityProvider: ONGIdentityProvider? = nil, completion: @escaping (Bool, ONGUserProfile?, NSError?) -> Void) {
+    func signUp(identityProvider: ONGIdentityProvider? = nil, scopes: [String], completion: @escaping (Bool, ONGUserProfile?, NSError?) -> Void) {
         signUpCompletion = completion
-        ONGUserClient.sharedInstance().registerUser(with: identityProvider, scopes: ["read"], delegate: self)
+        ONGUserClient.sharedInstance().registerUser(with: identityProvider, scopes: scopes, delegate: self)
     }
 
     func processRedirectURL(url: URL) {
@@ -101,14 +101,9 @@ extension RegistrationHandler: ONGRegistrationDelegate {
     func userClient(_: ONGUserClient, didReceivePinRegistrationChallenge challenge: ONGCreatePinChallenge) {
         createPinChallenge = challenge
         let pinError = mapErrorFromPinChallenge(challenge)
-        BridgeConnector.shared?.toPinHandlerConnector.pinHandler.handleFlowUpdate(PinFlow.create, pinError, receiver: self)
-    }
-
-    func userClient(_: ONGUserClient, didRegisterUser userProfile: ONGUserProfile, info _: ONGCustomInfo?) {
-        createPinChallenge = nil
-        customRegistrationChallenge = nil
-        signUpCompletion!(true, userProfile, nil)
-        BridgeConnector.shared?.toPinHandlerConnector.pinHandler.closeFlow()
+        
+        BridgeConnector.shared?.toPinHandlerConnector.pinHandler.handleFlowUpdate(PinFlow.create, error: pinError, receiver: self, profileId: challenge.userProfile.profileId, userInfo: nil, data: challenge.pinLength)
+        
     }
 
     func userClient(_: ONGUserClient, didReceiveCustomRegistrationInitChallenge challenge: ONGCustomRegistrationChallenge) {
@@ -136,12 +131,20 @@ extension RegistrationHandler: ONGRegistrationDelegate {
 
         sendCustomRegistrationNotification(CustomRegistrationNotification.finishRegistration, result)
     }
+    
+    func userClient(_ userClient: ONGUserClient, didRegisterUser userProfile: ONGUserProfile, identityProvider: ONGIdentityProvider, info: ONGCustomInfo?) {
+        createPinChallenge = nil
+        customRegistrationChallenge = nil
+        signUpCompletion!(true, userProfile, nil)
+        BridgeConnector.shared?.toPinHandlerConnector.pinHandler.closeFlow()
+    }
 
-    func userClient(_: ONGUserClient, didFailToRegisterWithError error: Error) {
+    func userClient(_ userClient: ONGUserClient, didFailToRegisterWith identityProvider: ONGIdentityProvider, error: Error) {
         createPinChallenge = nil
         customRegistrationChallenge = nil
         BridgeConnector.shared?.toPinHandlerConnector.pinHandler.closeFlow()
 
         signUpCompletion!(false, nil, error as NSError)
     }
+
 }

@@ -1,8 +1,8 @@
 {
-  "name": "react-native-sdk-beta",
-  "title": "React Native SDK",
+  "name": "onewelcome-react-native-sdk",
+  "title": "OneWelcome React Native SDK",
   "version": "0.6.0",
-  "description": "Onegini SDK component for React Native (iOS and Android)",
+  "description": "OneWelcome SDK component for React Native (iOS and Android)",
   "main": "ts/index.ts",
   "files": [
     "README.md",
@@ -10,7 +10,7 @@
     "android/build.gradle",
     "ios/",
     "ts/",
-    "react-native-sdk-beta.podspec"
+    "onewelcome-react-native-sdk.podspec"
   ],
   "scripts": {
     "android": "tsc && react-native run-android",
@@ -21,19 +21,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://gitlab.com/develocraft/onegini-react-native-sdk.git",
-    "baseUrl": "https://www.npmjs.com/package/react-native-sdk-beta"
+    "url": "git+https://github.com/onewelcome/sdk-react-native.git",
+    "baseUrl": "https://www.npmjs.com/package/onewelcome-react-native-sdk"
   },
   "keywords": [
     "react-native",
     "react native",
-    "onegini-sdk",
-    "onegini sdk",
+    "onewelcome-sdk",
+    "onewelcome",
     "sdk"
   ],
   "author": {
-    "name": "Valeriy Rumak",
-    "email": "valeriy.rumak@develocraft.com"
+    "name": "OneWelcome",
+    "email": "contact@onewelcome.com"
   },
   "license": "MIT",
   "licenseFilename": "LICENSE",
@@ -45,7 +45,7 @@
   "devDependencies": {
     "@babel/core": "^7.12.3",
     "@babel/runtime": "^7.12.1",
-    "@react-native-async-storage/async-storage": "^1.13.2",
+    "@react-native-async-storage/async-storage": "^1.15.17",
     "@react-native-community/eslint-config": "^2.0.0",
     "@testing-library/react-hooks": "^5.1.1",
     "@testing-library/react-native": "^7.2.0",

@@ -1,16 +1,16 @@
 import React, {useState} from 'react';
-import {StyleSheet, View, Text, Image} from 'react-native';
+import {StyleSheet, View, Text, Image, Alert, ScrollView} from 'react-native';
 import {Assets} from '../../../../assets';
 import BackButton from '../../general/BackButton';
 import SettingsActionsView from './components/SettingsActionsView';
 import DashboardActionsView from './components/DashboardActionsView';
 import ChangeAuthView from './components/ChangeAuthView';
 import OtpCodeView from './components/OtpCodeView';
-import OneginiSdk, {Events} from 'react-native-sdk-beta';
+import OneWelcomeSdk, {Events} from 'onewelcome-react-native-sdk';
 import DevicesView from '../devices/DevicesView';
 
 interface Props {
-  onLogout?: () => void;
+  onLogout: () => void;
 }
 
 const DashboardScreen: React.FC<Props> = (props) => {
@@ -18,8 +18,14 @@ const DashboardScreen: React.FC<Props> = (props) => {
     CONTENT_VIEW.DASHBOARD_ACTIONS,
   );
 
+  function onShowAccessToken() {
+    OneWelcomeSdk.getAccessToken()
+      .then((token) => Alert.alert('Access Token', token))
+      .catch(() => Alert.alert('Error!', 'Could not get AccessToken!'));
+  }
+
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.header}>
         {contentView === CONTENT_VIEW.DASHBOARD_ACTIONS ? (
           <Image style={styles.headerIcon} source={Assets.oneginiIcon} />
@@ -32,8 +38,13 @@ const DashboardScreen: React.FC<Props> = (props) => {
           {TITLE_BY_CONTENT_VIEW.get(contentView)}
         </Text>
       </View>
-      {renderContent(contentView, setContentView, props.onLogout)}
-    </View>
+      {renderContent(
+        contentView,
+        setContentView,
+        props.onLogout,
+        onShowAccessToken,
+      )}
+    </ScrollView>
   );
 };
 
@@ -65,7 +76,7 @@ const backButtonHandler = (
       setContentView(CONTENT_VIEW.SETTINGS_ACTIONS);
       break;
     case CONTENT_VIEW.OTP_CODE:
-      setContentView(CONTENT_VIEW.SETTINGS_ACTIONS);
+      setContentView(CONTENT_VIEW.DASHBOARD_ACTIONS);
       break;
     case CONTENT_VIEW.DEVICES:
       setContentView(CONTENT_VIEW.DASHBOARD_ACTIONS);
@@ -79,7 +90,8 @@ const backButtonHandler = (
 const renderContent = (
   currentContentView: CONTENT_VIEW,
   setContentView: (contentView: CONTENT_VIEW) => void,
-  onLogout?: () => void,
+  onLogout: () => void,
+  onShowAccessToken?: () => void,
 ) => {
   switch (currentContentView) {
     case CONTENT_VIEW.DASHBOARD_ACTIONS:
@@ -93,6 +105,7 @@ const renderContent = (
             setContentView(CONTENT_VIEW.OTP_CODE)
           }
           onYourDevicesPressed={() => setContentView(CONTENT_VIEW.DEVICES)}
+          onAccessTokenPressed={onShowAccessToken}
         />
       );
     case CONTENT_VIEW.SETTINGS_ACTIONS:
@@ -100,7 +113,7 @@ const renderContent = (
         <SettingsActionsView
           onChangeAuthPressed={() => setContentView(CONTENT_VIEW.CHANGE_AUTH)}
           onChangePinPressed={() =>
-            OneginiSdk.submitPinAction(
+            OneWelcomeSdk.submitPinAction(
               Events.PinFlow.Change,
               Events.PinAction.Cancel, // ONEGINI_PIN_ACTIONS.CHANGE - why it was CHANGE here? there is no such action
               null,
@@ -109,7 +122,9 @@ const renderContent = (
         />
       );
     case CONTENT_VIEW.CHANGE_AUTH:
-      return <ChangeAuthView />;
+      return <ChangeAuthView
+                onLogout={onLogout}
+             />;
     case CONTENT_VIEW.OTP_CODE:
       return <OtpCodeView />;
     case CONTENT_VIEW.DEVICES:
@@ -124,7 +139,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f8f8f8',
-    paddingHorizontal: '4%',
   },
   header: {
     position: 'absolute',

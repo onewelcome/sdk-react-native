@@ -9,13 +9,13 @@ import * as Types from './data-types';
 import * as Events from './events';
 import {usePinFlow} from './pin-flow';
 import {useFingerprintFlow} from './fingerprint-flow';
-import {useResources, DefaultResourcesDetails} from './resource';
+import {useResources} from './resource';
 
 //
 
 const {RNOneginiSdk} = NativeModules;
 
-const OneginiEventEmitter =
+const OneWelcomeEventEmitter =
   Platform.OS === 'ios'
     ? new NativeEventEmitter(RNOneginiSdk)
     : DeviceEventEmitter;
@@ -45,8 +45,11 @@ interface NativeMethods {
 
   // Resource getters
   //@todo extend types for details and responses
-  authenticateUserImplicitly(profileId: string, scopes: String[]): Promise<any>;
-  authenticateDeviceForResource(resourcePath: string): Promise<any>;
+  authenticateUserImplicitly(
+    profileId?: string,
+    scopes?: string[],
+  ): Promise<any>;
+  authenticateDeviceForResource(scopes: string[]): Promise<any>;
   resourceRequest(
     type: Types.ResourceRequestType,
     details: Types.ResourcesDetails,
@@ -71,6 +74,7 @@ interface NativeMethods {
   getRegisteredAuthenticators(
     profileId: string,
   ): Promise<Types.Authenticator[]>;
+  getAllAuthenticators(profileId: string): Promise<Types.Authenticator[]>;
   setPreferredAuthenticator(
     profileId: string,
     idOneginiAuthenticator: string,
@@ -110,7 +114,8 @@ interface NativeMethods {
 //
 const DefaultConfig: Types.Config = {
   enableFingerprint: true,
-  securityControllerClassName: 'com.rnexampleapp.SecurityController',
+  securityControllerClassName:
+    'com.onegini.mobile.rnexampleapp.SecurityController',
   enableMobileAuthenticationOtp: true,
   customProviders: [{id: '2-way-otp-api', isTwoStep: true}],
   configModelClassName: null,
@@ -129,7 +134,7 @@ const nativeMethods: NativeMethods = {
     eventType: string,
     callback: (event: any) => void,
   ): EmitterSubscription => {
-    return OneginiEventEmitter.addListener(eventType, callback);
+    return OneWelcomeEventEmitter.addListener(eventType, callback);
   },
 
   //
@@ -194,7 +199,6 @@ export {
   usePinFlow,
   useFingerprintFlow,
   useResources,
-  DefaultResourcesDetails,
   DefaultConfig,
 };
 

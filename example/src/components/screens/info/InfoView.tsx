@@ -3,11 +3,10 @@ import {StyleSheet, Text, View} from 'react-native';
 import Button from '../../general/Button';
 import ContentContainer from '../dashboard/components/ContentContainer';
 import AppColors from '../../constants/AppColors';
-import OneginiSdk, {
-  DefaultResourcesDetails,
+import OneWelcomeSdk, {
   useResources,
   Types,
-} from 'react-native-sdk-beta';
+} from 'onewelcome-react-native-sdk';
 
 interface Props {
   onFinished?: () => void;
@@ -18,20 +17,23 @@ const getProfileData = async (
   setProfileId: (profileId: string | null) => void,
 ) => {
   try {
-    const profiles = await OneginiSdk.getUserProfiles();
+    const profiles = await OneWelcomeSdk.getUserProfiles();
 
     if (profiles[0]) {
       setProfileId(profiles[0].profileId);
     } else {
       setProfileError('No profiles registered.');
     }
-  } catch (e) {
+  } catch (e: any) {
     setProfileError(e);
   }
 };
 
 //@todo resolve this with more types for resources
 const getData = (data: any, key: string) => {
+  if(typeof data === 'string' || data instanceof String){
+    data = JSON.parse(data as string);
+  }
   if (data[key]) {
     return data[key];
   } else {
@@ -44,22 +46,30 @@ const InfoView: React.FC<Props> = (props) => {
   const [profileId, setProfileId] = useState<string | null>(null);
 
   const implicitResource = useResources(
-    Types.ResourceRequestType.Implicit,
-    {
-      ...DefaultResourcesDetails,
-      path: 'user-id-decorated',
-    },
-    true,
-    profileId,
+      Types.ResourceRequestType.Implicit,
+      {
+        method: 'GET',
+        parameters: {'custom-param1': 'p1', 'custom-param2': 'p2'},
+        encoding: 'application/json',
+        headers: {'custom-header1': 'val1', 'custom-header2': 'val2'},
+        path: 'user-id-decorated',
+      },
+      true,
+      [],
+      profileId,
   );
 
   const resource = useResources(
     Types.ResourceRequestType.Anonymous,
     {
-      ...DefaultResourcesDetails,
+      method: 'GET',
+      parameters: {'custom-param1': 'p1', 'custom-param2': 'p2'},
+      encoding: 'application/json',
+      headers: {'custom-header1': 'val1', 'custom-header2': 'val2'},
       path: 'application-details',
     },
     true,
+    ['application-details'],
   );
 
   // get profileId at start
@@ -71,7 +81,7 @@ const InfoView: React.FC<Props> = (props) => {
     <ContentContainer containerStyle={styles.container}>
       <View style={styles.row}>
         <Text style={styles.label}>User Info</Text>
-        {implicitResource.loading && (
+        {implicitResource.loading && !profileError && (
           <Text style={styles.info}>{'Loading...'}</Text>
         )}
         {profileError && (

@@ -7,7 +7,7 @@ import Button from '../../general/Button';
 import InfoView from '../info/InfoView';
 
 interface Props {
-  onAuthorized?: () => void;
+  onAuthorized?: (success?: boolean) => void;
 }
 
 const AuthScreen: React.FC<Props> = (props) => {
@@ -16,31 +16,27 @@ const AuthScreen: React.FC<Props> = (props) => {
   return isInfoVisible ? (
     <InfoView onFinished={() => setIsInfoVisible(false)} />
   ) : (
-    basView()
-  );
-
-  function basView() {
-    return (
-      <View style={styles.container}>
-        <View style={styles.logoHolder}>
-          <Image source={Assets.logo} />
-          <Text style={styles.logoText}>Example App</Text>
-        </View>
-        <AuthButton onAuthorized={props.onAuthorized} />
-        <View style={styles.registerContainer}>
-          <RegisterButton onRegistered={props.onAuthorized} />
-        </View>
-        <View style={styles.infoContainer}>
-          <Button
-            name={'INFO'}
-            onPress={() => {
-              setIsInfoVisible(true);
-            }}
-          />
-        </View>
+    <View style={styles.container}>
+      <View style={styles.logoHolder}>
+        <Image source={Assets.logo} />
+        <Text style={styles.logoText}>Example App</Text>
       </View>
-    );
-  }
+
+      <AuthButton onAuthorized={props.onAuthorized} />
+
+      <View style={styles.registerContainer}>
+        <RegisterButton onRegistered={props.onAuthorized} />
+      </View>
+      <View style={styles.infoContainer}>
+        <Button
+          name="INFO"
+          onPress={() => {
+            setIsInfoVisible(true);
+          }}
+        />
+      </View>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -78,6 +74,11 @@ const styles = StyleSheet.create({
     bottom: '8%',
     width: '100%',
     alignSelf: 'center',
+  },
+  errorText: {
+    marginTop: 10,
+    fontSize: 15,
+    color: '#c82d2d',
   },
 });
 

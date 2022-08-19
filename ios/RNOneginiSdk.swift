@@ -1,24 +1,27 @@
 import Foundation
 import React
 import OneginiSDKiOS
+import LocalAuthentication
 
 
 protocol ConnectorToRNBridgeProtocol: NSObject {
-  func sendBridgeEvent(eventName: OneginiBridgeEvents, data: Any!) -> Void
+  func sendBridgeEvent(eventName: OneWelcomeBridgeEvents, data: Any!) -> Void
 }
 
 // Pin notification actions for RN Bridge
-enum OneginiBridgeEvents : String {
-    case pinNotification = "ONEGINI_PIN_NOTIFICATION"
-    case fingerprintNotification = "ONEGINI_FINGERPRINT_NOTIFICATION"
-    case customRegistrationNotification = "ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION"
-    case authWithOtpNotification = "ONEGINI_MOBILE_AUTH_OTP_NOTIFICATION"
+enum OneWelcomeBridgeEvents : String {
+    case pinNotification = "ONEWELCOME_PIN_NOTIFICATION"
+    case fingerprintNotification = "ONEWELCOME_FINGERPRINT_NOTIFICATION"
+    case customRegistrationNotification = "ONEWELCOME_CUSTOM_REGISTRATION_NOTIFICATION"
+    case authWithOtpNotification = "ONEWELCOME_MOBILE_AUTH_OTP_NOTIFICATION"
 }
 
 @objc(RNOneginiSdk)
 class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
-
-  var bridgeConnector: BridgeConnector
+    var bridgeConnector: BridgeConnector
+    private var userClient: ONGUserClient {
+        return ONGClient.sharedInstance().userClient
+    }
 
     override init() {
         self.bridgeConnector = BridgeConnector()
@@ -27,10 +30,10 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     override func supportedEvents() -> [String]! {
-        return [OneginiBridgeEvents.pinNotification.rawValue, OneginiBridgeEvents.fingerprintNotification.rawValue, OneginiBridgeEvents.customRegistrationNotification.rawValue, OneginiBridgeEvents.authWithOtpNotification.rawValue]
+        return [OneWelcomeBridgeEvents.pinNotification.rawValue, OneWelcomeBridgeEvents.fingerprintNotification.rawValue, OneWelcomeBridgeEvents.customRegistrationNotification.rawValue, OneWelcomeBridgeEvents.authWithOtpNotification.rawValue]
     }
 
-    func sendBridgeEvent(eventName: OneginiBridgeEvents, data: Any!) -> Void {
+    func sendBridgeEvent(eventName: OneWelcomeBridgeEvents, data: Any!) -> Void {
       self.sendEvent(withName: eventName.rawValue, body: data)
     }
 
@@ -52,22 +55,22 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
     @objc
     func getRedirectUri(_ resolve: RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
-        let redirectUri = ONGClient.sharedInstance().configModel.redirectURL;
+        let redirectUri = ONGClient.sharedInstance().configModel.redirectURL
 
         resolve([ "redirectUri" : redirectUri!])
     }
 
     @objc
     func getAccessToken(_ resolve: RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
-        let accessToken = ONGClient.sharedInstance().userClient.accessToken;
+        let accessToken = userClient.accessToken
 
         resolve(accessToken ?? nil)
     }
 
     @objc
     func getUserProfiles(_ resolve: RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
-        let profiles = ONGClient.sharedInstance().userClient.userProfiles()
-        var result: NSMutableArray  = []
+        let profiles = userClient.userProfiles()
+        let result: NSMutableArray = []
 
         for profile in profiles {
             result.add(["profileId": profile.value(forKey: "profileId")])
@@ -78,10 +81,10 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
     @objc
     func getAuthenticatedUserProfile(_ resolve: RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
-        guard let authenticatedProfile = ONGClient.sharedInstance().userClient.authenticatedUserProfile() else {
+        guard let authenticatedProfile = userClient.authenticatedUserProfile() else {
             let error = NSError(domain: ONGGenericErrorDomain, code: ONGGenericError.serverNotReachable.rawValue, userInfo: [NSLocalizedDescriptionKey : "No authenticated user profiles found."])
-            reject("\(error.code)", error.localizedDescription, error);
-            return;
+            reject("\(error.code)", error.localizedDescription, error)
+            return
         }
 
         resolve(["profileId": authenticatedProfile.value(forKey: "profileId")])
@@ -89,8 +92,8 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
     @objc
     func getIdentityProviders(_ resolve: RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
-        let profiles = ONGClient.sharedInstance().userClient.identityProviders()
-        var result: NSMutableArray  = []
+        let profiles = userClient.identityProviders()
+        let result: NSMutableArray  = []
 
         for profile in profiles {
             result.add(["id": profile.value(forKey: "identifier"), "name": profile.value(forKey: "name")])
@@ -101,15 +104,16 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
     @objc
     func registerUser(_ identityProviderId: (NSString)?,
-                        resolver resolve: @escaping RCTPromiseResolveBlock,
-                        rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+                      scopes: [String],
+                      resolver resolve: @escaping RCTPromiseResolveBlock,
+                      rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         var provider: ONGIdentityProvider? = nil
 
-        if(identityProviderId != nil) {
-            provider =         ONGClient.sharedInstance().userClient.identityProviders().first(where: { $0.value(forKey: "identifier") as? NSString == identityProviderId })!;
+        if identityProviderId != nil {
+            provider = userClient.identityProviders().first(where: { $0.value(forKey: "identifier") as? NSString == identityProviderId })!
         }
 
-        bridgeConnector.toRegistrationConnector.registrationHandler.signUp(identityProvider: provider) {
+        bridgeConnector.toRegistrationConnector.registrationHandler.signUp(identityProvider: provider, scopes: scopes) {
           (_, userProfile, error) -> Void in
 
             if let error = error {
@@ -130,9 +134,9 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func deregisterUser(_ profileId: (NSString),
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        let profile: ONGUserProfile = ONGClient.sharedInstance().userClient.userProfiles().first(where: { $0.value(forKey: "profileId") as! NSObject == profileId })!;
+        let profile = userClient.userProfiles().first(where: { $0.value(forKey: "profileId") as! NSObject == profileId })!
 
-        ONGClient.sharedInstance().userClient.deregisterUser(profile) {
+        userClient.deregisterUser(profile) {
             (result: Bool, error) -> Void in
 
             if let error = error {
@@ -175,9 +179,10 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func authenticateUser(_ profileId: (NSString),
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        let profile: ONGUserProfile = ONGClient.sharedInstance().userClient.userProfiles().first(where: { $0.value(forKey: "profileId") as! NSObject == profileId })!;
-
-        bridgeConnector.toLoginHandler.authenticateUser(profile) {
+        let profile = userClient.userProfiles().first(where: { $0.value(forKey: "profileId") as! NSObject == profileId })!
+        let authenticator = userClient.preferredAuthenticator
+        
+        bridgeConnector.toLoginHandler.authenticateUser(profile, authenticator: authenticator) {
             (userProfile, error) -> Void in
 
             if let error = error {
@@ -190,7 +195,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
     @objc
     func logout(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        ONGClient.sharedInstance().userClient.logoutUser { _, error in
+        userClient.logoutUser { _, error in
             if let error = error {
                 reject("\(error.code)", error.localizedDescription, error)
               } else {
@@ -216,11 +221,12 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
     @objc
     func authenticateUserImplicitly(_ profileId: (NSString),
-                        resolver resolve: @escaping RCTPromiseResolveBlock,
-                        rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        let profile: ONGUserProfile = ONGClient.sharedInstance().userClient.userProfiles().first(where: { $0.value(forKey: "profileId") as! NSObject == profileId })!;
+                                    scopes: [String],
+                                    resolver resolve: @escaping RCTPromiseResolveBlock,
+                                    rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        let profile = userClient.userProfiles().first(where: { $0.value(forKey: "profileId") as! NSObject == profileId })!
 
-        bridgeConnector.toResourceHandler.authenticateImplicitly(profile) {
+        bridgeConnector.toResourceHandler.authenticateImplicitly(profile, scopes: scopes) {
             (success, error) -> Void in
             if let error = error {
                 reject("\(error.code)", error.localizedDescription, error)
@@ -231,10 +237,10 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     @objc
-    func authenticateDeviceForResource(_ resourcePath: (NSString),
+    func authenticateDeviceForResource(_ scopes: [String],
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        bridgeConnector.toResourceHandler.authenticateDevice(resourcePath) {
+        bridgeConnector.toResourceHandler.authenticateDevice(scopes) {
             (success, error) -> Void in
             if let error = error {
                 reject("\(error.code)", error.localizedDescription, error)
@@ -252,7 +258,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
         let type = ResourceRequestType(rawValue: type) ?? .Anonymous
 
         bridgeConnector.toResourceHandler.resourceRequest(type, details) {
-            (data: [String: Any]?, error) -> Void in
+            (data: String?, error) -> Void in
 
             if let error = error {
                 reject("\(error.code)", error.localizedDescription, error)
@@ -290,13 +296,13 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
     @objc
     func acceptMobileAuthConfirmation(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        bridgeConnector.toMobileAuthConnector.mobileAuthHandler.handleMobileAuthConfirmation(cancelled: false)
+        bridgeConnector.toMobileAuthConnector.mobileAuthHandler.handleMobileAuthConfirmation(accepted: true)
         resolve(true)
     }
 
     @objc
     func denyMobileAuthConfirmation(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        bridgeConnector.toMobileAuthConnector.mobileAuthHandler.handleMobileAuthConfirmation(cancelled: true)
+        bridgeConnector.toMobileAuthConnector.mobileAuthHandler.handleMobileAuthConfirmation(accepted: false)
         resolve(true)
     }
 
@@ -305,11 +311,11 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func getAllAuthenticators(_ profileId: (NSString),
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        let profile: ONGUserProfile = ONGClient.sharedInstance().userClient.userProfiles().first(where: { $0.value(forKey: "profileId") as! NSObject == profileId })!;
+        let profile = userClient.userProfiles().first(where: { $0.value(forKey: "profileId") as! NSObject == profileId })!
 
         let allAuthenticators: Array<ONGAuthenticator> = bridgeConnector.toAuthenticatorsHandler.getAuthenticatorsListForUserProfile(profile)
 
-        var result: NSMutableArray  = []
+        let result: NSMutableArray = []
 
         for authenticator in allAuthenticators {
             result.add(["id": authenticator.identifier, "name": authenticator.name, "type": authenticator.type, "isRegistered": authenticator.isRegistered, "isPreferred": authenticator.isPreferred])
@@ -322,11 +328,11 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func getRegisteredAuthenticators(_ profileId: (NSString),
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        let profile: ONGUserProfile = ONGClient.sharedInstance().userClient.userProfiles().first(where: { $0.value(forKey: "profileId") as! NSObject == profileId })!;
+        let profile = userClient.userProfiles().first(where: { $0.value(forKey: "profileId") as! NSObject == profileId })!
 
         let registeredAuthenticators: Array<ONGAuthenticator> = bridgeConnector.toAuthenticatorsHandler.getAuthenticatorsListForUserProfile(profile).filter {$0.isRegistered == true}
 
-        var result: NSMutableArray  = []
+        let result: NSMutableArray = []
 
         for authenticator in registeredAuthenticators {
             result.add(["id": authenticator.identifier, "name": authenticator.name, "type": authenticator.type, "isRegistered": authenticator.isRegistered, "isPreferred": authenticator.isPreferred])
@@ -339,7 +345,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func setPreferredAuthenticator(_ profileId: (NSString), authenticatorId: (NSString),
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        let profile: ONGUserProfile = ONGClient.sharedInstance().userClient.userProfiles().first(where: { $0.profileId as! NSObject == profileId })!;
+        let profile = userClient.userProfiles().first(where: { $0.profileId == profileId as String })!
 
         bridgeConnector.toAuthenticatorsHandler.setPreferredAuthenticator(profile, authenticatorId as String) {
             (_ , error) -> Void in
@@ -359,7 +365,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func registerFingerprintAuthenticator(_ profileId: (NSString),
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        let profile: ONGUserProfile = ONGClient.sharedInstance().userClient.userProfiles().first(where: { $0.profileId as! NSObject == profileId })!;
+        let profile = userClient.userProfiles().first(where: { $0.profileId == profileId as String})!
 
         bridgeConnector.toAuthenticatorsHandler.registerAuthenticator(profile, ONGAuthenticatorType.biometric) {
             (_ , error) -> Void in
@@ -376,7 +382,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func deregisterFingerprintAuthenticator(_ profileId: (NSString),
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        let profile: ONGUserProfile = ONGClient.sharedInstance().userClient.userProfiles().first(where: { $0.profileId as! NSObject == profileId })!;
+        let profile = userClient.userProfiles().first(where: { $0.profileId == profileId as String })!
 
         bridgeConnector.toAuthenticatorsHandler.deregisterAuthenticator(profile, ONGAuthenticatorType.biometric) {
             (_ , error) -> Void in
@@ -393,7 +399,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func isFingerprintAuthenticatorRegistered(_ profileId: (NSString),
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        let profile: ONGUserProfile = ONGClient.sharedInstance().userClient.userProfiles().first(where: { $0.value(forKey: "profileId") as! NSObject == profileId })!;
+        let profile = userClient.userProfiles().first(where: { $0.profileId == profileId as String })!
         let isAuthenticatorRegistered = bridgeConnector.toAuthenticatorsHandler.isAuthenticatorRegistered(ONGAuthenticatorType.biometric, profile)
 
         resolve(isAuthenticatorRegistered)

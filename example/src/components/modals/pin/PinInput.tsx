@@ -10,14 +10,12 @@ const Bullet: React.FC<{filled: boolean}> = (props) => {
   return <View style={style} />;
 };
 
-const PinInput: React.FC<{pinLength: number}> = (props) => {
+const PinInput: React.FC<{currentPinLength: number, requiredPinLength?: number}> = ({currentPinLength, requiredPinLength}) => {
   return (
     <View style={styles.container}>
-      <Bullet filled={props.pinLength > 0} />
-      <Bullet filled={props.pinLength > 1} />
-      <Bullet filled={props.pinLength > 2} />
-      <Bullet filled={props.pinLength > 3} />
-      <Bullet filled={props.pinLength > 4} />
+      {requiredPinLength && Array.from(Array(requiredPinLength)).map((_, index) => (
+          <Bullet key={index} filled={index < currentPinLength}/>
+      ))}
     </View>
   );
 };

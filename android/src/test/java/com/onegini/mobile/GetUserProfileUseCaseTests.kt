@@ -1,6 +1,6 @@
 package com.onegini.mobile
 
-import com.onegini.mobile.clean.use_cases.GetUserProfileUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetUserProfileUseCase
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import org.junit.Assert
 import org.junit.Rule
@@ -8,7 +8,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Answers
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.lenient
 import org.mockito.junit.MockitoJUnitRunner
 
