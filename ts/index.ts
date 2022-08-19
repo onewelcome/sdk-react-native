@@ -7,9 +7,6 @@ import {
 } from 'react-native';
 import * as Types from './data-types';
 import * as Events from './events';
-import {usePinFlow} from './pin-flow';
-import {useFingerprintFlow} from './fingerprint-flow';
-import {useResources} from './resource';
 
 //
 
@@ -196,9 +193,6 @@ const OneginiSdk = {
 export {
   Events,
   Types,
-  usePinFlow,
-  useFingerprintFlow,
-  useResources,
   DefaultConfig,
 };
 

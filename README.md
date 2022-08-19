@@ -2,11 +2,11 @@
 
 ## Getting started
 
-`npm install onewelcome-react-native-sdk --save`
+`npm install @onewelcome/react-native-sdk --save`
 
 OR
 
-`yarn add onewelcome-react-native-sdk`
+`yarn add @onewelcome/react-native-sdk`
 
 ## SDK Configuration
 
@@ -19,13 +19,6 @@ OR
 
 1. Modify `android/app/build.gradle`:
 
-   1.1. Add to `android` section:
-
-   ```
-   lintOptions {
-       abortOnError false
-   }
-   ```
 
    1.2 Add to `android` -> `defaultConfig` section:
 
@@ -48,14 +41,6 @@ OR
 
 3. Add to `android/build.gradle`[buildscript]:
 
-   ```
-   dependencies {
-           classpath("com.android.tools.build:gradle:4.1.1")
-           classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.10")
-       }
-
-   ```
-3.1 Add to `android/build.gradle`[allprojects.repositories]:
    ```
    mavenCentral()
    if (project.hasProperty('onegini_artifactory_user') && project.hasProperty('onegini_artifactory_password')) {
@@ -91,7 +76,7 @@ OR
    </intent-filter>
    ```
 
-6. <a name="android-setup-config"/>Setup the config: Generate a 'OneginiConfigModel' and 'keystore.bks' with [SDK Configurator](https://github.com/Onegini/onegini-sdk-configurator#android).
+6. Setup the config: Generate a 'OneginiConfigModel' and 'keystore.bks' with [SDK Configurator](https://github.com/Onegini/onegini-sdk-configurator#android).
 
    Configurator will put `OneginiConfigModel` into `[RN_application_package_classpath.OneginiConfigModel]` (e.g. `com.exampleapp.OneginiConfigModel`) and the `keystore.bks` into '/res/raw'.
    After configurator used - you have 2 options:
@@ -101,7 +86,7 @@ OR
 
    More information [HERE](https://docs.onegini.com/msp/stable/android-sdk/topics/setting-up-the-project#verifying), section: Running the SDK Configurator.
 
-7. <a name="android-setup-security-controller"/>Setup the SecurityController(<u>not required</u>).
+7. Setup the SecurityController(not required).
 
    In order to change security options you should create your own instance SecurityController and handle it to OneWelcomeSdk - See the [Supported Methods:](#supported-methods) setSecurityControllerClassName(className).
    Example SecurityController implementation you can find inside library source code("com.onegini.mobile.SecurityController").
@@ -123,7 +108,7 @@ OR
    password <password>
    ```
 
-   Replace the <username> and <password> with the credentials that you use to login to support.onegini.com.
+   Replace the `<username>` and `<password>` with the credentials that you use to login to support.onegini.com.
 
 3. The OneWelcome CocoaPods repository must be added to your local machine using the following command:
 
@@ -200,77 +185,6 @@ OR
 - **iOS**: `yarn ios` or `npm run ios`
 - **Android**: `yarn android` or `npm run android`
 
-# Known RN issues
-
-These are the issues that are not connected to OneWelcome React Native SDK but you may encounter them during integration.
-
-## Xcode 12.5 with Flipper
-
-### Discussion
-
-https://github.com/facebook/flipper/issues/2215
-
-### Solution
-
-In `ios/Podfile` change `use_flipper!` into `use_flipper!({ 'Flipper-Folly' => '2.5.3', 'Flipper' => '0.87.0', 'Flipper-RSocket' => '1.3.1' })`
-
-## Undefined symbols for architecture
-
-### Discussion
-
-https://github.com/facebookarchive/react-native-fbsdk/issues/794
-
-### Solution
-
-Open Xcode project (.xcworkspace) and add empty Swift file (NotUsed.swift). When prompt for creating Create Bridging Header - accept.
-
-## Podfile
-
-### Discussion
-
-### Solution
-
-In iOS/Pofile add at the top
-`add source 'https://github.com/CocoaPods/Specs.git'`
-
-## Codegen / Invalid regular expression
-
-### Discussion
-
-https://github.com/facebook/react-native/issues/31180
-
-### Solution
-
-`yarn add --dev react-native-codegen`
-# Functional scope
-### Milestone 1:
-    - Start
-    - Security Controls and Configuration of the SDK
-    - User registration
-       - Browser
-### Milestone 2:
-    - User registration
-           - Custom
-    - User deregistration
-### Milestone 3:
-    - User authentication with PIN
-    - Fetch user access token
-    - Logout
-### Milestone 4:
-    - Mobile authenticator enrollment
-    - Mobile authentication with OTP
-### Milestone 5:
-    - Fingerprint enrollment
-    - Fingerprint authentication
-### Milestone 6:
-    - Change PIN
-### Milestone 7:
-    - App2Web
-### Milestone 8:
-    - Secure resource access
-
-# Usage
-- import OneginiSdk from 'react-native-sdk-beta';
 
 ## Configuration
 ### Config structure
@@ -292,22 +206,6 @@ https://github.com/facebook/react-native/issues/31180
       - true - possible actions initRegistration, initRegistration are sent by ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION
       - false - possible actions finishRegistration are sent by ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION
       
-
-## Hooks
-### `usePinFlow`. For easiest PIN flow implementation. Example:
-```
-import { usePinFlow, ONEGINI_PIN_FLOW } from "react-native-sdk-beta/pin";
-const [ flow, pin, visible, isConfirmMode, error, provideNewPinKey, cancelPinFlow] = usePinFlow();
-```
-Where:
-- **flow**: ONEGINI_PIN_FLOW(On of ['authentication', 'create', 'change']).
-- **pin**: string. Current pin value.
-- **visible**: boolean. Defines wheather show PIN flow or not.
-- **isConfirmMode**: boolean. For `create` and `change` user should confirm inserted PIN, this boolean helps to know current state.
-- **error**: string || null. Contains error or empty if no error.
-- **provideNewPinKey**: func. Function to supply next PIN char. Supply '<' key to remove last PIN char.
-- **cancelPinFlow**: func. Helper function to set error to `null`.
-
 
 ## Supported Methods
 
@@ -364,3 +262,33 @@ Where:
 |                                                           |
 | **=== App2Web ===**                                       |
 | **`startSingleSignOn()`**                                 |  Redirects user to Web app with loggin in user. |
+  
+## Local Development of SDK
+  
+The SDK can be developed locally using the [example app](https://github.com/onewelcome/example-app-react-native). 
+React Native does not support symlinking with dependencies in the node_modules folder because of the metro bundler see [issue](https://github.com/facebook/metro/issues/1).
+
+In order to develop the sdk you can link the project in the metro.config.js which can be done in the following way. Make sure to update the `packagePath`.
+
+Make sure to close out of your metro instance and rerun your application. 
+
+
+```
+const packagePath = '<absolute path to folder containing the sdk>/sdk-react-native';
+module.exports = {
+  projectRoot: __dirname,
+  watchFolders: [__dirname, packagePath],
+  transformer: {
+    getTransformOptions: async () => ({
+      transform: {
+        experimentalImportSupport: false,
+        inlineRequires: true,
+      },
+    }),
+  },
+  resolver: {
+    nodeModulesPaths: [packagePath],
+  },
+};
+```
+
