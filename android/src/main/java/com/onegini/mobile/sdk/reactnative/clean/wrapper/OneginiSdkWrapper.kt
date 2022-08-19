@@ -4,6 +4,12 @@ import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.AuthenticateUserUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.DeregisterUserUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAllAuthenticatorsUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetRedirectUriUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetRegisteredAuthenticatorsUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetUserProfilesUseCase
 import com.onegini.mobile.sdk.reactnative.OneginiSDK
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAccessTokenUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAuthenticatedUserProfileUseCase
@@ -12,33 +18,39 @@ import com.onegini.mobile.sdk.reactnative.clean.use_cases.RegisterUserUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.StartClientUseCase
 
 class OneginiSdkWrapper(
-        private val oneginiSDK: OneginiSDK,
-        private val reactApplicationContext: ReactApplicationContext,
-        val startClientUseCase: StartClientUseCase = StartClientUseCase(oneginiSDK, reactApplicationContext),
-        val getIdentityProvidersUseCase: GetIdentityProvidersUseCase = GetIdentityProvidersUseCase(oneginiSDK),
-        val getAccessTokenUseCase: GetAccessTokenUseCase = GetAccessTokenUseCase(oneginiSDK),
-        val registerUserUseCase: RegisterUserUseCase = RegisterUserUseCase(oneginiSDK),
-        val getAuthenticatedUserProfileUseCase: GetAuthenticatedUserProfileUseCase = GetAuthenticatedUserProfileUseCase(oneginiSDK)
+    private val oneginiSDK: OneginiSDK,
+    private val reactApplicationContext: ReactApplicationContext,
+    val startClientUseCase: StartClientUseCase = StartClientUseCase(oneginiSDK, reactApplicationContext),
+    val getIdentityProvidersUseCase: GetIdentityProvidersUseCase = GetIdentityProvidersUseCase(oneginiSDK),
+    val getAccessTokenUseCase: GetAccessTokenUseCase = GetAccessTokenUseCase(oneginiSDK),
+    val registerUserUseCase: RegisterUserUseCase = RegisterUserUseCase(oneginiSDK),
+    val getAuthenticatedUserProfileUseCase: GetAuthenticatedUserProfileUseCase = GetAuthenticatedUserProfileUseCase(oneginiSDK),
+    val getAllAuthenticatorsUseCase: GetAllAuthenticatorsUseCase = GetAllAuthenticatorsUseCase(oneginiSDK),
+    val getRegisteredAuthenticatorsUseCase: GetRegisteredAuthenticatorsUseCase = GetRegisteredAuthenticatorsUseCase(oneginiSDK),
+    val getUserProfilesUseCase: GetUserProfilesUseCase = GetUserProfilesUseCase(oneginiSDK),
+    val getRedirectUriUseCase: GetRedirectUriUseCase = GetRedirectUriUseCase(oneginiSDK),
+    val deregisterUserUseCase: DeregisterUserUseCase = DeregisterUserUseCase(oneginiSDK),
+    val authenticateUserUseCase: AuthenticateUserUseCase = AuthenticateUserUseCase(oneginiSDK)
 ) : IOneginiSdkWrapper {
 
     override fun startClient(rnConfig: ReadableMap, promise: Promise) {
         startClientUseCase(rnConfig, promise)
     }
 
-    override fun authenticateUser(profileId: String?, promise: Promise) {
+    override fun authenticateUser(profileId: String?, authenticatorId: String?, promise: Promise) {
+        authenticateUserUseCase(profileId, authenticatorId, promise)
+    }
+
+    override fun authenticateUserImplicitly(profileId: String?, scopes: ReadableArray, promise: Promise) {
         TODO("Not yet implemented")
     }
 
-    override fun authenticateUserImplicitly(profileId: String?, scopes: Array<String>?, promise: Promise) {
-        TODO("Not yet implemented")
-    }
-
-    override fun authenticateDeviceForResource(scopes: Array<String>, promise: Promise) {
+    override fun authenticateDeviceForResource(scopes: ReadableArray, promise: Promise) {
         TODO("Not yet implemented")
     }
 
     override fun getUserProfiles(promise: Promise) {
-        TODO("Not yet implemented")
+        getUserProfilesUseCase(promise)
     }
 
     override fun logout(promise: Promise) {
@@ -54,11 +66,11 @@ class OneginiSdkWrapper(
     }
 
     override fun getAllAuthenticators(profileId: String, promise: Promise) {
-        TODO("Not yet implemented")
+        getAllAuthenticatorsUseCase(profileId, promise)
     }
 
     override fun getRegisteredAuthenticators(profileId: String, promise: Promise) {
-        TODO("Not yet implemented")
+        getRegisteredAuthenticatorsUseCase(profileId, promise)
     }
 
     override fun setPreferredAuthenticator(profileId: String, idOneginiAuthenticator: String, promise: Promise) {
@@ -70,7 +82,7 @@ class OneginiSdkWrapper(
     }
 
     override fun deregisterUser(profileId: String?, promise: Promise) {
-        TODO("Not yet implemented")
+        deregisterUserUseCase(profileId, promise)
     }
 
     override fun cancelRegistration() {
@@ -78,7 +90,7 @@ class OneginiSdkWrapper(
     }
 
     override fun getRedirectUri(promise: Promise) {
-        TODO("Not yet implemented")
+        getRedirectUriUseCase(promise)
     }
 
     override fun handleRegistrationCallback(uri: String?) {

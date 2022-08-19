@@ -6,10 +6,10 @@ Pod::Spec.new do |s|
   s.name         = package["name"]
   s.version      = package["version"]
   s.summary      = package["description"]
-  s.homepage     = "https://www.npmjs.com/package/onewelcome-react-native-sdk"
+  s.homepage     = "https://www.npmjs.com/package/@onewelcome/react-native-sdk"
 
   s.license      = package['license']
-  s.authors      = { "OneWelcome" => "contact@onewelcome.com" }
+  s.authors      = { "OneWelcome" => "welcome@onewelcome.com" }
   s.platforms    = { :ios => "13.0" }
   s.source       = { :git => "git@github.com:onewelcome/sdk-react-native.git", :tag => "v#{s.version}" }
 

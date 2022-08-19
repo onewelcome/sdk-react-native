@@ -15,8 +15,10 @@ import com.onegini.mobile.sdk.reactnative.handlers.pins.PinNotificationObserver
 import com.onegini.mobile.sdk.reactnative.mapers.OneginiReactNativeConfigMapper
 import com.onegini.mobile.sdk.reactnative.model.rn.OneginiReactNativeConfig
 
-class StartClientUseCase(private val oneginiSDK: OneginiSDK, private val reactApplicationContext: ReactApplicationContext) {
-
+class StartClientUseCase(
+    private val oneginiSDK: OneginiSDK,
+    private val reactApplicationContext: ReactApplicationContext
+) {
     operator fun invoke(rnConfig: ReadableMap, promise: Promise) {
 
         var config: OneginiReactNativeConfig

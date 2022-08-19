@@ -135,7 +135,6 @@ export enum PinFlow {
 
 export enum Pin {
   Open = 'open',
-  Confirm = 'confirm',
   Close = 'close',
   Error = 'show_error',
   Changed = 'changed',

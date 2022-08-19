@@ -82,7 +82,10 @@ interface NativeMethods {
   cancelRegistration(): void;
 
   // Authentication
-  authenticateUser(profileId: string): Promise<Types.AuthData>;
+  authenticateUser(
+    profileId: string,
+    authenticatorId: string | null,
+  ): Promise<Types.AuthData>;
   logout(): Promise<any>; // any or void when we have null from native?
   getAllAuthenticators(profileId: string): Promise<Types.Authenticator[]>; // TODO: use it in ExampleApp
   getRegisteredAuthenticators(

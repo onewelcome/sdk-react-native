@@ -48,6 +48,24 @@ class OneginiSdkWrapperTests {
     @Mock
     lateinit var getAuthenticatedUserProfileUseCase: GetAuthenticatedUserProfileUseCase
 
+    @Mock
+    lateinit var getAllAuthenticatorsUseCase: GetAllAuthenticatorsUseCase
+
+    @Mock
+    lateinit var getRegisteredAuthenticatorsUseCase: GetRegisteredAuthenticatorsUseCase
+
+    @Mock
+    lateinit var getUserProfilesUseCase: GetUserProfilesUseCase
+
+    @Mock
+    lateinit var getRedirectUriUseCase: GetRedirectUriUseCase
+
+    @Mock
+    lateinit var deregisterUserUseCase: DeregisterUserUseCase
+
+    @Mock
+    lateinit var authenticateUserUseCase: AuthenticateUserUseCase
+
     private lateinit var wrapper: OneginiSdkWrapper
 
     @Before
@@ -65,7 +83,13 @@ class OneginiSdkWrapperTests {
             getIdentityProvidersUseCase,
             getAccessTokenUseCase,
             registerUserUseCase,
-            getAuthenticatedUserProfileUseCase
+            getAuthenticatedUserProfileUseCase,
+            getAllAuthenticatorsUseCase,
+            getRegisteredAuthenticatorsUseCase,
+            getUserProfilesUseCase,
+            getRedirectUriUseCase,
+            deregisterUserUseCase,
+            authenticateUserUseCase
         )
     }
 
@@ -102,5 +126,47 @@ class OneginiSdkWrapperTests {
         wrapper.getAuthenticatedUserProfileUseCase(promiseMock)
 
         verify(getAuthenticatedUserProfileUseCase).invoke(promiseMock)
+    }
+
+    @Test
+    fun `when getAllAuthenticators method is called calls getAllAuthenticatorsUseCase with proper params`() {
+        wrapper.getAllAuthenticators("123456", promiseMock)
+
+        verify(getAllAuthenticatorsUseCase).invoke("123456", promiseMock)
+    }
+
+    @Test
+    fun `when getRegisteredAuthenticators method is called calls getRegisteredAuthenticatorsUseCase with proper params`() {
+        wrapper.getRegisteredAuthenticators("123456", promiseMock)
+
+        verify(getRegisteredAuthenticatorsUseCase).invoke("123456", promiseMock)
+    }
+
+    @Test
+    fun `when getUserProfiles method is called calls getUserProfilesUseCase with proper params`() {
+        wrapper.getUserProfiles(promiseMock)
+
+        verify(getUserProfilesUseCase).invoke(promiseMock)
+    }
+
+    @Test
+    fun `when getRedirectUri method is called calls getRedirectUriUseCase with proper params`() {
+        wrapper.getRedirectUri(promiseMock)
+
+        verify(getRedirectUriUseCase).invoke(promiseMock)
+    }
+
+    @Test
+    fun `when deregisterUser method is called calls deregisterUserUseCase with proper params`() {
+        wrapper.deregisterUser("123456", promiseMock)
+
+        verify(deregisterUserUseCase).invoke("123456", promiseMock)
+    }
+
+    @Test
+    fun `when authenticateUser method is called calls authenticateUserUseCase with proper params`() {
+        wrapper.authenticateUser("123456", "1", promiseMock)
+
+        verify(authenticateUserUseCase).invoke("123456", "1", promiseMock)
     }
 }
