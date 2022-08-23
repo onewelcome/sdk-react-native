@@ -17,7 +17,7 @@ class RegistrationConnector : BridgeToRegistrationConnectorProtocol {
     func handleCustomRegistrationAction(_ action: String, _ identityProviderId: String, _ code: String? = nil) -> Void {
         switch action {
             case CustomRegistrationAction.provide.rawValue:
-                registrationHandler.processOTPCode(code: code as String?)
+                registrationHandler.processOTPCode(code: code)
                 break
             case CustomRegistrationAction.cancel.rawValue:
                 registrationHandler.cancelCustomRegistration()
