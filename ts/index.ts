@@ -76,6 +76,7 @@ interface NativeMethods {
     profileId: string,
     idOneginiAuthenticator: string,
   ): Promise<any>; // TODO: check this path and check if resolve is called on Native side
+  validatePinWithPolicy(pin: string): Promise<null>;
 
   // PIN
   submitPinAction(

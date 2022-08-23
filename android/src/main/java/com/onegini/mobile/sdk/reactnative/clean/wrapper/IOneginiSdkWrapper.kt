@@ -36,6 +36,8 @@ interface IOneginiSdkWrapper {
 
     fun setPreferredAuthenticator(profileId: String, idOneginiAuthenticator: String, promise: Promise)
 
+    fun validatePinWithPolicy(pin: String?, promise: Promise)
+
     //
     // Registration
     //

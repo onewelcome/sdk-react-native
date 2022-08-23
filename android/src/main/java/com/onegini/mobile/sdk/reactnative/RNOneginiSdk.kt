@@ -186,6 +186,11 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
+    override fun validatePinWithPolicy(pin: String?, promise: Promise) {
+        sdkWrapper.validatePinWithPolicy(pin, promise)
+    }
+
+    @ReactMethod
     override fun registerUser(identityProviderId: String?, scopes: ReadableArray, promise: Promise) {
         sdkWrapper.registerUser(identityProviderId, scopes, promise)
     }
