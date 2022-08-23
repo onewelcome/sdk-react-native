@@ -2,7 +2,7 @@ protocol BridgeToPinConnectorProtocol: AnyObject {
     var bridgeConnector: BridgeConnectorProtocol? { get set }
     var pinHandler: PinConnectorToPinHandler { get }
 
-    func handlePinAction(_ flow: (NSString), _ action: (NSString), _ pin: (NSString)) -> Void
+    func handlePinAction(_ flow: String, _ action: String, _ pin: String) -> Void
     func sendNotification(event: PinNotification, flow: PinFlow?, error: NSError?, profileId: String?, userInfo: [String: Any]?, data: Any?) -> Void
 }
 
@@ -15,7 +15,7 @@ class PinConnector : BridgeToPinConnectorProtocol {
         pinHandler = PinHandler()
     }
 
-    func handlePinAction(_ flow: (NSString), _ action: (NSString), _ pin: (NSString)) -> Void {
+    func handlePinAction(_ flow: String, _ action: String, _ pin: String) -> Void {
         switch action {
             case PinAction.provide.rawValue:
                 pinHandler.onPinProvided(pin: pin)
@@ -50,13 +50,13 @@ enum PinNotification : String {
 }
 
 // Pin actions from RN Bridge
-enum PinAction : NSString {
+enum PinAction : String {
     case provide = "provide",
          cancel = "cancel"
 }
 
 // Pin flows from RN Bridge
-enum PinFlow : NSString {
+enum PinFlow : String {
     case create = "create",
          change = "change",
          authentication = "authentication"
