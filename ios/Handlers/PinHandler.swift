@@ -89,7 +89,7 @@ extension PinHandler : PinConnectorToPinHandler {
     }
 
     func onPinProvided(pin: String) {
-      let characters: String = pin as String
+      let characters: String = pin
       let pinArray: Array<String> = Array(arrayLiteral: characters)
 
       processPin(pinEntry: pinArray)
