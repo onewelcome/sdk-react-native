@@ -1,5 +1,5 @@
 protocol PinConnectorToPinHandler: AnyObject {
-    func onPinProvided(pin: (NSString))
+    func onPinProvided(pin: String)
     func onChangePinCalled(completion: @escaping (Bool, NSError?) -> Void)
     func onCancel()
     func handleFlowUpdate(_ flow: PinFlow, error: NSError?, receiver: PinHandlerToReceiverProtocol, profileId: String, userInfo: [String: Any]?, data: Any?)
@@ -88,7 +88,7 @@ extension PinHandler : PinConnectorToPinHandler {
         }
     }
 
-    func onPinProvided(pin: (NSString)) {
+    func onPinProvided(pin: String) {
       let characters: String = pin as String
       let pinArray: Array<String> = Array(arrayLiteral: characters)
 
