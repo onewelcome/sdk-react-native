@@ -44,13 +44,7 @@ class GetAllAuthenticatorsUseCaseTests {
     @Test
     fun `when no profile is found should reject with error`() {
         getAllAuthenticatorsUseCase("profileId1", promiseMock)
-
-        argumentCaptor<String> {
-            verify(promiseMock).reject(capture(), capture())
-
-            assertEquals(OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.code, firstValue)
-            assertEquals(OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.message, secondValue)
-        }
+        verify(promiseMock).reject(OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.code, OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.message)
     }
 
     @Test

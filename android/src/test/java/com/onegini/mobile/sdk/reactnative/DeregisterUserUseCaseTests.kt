@@ -73,13 +73,7 @@ class DeregisterUserUseCaseTests {
         deregisterUserUseCase("123456", promiseMock)
 
         verify(oneginiSdk.oneginiClient.userClient).deregisterUser(any(), any())
-
-        argumentCaptor<String> {
-            verify(promiseMock).reject(capture(), capture())
-
-            Assert.assertEquals("666", firstValue)
-            Assert.assertEquals("MyError", secondValue)
-        }
+        verify(promiseMock).reject("666", "MyError")
     }
 
     @Test

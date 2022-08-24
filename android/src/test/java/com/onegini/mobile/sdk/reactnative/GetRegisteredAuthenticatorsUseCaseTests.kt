@@ -46,13 +46,7 @@ class GetRegisteredAuthenticatorsUseCaseTests {
         `when`(oneginiSdk.oneginiClient.userClient.getRegisteredAuthenticators(any())).thenReturn(setOf(TestData.authenticator1, TestData.authenticator2))
 
         getRegisteredAuthenticatorsUseCase("123456", promiseMock)
-
-        argumentCaptor<String> {
-            verify(promiseMock).reject(capture(), capture())
-
-            assertEquals(OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.code, firstValue)
-            assertEquals(OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.message, secondValue)
-        }
+        verify(promiseMock).reject(OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.code, OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.message)
     }
 
     @Test

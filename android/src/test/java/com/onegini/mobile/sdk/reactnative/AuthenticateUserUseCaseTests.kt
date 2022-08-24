@@ -103,13 +103,7 @@ class AuthenticateUserUseCaseTests {
         whenAuthenticateUserFailed()
 
         authenticateUserUseCase("123456", null, promiseMock)
-
-        argumentCaptor<String> {
-            verify(promiseMock).reject(capture(), capture())
-
-            Assert.assertEquals("666", firstValue)
-            Assert.assertEquals("MyError", secondValue)
-        }
+        verify(promiseMock).reject("666", "MyError")
     }
 
     private fun whenAuthenticateUserFailed() {
