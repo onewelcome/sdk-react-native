@@ -43,21 +43,21 @@ class PinConnector : BridgeToPinConnectorProtocol {
 }
 
 // Pin notification actions for RN Bridge
-enum PinNotification : String {
-    case open = "open",
-         close = "close",
-         showError = "show_error"
+enum PinNotification: String {
+    case open
+    case close
+    case showError = "show_error"
 }
 
 // Pin actions from RN Bridge
-enum PinAction : String {
-    case provide = "provide",
-         cancel = "cancel"
+enum PinAction: String {
+    case provide
+    case cancel
 }
 
 // Pin flows from RN Bridge
-enum PinFlow : String {
-    case create = "create",
-         change = "change",
-         authentication = "authentication"
+enum PinFlow: String {
+    case create
+    case change
+    case authentication
 }
