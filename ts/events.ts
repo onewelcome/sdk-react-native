@@ -4,9 +4,9 @@ export enum PinAction {
 }
 
 export enum PinFlow {
-  Authentication = 'authentication',
-  Create = 'create',
-  Change = 'change',
+  Authentication = 'Authentication',
+  Create = 'Create',
+  Change = 'Change',
 }
 
 export enum PinNotification {

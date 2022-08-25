@@ -6,19 +6,10 @@ import com.onegini.mobile.sdk.reactnative.Constants.PinFlow
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiPinCallback
 import com.onegini.mobile.sdk.android.handlers.error.OneginiPinValidationError
-import com.onegini.mobile.sdk.reactnative.Constants
-import com.onegini.mobile.sdk.reactnative.Constants.PIN_NOTIFICATION_CLOSE_VIEW
 
 class CreatePinRequestHandler : OneginiCreatePinRequestHandler {
     private var pinCallback: OneginiPinCallback? = null
-
-
-    private var pinNotificationHandler: PinNotificationObserver? = null
-    private var lastPinFlow: PinFlow = PinFlow.Create
-
-    fun setPinNotificationObserver(pinNotificationHandler: PinNotificationObserver?) {
-        this.pinNotificationHandler = pinNotificationHandler
-    }
+    private var eventEmitter = CreatePinEventEmitter()
 
     override fun startPinCreation(
         userProfile: UserProfile,
@@ -26,41 +17,22 @@ class CreatePinRequestHandler : OneginiCreatePinRequestHandler {
         pinLength: Int
     ) {
         pinCallback = oneginiPinCallback
-        notifyOnOpen(userProfile.profileId, pinLength)
+        eventEmitter.onPinOpen(PinFlow.Create, userProfile.profileId, pinLength)
     }
 
     override fun onNextPinCreationAttempt(oneginiPinValidationError: OneginiPinValidationError) {
-            handlePinValidationError(oneginiPinValidationError)
+        eventEmitter.onError(oneginiPinValidationError.errorType, oneginiPinValidationError.message ?: "", PinFlow.Create)
     }
 
     override fun finishPinCreation() {
-        notifyOnSimpleAction(PIN_NOTIFICATION_CLOSE_VIEW)
+        eventEmitter.onPinClose(PinFlow.Create)
     }
 
-    fun setPinFlow(flow: PinFlow) {
-        lastPinFlow = flow
-    }
-
-    fun onPinProvided(pin: CharArray?, flow: PinFlow) {
-        lastPinFlow = flow
+    fun onPinProvided(pin: CharArray) {
         pinCallback?.acceptAuthenticationRequest(pin)
     }
 
-    fun pinCancelled(flow: PinFlow) {
-        lastPinFlow = flow
+    fun pinCancelled() {
         pinCallback?.denyAuthenticationRequest()
-    }
-
-
-    fun handlePinValidationError(error: OneginiPinValidationError) {
-        pinNotificationHandler?.onError(error.getErrorType(), error.message ?: "", lastPinFlow)
-    }
-
-    fun notifyOnSimpleAction(notifyAction: String) {
-        pinNotificationHandler?.onNotify(notifyAction, lastPinFlow, null, null)
-    }
-
-    fun notifyOnOpen(profileId: String? = null, data: Any? = null) {
-        pinNotificationHandler?.onNotify(Constants.PIN_NOTIFICATION_OPEN_VIEW, lastPinFlow, profileId, data)
     }
 }

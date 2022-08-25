@@ -19,8 +19,7 @@ import com.onegini.mobile.sdk.reactnative.clean.use_cases.StartClientUseCase
 
 class OneginiSdkWrapper(
     private val oneginiSDK: OneginiSDK,
-    private val reactApplicationContext: ReactApplicationContext,
-    val startClientUseCase: StartClientUseCase = StartClientUseCase(oneginiSDK, reactApplicationContext),
+    val startClientUseCase: StartClientUseCase = StartClientUseCase(oneginiSDK),
     val getIdentityProvidersUseCase: GetIdentityProvidersUseCase = GetIdentityProvidersUseCase(oneginiSDK),
     val getAccessTokenUseCase: GetAccessTokenUseCase = GetAccessTokenUseCase(oneginiSDK),
     val registerUserUseCase: RegisterUserUseCase = RegisterUserUseCase(oneginiSDK),
@@ -133,7 +132,7 @@ class OneginiSdkWrapper(
         TODO("Not yet implemented")
     }
 
-    override fun submitPinAction(flowString: String?, action: String, pin: String?) {
+    override fun submitPinAction(pinFlow: String?, action: String, pin: String?) {
         TODO("Not yet implemented")
     }
 

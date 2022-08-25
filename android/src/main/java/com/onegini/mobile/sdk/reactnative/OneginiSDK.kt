@@ -2,25 +2,21 @@
 package com.onegini.mobile.sdk.reactnative
 
 import android.content.Context
+import com.facebook.react.bridge.ReactApplicationContext
 import com.onegini.mobile.sdk.android.client.OneginiClient
 import com.onegini.mobile.sdk.android.client.OneginiClientBuilder
 import com.onegini.mobile.sdk.android.model.OneginiClientConfigModel
 import com.onegini.mobile.sdk.reactnative.handlers.RegistrationRequestHandler
-import com.onegini.mobile.sdk.reactnative.handlers.customregistration.CustomRegistrationObserver
 import com.onegini.mobile.sdk.reactnative.handlers.customregistration.SimpleCustomRegistrationAction
 import com.onegini.mobile.sdk.reactnative.handlers.customregistration.SimpleCustomRegistrationFactory
-import com.onegini.mobile.sdk.reactnative.handlers.fingerprint.FingerprintAuthenticationObserver
 import com.onegini.mobile.sdk.reactnative.handlers.fingerprint.FingerprintAuthenticationRequestHandler
 import com.onegini.mobile.sdk.reactnative.handlers.mobileauthotp.MobileAuthOtpRequestHandler
-import com.onegini.mobile.sdk.reactnative.handlers.mobileauthotp.MobileAuthOtpRequestObserver
-import com.onegini.mobile.sdk.reactnative.handlers.pins.ChangePinHandler
 import com.onegini.mobile.sdk.reactnative.handlers.pins.CreatePinRequestHandler
 import com.onegini.mobile.sdk.reactnative.handlers.pins.PinAuthenticationRequestHandler
-import com.onegini.mobile.sdk.reactnative.handlers.pins.PinNotificationObserver
 import com.onegini.mobile.sdk.reactnative.model.rn.OneginiReactNativeConfig
 import java.util.concurrent.TimeUnit
 
-class OneginiSDK(private val appContext: Context) {
+class OneginiSDK(private val reactApplicationContext: ReactApplicationContext) {
 
     lateinit var registrationRequestHandler: RegistrationRequestHandler
         private set
@@ -28,7 +24,6 @@ class OneginiSDK(private val appContext: Context) {
         private set
     lateinit var createPinRequestHandler: CreatePinRequestHandler
         private set
-    lateinit var changePinHandler: ChangePinHandler
 
     val simpleCustomRegistrationActions = ArrayList<SimpleCustomRegistrationAction>()
 
@@ -43,7 +38,7 @@ class OneginiSDK(private val appContext: Context) {
     fun init(oneginiReactNativeConfig: OneginiReactNativeConfig) {
         this.config = oneginiReactNativeConfig
 
-        buildSDK(appContext)
+        buildSDK(reactApplicationContext.applicationContext)
     }
 
     val oneginiClient: OneginiClient
@@ -54,9 +49,8 @@ class OneginiSDK(private val appContext: Context) {
     private fun buildSDK(context: Context): OneginiClient {
         val applicationContext = context.applicationContext
         registrationRequestHandler = RegistrationRequestHandler(applicationContext)
-        pinAuthenticationRequestHandler = PinAuthenticationRequestHandler(this)
+        pinAuthenticationRequestHandler = PinAuthenticationRequestHandler()
         createPinRequestHandler = CreatePinRequestHandler()
-        changePinHandler = ChangePinHandler(this)
 
         // twoWayOtpIdentityProvider = TwoWayOtpIdentityProvider(context)
         val clientBuilder = OneginiClientBuilder(applicationContext, createPinRequestHandler, pinAuthenticationRequestHandler) // handlers for optional functionalities
@@ -91,26 +85,6 @@ class OneginiSDK(private val appContext: Context) {
             simpleCustomRegistrationActions.add(provider.action)
             clientBuilder.addCustomIdentityProvider(provider)
         }
-    }
-
-    fun setPinNotificationObserver(pinNotificationObserver: PinNotificationObserver) {
-        createPinRequestHandler.setPinNotificationObserver(pinNotificationObserver)
-        pinAuthenticationRequestHandler.setPinNotificationObserver(pinNotificationObserver)
-        changePinHandler.pinNotificationObserver = pinNotificationObserver
-    }
-
-    fun setCustomRegistrationObserver(observer: CustomRegistrationObserver) {
-        simpleCustomRegistrationActions.forEach {
-            it.setCustomRegistrationObserver(observer)
-        }
-    }
-
-    fun setMobileAuthOtpRequestObserver(mobileAuthOtpRequestObserver: MobileAuthOtpRequestObserver) {
-        mobileAuthOtpRequestHandler?.observer = mobileAuthOtpRequestObserver
-    }
-
-    fun setFingerprintAuthenticationObserver(observer: FingerprintAuthenticationObserver) {
-        fingerprintAuthenticationRequestHandler?.observer = observer
     }
 
     private fun setConfigModel(clientBuilder: OneginiClientBuilder) {

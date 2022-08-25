@@ -4,26 +4,27 @@ import com.onegini.mobile.sdk.android.handlers.request.OneginiFingerprintAuthent
 import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiFingerprintCallback
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 
+
 class FingerprintAuthenticationRequestHandler : OneginiFingerprintAuthenticationRequestHandler {
 
     private var callback: OneginiFingerprintCallback? = null
-    var observer: FingerprintAuthenticationObserver? = null
+    var eventEmitter: FingerprintAuthenticationEventEmitter = FingerprintAuthenticationEventEmitter()
 
     override fun startAuthentication(user: UserProfile, callback: OneginiFingerprintCallback) {
         this.callback = callback
-        observer?.startAuthentication(user)
+        eventEmitter.startAuthentication(user)
     }
 
     override fun onNextAuthenticationAttempt() {
-        observer?.onNextAuthenticationAttempt()
+        eventEmitter.onNextAuthenticationAttempt()
     }
 
     override fun onFingerprintCaptured() {
-        observer?.onFingerprintCaptured()
+        eventEmitter.onFingerprintCaptured()
     }
 
     override fun finishAuthentication() {
-        observer?.finishAuthentication()
+        eventEmitter.finishAuthentication()
     }
 
     fun acceptAuthenticationRequest() {

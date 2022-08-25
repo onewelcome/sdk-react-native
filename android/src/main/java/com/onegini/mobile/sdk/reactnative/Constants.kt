@@ -1,31 +1,11 @@
 package com.onegini.mobile.sdk.reactnative
 
 object Constants {
-    // Pins flow
-    enum class PinFlow(val flowString: String) {
-        Authentication("authentication"), Create("create"), Change("change");
-
-        companion object {
-            @Throws(Exception::class)
-            fun parse(flowString: String?): PinFlow {
-                return when (flowString) {
-                    Authentication.flowString -> {
-                        Authentication
-                    }
-                    Create.flowString -> {
-                        Create
-                    }
-                    Change.flowString -> {
-                        Change
-                    }
-                    else -> {
-                        throw Exception("The Flow$flowString does not extis")
-                    }
-                }
-            }
-        }
+    enum class PinFlow {
+        Authentication,
+        Create,
+        Change,
     }
-
     val DEFAULT_SCOPES = arrayOf("read")
     const val NEW_LINE = "\n"
     const val FCM_SENDER_ID = "586427927998"

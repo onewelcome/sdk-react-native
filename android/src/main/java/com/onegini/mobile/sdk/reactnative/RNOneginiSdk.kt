@@ -3,7 +3,6 @@ package com.onegini.mobile.sdk.reactnative
 
 import android.net.Uri
 import android.util.Log
-import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
@@ -11,17 +10,14 @@ import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
 import com.onegini.mobile.sdk.android.handlers.OneginiAppToWebSingleSignOnHandler
-import com.onegini.mobile.sdk.android.handlers.OneginiAuthenticationHandler
-import com.onegini.mobile.sdk.android.handlers.OneginiDeregisterUserProfileHandler
+import com.onegini.mobile.sdk.android.handlers.OneginiChangePinHandler
 import com.onegini.mobile.sdk.android.handlers.OneginiDeviceAuthenticationHandler
 import com.onegini.mobile.sdk.android.handlers.OneginiImplicitAuthenticationHandler
 import com.onegini.mobile.sdk.android.handlers.OneginiLogoutHandler
 import com.onegini.mobile.sdk.android.handlers.OneginiMobileAuthEnrollmentHandler
 import com.onegini.mobile.sdk.android.handlers.OneginiMobileAuthWithOtpHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiAppToWebSingleSignOnError
-import com.onegini.mobile.sdk.android.handlers.error.OneginiAuthenticationError
 import com.onegini.mobile.sdk.android.handlers.error.OneginiChangePinError
-import com.onegini.mobile.sdk.android.handlers.error.OneginiDeregistrationError
 import com.onegini.mobile.sdk.android.handlers.error.OneginiDeviceAuthenticationError
 import com.onegini.mobile.sdk.android.handlers.error.OneginiError
 import com.onegini.mobile.sdk.android.handlers.error.OneginiImplicitTokenRequestError
@@ -32,25 +28,19 @@ import com.onegini.mobile.sdk.android.model.OneginiAppToWebSingleSignOn
 import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.Constants.PinFlow
-import com.onegini.mobile.sdk.reactnative.OneginiComponets.init
+import com.onegini.mobile.sdk.reactnative.OneginiComponents.init
 import com.onegini.mobile.sdk.reactnative.clean.wrapper.IOneginiSdkWrapper
 import com.onegini.mobile.sdk.reactnative.clean.wrapper.OneginiSdkWrapper
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
-import com.onegini.mobile.sdk.reactnative.handlers.pins.ChangePinHandler
 import com.onegini.mobile.sdk.reactnative.managers.AuthenticatorManager
 import com.onegini.mobile.sdk.reactnative.managers.AuthenticatorManager.DeregistrationCallback
 import com.onegini.mobile.sdk.reactnative.managers.AuthenticatorManager.RegistrationCallback
 import com.onegini.mobile.sdk.reactnative.managers.RegistrationManager
 import com.onegini.mobile.sdk.reactnative.mapers.CustomInfoMapper
-import com.onegini.mobile.sdk.reactnative.mapers.CustomInfoMapper.add
 import com.onegini.mobile.sdk.reactnative.mapers.JsonMapper
 import com.onegini.mobile.sdk.reactnative.mapers.OneginiAppToWebSingleSignOnMapper
-import com.onegini.mobile.sdk.reactnative.mapers.OneginiAuthenticatorMapper
 import com.onegini.mobile.sdk.reactnative.mapers.ResourceRequestDetailsMapper
 import com.onegini.mobile.sdk.reactnative.mapers.ScopesMapper
-import com.onegini.mobile.sdk.reactnative.mapers.UserProfileMapper.add
-import com.onegini.mobile.sdk.reactnative.mapers.UserProfileMapper.toUserProfile
-import com.onegini.mobile.sdk.reactnative.mapers.UserProfileMapper.toWritableMap
 import com.onegini.mobile.sdk.reactnative.network.AnonymousService
 import com.onegini.mobile.sdk.reactnative.network.ImplicitUserService
 import com.onegini.mobile.sdk.reactnative.network.UserService
@@ -70,14 +60,14 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     private val authenticatorManager: AuthenticatorManager
 
     private val oneginiSDK: OneginiSDK
-        get() = OneginiComponets.oneginiSDK
+        get() = OneginiComponents.oneginiSDK
 
     private val disposables = CompositeDisposable()
 
     init {
-        init(reactContext.applicationContext)
+        init(reactContext)
 
-        sdkWrapper = OneginiSdkWrapper(oneginiSDK, reactApplicationContext)
+        sdkWrapper = OneginiSdkWrapper(oneginiSDK)
 
         this.reactContext = reactContext
         registrationManager = RegistrationManager(oneginiSDK)
@@ -247,12 +237,13 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     override fun changePin(promise: Promise) {
-        oneginiSDK.changePinHandler.onStartChangePin(object : ChangePinHandler.ChangePinHandlerResponse {
+
+        oneginiSDK.oneginiClient.userClient.changePin(object : OneginiChangePinHandler {
             override fun onSuccess() {
                 promise.resolve(null)
             }
 
-            override fun onError(error: OneginiChangePinError?) {
+            override fun onError(error: OneginiChangePinError) {
                 promise.reject(error?.errorType.toString(), error?.message)
             }
         })
@@ -260,28 +251,29 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     @Throws(Exception::class)
-    override fun submitPinAction(flowString: String?, action: String, pin: String?) {
-        val flow = PinFlow.parse(flowString)
-        when (flow) {
-            PinFlow.Authentication -> {
+    override fun submitPinAction(pinFlow: String?, action: String, pin: String?) {
+        when (pinFlow) {
+            PinFlow.Authentication.toString() -> {
                 submitAuthenticationPinAction(action, pin)
                 return
             }
-            PinFlow.Create -> {
+            PinFlow.Create.toString() -> {
                 submitCreatePinAction(action, pin)
                 return
             }
-            PinFlow.Change -> {
+            PinFlow.Change.toString() -> {
                 submitChangePinAction(action, pin)
                 return
             }
         }
+        println("submitPinAction did not match!")
+        // TODO: We should reject here maybe? This method throws?? whats going on with that?
     }
 
     private fun submitCreatePinAction(action: String, pin: String?) {
         when (action) {
-            Constants.PIN_ACTION_PROVIDE -> oneginiSDK.createPinRequestHandler.onPinProvided(pin!!.toCharArray(), PinFlow.Create)
-            Constants.PIN_ACTION_CANCEL -> oneginiSDK.createPinRequestHandler.pinCancelled(PinFlow.Create)
+            Constants.PIN_ACTION_PROVIDE -> oneginiSDK.createPinRequestHandler.onPinProvided(pin!!.toCharArray())
+            Constants.PIN_ACTION_CANCEL -> oneginiSDK.createPinRequestHandler.pinCancelled()
             else -> Log.e(LOG_TAG, "Got unsupported PIN action: $action")
         }
     }
@@ -295,9 +287,13 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     private fun submitChangePinAction(action: String, pin: String?) {
+        //TODO: Null check pin? probably in use of this method
         when (action) {
-            Constants.PIN_ACTION_PROVIDE -> oneginiSDK.changePinHandler.onPinProvided(pin!!.toCharArray())
-            Constants.PIN_ACTION_CANCEL -> oneginiSDK.changePinHandler.pinCancelled()
+            // Constants.PIN_ACTION_PROVIDE -> oneginiSDK.changePinHandler.onPinProvided(pin!!.toCharArray())
+            // Constants.PIN_ACTION_CANCEL -> oneginiSDK.changePinHandler.pinCancelled()
+            Constants.PIN_ACTION_PROVIDE -> oneginiSDK.createPinRequestHandler.onPinProvided(pin!!.toCharArray())
+            Constants.PIN_ACTION_CANCEL -> oneginiSDK.createPinRequestHandler.pinCancelled()
+
             else -> Log.e(LOG_TAG, "Got unsupported PIN action: $action")
         }
     }
