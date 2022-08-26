@@ -5,32 +5,30 @@ export type SdkEvent =
   | MobileAuthOtpEvent;
 
 // Pin
-export type PinEvent =
-  | PinCloseEvent
-  | PinChangedEvent
-  | PinOpenEvent
-  | PinErrorEvent;
+export type PinEvent = PinCloseEvent | PinOpenEvent | PinErrorEvent;
 
 export type PinCloseEvent = {
   action: Pin.Close;
   flow: PinFlow;
 };
 
-export type PinChangedEvent = {
-  action: Pin.Changed;
-  flow: PinFlow;
+export type PinOpenEvent = PinAuthenticationOpenEvent | PinCreateOpenEvent;
+
+export type PinAuthenticationOpenEvent = {
+  flow: PinFlow.Authentication;
+  action: Pin.Open;
+  profileId: string;
 };
 
-export type PinOpenEvent = {
+export type PinCreateOpenEvent = {
+  flow: PinFlow.Create;
   action: Pin.Open;
-  flow: PinFlow;
   profileId: string;
-  data?: number; //pin length
+  data: number; //pin length
 };
 
 export type PinErrorEvent = {
   action: Pin.Error;
-  flow: PinFlow;
   errorType: number;
   errorMsg: string;
   userInfo?: {
