@@ -4,7 +4,6 @@ import com.onegini.mobile.sdk.android.handlers.request.OneginiPinAuthenticationR
 import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiPinCallback
 import com.onegini.mobile.sdk.android.model.entity.AuthenticationAttemptCounter
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
-import com.onegini.mobile.sdk.reactnative.Constants
 
 class PinAuthenticationRequestHandler : OneginiPinAuthenticationRequestHandler {
     private var callback: OneginiPinCallback? = null
@@ -16,7 +15,7 @@ class PinAuthenticationRequestHandler : OneginiPinAuthenticationRequestHandler {
         attemptCounter: AuthenticationAttemptCounter
     ) {
         callback = oneginiPinCallback
-        eventEmitter.onPinOpen(Constants.PinFlow.Authentication, userProfile.profileId)
+        eventEmitter.onPinOpen(userProfile.profileId)
     }
 
     override fun onNextAuthenticationAttempt(attemptCounter: AuthenticationAttemptCounter) {
@@ -24,7 +23,7 @@ class PinAuthenticationRequestHandler : OneginiPinAuthenticationRequestHandler {
     }
 
     override fun finishAuthentication() {
-        eventEmitter.onPinClose(Constants.PinFlow.Authentication)
+        eventEmitter.onPinClose()
     }
 
     fun acceptAuthenticationRequest(pin: CharArray) {

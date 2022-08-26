@@ -17,15 +17,15 @@ class CreatePinRequestHandler : OneginiCreatePinRequestHandler {
         pinLength: Int
     ) {
         pinCallback = oneginiPinCallback
-        eventEmitter.onPinOpen(PinFlow.Create, userProfile.profileId, pinLength)
+        eventEmitter.onPinOpen(userProfile.profileId, pinLength)
     }
 
     override fun onNextPinCreationAttempt(oneginiPinValidationError: OneginiPinValidationError) {
-        eventEmitter.onError(oneginiPinValidationError.errorType, oneginiPinValidationError.message ?: "", PinFlow.Create)
+        eventEmitter.onError(oneginiPinValidationError.errorType, oneginiPinValidationError.message ?: "")
     }
 
     override fun finishPinCreation() {
-        eventEmitter.onPinClose(PinFlow.Create)
+        eventEmitter.onPinClose()
     }
 
     fun onPinProvided(pin: CharArray) {

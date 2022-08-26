@@ -1,6 +1,5 @@
 package com.onegini.mobile.sdk.reactnative
 
-import android.content.Context
 import com.onegini.mobile.sdk.reactnative.network.client.SecureResourceClient
 import com.facebook.react.bridge.ReactApplicationContext
 // TODO: Refactor this to dependency injection
