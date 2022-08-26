@@ -27,13 +27,20 @@ export type PinCreateOpenEvent = {
   data: number; //pin length
 };
 
-export type PinErrorEvent = {
+export type PinErrorEvent = WrongPinEvent | GenericPinErrorEvent;
+export type WrongPinEvent = {
+  action: Pin.Error;
+  errorType: PinErrorCode.WrongPinErrorCode;
+  errorMsg: string;
+  userInfo: {
+    remainingFailureCount: string;
+  };
+};
+
+export type GenericPinErrorEvent = {
   action: Pin.Error;
   errorType: number;
   errorMsg: string;
-  userInfo?: {
-    remainingFailureCount: string;
-  };
 };
 
 //CustomRegistration
@@ -159,4 +166,9 @@ export enum FingerprintStage {
 export enum MobileAuthOtp {
   StartAuthentication = 'startAuthentication',
   FinishAuthentication = 'finishAuthentication',
+}
+
+//TOOD: Add more error codes here.
+export enum PinErrorCode {
+  WrongPinErrorCode = 8004,
 }
