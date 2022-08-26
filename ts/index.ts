@@ -26,8 +26,28 @@ const isAndroid = () => Platform.OS === 'android';
 interface NativeMethods {
   // listeners
   addEventListener(
-    eventType: string,
-    callback?: (event: any) => void,
+    eventType: Events.SdkNotification,
+    callback?: (event: Events.SdkEvent) => void,
+  ): EmitterSubscription;
+
+  addEventListener(
+    eventType: Events.SdkNotification.Pin,
+    callback?: (event: Events.PinEvent) => void,
+  ): EmitterSubscription;
+
+  addEventListener(
+    eventType: Events.SdkNotification.CustomRegistration,
+    callback?: (event: Events.CustomRegistrationEvent) => void,
+  ): EmitterSubscription;
+
+  addEventListener(
+    eventType: Events.SdkNotification.MobileAuthOtp,
+    callback?: (event: Events.MobileAuthOtpEvent) => void,
+  ): EmitterSubscription;
+
+  addEventListener(
+    eventType: Events.SdkNotification.Fingerprint,
+    callback?: (event: Events.FingerprintEvent) => void,
   ): EmitterSubscription;
 
   // Setup
@@ -43,10 +63,10 @@ interface NativeMethods {
   // Resource getters
   //@todo extend types for details and responses
   authenticateUserImplicitly(
-    profileId?: string,
+    profileId: string,
     scopes?: string[],
   ): Promise<any>;
-  authenticateDeviceForResource(scopes: string[]): Promise<any>;
+  authenticateDeviceForResource(scopes?: string[]): Promise<any>;
   resourceRequest(
     type: Types.ResourceRequestType,
     details: Types.ResourcesDetails,
@@ -91,7 +111,7 @@ interface NativeMethods {
   denyMobileAuthConfirmation(): Promise<any>;
   handleMobileAuthWithOtp(otpCode: string): Promise<any>;
   submitCustomRegistrationAction(
-    customAction: string,
+    customAction: Events.CustomRegistrationAction,
     identityProviderId: string,
     token: string | null,
   ): void;
@@ -129,7 +149,7 @@ const nativeMethods: NativeMethods = {
 
   addEventListener: (
     eventType: string,
-    callback: (event: any) => void,
+    callback: (event: Events.SdkEvent) => void,
   ): EmitterSubscription => {
     return OneWelcomeEventEmitter.addListener(eventType, callback);
   },
@@ -190,10 +210,6 @@ const OneginiSdk = {
   ...nativeMethods,
 };
 
-export {
-  Events,
-  Types,
-  DefaultConfig,
-};
+export {Events, Types, DefaultConfig};
 
 export default OneginiSdk;
