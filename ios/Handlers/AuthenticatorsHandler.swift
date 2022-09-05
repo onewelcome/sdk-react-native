@@ -6,12 +6,14 @@ protocol BridgeToAuthenticatorsHandlerProtocol: AnyObject {
     func isAuthenticatorRegistered(_ authenticatorType: ONGAuthenticatorType, _ userProfile: ONGUserProfile) -> Bool
 }
 
-class AuthenticatorsHandler: NSObject, PinHandlerToReceiverProtocol {
+class AuthenticatorsHandler: NSObject {
     var pinChallenge: ONGPinChallenge?
     var registrationCompletion: ((Bool, NSError?) -> Void)?
     var deregistrationCompletion: ((Bool, NSError?) -> Void)?
+    let pinAuthenticationEventEmitter = PinAuthenticationEventEmitter()
+    let createPinEventEmitter = CreatePinEventEmitter()
 
-    func handlePin(pin: String?) {
+    func handlePin(_ pin: String?) {
         guard let pinChallenge = self.pinChallenge else { return }
 
         if(pin != nil) {
@@ -106,8 +108,12 @@ extension AuthenticatorsHandler: BridgeToAuthenticatorsHandlerProtocol {
 extension AuthenticatorsHandler: ONGAuthenticatorRegistrationDelegate {
     func userClient(_: ONGUserClient, didReceive challenge: ONGPinChallenge) {
         pinChallenge = challenge
-        let pinError = mapErrorFromPinChallenge(challenge)
-        BridgeConnector.shared?.toPinHandlerConnector.pinHandler.handleFlowUpdate(PinFlow.authentication, error: pinError, receiver: self, profileId: challenge.userProfile.profileId, userInfo: nil, data: nil)
+        if let pinError = mapErrorFromPinChallenge(challenge) {
+            pinAuthenticationEventEmitter.onPinError(error: pinError)
+        } else {
+            pinAuthenticationEventEmitter.onPinOpen(profileId: challenge.userProfile.profileId)
+        }
+
     }
 
     func userClient(_: ONGUserClient, didReceive challenge: ONGCustomAuthFinishRegistrationChallenge) {
@@ -115,20 +121,20 @@ extension AuthenticatorsHandler: ONGAuthenticatorRegistrationDelegate {
     }
 
     func userClient(_: ONGUserClient, didFailToRegister authenticator: ONGAuthenticator, forUser _: ONGUserProfile, error: Error) {
-        BridgeConnector.shared?.toPinHandlerConnector.pinHandler.closeFlow()
+        createPinEventEmitter.onPinClose()
         registrationCompletion!(false, error as NSError)
     }
 
     func userClient(_: ONGUserClient, didRegister authenticator: ONGAuthenticator, forUser _: ONGUserProfile, info _: ONGCustomInfo?) {
         registrationCompletion!(true, nil)
-        BridgeConnector.shared?.toPinHandlerConnector.pinHandler.closeFlow()
+        createPinEventEmitter.onPinClose()
     }
 }
 
 extension AuthenticatorsHandler: ONGAuthenticatorDeregistrationDelegate {
     func userClient(_: ONGUserClient, didDeregister _: ONGAuthenticator, forUser _: ONGUserProfile) {
         deregistrationCompletion!(true, nil)
-        BridgeConnector.shared?.toPinHandlerConnector.pinHandler.closeFlow()
+        createPinEventEmitter.onPinClose()
     }
 
     func userClient(_: ONGUserClient, didReceive challenge: ONGCustomAuthDeregistrationChallenge) {
@@ -136,7 +142,7 @@ extension AuthenticatorsHandler: ONGAuthenticatorDeregistrationDelegate {
     }
 
     func userClient(_: ONGUserClient, didFailToDeregister authenticator: ONGAuthenticator, forUser _: ONGUserProfile, error: Error) {
-        BridgeConnector.shared?.toPinHandlerConnector.pinHandler.closeFlow()
+        createPinEventEmitter.onPinClose()
         deregistrationCompletion!(false, error as NSError)
     }
 }

@@ -159,12 +159,20 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
     @objc
     func submitPinAction(_ flow: String, action: String, pin: String) -> Void {
-        bridgeConnector.toPinHandlerConnector.handlePinAction(flow, action, pin)
+        switch flow {
+        case PinFlow.Create.rawValue:
+            bridgeConnector.toRegistrationConnector.registrationHandler.handlePinAction(pin, action: action)
+        case PinFlow.Authentication.rawValue:
+            bridgeConnector.toLoginHandler.handlePinAction(pin, action: action)
+            return
+        default:
+            return
+        }
     }
 
     @objc
     func changePin(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        bridgeConnector.toPinHandlerConnector.pinHandler.onChangePinCalled() {
+        bridgeConnector.toChangePinHandler.onChangePinCalled() {
             (_, error) -> Void in
 
             if let error = error {
