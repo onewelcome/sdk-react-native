@@ -13,6 +13,14 @@ class ChangePinHandler: NSObject {
     var changePinCompletion: ((Bool, Error?) -> Void)?
     let pinAuthenticationEventEmitter = PinAuthenticationEventEmitter()
     let createPinEventEmitter = CreatePinEventEmitter()
+    let loginHandler: LoginHandler
+    let registrationHandler: RegistrationConnectorToHandlerProtocol
+    
+    init(loginHandler: LoginHandler, registrationHandler: RegistrationConnectorToHandlerProtocol) {
+        self.loginHandler = loginHandler
+        self.registrationHandler = registrationHandler
+    }
+    
 }
 
 extension ChangePinHandler: PinConnectorToPinHandler {
@@ -24,23 +32,23 @@ extension ChangePinHandler: PinConnectorToPinHandler {
 
 extension ChangePinHandler: ONGChangePinDelegate {
     func userClient(_ userClient: ONGUserClient, didReceive challenge: ONGPinChallenge) {
-        BridgeConnector.shared?.toLoginHandler.handleDidReceiveChallenge(challenge)
+        loginHandler.handleDidReceiveChallenge(challenge)
     }
 
     func userClient(_: ONGUserClient, didReceive challenge: ONGCreatePinChallenge) {
-        BridgeConnector.shared?.toLoginHandler.handleDidAuthenticateUser()
-        BridgeConnector.shared?.toRegistrationConnector.registrationHandler.handleDidReceivePinRegistrationChallenge(challenge)
+        loginHandler.handleDidAuthenticateUser()
+        registrationHandler.handleDidReceivePinRegistrationChallenge(challenge)
     }
     
     func userClient(_: ONGUserClient, didFailToChangePinForUser profile: ONGUserProfile, error: Error) {
-        BridgeConnector.shared?.toLoginHandler.handleDidFailToAuthenticateUser()
-        BridgeConnector.shared?.toRegistrationConnector.registrationHandler.handleDidFailToRegister()
+        loginHandler.handleDidFailToAuthenticateUser()
+        registrationHandler.handleDidFailToRegister()
         changePinCompletion?(false, error)
         changePinCompletion = nil
     }
 
     func userClient(_ : ONGUserClient, didChangePinForUser _: ONGUserProfile) {
-        BridgeConnector.shared?.toRegistrationConnector.registrationHandler.handleDidRegisterUser()
+        registrationHandler.handleDidRegisterUser()
         changePinCompletion?(true, nil)
         changePinCompletion = nil
     }

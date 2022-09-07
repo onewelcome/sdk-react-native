@@ -4,16 +4,17 @@ protocol BridgeConnectorProtocol: AnyObject {
 
 class BridgeConnector : BridgeConnectorProtocol {
     let toRegistrationConnector = RegistrationConnector()
-    let toChangePinHandler = ChangePinHandler()
-    let toMobileAuthConnector = MobileAuthConnector()
     let toLoginHandler = LoginHandler()
+    let toMobileAuthConnector = MobileAuthConnector()
     let toAuthenticatorsHandler = AuthenticatorsHandler()
     let toAppToWebHandler = AppToWebHandler()
     let toResourceHandler = ResourceHandler()
+    let toChangePinHandler: ChangePinHandler
     unowned var bridge: ConnectorToRNBridgeProtocol?
     public static var shared:BridgeConnector?
 
     init() {
+        self.toChangePinHandler = ChangePinHandler(loginHandler: toLoginHandler, registrationHandler: toRegistrationConnector.registrationHandler)
         self.toRegistrationConnector.bridgeConnector = self
         self.toMobileAuthConnector.bridgeConnector = self
         BridgeConnector.shared = self
