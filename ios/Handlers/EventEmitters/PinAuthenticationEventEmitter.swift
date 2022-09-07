@@ -1,4 +1,4 @@
-class PinAuthenticationEventEmitter: NSObject {
+class PinAuthenticationEventEmitter {
     func onPinOpen(profileId: String) {
         let data = [
             "flow": PinFlow.Authentication.rawValue,
@@ -16,7 +16,7 @@ class PinAuthenticationEventEmitter: NSObject {
         BridgeConnector.shared?.sendBridgeEvent(eventName: OneWelcomeBridgeEvents.pinNotification, data: data)
     }
     
-    func onPinError(error: NSError) {
+    func onPinError(error: Error) {
         let data = [
             "flow": PinFlow.Authentication.rawValue,
             "action": PinNotification.showError.rawValue,
@@ -27,7 +27,7 @@ class PinAuthenticationEventEmitter: NSObject {
     }
 
     // TODO: We probably want to rewrite this at some point. 
-    func onWrongPin(error: NSError, remainingFailureCount: UInt) {
+    func onWrongPin(error: Error, remainingFailureCount: UInt) {
         let data = [
             "flow": PinFlow.Authentication.rawValue,
             "action": PinNotification.showError.rawValue,

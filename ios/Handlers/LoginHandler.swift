@@ -1,5 +1,5 @@
 protocol BridgeToLoginHandlerProtocol: AnyObject {
-    func authenticateUser(_ profile: ONGUserProfile, authenticator: ONGAuthenticator?, completion: @escaping (ONGUserProfile?, NSError?) -> Void)
+    func authenticateUser(_ profile: ONGUserProfile, authenticator: ONGAuthenticator?, completion: @escaping (ONGUserProfile?, Error?) -> Void)
     func setAuthPinChallenge(_ challenge: ONGPinChallenge?)
     func handlePinAction(_ pin: String, action: String)
 }
@@ -7,7 +7,7 @@ protocol BridgeToLoginHandlerProtocol: AnyObject {
 
 class LoginHandler: NSObject {
     var pinChallenge: ONGPinChallenge?
-    var loginCompletion: ((ONGUserProfile?, NSError?) -> Void)?
+    var loginCompletion: ((ONGUserProfile?, Error?) -> Void)?
     let pinAuthenticationEventEmitter = PinAuthenticationEventEmitter()
 
     func handlePin(_ pin: String?) {
@@ -20,9 +20,9 @@ class LoginHandler: NSObject {
         }
     }
 
-    fileprivate func mapErrorFromPinChallenge(_ challenge: ONGPinChallenge) -> NSError? {
+    fileprivate func mapErrorFromPinChallenge(_ challenge: ONGPinChallenge) -> Error? {
         if let error = challenge.error, error.code != ONGAuthenticationError.touchIDAuthenticatorFailure.rawValue {
-            return error as NSError
+            return error
         } else {
             return nil
         }
@@ -54,7 +54,7 @@ class LoginHandler: NSObject {
 }
 
 extension LoginHandler : BridgeToLoginHandlerProtocol {
-    func authenticateUser(_ profile: ONGUserProfile, authenticator: ONGAuthenticator? = nil, completion: @escaping (ONGUserProfile?, NSError?) -> Void) {
+    func authenticateUser(_ profile: ONGUserProfile, authenticator: ONGAuthenticator? = nil, completion: @escaping (ONGUserProfile?, Error?) -> Void) {
         loginCompletion = completion
         ONGUserClient.sharedInstance().authenticateUser(profile, authenticator: authenticator, delegate: self)
     }
@@ -65,7 +65,6 @@ extension LoginHandler : BridgeToLoginHandlerProtocol {
         switch action {
             case PinAction.provide.rawValue:
                 handlePin(pin)
-            return
             case PinAction.cancel.rawValue:
                 handlePin(nil)
             default:
@@ -89,12 +88,14 @@ extension LoginHandler: ONGAuthenticationDelegate {
     
     func userClient(_ userClient: ONGUserClient, didAuthenticateUser userProfile: ONGUserProfile, authenticator: ONGAuthenticator, info customAuthInfo: ONGCustomInfo?) {
         handleDidAuthenticateUser()
-        loginCompletion!(userProfile, nil)
+        loginCompletion?(userProfile, nil)
+        loginCompletion = nil
     }
     
     func userClient(_ userClient: ONGUserClient, didFailToAuthenticateUser userProfile: ONGUserProfile, authenticator: ONGAuthenticator, error: Error) {
         handleDidFailToAuthenticateUser()
         // ChangePinHandler also makes use of the handle function but has it's own seperate completion callback, so let's leave the loginCompletion here.
-        loginCompletion!(nil, error as NSError)
+        loginCompletion?(nil, error)
+        loginCompletion = nil
     }
 }

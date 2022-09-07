@@ -164,7 +164,6 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
             bridgeConnector.toRegistrationConnector.registrationHandler.handlePinAction(pin, action: action)
         case PinFlow.Authentication.rawValue:
             bridgeConnector.toLoginHandler.handlePinAction(pin, action: action)
-            return
         default:
             return
         }
@@ -414,11 +413,11 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     // Service methods
-    private func oneginiSDKStartup(completion: @escaping (Bool, NSError?) -> Void) {
+    private func oneginiSDKStartup(completion: @escaping (Bool, Error?) -> Void) {
         ONGClientBuilder().build()
         ONGClient.sharedInstance().start { result, error in
             if let error = error {
-                completion(result, error as NSError)
+                completion(result, error)
             } else {
                 completion(result, nil)
             }
