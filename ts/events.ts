@@ -1,3 +1,5 @@
+import {userInfo} from './data-types';
+
 export type SdkEvent =
   | PinEvent
   | CustomRegistrationEvent
@@ -31,9 +33,7 @@ export type PinErrorEvent = {
   action: Pin.Error;
   errorType: number;
   errorMsg: string;
-  userInfo?: {
-    remainingFailureCount: string;
-  };
+  userInfo?: userInfo;
 };
 
 //CustomRegistration
