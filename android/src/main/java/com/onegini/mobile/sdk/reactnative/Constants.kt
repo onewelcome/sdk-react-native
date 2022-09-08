@@ -20,7 +20,7 @@ object Constants {
     const val ONEWELCOME_PIN_NOTIFICATION = "ONEWELCOME_PIN_NOTIFICATION"
     const val PIN_NOTIFICATION_OPEN_VIEW = "open"
     const val PIN_NOTIFICATION_CLOSE_VIEW = "close"
-    const val PIN_NOTIFICATION_SHOW_ERROR = "show_error"
+    const val PIN_NOTIFICATION_SHOW_ERROR = "showError"
     const val PIN_NOTIFICATION_CHANGED = "changed"
 
     // Pin actions for RN Bridge

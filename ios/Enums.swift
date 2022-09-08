@@ -2,7 +2,7 @@
 enum PinNotification: String {
     case open
     case close
-    case showError = "show_error"
+    case showError
 }
 
 // Pin actions from RN Bridge
@@ -13,7 +13,6 @@ enum PinAction: String {
 
 // Pin flows from RN Bridge
 enum PinFlow: String {
-    case Create
-    case Authentication
+    case create = "Create"
+    case authentication = "Authentication"
 }
-

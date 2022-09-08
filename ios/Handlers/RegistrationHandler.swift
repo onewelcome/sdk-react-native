@@ -5,7 +5,7 @@ protocol RegistrationConnectorToHandlerProtocol: AnyObject {
     func cancelRegistration()
     func cancelCustomRegistration()
     func setCreatePinChallenge(_ challenge: ONGCreatePinChallenge?)
-    func handlePinAction(_ pin: String?, action: String?)
+    func handlePinAction(_ pin: String?, action: PinAction)
     func handleDidReceivePinRegistrationChallenge(_ challenge: ONGCreatePinChallenge)
     func handleDidFailToRegister()
     func handleDidRegisterUser()
@@ -104,14 +104,12 @@ extension RegistrationHandler : RegistrationConnectorToHandlerProtocol {
         createPinChallenge.sender.cancel(createPinChallenge)
     }
     
-    func handlePinAction(_ pin: String?, action: String?) {
+    func handlePinAction(_ pin: String?, action: PinAction) {
         switch action {
-            case PinAction.provide.rawValue:
+            case PinAction.provide:
                 handlePin(pin)
-            case PinAction.cancel.rawValue:
+            case PinAction.cancel:
                 cancelRegistration()
-            default:
-                return
         }
     }
     

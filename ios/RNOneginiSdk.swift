@@ -156,16 +156,29 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func cancelRegistration() -> Void {
         bridgeConnector.toRegistrationConnector.registrationHandler.cancelRegistration()
     }
-
-    @objc
-    func submitPinAction(_ flow: String, action: String, pin: String) -> Void {
-        switch flow {
-        case PinFlow.Create.rawValue:
-            bridgeConnector.toRegistrationConnector.registrationHandler.handlePinAction(pin, action: action)
-        case PinFlow.Authentication.rawValue:
-            bridgeConnector.toLoginHandler.handlePinAction(pin, action: action)
+    
+    func mapStringToPinAction(action: String) -> PinAction? {
+        switch action {
+        case PinAction.provide.rawValue:
+            return .provide
+        case PinAction.cancel.rawValue:
+            return .cancel
         default:
-            return
+            return nil
+        }
+    }
+    
+    @objc
+    func submitPinAction(_ flow: String, action: String, pin: String) {
+        if let pinAction = mapStringToPinAction(action: action) {
+            switch flow {
+            case PinFlow.create.rawValue:
+                bridgeConnector.toRegistrationConnector.registrationHandler.handlePinAction(pin, action: pinAction)
+            case PinFlow.authentication.rawValue:
+                bridgeConnector.toLoginHandler.handlePinAction(pin, action: pinAction)
+            default:
+                break
+            }
         }
     }
 
