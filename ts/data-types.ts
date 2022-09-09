@@ -8,7 +8,7 @@ export interface Config {
   securityControllerClassName: string;
   enableMobileAuthenticationOtp: boolean;
   configModelClassName: string | null;
-  customProviders: [CustomProvider?];
+  customProviders: CustomProvider[];
 }
 
 export interface IdentityProvider {
