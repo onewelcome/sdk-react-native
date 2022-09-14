@@ -62,13 +62,6 @@ class ValidatePinWithPolicyUseCaseTests {
         verify(promiseMock).resolve(null)
     }
 
-    private fun whenPinValidationReturnedError(errorCode: Int, errorMessage: String) {
-        whenever(oneginiPinValidationErrorMock.errorType).thenReturn(errorCode)
-        whenever(oneginiPinValidationErrorMock.message).thenReturn(errorMessage)
-        whenever(oneginiSdk.oneginiClient.userClient.validatePinWithPolicy(any(), any())).thenAnswer {
-            it.getArgument<OneginiPinValidationHandler>(1).onError(oneginiPinValidationErrorMock)
-        }
-    }
     @Test
     fun `When oginini validatePinWithPolicy calls onError on the handler, promise should reject with error from native sdk`() {
         val pin = "14789"
@@ -79,5 +72,13 @@ class ValidatePinWithPolicyUseCaseTests {
         ValidatePinWithPolicyUseCase(oneginiSdk)(pin, promiseMock)
 
         verify(promiseMock).reject(errorCode.toString(), errorMessage)
+    }
+
+    private fun whenPinValidationReturnedError(errorCode: Int, errorMessage: String) {
+        whenever(oneginiPinValidationErrorMock.errorType).thenReturn(errorCode)
+        whenever(oneginiPinValidationErrorMock.message).thenReturn(errorMessage)
+        whenever(oneginiSdk.oneginiClient.userClient.validatePinWithPolicy(any(), any())).thenAnswer {
+            it.getArgument<OneginiPinValidationHandler>(1).onError(oneginiPinValidationErrorMock)
+        }
     }
 }
