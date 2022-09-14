@@ -11,6 +11,10 @@ export interface Config {
   customProviders: CustomProvider[];
 }
 
+export interface userInfo {
+  remainingFailureCount: string;
+}
+
 export interface IdentityProvider {
   id: string;
   name: string;

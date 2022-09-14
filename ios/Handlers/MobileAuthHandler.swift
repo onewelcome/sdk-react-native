@@ -1,8 +1,8 @@
 protocol MobileAuthConnectorToHandlerProtocol: AnyObject {
-    func enrollForMobileAuth(_ completion: @escaping (Bool?, NSError?) -> Void)
+    func enrollForMobileAuth(_ completion: @escaping (Bool?, Error?) -> Void)
     func isUserEnrolledForMobileAuth() -> Bool
     func handleMobileAuthConfirmation(accepted: Bool)
-    func handleOTPMobileAuth(_ otp: String, _ completion: @escaping (Bool, NSError?) -> Void)
+    func handleOTPMobileAuth(_ otp: String, _ completion: @escaping (Bool, Error?) -> Void)
 }
 
 enum MobileAuthAuthenticatorType: String {
@@ -16,7 +16,7 @@ class MobileAuthHandler: NSObject {
     var message: String?
     var authenticatorType: MobileAuthAuthenticatorType?
     var confirmation: ((Bool) -> Void)?
-    var mobileAuthCompletion: ((Bool, NSError?) -> Void)?
+    var mobileAuthCompletion: ((Bool, Error?) -> Void)?
 
     fileprivate func handleConfirmationMobileAuth(_ accepted: Bool) {
         guard let confirmation = confirmation else { fatalError() }
@@ -25,16 +25,16 @@ class MobileAuthHandler: NSObject {
     }
 
 
-    private func sendConnectorNotification(_ event: MobileAuthNotification, _ requestMessage: String?, _ error: NSError?) {
+    private func sendConnectorNotification(_ event: MobileAuthNotification, _ requestMessage: String?, _ error: Error?) {
         BridgeConnector.shared?.toMobileAuthConnector.sendNotification(event: event, requestMessage: requestMessage, error: error)
     }
 }
 
 extension MobileAuthHandler : MobileAuthConnectorToHandlerProtocol {
-    func enrollForMobileAuth(_ completion: @escaping (Bool?, NSError?) -> Void) {
+    func enrollForMobileAuth(_ completion: @escaping (Bool?, Error?) -> Void) {
         ONGClient.sharedInstance().userClient.enroll { enrolled, error in
             if let error = error {
-                completion(false, error as NSError);
+                completion(false, error);
               } else {
                 completion(true, nil)
               }
@@ -59,7 +59,7 @@ extension MobileAuthHandler : MobileAuthConnectorToHandlerProtocol {
         }
     }
 
-    func handleOTPMobileAuth(_ otp: String, _ completion: @escaping (Bool, NSError?) -> Void) {
+    func handleOTPMobileAuth(_ otp: String, _ completion: @escaping (Bool, Error?) -> Void) {
         mobileAuthCompletion = completion
         ONGUserClient.sharedInstance().handleOTPMobileAuthRequest(otp, delegate: self)
     }
@@ -67,11 +67,13 @@ extension MobileAuthHandler : MobileAuthConnectorToHandlerProtocol {
 
 extension MobileAuthHandler: ONGMobileAuthRequestDelegate {
     func userClient(_ userClient: ONGUserClient, didFailToHandle request: ONGMobileAuthRequest, authenticator: ONGAuthenticator?, error: Error) {
-        mobileAuthCompletion!(false, error as NSError)
+        mobileAuthCompletion?(false, error)
+        mobileAuthCompletion = nil
     }
     
     func userClient(_ userClient: ONGUserClient, didHandle request: ONGMobileAuthRequest, authenticator: ONGAuthenticator?, info customAuthenticatorInfo: ONGCustomInfo?) {
-        mobileAuthCompletion!(true, nil)
+        mobileAuthCompletion?(true, nil)
+        mobileAuthCompletion = nil
     }
     
     func userClient(_: ONGUserClient, didReceiveConfirmationChallenge confirmation: @escaping (Bool) -> Void, for request: ONGMobileAuthRequest) {

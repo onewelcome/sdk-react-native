@@ -1,3 +1,5 @@
+import {userInfo} from './data-types';
+
 export type SdkEvent =
   | PinEvent
   | CustomRegistrationEvent
@@ -32,9 +34,7 @@ export type WrongPinEvent = {
   action: Pin.Error;
   errorType: PinErrorCode.WrongPinErrorCode;
   errorMsg: string;
-  userInfo: {
-    remainingFailureCount: string;
-  };
+  userInfo?: userInfo;
 };
 
 export type GenericPinErrorEvent = {
@@ -134,7 +134,7 @@ export enum PinFlow {
 export enum Pin {
   Open = 'open',
   Close = 'close',
-  Error = 'show_error',
+  Error = 'showError',
   Changed = 'changed',
 }
 

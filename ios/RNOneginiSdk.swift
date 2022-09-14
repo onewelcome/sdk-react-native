@@ -156,15 +156,35 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func cancelRegistration() -> Void {
         bridgeConnector.toRegistrationConnector.registrationHandler.cancelRegistration()
     }
-
+    
+    func mapStringToPinAction(action: String) -> PinAction? {
+        switch action {
+        case PinAction.provide.rawValue:
+            return .provide
+        case PinAction.cancel.rawValue:
+            return .cancel
+        default:
+            return nil
+        }
+    }
+    
     @objc
-    func submitPinAction(_ flow: String, action: String, pin: String) -> Void {
-        bridgeConnector.toPinHandlerConnector.handlePinAction(flow, action, pin)
+    func submitPinAction(_ flow: String, action: String, pin: String) {
+        if let pinAction = mapStringToPinAction(action: action) {
+            switch flow {
+            case PinFlow.create.rawValue:
+                bridgeConnector.toRegistrationConnector.registrationHandler.handlePinAction(pin, action: pinAction)
+            case PinFlow.authentication.rawValue:
+                bridgeConnector.toLoginHandler.handlePinAction(pin, action: pinAction)
+            default:
+                break
+            }
+        }
     }
 
     @objc
     func changePin(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        bridgeConnector.toPinHandlerConnector.pinHandler.onChangePinCalled() {
+        bridgeConnector.toChangePinHandler.onChangePinCalled() {
             (_, error) -> Void in
 
             if let error = error {
@@ -406,11 +426,11 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     // Service methods
-    private func oneginiSDKStartup(completion: @escaping (Bool, NSError?) -> Void) {
+    private func oneginiSDKStartup(completion: @escaping (Bool, Error?) -> Void) {
         ONGClientBuilder().build()
         ONGClient.sharedInstance().start { result, error in
             if let error = error {
-                completion(result, error as NSError)
+                completion(result, error)
             } else {
                 completion(result, nil)
             }
