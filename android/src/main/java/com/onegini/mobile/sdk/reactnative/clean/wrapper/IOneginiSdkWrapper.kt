@@ -44,7 +44,7 @@ interface IOneginiSdkWrapper {
 
     fun deregisterUser(profileId: String?, promise: Promise)
 
-    fun cancelRegistration()
+    fun cancelRegistration(promise: Promise)
 
     fun getRedirectUri(promise: Promise)
 

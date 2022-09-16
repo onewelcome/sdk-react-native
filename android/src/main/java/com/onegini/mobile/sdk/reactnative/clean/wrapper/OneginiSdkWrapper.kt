@@ -84,7 +84,7 @@ class OneginiSdkWrapper(
         deregisterUserUseCase(profileId, promise)
     }
 
-    override fun cancelRegistration() {
+    override fun cancelRegistration(promise: Promise) {
         TODO("Not yet implemented")
     }
 
