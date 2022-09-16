@@ -92,11 +92,11 @@ class OneginiSdkWrapper(
         getRedirectUriUseCase(promise)
     }
 
-    override fun handleRegistrationCallback(uri: String?) {
+    override fun handleRegistrationCallback(uri: String?, promise: Promise) {
         TODO("Not yet implemented")
     }
 
-    override fun submitCustomRegistrationAction(customAction: String, identityProviderId: String, token: String?) {
+    override fun submitCustomRegistrationAction(customAction: String, identityProviderId: String, token: String?, promise: Promise) {
         TODO("Not yet implemented")
     }
 
@@ -132,7 +132,7 @@ class OneginiSdkWrapper(
         TODO("Not yet implemented")
     }
 
-    override fun submitPinAction(pinFlow: String?, action: String, pin: String?) {
+    override fun submitPinAction(pinFlow: String?, action: String, pin: String?, promise: Promise) {
         TODO("Not yet implemented")
     }
 
