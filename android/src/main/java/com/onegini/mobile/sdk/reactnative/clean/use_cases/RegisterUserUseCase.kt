@@ -14,7 +14,7 @@ import com.onegini.mobile.sdk.reactnative.mapers.UserProfileMapper
 
 class RegisterUserUseCase(private val oneginiSDK: OneginiSDK) {
 
-    operator fun invoke(identityProviderId: String?, scopes: ReadableArray, promise: Promise) {
+    operator fun invoke(identityProviderId: String?, scopes: ReadableArray?, promise: Promise) {
         val identityProvider = getIdentityProvider(identityProviderId)
 
         if (identityProvider == null && identityProviderId != null) {
