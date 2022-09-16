@@ -9,5 +9,6 @@ enum class OneginiWrapperErrors(val code: String, val message: String) {
     AUTHENTICATOR_DOES_NOT_EXIST("8006", "The Fingerprint authenticator does not exist"),
     PROFILE_DOES_NOT_EXIST("8007", "The profileId does not exist"),
     USER_PROFILE_IS_NULL("8008", "The user profile is null"),
-    PARAMETERS_NOT_CORRECT("8009", "The parameters to the called function are not correct")
+    PARAMETERS_NOT_CORRECT("8009", "The parameters to the called function are not correct"),
+    REGISTRATION_NOT_IN_PROGRESS("8010", "Registration is currently not in progress"),
 }

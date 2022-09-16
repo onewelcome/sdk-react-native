@@ -48,7 +48,7 @@ interface IOneginiSdkWrapper {
 
     fun getRedirectUri(promise: Promise)
 
-    fun handleRegistrationCallback(uri: String?)
+    fun handleRegistrationCallback(uri: String?, promise: Promise)
 
     fun submitCustomRegistrationAction(customAction: String, identityProviderId: String, token: String?, promise: Promise)
 

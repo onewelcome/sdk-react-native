@@ -14,11 +14,13 @@ public class RegistrationRequestHandler implements OneginiBrowserRegistrationReq
     /**
      * Finish registration action with result from web browser
      */
-    public void handleRegistrationCallback(final Uri uri) {
+    public boolean handleRegistrationCallback(final Uri uri) {
         if (callback != null) {
             callback.handleRegistrationCallback(uri);
             callback = null;
+            return true;
         }
+        return false;
     }
 
     /**

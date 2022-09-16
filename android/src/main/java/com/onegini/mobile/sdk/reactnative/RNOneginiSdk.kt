@@ -228,8 +228,12 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    override fun handleRegistrationCallback(uri: String?) {
-        registrationManager.handleRegistrationCallback(uri)
+    override fun handleRegistrationCallback(uri: String?, promise: Promise) {
+        return if (registrationManager.handleRegistrationCallback(uri)) {
+            promise.resolve(null)
+        } else {
+            promise.reject(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
+        }
     }
 
     @ReactMethod
