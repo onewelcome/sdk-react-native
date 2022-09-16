@@ -50,7 +50,7 @@ interface IOneginiSdkWrapper {
 
     fun handleRegistrationCallback(uri: String?)
 
-    fun submitCustomRegistrationAction(customAction: String, identityProviderId: String, token: String?)
+    fun submitCustomRegistrationAction(customAction: String, identityProviderId: String, token: String?, promise: Promise)
 
     fun getIdentityProviders(promise: Promise)
 

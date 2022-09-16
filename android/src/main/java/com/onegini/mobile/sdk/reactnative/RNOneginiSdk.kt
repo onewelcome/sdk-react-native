@@ -203,12 +203,12 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    override fun submitCustomRegistrationAction(customAction: String, identityProviderId: String, token: String?) {
+    override fun submitCustomRegistrationAction(customAction: String, identityProviderId: String, token: String?, promise: Promise) {
         val action = registrationManager.getSimpleCustomRegistrationAction(identityProviderId)
 
         if (action == null) {
             Log.e(LOG_TAG, "The $identityProviderId was not configured.")
-            return
+            return promise.reject(OneginiWrapperErrors.IDENTITY_PROVIDER_NOT_FOUND.code, OneginiWrapperErrors.IDENTITY_PROVIDER_NOT_FOUND.message)
         }
 
         when (customAction) {
@@ -216,8 +216,10 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
             Constants.CUSTOM_REGISTRATION_ACTION_CANCEL -> action.returnError(java.lang.Exception(token))
             else -> {
                 Log.e(LOG_TAG, "Got unsupported custom registration action: $customAction.")
+                promise.reject(OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.code, OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.message + ". Incorrect customAction supplied: $customAction")
             }
         }
+        promise.resolve(null)
     }
 
     @ReactMethod
