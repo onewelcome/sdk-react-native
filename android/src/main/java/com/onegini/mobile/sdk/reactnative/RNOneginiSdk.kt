@@ -252,24 +252,22 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    @Throws(Exception::class)
-    override fun submitPinAction(pinFlow: String?, action: String, pin: String?) {
+    override fun submitPinAction(pinFlow: String?, action: String, pin: String?, promise: Promise) {
         when (pinFlow) {
             PinFlow.Authentication.toString() -> {
                 submitAuthenticationPinAction(action, pin)
-                return
+                return promise.resolve(null)
             }
             PinFlow.Create.toString() -> {
                 submitCreatePinAction(action, pin)
-                return
+                return promise.resolve(null)
             }
             PinFlow.Change.toString() -> {
                 submitChangePinAction(action, pin)
-                return
+                return promise.resolve(null)
             }
         }
-        println("submitPinAction did not match!")
-        // TODO: We should reject here maybe? This method throws?? whats going on with that?
+        promise.reject(OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.code, OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.message + ". Incorrect Pinflow supplied: $pinFlow")
     }
 
     private fun submitCreatePinAction(action: String, pin: String?) {

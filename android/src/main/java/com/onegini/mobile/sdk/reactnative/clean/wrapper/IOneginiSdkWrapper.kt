@@ -76,7 +76,7 @@ interface IOneginiSdkWrapper {
 
     fun changePin(promise: Promise)
 
-    fun submitPinAction(pinFlow: String?, action: String, pin: String?)
+    fun submitPinAction(pinFlow: String?, action: String, pin: String?, promise: Promise)
 
     //
     // Mobile
