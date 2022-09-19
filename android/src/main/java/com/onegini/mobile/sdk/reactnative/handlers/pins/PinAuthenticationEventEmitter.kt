@@ -35,7 +35,7 @@ class PinAuthenticationEventEmitter() {
     reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
       .emit(Constants.ONEWELCOME_PIN_NOTIFICATION, data)
   }
-  // TODO: This is a remnant from some hacky old code, let's refactor this :^)
+  // TODO: This is a remnant from some hacky old code, let's refactor this :^) RNP-98
   // This isn't the most logical way to send the remaining attempts to the plugin,
   // but I did it to not have to modify iOS/JS parts as well
   fun onWrongPin(remainingAttempts: Int) {

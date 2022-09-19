@@ -21,6 +21,7 @@ class CreatePinRequestHandler : OneginiCreatePinRequestHandler {
     }
 
     override fun onNextPinCreationAttempt(oneginiPinValidationError: OneginiPinValidationError) {
+        //TODO: This shouldnt be calling onError but instead be sending a different kind of event for recoverable errors. RNP-98
         eventEmitter.onError(oneginiPinValidationError.errorType, oneginiPinValidationError.message ?: "")
     }
 

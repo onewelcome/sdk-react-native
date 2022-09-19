@@ -8,7 +8,7 @@ import com.onegini.mobile.sdk.reactnative.OneginiComponents.reactApplicationCont
 import com.onegini.mobile.sdk.reactnative.mapers.OneginiMobileAuthenticationRequestMapper
 
 class MobileAuthOtpRequestEventEmitter {
-    fun startAuthentication(request: OneginiMobileAuthenticationRequest?) {
+    fun startAuthentication(request: OneginiMobileAuthenticationRequest) {
         val map = Arguments.createMap()
         map.putString("action", Constants.MOBILE_AUTH_OTP_START_AUTHENTICATION)
         OneginiMobileAuthenticationRequestMapper.add(map, request)

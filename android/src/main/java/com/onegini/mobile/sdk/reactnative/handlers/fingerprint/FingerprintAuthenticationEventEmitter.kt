@@ -8,7 +8,7 @@ import com.onegini.mobile.sdk.reactnative.OneginiComponents.reactApplicationCont
 import com.onegini.mobile.sdk.reactnative.mapers.UserProfileMapper
 
 class FingerprintAuthenticationEventEmitter {
-    fun startAuthentication(user: UserProfile?) {
+    fun startAuthentication(user: UserProfile) {
         val map = Arguments.createMap()
         UserProfileMapper.add(map, user)
         map.putString("action", Constants.FINGERPRINT_NOTIFICATION_START_AUTHENTICATION)

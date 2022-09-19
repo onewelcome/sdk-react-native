@@ -28,7 +28,6 @@ import com.onegini.mobile.sdk.android.model.OneginiAppToWebSingleSignOn
 import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.Constants.PinFlow
-import com.onegini.mobile.sdk.reactnative.OneginiComponents.init
 import com.onegini.mobile.sdk.reactnative.clean.wrapper.IOneginiSdkWrapper
 import com.onegini.mobile.sdk.reactnative.clean.wrapper.OneginiSdkWrapper
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
@@ -65,7 +64,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     private val disposables = CompositeDisposable()
 
     init {
-        init(reactContext)
+        OneginiComponents.init(reactContext)
 
         sdkWrapper = OneginiSdkWrapper(oneginiSDK)
 
@@ -207,7 +206,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         val action = registrationManager.getSimpleCustomRegistrationAction(identityProviderId)
 
         if (action == null) {
-            Log.e(LOG_TAG, "The $identityProviderId was not configured.")
             return promise.reject(OneginiWrapperErrors.IDENTITY_PROVIDER_NOT_FOUND.code, OneginiWrapperErrors.IDENTITY_PROVIDER_NOT_FOUND.message)
         }
 
@@ -215,7 +213,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
             Constants.CUSTOM_REGISTRATION_ACTION_PROVIDE -> action.returnSuccess(token)
             Constants.CUSTOM_REGISTRATION_ACTION_CANCEL -> action.returnError(java.lang.Exception(token))
             else -> {
-                Log.e(LOG_TAG, "Got unsupported custom registration action: $customAction.")
                 promise.reject(OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.code, OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.message + ". Incorrect customAction supplied: $customAction")
             }
         }
@@ -257,7 +254,12 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    override fun submitPinAction(pinFlow: String?, action: String, pin: String?, promise: Promise) {
+    override fun submitPinAction(pinFlow: String?, action: String?, pin: String?, promise: Promise) {
+        // Remove this null check when we merge in RNP-92
+        if (pin == null) {
+            promise.reject(OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.code, OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.message + ". Incorrect Pin supplied: NULL")
+            return
+        }
         when (pinFlow) {
             PinFlow.Authentication.toString() -> {
                 submitAuthenticationPinAction(action, pin)
@@ -275,31 +277,25 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         promise.reject(OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.code, OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.message + ". Incorrect Pinflow supplied: $pinFlow")
     }
 
-    private fun submitCreatePinAction(action: String, pin: String?) {
+    private fun submitCreatePinAction(action: String?, pin: String) {
         when (action) {
-            Constants.PIN_ACTION_PROVIDE -> oneginiSDK.createPinRequestHandler.onPinProvided(pin!!.toCharArray())
+            Constants.PIN_ACTION_PROVIDE -> oneginiSDK.createPinRequestHandler.onPinProvided(pin.toCharArray())
             Constants.PIN_ACTION_CANCEL -> oneginiSDK.createPinRequestHandler.pinCancelled()
-            else -> Log.e(LOG_TAG, "Got unsupported PIN action: $action")
         }
     }
 
-    private fun submitAuthenticationPinAction(action: String, pin: String?) {
+    private fun submitAuthenticationPinAction(action: String?, pin: String) {
         when (action) {
-            Constants.PIN_ACTION_PROVIDE -> oneginiSDK.pinAuthenticationRequestHandler.acceptAuthenticationRequest(pin!!.toCharArray())
+            Constants.PIN_ACTION_PROVIDE -> oneginiSDK.pinAuthenticationRequestHandler.acceptAuthenticationRequest(pin.toCharArray())
             Constants.PIN_ACTION_CANCEL -> oneginiSDK.pinAuthenticationRequestHandler.denyAuthenticationRequest()
-            else -> Log.e(LOG_TAG, "Got unsupported PIN action: $action")
         }
     }
 
-    private fun submitChangePinAction(action: String, pin: String?) {
-        //TODO: Null check pin? probably in use of this method
+    private fun submitChangePinAction(action: String?, pin: String) {
         when (action) {
-            // Constants.PIN_ACTION_PROVIDE -> oneginiSDK.changePinHandler.onPinProvided(pin!!.toCharArray())
-            // Constants.PIN_ACTION_CANCEL -> oneginiSDK.changePinHandler.pinCancelled()
-            Constants.PIN_ACTION_PROVIDE -> oneginiSDK.createPinRequestHandler.onPinProvided(pin!!.toCharArray())
+            Constants.PIN_ACTION_PROVIDE -> oneginiSDK.createPinRequestHandler.onPinProvided(pin.toCharArray())
             Constants.PIN_ACTION_CANCEL -> oneginiSDK.createPinRequestHandler.pinCancelled()
 
-            else -> Log.e(LOG_TAG, "Got unsupported PIN action: $action")
         }
     }
 

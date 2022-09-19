@@ -2,7 +2,7 @@ package com.onegini.mobile.sdk.reactnative
 
 import com.onegini.mobile.sdk.reactnative.network.client.SecureResourceClient
 import com.facebook.react.bridge.ReactApplicationContext
-// TODO: Refactor this to dependency injection
+// TODO: Refactor this to dependency injection RNP-96
 object OneginiComponents {
 
     lateinit var oneginiSDK: OneginiSDK

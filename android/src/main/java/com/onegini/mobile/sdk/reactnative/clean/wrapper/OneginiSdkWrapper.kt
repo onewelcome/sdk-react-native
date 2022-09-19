@@ -132,7 +132,7 @@ class OneginiSdkWrapper(
         TODO("Not yet implemented")
     }
 
-    override fun submitPinAction(pinFlow: String?, action: String, pin: String?, promise: Promise) {
+    override fun submitPinAction(pinFlow: String?, action: String?, pin: String?, promise: Promise) {
         TODO("Not yet implemented")
     }
 
