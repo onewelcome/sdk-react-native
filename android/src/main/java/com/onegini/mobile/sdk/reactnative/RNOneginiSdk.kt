@@ -241,7 +241,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     override fun changePin(promise: Promise) {
-
         oneginiSDK.oneginiClient.userClient.changePin(object : OneginiChangePinHandler {
             override fun onSuccess() {
                 promise.resolve(null)
@@ -259,6 +258,13 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         if (pin == null) {
             promise.reject(OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.code, OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.message + ". Incorrect Pin supplied: NULL")
             return
+        }
+        when (action) {
+            Constants.PIN_ACTION_PROVIDE, Constants.PIN_ACTION_CANCEL -> {}
+            else -> {
+                promise.reject(OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.code, OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.message + ". Incorrect action supplied: $action")
+                return
+            }
         }
         when (pinFlow) {
             PinFlow.Authentication.toString() -> {
