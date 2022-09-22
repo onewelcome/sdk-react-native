@@ -21,7 +21,7 @@ class StartClientUseCase(
 ) {
     operator fun invoke(rnConfig: ReadableMap, promise: Promise) {
 
-        var config: OneginiReactNativeConfig
+        val config: OneginiReactNativeConfig
 
         try {
             config = OneginiReactNativeConfigMapper.toOneginiReactNativeConfig(rnConfig)
