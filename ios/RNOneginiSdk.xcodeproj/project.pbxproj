@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4960B01428DDAB830072B103 /* OneginiWrapperErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4960B01328DDAB830072B103 /* OneginiWrapperErrors.swift */; };
 		496788ED28C8CD0100EB65A8 /* ChangePinHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496788EC28C8CD0100EB65A8 /* ChangePinHandler.swift */; };
 		496788F428C8CE5400EB65A8 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496788F328C8CE5400EB65A8 /* Enums.swift */; };
 		496788F928C8CFBD00EB65A8 /* CreatePinEventEmitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496788F728C8CFBD00EB65A8 /* CreatePinEventEmitter.swift */; };
@@ -40,6 +41,7 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libRNOneginiSdk.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNOneginiSdk.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		4960B01328DDAB830072B103 /* OneginiWrapperErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneginiWrapperErrors.swift; sourceTree = "<group>"; };
 		496788EC28C8CD0100EB65A8 /* ChangePinHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChangePinHandler.swift; sourceTree = "<group>"; };
 		496788F328C8CE5400EB65A8 /* Enums.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 		496788F728C8CFBD00EB65A8 /* CreatePinEventEmitter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreatePinEventEmitter.swift; sourceTree = "<group>"; };
@@ -97,6 +99,7 @@
 				C7AA005D2558E4B80001AB19 /* RNOneginiSdk.swift */,
 				C7AA0204255925FA0001AB19 /* RNOneginiSdk.m */,
 				496788F328C8CE5400EB65A8 /* Enums.swift */,
+				4960B01328DDAB830072B103 /* OneginiWrapperErrors.swift */,
 				134814211AA4EA7D00B7C361 /* Products */,
 				C7AA005C2558E4B70001AB19 /* RNOneginiSdk-Bridging-Header.h */,
 			);
@@ -229,6 +232,7 @@
 				C7AA005E2558E4B80001AB19 /* RNOneginiSdk.swift in Sources */,
 				C7BD315925B838190057440C /* AuthenticatorsHandler.swift in Sources */,
 				C7EF09982590C55400D14892 /* RegistrationConnector.swift in Sources */,
+				4960B01428DDAB830072B103 /* OneginiWrapperErrors.swift in Sources */,
 				496788F928C8CFBD00EB65A8 /* CreatePinEventEmitter.swift in Sources */,
 				C78992E525816243002CA5AF /* LoginHandler.swift in Sources */,
 				C7AA006C2558E5920001AB19 /* RegistrationHandler.swift in Sources */,

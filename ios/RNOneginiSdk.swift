@@ -36,6 +36,11 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func sendBridgeEvent(eventName: OneWelcomeBridgeEvents, data: Any!) -> Void {
       self.sendEvent(withName: eventName.rawValue, body: data)
     }
+    
+    func rejectWithError(domain: String, code: Int, message: String, rejecter reject: @escaping RCTPromiseRejectBlock ) {
+        let error = NSError(domain: ONGWrapperErrorDomain, code: OneginiWrapperErrorCodes.ParametersNotCorrect.rawValue, userInfo: [NSLocalizedDescriptionKey : message])
+            reject("\(error.code)", error.localizedDescription, error)
+    }
 
     @objc
     override static func requiresMainQueueSetup() -> Bool {
@@ -81,6 +86,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
     @objc
     func getAuthenticatedUserProfile(_ resolve: RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
+        //TODO: Fix this error, clearly this errorcode is wrong
         guard let authenticatedProfile = userClient.authenticatedUserProfile() else {
             let error = NSError(domain: ONGGenericErrorDomain, code: ONGGenericError.serverNotReachable.rawValue, userInfo: [NSLocalizedDescriptionKey : "No authenticated user profiles found."])
             reject("\(error.code)", error.localizedDescription, error)
@@ -126,8 +132,22 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     @objc
-    func submitCustomRegistrationAction(_ action: String, identityProviderId: String, token: String?) -> Void {
+    func submitCustomRegistrationAction(_ action: String, identityProviderId: String, token: String?,
+                                        resolver resolve: @escaping RCTPromiseResolveBlock,
+                                        rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        switch action {
+            case CustomRegistrationAction.provide.rawValue:
+                bridgeConnector.toRegistrationConnector.registrationHandler.processOTPCode(code: token)
+                break
+            case CustomRegistrationAction.cancel.rawValue:
+                bridgeConnector.toRegistrationConnector.registrationHandler.cancelCustomRegistration()
+                break
+            default:
+                rejectWithError(domain: ONGWrapperErrorDomain, code: OneginiWrapperErrorCodes.ParametersNotCorrect.rawValue, message: ". Incorrect customAction supplied: \(action)", rejecter: reject)
+                break
+        }
         bridgeConnector.toRegistrationConnector.handleCustomRegistrationAction(action, identityProviderId, token)
+        resolve(nil)
     }
 
     @objc
@@ -148,13 +168,18 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     @objc
-    func handleRegistrationCallback(_ url: String) -> Void {
+    func handleRegistrationCallback(_ url: String,
+                                    resolver resolve: @escaping RCTPromiseResolveBlock,
+                                    rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         bridgeConnector.toRegistrationConnector.registrationHandler.processRedirectURL(url: URL(string: url)!)
+        resolve(nil)
     }
 
     @objc
-    func cancelRegistration() -> Void {
+    func cancelRegistration(resolver resolve: @escaping RCTPromiseResolveBlock,
+                            rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         bridgeConnector.toRegistrationConnector.registrationHandler.cancelRegistration()
+        resolve(nil)
     }
     
     func mapStringToPinAction(action: String) -> PinAction? {
@@ -169,7 +194,9 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
     
     @objc
-    func submitPinAction(_ flow: String, action: String, pin: String) {
+    func submitPinAction(_ flow: String, action: String, pin: String,
+                         resolver resolve: @escaping RCTPromiseResolveBlock,
+                         rejecter reject: @escaping RCTPromiseRejectBlock) {
         if let pinAction = mapStringToPinAction(action: action) {
             switch flow {
             case PinFlow.create.rawValue:
@@ -177,8 +204,11 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
             case PinFlow.authentication.rawValue:
                 bridgeConnector.toLoginHandler.handlePinAction(pin, action: pinAction)
             default:
+                rejectWithError(domain: ONGWrapperErrorDomain, code: OneginiWrapperErrorCodes.ParametersNotCorrect.rawValue, message: ". Incorrect pinflow supplied: \(flow)", rejecter: reject)
                 break
             }
+        } else {
+            rejectWithError(domain: ONGWrapperErrorDomain, code: OneginiWrapperErrorCodes.ParametersNotCorrect.rawValue, message: ". Incorrect action supplied: \(action)", rejecter: reject)
         }
     }
 
