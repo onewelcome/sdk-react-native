@@ -382,7 +382,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     @ReactMethod
     fun authenticateUser(profileId: String?, authenticatorId: String?, promise: Promise) {
         profileId ?: promise.rejectWithNullError("profileId", "String").run { return }
-        authenticatorId ?: promise.rejectWithNullError("authenticatorId", "String").run { return }
         sdkWrapper.authenticateUser(profileId, authenticatorId, promise)
     }
 

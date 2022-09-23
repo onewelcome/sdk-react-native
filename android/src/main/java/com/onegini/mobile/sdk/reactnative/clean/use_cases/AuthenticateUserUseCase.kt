@@ -16,7 +16,7 @@ class AuthenticateUserUseCase(
     private val getRegisteredAuthenticatorsUseCase: GetRegisteredAuthenticatorsUseCase = GetRegisteredAuthenticatorsUseCase(oneginiSDK),
     private val getUserProfileUseCase: GetUserProfileUseCase = GetUserProfileUseCase(oneginiSDK)
 ) {
-    operator fun invoke(profileId: String, authenticatorId: String, promise: Promise) {
+    operator fun invoke(profileId: String, authenticatorId: String?, promise: Promise) {
         val userProfile = getUserProfileUseCase(profileId)
 
         if (userProfile == null) {

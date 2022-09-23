@@ -37,7 +37,7 @@ class OneginiSdkWrapper(
         startClientUseCase(rnConfig, promise)
     }
 
-    fun authenticateUser(profileId: String, authenticatorId: String, promise: Promise) {
+    fun authenticateUser(profileId: String, authenticatorId: String?, promise: Promise) {
         authenticateUserUseCase(profileId, authenticatorId, promise)
     }
 
