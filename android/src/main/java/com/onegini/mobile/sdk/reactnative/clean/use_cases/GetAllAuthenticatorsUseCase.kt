@@ -13,7 +13,7 @@ class GetAllAuthenticatorsUseCase(
         val userProfile = getUserProfileUseCase(profileId)
 
         if (userProfile == null) {
-            promise.reject(OneginiWrapperErrors.USER_PROFILE_IS_NULL.code, OneginiWrapperErrors.USER_PROFILE_IS_NULL.message)
+            promise.reject(OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.code, OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.message)
             return
         }
 
