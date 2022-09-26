@@ -216,8 +216,10 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    fun submitCustomRegistrationAction(customAction: String, identityProviderId: String, token: String?, promise: Promise) {
-        //TODO: Add the nullchecks here and make params nullable
+    fun submitCustomRegistrationAction(customAction: String?, identityProviderId: String?, token: String?, promise: Promise) {
+        identityProviderId ?: promise.rejectWithNullError("identityProviderId", "String").run { return }
+        token ?: promise.rejectWithNullError("token", "String").run { return }
+
         val action = registrationManager.getSimpleCustomRegistrationAction(identityProviderId)
 
         if (action == null) {
@@ -241,6 +243,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     fun handleRegistrationCallback(uri: String?, promise: Promise) {
+        uri ?: promise.rejectWithNullError("uri", "String").run { return }
         return if (registrationManager.handleRegistrationCallback(uri)) {
             promise.resolve(null)
         } else {
@@ -269,50 +272,58 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     fun submitPinAction(pinFlow: String?, action: String?, pin: String?, promise: Promise) {
-        pin ?: promise.rejectWithNullError("pin", "String").run { return }
         when (action) {
-            Constants.PIN_ACTION_PROVIDE, Constants.PIN_ACTION_CANCEL -> {}
+            Constants.PIN_ACTION_PROVIDE -> {
+                pin ?: promise.rejectWithNullError("pin", "String").run { return }
+                handleSubmitPinActionProvide(pinFlow, pin, promise)
+                return
+            }
+            Constants.PIN_ACTION_CANCEL -> {
+                handleSubmitPinActionCancel(pinFlow, promise)
+                return
+            }
             else -> {
                 promise.reject(OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.code, OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.message + ". Incorrect action supplied: $action")
                 return
             }
         }
+    }
+
+    private fun handleSubmitPinActionProvide(pinFlow: String?, pin: String, promise: Promise) {
         when (pinFlow) {
             PinFlow.Authentication.toString() -> {
-                submitAuthenticationPinAction(action, pin)
+                oneginiSDK.pinAuthenticationRequestHandler.acceptAuthenticationRequest(pin.toCharArray())
                 return promise.resolve(null)
             }
             PinFlow.Create.toString() -> {
-                submitCreatePinAction(action, pin)
+                oneginiSDK.createPinRequestHandler.onPinProvided(pin.toCharArray())
                 return promise.resolve(null)
             }
             PinFlow.Change.toString() -> {
-                submitChangePinAction(action, pin)
+                oneginiSDK.createPinRequestHandler.onPinProvided(pin.toCharArray())
                 return promise.resolve(null)
+            } else -> {
+                promise.reject(OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.code, OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.message + ". Incorrect Pinflow supplied: $pinFlow")
             }
         }
-        promise.reject(OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.code, OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.message + ". Incorrect Pinflow supplied: $pinFlow")
     }
 
-    private fun submitCreatePinAction(action: String?, pin: String) {
-        when (action) {
-            Constants.PIN_ACTION_PROVIDE -> oneginiSDK.createPinRequestHandler.onPinProvided(pin.toCharArray())
-            Constants.PIN_ACTION_CANCEL -> oneginiSDK.createPinRequestHandler.pinCancelled()
-        }
-    }
-
-    private fun submitAuthenticationPinAction(action: String?, pin: String) {
-        when (action) {
-            Constants.PIN_ACTION_PROVIDE -> oneginiSDK.pinAuthenticationRequestHandler.acceptAuthenticationRequest(pin.toCharArray())
-            Constants.PIN_ACTION_CANCEL -> oneginiSDK.pinAuthenticationRequestHandler.denyAuthenticationRequest()
-        }
-    }
-
-    private fun submitChangePinAction(action: String?, pin: String) {
-        when (action) {
-            Constants.PIN_ACTION_PROVIDE -> oneginiSDK.createPinRequestHandler.onPinProvided(pin.toCharArray())
-            Constants.PIN_ACTION_CANCEL -> oneginiSDK.createPinRequestHandler.pinCancelled()
-
+    private fun handleSubmitPinActionCancel(pinFlow: String?, promise: Promise) {
+        when (pinFlow) {
+            PinFlow.Authentication.toString() -> {
+                oneginiSDK.pinAuthenticationRequestHandler.denyAuthenticationRequest()
+                return promise.resolve(null)
+            }
+            PinFlow.Create.toString() -> {
+                oneginiSDK.createPinRequestHandler.pinCancelled()
+                return promise.resolve(null)
+            }
+            PinFlow.Change.toString() -> {
+                oneginiSDK.createPinRequestHandler.pinCancelled()
+                return promise.resolve(null)
+            } else -> {
+            promise.reject(OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.code, OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.message + ". Incorrect Pinflow supplied: $pinFlow")
+            }
         }
     }
 
