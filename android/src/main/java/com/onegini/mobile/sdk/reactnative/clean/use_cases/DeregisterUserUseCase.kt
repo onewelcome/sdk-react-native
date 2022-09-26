@@ -10,7 +10,7 @@ class DeregisterUserUseCase(
     private val oneginiSDK: OneginiSDK,
     private val getUserProfileUseCase: GetUserProfileUseCase = GetUserProfileUseCase(oneginiSDK)
 ) {
-    operator fun invoke(profileId: String?, promise: Promise) {
+    operator fun invoke(profileId: String, promise: Promise) {
         val userProfile = getUserProfileUseCase(profileId)
 
         if (userProfile == null) {

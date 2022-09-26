@@ -75,7 +75,7 @@ interface NativeMethods {
   // User register/deregister
   registerUser(
     identityProviderId: string | null,
-    scopes: String[],
+    scopes?: String[],
   ): Promise<Types.Profile>;
   deregisterUser(profileId: string): Promise<any>;
   handleRegistrationCallback(uri: string): Promise<any>;
@@ -166,6 +166,30 @@ const nativeMethods: NativeMethods = {
     }
 
     return RNOneginiSdk.startClient(sdkConfig);
+  },
+
+  authenticateUserImplicitly: (
+    profileId: string,
+    scopes?: string[],
+  ): Promise<any> => {
+    return scopes
+      ? RNOneginiSdk.authenticateUserImplicitly(profileId, scopes)
+      : RNOneginiSdk.authenticateUserImplicitly(profileId, []);
+  },
+
+  authenticateDeviceForResource: (scopes?: string[]): Promise<any> => {
+    return scopes
+      ? RNOneginiSdk.authenticateDeviceForResource(scopes)
+      : RNOneginiSdk.authenticateDeviceForResource([]);
+  },
+
+  registerUser: (
+    identityProviderId: string | null,
+    scopes?: String[],
+  ): Promise<Types.Profile> => {
+    return scopes
+      ? RNOneginiSdk.registerUser(identityProviderId, scopes)
+      : RNOneginiSdk.registerUser(identityProviderId, []);
   },
 
   submitFingerprintAcceptAuthenticationRequest: (): Promise<any> => {
