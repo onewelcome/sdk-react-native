@@ -12,20 +12,16 @@ class RegistrationRequestHandler : OneginiBrowserRegistrationRequestHandler {
    * Finish registration action with result from web browser
    */
   fun handleRegistrationCallback(uri: Uri?) {
-    if (callback != null) {
       callback?.handleRegistrationCallback(uri)
       callback = null
-    }
   }
 
   /**
    * Cancel registration action in case of web browser error
    */
   fun onRegistrationCanceled() {
-    if (callback != null) {
       callback?.denyRegistration()
       callback = null
-    }
   }
 
   override fun startRegistration(uri: Uri, oneginiBrowserRegistrationCallback: OneginiBrowserRegistrationCallback) {
