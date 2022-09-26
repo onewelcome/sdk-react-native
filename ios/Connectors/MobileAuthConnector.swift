@@ -31,7 +31,7 @@ class MobileAuthConnector : BridgeToMobileAuthConnectorProtocol {
 
 
 // Pin notification actions for RN Bridge
-enum MobileAuthNotification : String {
-    case startAuthentication = "startAuthentication",
-         finishAuthentication = "finishAuthentication"
+enum MobileAuthNotification: String {
+    case startAuthentication
+    case finishAuthentication
 }

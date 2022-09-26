@@ -188,6 +188,12 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
+    fun validatePinWithPolicy(pin: String?, promise: Promise) {
+        pin ?: promise.rejectWithNullError("pin", "String").run { return }
+        sdkWrapper.validatePinWithPolicy(pin, promise)
+    }
+
+    @ReactMethod
     fun registerUser(identityProviderId: String?, scopes: ReadableArray?, promise: Promise) {
         sdkWrapper.registerUser(identityProviderId, scopes, promise)
     }

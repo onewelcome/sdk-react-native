@@ -5,9 +5,9 @@ protocol BridgeToResourceHandlerProtocol: AnyObject {
 }
 
 enum ResourceRequestType: String {
-    case User = "User"
-    case Implicit = "ImplicitUser"
-    case Anonymous = "Anonymous"
+    case User
+    case ImplicitUser
+    case Anonymous
 }
 
 class ResourceHandler: BridgeToResourceHandlerProtocol {
@@ -34,7 +34,7 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
     func resourceRequest(_ type: ResourceRequestType, _ details: NSDictionary, _ completion: @escaping (String?, Error?) -> Void) {
         switch(type) {
         case .Anonymous: anonymousResourcesRequest(details, completion);
-        case .Implicit: implicitResourcesRequest(details, completion);
+        case .ImplicitUser: implicitResourcesRequest(details, completion);
         case .User: userResourcesRequest(details, completion);
         }
     }

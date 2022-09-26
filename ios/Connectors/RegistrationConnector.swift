@@ -49,14 +49,14 @@ class RegistrationConnector : BridgeToRegistrationConnectorProtocol {
 
 
 // Custom registration notification actions for RN Bridge
-enum CustomRegistrationNotification : String {
-    case initRegistration = "initRegistration",
-         finishRegistration = "finishRegistration"
+enum CustomRegistrationNotification: String {
+    case initRegistration
+    case finishRegistration
 }
 
 
 // Custom registration actions from RN Bridge
-enum CustomRegistrationAction : String {
-    case provide = "provide",
-         cancel = "cancel"
+enum CustomRegistrationAction: String {
+    case provide
+    case cancel
 }

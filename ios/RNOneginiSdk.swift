@@ -9,7 +9,7 @@ protocol ConnectorToRNBridgeProtocol: NSObject {
 }
 
 // Pin notification actions for RN Bridge
-enum OneWelcomeBridgeEvents : String {
+enum OneWelcomeBridgeEvents: String {
     case pinNotification = "ONEWELCOME_PIN_NOTIFICATION"
     case fingerprintNotification = "ONEWELCOME_FINGERPRINT_NOTIFICATION"
     case customRegistrationNotification = "ONEWELCOME_CUSTOM_REGISTRATION_NOTIFICATION"
@@ -408,6 +408,19 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
         }
     }
 
+    @objc
+    func validatePinWithPolicy(_ pin: String,
+                        resolver resolve: @escaping RCTPromiseResolveBlock,
+                        rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        userClient.validatePin(withPolicy: pin) { (_ , error) -> Void in
+
+            if let error = error {
+                reject("\(error.code)", error.localizedDescription, error)
+            } else {
+                resolve(true)
+            }
+        }
+    }
 
     // Biometric
     // @todo rename methods

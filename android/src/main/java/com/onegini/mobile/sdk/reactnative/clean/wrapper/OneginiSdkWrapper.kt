@@ -16,6 +16,7 @@ import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAuthenticatedUserPr
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetIdentityProvidersUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.RegisterUserUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.StartClientUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.ValidatePinWithPolicyUseCase
 
 class OneginiSdkWrapper(
     private val oneginiSDK: OneginiSDK,
@@ -26,6 +27,7 @@ class OneginiSdkWrapper(
     val getAuthenticatedUserProfileUseCase: GetAuthenticatedUserProfileUseCase = GetAuthenticatedUserProfileUseCase(oneginiSDK),
     val getAllAuthenticatorsUseCase: GetAllAuthenticatorsUseCase = GetAllAuthenticatorsUseCase(oneginiSDK),
     val getRegisteredAuthenticatorsUseCase: GetRegisteredAuthenticatorsUseCase = GetRegisteredAuthenticatorsUseCase(oneginiSDK),
+    val validatePinWithPolicyUseCase: ValidatePinWithPolicyUseCase = ValidatePinWithPolicyUseCase(oneginiSDK),
     val getUserProfilesUseCase: GetUserProfilesUseCase = GetUserProfilesUseCase(oneginiSDK),
     val getRedirectUriUseCase: GetRedirectUriUseCase = GetRedirectUriUseCase(oneginiSDK),
     val deregisterUserUseCase: DeregisterUserUseCase = DeregisterUserUseCase(oneginiSDK),
@@ -74,6 +76,10 @@ class OneginiSdkWrapper(
 
     fun setPreferredAuthenticator(profileId: String, idOneginiAuthenticator: String, promise: Promise) {
         TODO("Not yet implemented")
+    }
+
+    fun validatePinWithPolicy(pin: String?, promise: Promise) {
+        validatePinWithPolicyUseCase(pin, promise)
     }
 
     fun registerUser(identityProviderId: String?, scopes: ReadableArray?, promise: Promise) {
