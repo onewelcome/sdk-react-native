@@ -7,18 +7,18 @@ import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 
 class SimpleCustomTwoStepRegistrationActionImpl(private val idProvider: String) : OneginiCustomTwoStepRegistrationAction, SimpleCustomRegistrationAction {
 
-    var observer: CustomRegistrationObserver? = null
+    var eventEmitter: CustomRegistrationEventEmitter = CustomRegistrationEventEmitter()
 
     var calback: OneginiCustomRegistrationCallback? = null
 
     override fun initRegistration(calback: OneginiCustomRegistrationCallback, info: CustomInfo?) {
         this.calback = calback
-        observer?.initRegistration(idProvider, info)
+        eventEmitter.initRegistration(idProvider, info)
     }
 
     override fun finishRegistration(calback: OneginiCustomRegistrationCallback, info: CustomInfo?) {
         this.calback = calback
-        observer?.finishRegistration(idProvider, info)
+        eventEmitter.finishRegistration(idProvider, info)
     }
 
     override fun getOneginiCustomRegistrationAction(): OneginiCustomRegistrationAction {
@@ -27,10 +27,6 @@ class SimpleCustomTwoStepRegistrationActionImpl(private val idProvider: String) 
 
     override fun getIdProvider(): String {
         return idProvider
-    }
-
-    override fun setCustomRegistrationObserver(observer: CustomRegistrationObserver) {
-        this.observer = observer
     }
 
     override fun returnSuccess(result: String?) {

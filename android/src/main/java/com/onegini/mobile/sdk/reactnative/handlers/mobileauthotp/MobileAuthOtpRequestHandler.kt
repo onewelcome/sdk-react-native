@@ -6,17 +6,17 @@ import com.onegini.mobile.sdk.android.model.entity.OneginiMobileAuthenticationRe
 
 class MobileAuthOtpRequestHandler : OneginiMobileAuthWithOtpRequestHandler {
 
-    var observer: MobileAuthOtpRequestObserver? = null
+    var eventEmitter: MobileAuthOtpRequestEventEmitter = MobileAuthOtpRequestEventEmitter()
 
     private var callback: OneginiAcceptDenyCallback? = null
 
     override fun startAuthentication(request: OneginiMobileAuthenticationRequest, callback: OneginiAcceptDenyCallback) {
         this.callback = callback
-        observer?.startAuthentication(request)
+        eventEmitter.startAuthentication(request)
     }
 
     override fun finishAuthentication() {
-        observer?.finishAuthentication()
+        eventEmitter.finishAuthentication()
     }
 
     fun acceptAuthenticationRequest() {

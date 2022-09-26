@@ -86,8 +86,8 @@ class StartClientUseCaseTests {
         }
 
         StartClientUseCase(oneginiSdk, reactApplicationContext)(TestData.config, promiseMock)
-
-        verify(oneginiSdk).setPinNotificationObserver(any())
+        verify(oneginiSdk).setCreatePinEventEmitter(any())
+        verify(oneginiSdk).setPinAuthenticationEvementEmitter(any())
         verify(oneginiSdk).setCustomRegistrationObserver(any())
         verify(oneginiSdk).setMobileAuthOtpRequestObserver(any())
         verify(oneginiSdk).setFingerprintAuthenticationObserver(any())
