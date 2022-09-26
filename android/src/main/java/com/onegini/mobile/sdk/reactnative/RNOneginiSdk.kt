@@ -10,6 +10,7 @@ import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
 import com.onegini.mobile.sdk.android.handlers.OneginiAppToWebSingleSignOnHandler
+import com.onegini.mobile.sdk.android.handlers.OneginiChangePinHandler
 import com.onegini.mobile.sdk.android.handlers.OneginiDeviceAuthenticationHandler
 import com.onegini.mobile.sdk.android.handlers.OneginiImplicitAuthenticationHandler
 import com.onegini.mobile.sdk.android.handlers.OneginiLogoutHandler
@@ -27,10 +28,9 @@ import com.onegini.mobile.sdk.android.model.OneginiAppToWebSingleSignOn
 import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.Constants.PinFlow
-import com.onegini.mobile.sdk.reactnative.OneginiComponets.init
 import com.onegini.mobile.sdk.reactnative.clean.wrapper.OneginiSdkWrapper
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
-import com.onegini.mobile.sdk.reactnative.handlers.pins.ChangePinHandler
+import com.onegini.mobile.sdk.reactnative.exception.PARAM_CAN_NOT_BE_NULL
 import com.onegini.mobile.sdk.reactnative.managers.AuthenticatorManager
 import com.onegini.mobile.sdk.reactnative.managers.AuthenticatorManager.DeregistrationCallback
 import com.onegini.mobile.sdk.reactnative.managers.AuthenticatorManager.RegistrationCallback
@@ -60,14 +60,14 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     private val authenticatorManager: AuthenticatorManager
 
     private val oneginiSDK: OneginiSDK
-        get() = OneginiComponets.oneginiSDK
+        get() = OneginiComponents.oneginiSDK
 
     private val disposables = CompositeDisposable()
 
     init {
-        init(reactContext.applicationContext)
+        OneginiComponents.init(reactContext)
 
-        sdkWrapper = OneginiSdkWrapper(oneginiSDK, reactApplicationContext)
+        sdkWrapper = OneginiSdkWrapper(oneginiSDK)
 
         this.reactContext = reactContext
         registrationManager = RegistrationManager(oneginiSDK)
@@ -83,7 +83,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     private fun Promise.rejectWithNullError(paramName: String, paramType: String){
-        this.reject("error_code", "Expected param '$paramName' to be '$paramType' but was NULL")
+        this.reject(OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.code, String.format(PARAM_CAN_NOT_BE_NULL, paramName, paramType))
     }
 
     @ReactMethod
@@ -223,22 +223,24 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    fun submitCustomRegistrationAction(customAction: String, identityProviderId: String, token: String?) {
-        //TODO: Add the nullchecks here and make params nullable
+    fun submitCustomRegistrationAction(customAction: String?, identityProviderId: String?, token: String?, promise: Promise) {
+        identityProviderId ?: promise.rejectWithNullError("identityProviderId", "String").run { return }
+        token ?: promise.rejectWithNullError("token", "String").run { return }
+
         val action = registrationManager.getSimpleCustomRegistrationAction(identityProviderId)
 
         if (action == null) {
-            Log.e(LOG_TAG, "The $identityProviderId was not configured.")
-            return
+            return promise.reject(OneginiWrapperErrors.IDENTITY_PROVIDER_NOT_FOUND.code, OneginiWrapperErrors.IDENTITY_PROVIDER_NOT_FOUND.message)
         }
 
         when (customAction) {
             Constants.CUSTOM_REGISTRATION_ACTION_PROVIDE -> action.returnSuccess(token)
             Constants.CUSTOM_REGISTRATION_ACTION_CANCEL -> action.returnError(java.lang.Exception(token))
             else -> {
-                Log.e(LOG_TAG, "Got unsupported custom registration action: $customAction.")
+                promise.reject(OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.code, OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.message + ". Incorrect customAction supplied: $customAction")
             }
         }
+        promise.resolve(null)
     }
 
     @ReactMethod
@@ -247,70 +249,88 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    fun handleRegistrationCallback(uri: String?) {
-        //TODO: Add the nullchecks here and make params nullable
-        registrationManager.handleRegistrationCallback(uri)
+    fun handleRegistrationCallback(uri: String?, promise: Promise) {
+        uri ?: promise.rejectWithNullError("uri", "String").run { return }
+        return if (registrationManager.handleRegistrationCallback(uri)) {
+            promise.resolve(null)
+        } else {
+            promise.reject(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
+        }
     }
 
     @ReactMethod
-    fun cancelRegistration() {
+    fun cancelRegistration(promise: Promise) {
         registrationManager.cancelRegistration()
+        promise.resolve(null)
     }
 
     @ReactMethod
     fun changePin(promise: Promise) {
-        oneginiSDK.changePinHandler.onStartChangePin(object : ChangePinHandler.ChangePinHandlerResponse {
+        oneginiSDK.oneginiClient.userClient.changePin(object : OneginiChangePinHandler {
             override fun onSuccess() {
                 promise.resolve(null)
             }
 
-            override fun onError(error: OneginiChangePinError?) {
+            override fun onError(error: OneginiChangePinError) {
                 promise.reject(error?.errorType.toString(), error?.message)
             }
         })
     }
 
     @ReactMethod
-    fun submitPinAction(flowString: String?, action: String, pin: String?) {
-        //TODO: Add the nullchecks here and make params nullable
-        val flow = PinFlow.parse(flowString)
-        when (flow) {
-            PinFlow.Authentication -> {
-                submitAuthenticationPinAction(action, pin)
+    fun submitPinAction(pinFlow: String?, action: String?, pin: String?, promise: Promise) {
+        when (action) {
+            Constants.PIN_ACTION_PROVIDE -> {
+                pin ?: promise.rejectWithNullError("pin", "String").run { return }
+                handleSubmitPinActionProvide(pinFlow, pin, promise)
                 return
             }
-            PinFlow.Create -> {
-                submitCreatePinAction(action, pin)
+            Constants.PIN_ACTION_CANCEL -> {
+                handleSubmitPinActionCancel(pinFlow, promise)
                 return
             }
-            PinFlow.Change -> {
-                submitChangePinAction(action, pin)
+            else -> {
+                promise.reject(OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.code, OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.message + ". Incorrect action supplied: $action")
                 return
             }
         }
     }
 
-    private fun submitCreatePinAction(action: String, pin: String?) {
-        when (action) {
-            Constants.PIN_ACTION_PROVIDE -> oneginiSDK.createPinRequestHandler.onPinProvided(pin!!.toCharArray(), PinFlow.Create)
-            Constants.PIN_ACTION_CANCEL -> oneginiSDK.createPinRequestHandler.pinCancelled(PinFlow.Create)
-            else -> Log.e(LOG_TAG, "Got unsupported PIN action: $action")
+    private fun handleSubmitPinActionProvide(pinFlow: String?, pin: String, promise: Promise) {
+        when (pinFlow) {
+            PinFlow.Authentication.toString() -> {
+                oneginiSDK.pinAuthenticationRequestHandler.acceptAuthenticationRequest(pin.toCharArray())
+                return promise.resolve(null)
+            }
+            PinFlow.Create.toString() -> {
+                oneginiSDK.createPinRequestHandler.onPinProvided(pin.toCharArray())
+                return promise.resolve(null)
+            }
+            PinFlow.Change.toString() -> {
+                oneginiSDK.createPinRequestHandler.onPinProvided(pin.toCharArray())
+                return promise.resolve(null)
+            } else -> {
+                promise.reject(OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.code, OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.message + ". Incorrect Pinflow supplied: $pinFlow")
+            }
         }
     }
 
-    private fun submitAuthenticationPinAction(action: String, pin: String?) {
-        when (action) {
-            Constants.PIN_ACTION_PROVIDE -> oneginiSDK.pinAuthenticationRequestHandler.acceptAuthenticationRequest(pin!!.toCharArray())
-            Constants.PIN_ACTION_CANCEL -> oneginiSDK.pinAuthenticationRequestHandler.denyAuthenticationRequest()
-            else -> Log.e(LOG_TAG, "Got unsupported PIN action: $action")
-        }
-    }
-
-    private fun submitChangePinAction(action: String, pin: String?) {
-        when (action) {
-            Constants.PIN_ACTION_PROVIDE -> oneginiSDK.changePinHandler.onPinProvided(pin!!.toCharArray())
-            Constants.PIN_ACTION_CANCEL -> oneginiSDK.changePinHandler.pinCancelled()
-            else -> Log.e(LOG_TAG, "Got unsupported PIN action: $action")
+    private fun handleSubmitPinActionCancel(pinFlow: String?, promise: Promise) {
+        when (pinFlow) {
+            PinFlow.Authentication.toString() -> {
+                oneginiSDK.pinAuthenticationRequestHandler.denyAuthenticationRequest()
+                return promise.resolve(null)
+            }
+            PinFlow.Create.toString() -> {
+                oneginiSDK.createPinRequestHandler.pinCancelled()
+                return promise.resolve(null)
+            }
+            PinFlow.Change.toString() -> {
+                oneginiSDK.createPinRequestHandler.pinCancelled()
+                return promise.resolve(null)
+            } else -> {
+            promise.reject(OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.code, OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.message + ". Incorrect Pinflow supplied: $pinFlow")
+            }
         }
     }
 
@@ -388,7 +408,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     @ReactMethod
     fun authenticateUser(profileId: String?, authenticatorId: String?, promise: Promise) {
         profileId ?: promise.rejectWithNullError("profileId", "String").run { return }
-        authenticatorId ?: promise.rejectWithNullError("authenticatorId", "String").run { return }
         sdkWrapper.authenticateUser(profileId, authenticatorId, promise)
     }
 

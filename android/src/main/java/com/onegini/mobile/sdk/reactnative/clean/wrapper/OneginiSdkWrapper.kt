@@ -20,8 +20,7 @@ import com.onegini.mobile.sdk.reactnative.clean.use_cases.ValidatePinWithPolicyU
 
 class OneginiSdkWrapper(
     private val oneginiSDK: OneginiSDK,
-    private val reactApplicationContext: ReactApplicationContext,
-    val startClientUseCase: StartClientUseCase = StartClientUseCase(oneginiSDK, reactApplicationContext),
+    val startClientUseCase: StartClientUseCase = StartClientUseCase(oneginiSDK),
     val getIdentityProvidersUseCase: GetIdentityProvidersUseCase = GetIdentityProvidersUseCase(oneginiSDK),
     val getAccessTokenUseCase: GetAccessTokenUseCase = GetAccessTokenUseCase(oneginiSDK),
     val registerUserUseCase: RegisterUserUseCase = RegisterUserUseCase(oneginiSDK),
@@ -39,7 +38,7 @@ class OneginiSdkWrapper(
         startClientUseCase(rnConfig, promise)
     }
 
-    fun authenticateUser(profileId: String, authenticatorId: String, promise: Promise) {
+    fun authenticateUser(profileId: String, authenticatorId: String?, promise: Promise) {
         authenticateUserUseCase(profileId, authenticatorId, promise)
     }
 
@@ -91,7 +90,7 @@ class OneginiSdkWrapper(
         deregisterUserUseCase(profileId, promise)
     }
 
-    fun cancelRegistration() {
+    fun cancelRegistration(promise: Promise) {
         TODO("Not yet implemented")
     }
 
@@ -99,11 +98,11 @@ class OneginiSdkWrapper(
         getRedirectUriUseCase(promise)
     }
 
-    fun handleRegistrationCallback(uri: String) {
+    fun handleRegistrationCallback(uri: String?, promise: Promise) {
         TODO("Not yet implemented")
     }
 
-    fun submitCustomRegistrationAction(customAction: String, identityProviderId: String, token: String) {
+    fun submitCustomRegistrationAction(customAction: String, identityProviderId: String, token: String?, promise: Promise) {
         TODO("Not yet implemented")
     }
 
@@ -139,7 +138,7 @@ class OneginiSdkWrapper(
         TODO("Not yet implemented")
     }
 
-    fun submitPinAction(flowString: String, action: String, pin: String) {
+    fun submitPinAction(pinFlow: String?, action: String?, pin: String?, promise: Promise) {
         TODO("Not yet implemented")
     }
 

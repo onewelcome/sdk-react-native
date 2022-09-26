@@ -78,8 +78,8 @@ interface NativeMethods {
     scopes?: String[],
   ): Promise<Types.Profile>;
   deregisterUser(profileId: string): Promise<any>;
-  handleRegistrationCallback(uri: string): void; // TODO: I think it should be moved "behind" SDK - dev should not know about it
-  cancelRegistration(): void;
+  handleRegistrationCallback(uri: string): Promise<any>;
+  cancelRegistration(): Promise<any>;
 
   // Authentication
   authenticateUser(
@@ -103,7 +103,7 @@ interface NativeMethods {
     flow: Events.PinFlow,
     action: Events.PinAction,
     pin: string | null,
-  ): void;
+  ): Promise<any>;
   changePin(): Promise<any>;
 
   // OTP
@@ -115,7 +115,7 @@ interface NativeMethods {
     customAction: Events.CustomRegistrationAction,
     identityProviderId: string,
     token: string | null,
-  ): void;
+  ): Promise<any>;
 
   // Fingerprint
   registerFingerprintAuthenticator(profileId: string): Promise<any>;

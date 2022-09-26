@@ -1,18 +1,24 @@
 protocol RegistrationConnectorToHandlerProtocol: AnyObject {
-    func signUp(identityProvider: ONGIdentityProvider?, scopes: [String], completion: @escaping (Bool, ONGUserProfile?, NSError?) -> Void)
+    func signUp(identityProvider: ONGIdentityProvider?, scopes: [String], completion: @escaping (Bool, ONGUserProfile?, Error?) -> Void)
     func processRedirectURL(url: URL)
     func processOTPCode(code: String?)
     func cancelRegistration()
     func cancelCustomRegistration()
+    func setCreatePinChallenge(_ challenge: ONGCreatePinChallenge?)
+    func handlePinAction(_ pin: String?, action: PinAction)
+    func handleDidReceivePinRegistrationChallenge(_ challenge: ONGCreatePinChallenge)
+    func handleDidFailToRegister()
+    func handleDidRegisterUser()
 }
 
 
-class RegistrationHandler: NSObject, BrowserHandlerToRegisterHandlerProtocol, PinHandlerToReceiverProtocol {
+class RegistrationHandler: NSObject, BrowserHandlerToRegisterHandlerProtocol {
     var createPinChallenge: ONGCreatePinChallenge?
     var browserRegistrationChallenge: ONGBrowserRegistrationChallenge?
     var customRegistrationChallenge: ONGCustomRegistrationChallenge?
     var browserConntroller: BrowserHandlerProtocol?
-    var signUpCompletion: ((Bool, ONGUserProfile?, NSError?) -> Void)?
+    var signUpCompletion: ((Bool, ONGUserProfile?, Error?) -> Void)?
+    let createPinEventEmitter = CreatePinEventEmitter()
 
     func presentBrowserUserRegistrationView(registrationUserURL: URL) {
         if(browserConntroller != nil) {
@@ -36,7 +42,8 @@ class RegistrationHandler: NSObject, BrowserHandlerToRegisterHandlerProtocol, Pi
         }
     }
 
-    func handlePin(pin: String?) {
+    func handlePin(_ pin: String?) {
+        
         guard let createPinChallenge = self.createPinChallenge else { return }
 
         if(pin != nil) {
@@ -56,9 +63,9 @@ class RegistrationHandler: NSObject, BrowserHandlerToRegisterHandlerProtocol, Pi
         customRegistrationChallenge.sender.respond(withData: code, challenge: customRegistrationChallenge)
     }
 
-    fileprivate func mapErrorFromPinChallenge(_ challenge: ONGCreatePinChallenge) -> NSError? {
+    fileprivate func mapErrorFromPinChallenge(_ challenge: ONGCreatePinChallenge) -> Error? {
         if let error = challenge.error {
-            return error as NSError
+            return error
         } else {
             return nil
         }
@@ -70,7 +77,11 @@ class RegistrationHandler: NSObject, BrowserHandlerToRegisterHandlerProtocol, Pi
 }
 
 extension RegistrationHandler : RegistrationConnectorToHandlerProtocol {
-    func signUp(identityProvider: ONGIdentityProvider? = nil, scopes: [String], completion: @escaping (Bool, ONGUserProfile?, NSError?) -> Void) {
+    func setCreatePinChallenge(_ challenge: ONGCreatePinChallenge?) {
+        createPinChallenge = challenge
+    }
+    
+    func signUp(identityProvider: ONGIdentityProvider? = nil, scopes: [String], completion: @escaping (Bool, ONGUserProfile?, Error?) -> Void) {
         signUpCompletion = completion
         ONGUserClient.sharedInstance().registerUser(with: identityProvider, scopes: scopes, delegate: self)
     }
@@ -89,6 +100,39 @@ extension RegistrationHandler : RegistrationConnectorToHandlerProtocol {
 
     func cancelRegistration() {
         handleRedirectURL(url: nil)
+        guard let createPinChallenge = self.createPinChallenge else { return }
+        createPinChallenge.sender.cancel(createPinChallenge)
+    }
+    
+    func handlePinAction(_ pin: String?, action: PinAction) {
+        switch action {
+            case PinAction.provide:
+                handlePin(pin)
+            case PinAction.cancel:
+                cancelRegistration()
+        }
+    }
+    
+    func handleDidReceivePinRegistrationChallenge(_ challenge: ONGCreatePinChallenge) {
+        createPinChallenge = challenge
+        if let pinError = mapErrorFromPinChallenge(challenge) {
+            createPinEventEmitter.onPinError(error: pinError)
+        } else {
+            createPinEventEmitter.onPinOpen(profileId: challenge.userProfile.profileId, pinLength: challenge.pinLength)
+        }
+    }
+    
+    func handleDidFailToRegister() {
+        createPinChallenge = nil
+        customRegistrationChallenge = nil
+        createPinEventEmitter.onPinClose()
+    }
+    
+    
+    func handleDidRegisterUser() {
+        createPinChallenge = nil
+        customRegistrationChallenge = nil
+        createPinEventEmitter.onPinClose()
     }
 }
 
@@ -99,11 +143,7 @@ extension RegistrationHandler: ONGRegistrationDelegate {
     }
 
     func userClient(_: ONGUserClient, didReceivePinRegistrationChallenge challenge: ONGCreatePinChallenge) {
-        createPinChallenge = challenge
-        let pinError = mapErrorFromPinChallenge(challenge)
-        
-        BridgeConnector.shared?.toPinHandlerConnector.pinHandler.handleFlowUpdate(PinFlow.create, error: pinError, receiver: self, profileId: challenge.userProfile.profileId, userInfo: nil, data: challenge.pinLength)
-        
+        handleDidReceivePinRegistrationChallenge(challenge)
     }
 
     func userClient(_: ONGUserClient, didReceiveCustomRegistrationInitChallenge challenge: ONGCustomRegistrationChallenge) {
@@ -133,18 +173,15 @@ extension RegistrationHandler: ONGRegistrationDelegate {
     }
     
     func userClient(_ userClient: ONGUserClient, didRegisterUser userProfile: ONGUserProfile, identityProvider: ONGIdentityProvider, info: ONGCustomInfo?) {
-        createPinChallenge = nil
-        customRegistrationChallenge = nil
-        signUpCompletion!(true, userProfile, nil)
-        BridgeConnector.shared?.toPinHandlerConnector.pinHandler.closeFlow()
+        handleDidRegisterUser()
+        signUpCompletion?(true, userProfile, nil)
+        signUpCompletion = nil
     }
-
+    
     func userClient(_ userClient: ONGUserClient, didFailToRegisterWith identityProvider: ONGIdentityProvider, error: Error) {
-        createPinChallenge = nil
-        customRegistrationChallenge = nil
-        BridgeConnector.shared?.toPinHandlerConnector.pinHandler.closeFlow()
-
-        signUpCompletion!(false, nil, error as NSError)
+        handleDidFailToRegister()
+        signUpCompletion?(false, nil, error)
+        signUpCompletion = nil
     }
 
 }

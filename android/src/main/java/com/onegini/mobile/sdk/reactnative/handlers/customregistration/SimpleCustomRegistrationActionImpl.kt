@@ -6,17 +6,13 @@ import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 
 class SimpleCustomRegistrationActionImpl(private val idProvider: String) : OneginiCustomRegistrationAction, SimpleCustomRegistrationAction {
 
-    var observer: CustomRegistrationObserver? = null
+    var eventEmitter: CustomRegistrationEventEmitter = CustomRegistrationEventEmitter()
 
     var calback: OneginiCustomRegistrationCallback? = null
 
     override fun finishRegistration(calback: OneginiCustomRegistrationCallback, info: CustomInfo?) {
         this.calback = calback
-        observer?.finishRegistration(idProvider, info)
-    }
-
-    override fun setCustomRegistrationObserver(observer: CustomRegistrationObserver) {
-        this.observer = observer
+        eventEmitter.finishRegistration(idProvider, info)
     }
 
     override fun returnSuccess(result: String?) {

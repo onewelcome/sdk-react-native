@@ -4,37 +4,30 @@ import com.onegini.mobile.sdk.android.handlers.request.OneginiPinAuthenticationR
 import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiPinCallback
 import com.onegini.mobile.sdk.android.model.entity.AuthenticationAttemptCounter
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
-import com.onegini.mobile.sdk.reactnative.Constants
-import com.onegini.mobile.sdk.reactnative.OneginiSDK
 
-class PinAuthenticationRequestHandler(private val oneginiSDK: OneginiSDK) : OneginiPinAuthenticationRequestHandler {
+class PinAuthenticationRequestHandler : OneginiPinAuthenticationRequestHandler {
     private var callback: OneginiPinCallback? = null
-    private var userProfileId: String? = null
-    private var pinNotificationObserver: PinNotificationObserver? = null
-    fun setPinNotificationObserver(pinNotificationObserver: PinNotificationObserver?) {
-        this.pinNotificationObserver = pinNotificationObserver
-    }
+    private var eventEmitter = PinAuthenticationEventEmitter()
 
     override fun startAuthentication(
         userProfile: UserProfile,
         oneginiPinCallback: OneginiPinCallback,
         attemptCounter: AuthenticationAttemptCounter
     ) {
-        userProfileId = userProfile.profileId // @todo Might need this in the future
         callback = oneginiPinCallback
-        pinNotificationObserver?.onNotify(Constants.PIN_NOTIFICATION_OPEN_VIEW, Constants.PinFlow.Authentication, userProfileId, null)
+        eventEmitter.onPinOpen(userProfile.profileId)
     }
 
     override fun onNextAuthenticationAttempt(attemptCounter: AuthenticationAttemptCounter) {
-        pinNotificationObserver?.onWrongPin(attemptCounter.remainingAttempts)
+        eventEmitter.onWrongPin(attemptCounter.remainingAttempts)
     }
 
     override fun finishAuthentication() {
-        pinNotificationObserver?.onNotify(Constants.PIN_NOTIFICATION_CLOSE_VIEW, Constants.PinFlow.Authentication, null, null)
+        eventEmitter.onPinClose()
     }
 
-    fun acceptAuthenticationRequest(var1: CharArray?) {
-        callback?.acceptAuthenticationRequest(var1)
+    fun acceptAuthenticationRequest(pin: CharArray) {
+        callback?.acceptAuthenticationRequest(pin)
     }
 
     fun denyAuthenticationRequest() {

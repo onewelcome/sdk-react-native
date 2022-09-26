@@ -1,3 +1,5 @@
+import {userInfo} from './data-types';
+
 export type SdkEvent =
   | PinEvent
   | CustomRegistrationEvent
@@ -5,37 +7,40 @@ export type SdkEvent =
   | MobileAuthOtpEvent;
 
 // Pin
-export type PinEvent =
-  | PinCloseEvent
-  | PinChangedEvent
-  | PinOpenEvent
-  | PinErrorEvent;
+export type PinEvent = PinCloseEvent | PinOpenEvent | PinErrorEvent;
 
 export type PinCloseEvent = {
   action: Pin.Close;
   flow: PinFlow;
 };
 
-export type PinChangedEvent = {
-  action: Pin.Changed;
-  flow: PinFlow;
-};
+export type PinOpenEvent = PinAuthenticationOpenEvent | PinCreateOpenEvent;
 
-export type PinOpenEvent = {
+export type PinAuthenticationOpenEvent = {
+  flow: PinFlow.Authentication;
   action: Pin.Open;
-  flow: PinFlow;
   profileId: string;
-  data?: number; //pin length
 };
 
-export type PinErrorEvent = {
+export type PinCreateOpenEvent = {
+  flow: PinFlow.Create;
+  action: Pin.Open;
+  profileId: string;
+  data: number; //pin length
+};
+
+export type PinErrorEvent = WrongPinEvent | GenericPinErrorEvent;
+export type WrongPinEvent = {
   action: Pin.Error;
-  flow: PinFlow;
+  errorType: PinErrorCode.WrongPinErrorCode;
+  errorMsg: string;
+  userInfo?: userInfo;
+};
+
+export type GenericPinErrorEvent = {
+  action: Pin.Error;
   errorType: number;
   errorMsg: string;
-  userInfo?: {
-    remainingFailureCount: string;
-  };
 };
 
 //CustomRegistration
@@ -121,15 +126,15 @@ export enum PinAction {
 }
 
 export enum PinFlow {
-  Authentication = 'authentication',
-  Create = 'create',
-  Change = 'change',
+  Authentication = 'Authentication',
+  Create = 'Create',
+  Change = 'Change',
 }
 
 export enum Pin {
   Open = 'open',
   Close = 'close',
-  Error = 'show_error',
+  Error = 'showError',
   Changed = 'changed',
 }
 
@@ -161,4 +166,9 @@ export enum FingerprintStage {
 export enum MobileAuthOtp {
   StartAuthentication = 'startAuthentication',
   FinishAuthentication = 'finishAuthentication',
+}
+
+//TOOD: Add more error codes here.
+export enum PinErrorCode {
+  WrongPinErrorCode = 8004,
 }

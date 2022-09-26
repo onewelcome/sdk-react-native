@@ -1,7 +1,7 @@
 package com.onegini.mobile.sdk.reactnative.network
 
 import com.google.gson.JsonObject
-import com.onegini.mobile.sdk.reactnative.OneginiComponets
+import com.onegini.mobile.sdk.reactnative.OneginiComponents
 import com.onegini.mobile.sdk.reactnative.model.ResourceRequestDetails
 import com.onegini.mobile.sdk.reactnative.network.client.ResourcesClient
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -9,7 +9,7 @@ import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 
 class UserService {
-    private val applicationDetailsRetrofitClient: ResourcesClient = OneginiComponets.secureResourceClient.prepareSecuredUserRetrofitClient(ResourcesClient::class.java)
+    private val applicationDetailsRetrofitClient: ResourcesClient = OneginiComponents.secureResourceClient.prepareSecuredUserRetrofitClient(ResourcesClient::class.java)
 
     fun getResource(requestDetails: ResourceRequestDetails): Single<JsonObject> {
         val apiCall = when (requestDetails.method) {

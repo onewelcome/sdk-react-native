@@ -1,7 +1,7 @@
 protocol BridgeToResourceHandlerProtocol: AnyObject {
-    func authenticateDevice(_ scopes:[String], _ completion: @escaping (Bool, NSError?) -> Void)
-    func authenticateImplicitly(_ profile: ONGUserProfile, scopes: [String], _ completion: @escaping (Bool, NSError?) -> Void)
-    func resourceRequest(_ type: ResourceRequestType, _ details: NSDictionary, _ completion: @escaping (String?, NSError?) -> Void)
+    func authenticateDevice(_ scopes:[String], _ completion: @escaping (Bool, Error?) -> Void)
+    func authenticateImplicitly(_ profile: ONGUserProfile, scopes: [String], _ completion: @escaping (Bool, Error?) -> Void)
+    func resourceRequest(_ type: ResourceRequestType, _ details: NSDictionary, _ completion: @escaping (String?, Error?) -> Void)
 }
 
 enum ResourceRequestType: String {
@@ -11,27 +11,27 @@ enum ResourceRequestType: String {
 }
 
 class ResourceHandler: BridgeToResourceHandlerProtocol {
-    func authenticateDevice(_ scopes:[String], _ completion: @escaping (Bool, NSError?) -> Void) {
+    func authenticateDevice(_ scopes:[String], _ completion: @escaping (Bool, Error?) -> Void) {
         ONGDeviceClient.sharedInstance().authenticateDevice(scopes) { success, error in
             if let error = error {
-                completion(success, error as NSError)
+                completion(success, error)
             } else {
                 completion(success, nil)
             }
         }
     }
 
-    func authenticateImplicitly(_ profile: ONGUserProfile, scopes:[String], _ completion: @escaping (Bool, NSError?) -> Void) {
+    func authenticateImplicitly(_ profile: ONGUserProfile, scopes:[String], _ completion: @escaping (Bool, Error?) -> Void) {
         authenticateProfileImplicitly(profile, scopes: scopes) { success, error in
             if let error = error {
-                completion(false, error as NSError)
+                completion(false, error)
             } else {
                 completion(true, nil)
             }
         }
     }
 
-    func resourceRequest(_ type: ResourceRequestType, _ details: NSDictionary, _ completion: @escaping (String?, NSError?) -> Void) {
+    func resourceRequest(_ type: ResourceRequestType, _ details: NSDictionary, _ completion: @escaping (String?, Error?) -> Void) {
         switch(type) {
         case .Anonymous: anonymousResourcesRequest(details, completion);
         case .ImplicitUser: implicitResourcesRequest(details, completion);
@@ -44,23 +44,23 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
         return implicitlyAuthenticatedProfile != nil && implicitlyAuthenticatedProfile == profile
     }
 
-    fileprivate func authenticateProfileImplicitly(_ profile: ONGUserProfile, scopes: [String], completion: @escaping (Bool, NSError?) -> Void) {
+    fileprivate func authenticateProfileImplicitly(_ profile: ONGUserProfile, scopes: [String], completion: @escaping (Bool, Error?) -> Void) {
         ONGUserClient.sharedInstance().implicitlyAuthenticateUser(profile, scopes: scopes) { success, error in
             if !success {
-                completion(success, error as NSError?)
+                completion(success, error)
             }
             completion(success, nil)
         }
     }
 
-    fileprivate func userResourcesRequest(_ details: NSDictionary, _ completion: @escaping (String?, NSError?) -> Void) {
+    fileprivate func userResourcesRequest(_ details: NSDictionary, _ completion: @escaping (String?, Error?) -> Void) {
         let encoding = getEncodingByValue(details["encoding"] as! String);
 
         let request = ONGResourceRequest.init(path: details["path"] as! String, method: details["method"] as! String, parameters: details["parameters"] as? [String : Any], encoding: encoding, headers: details["headers"] as? [String : String]);
 
         ONGUserClient.sharedInstance().fetchResource(request) { response, error in
             if let error = error {
-                completion(nil, error as NSError)
+                completion(nil, error)
             } else {
                 if let data = response?.data {
                     completion(String(data: data, encoding: .utf8), nil)
@@ -72,14 +72,14 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
         }
     }
     
-    fileprivate func anonymousResourcesRequest(_ details: NSDictionary, _ completion: @escaping (String?, NSError?) -> Void) {
+    fileprivate func anonymousResourcesRequest(_ details: NSDictionary, _ completion: @escaping (String?, Error?) -> Void) {
         let encoding = getEncodingByValue(details["encoding"] as! String);
 
         let request = ONGResourceRequest.init(path: details["path"] as! String, method: details["method"] as! String, parameters: details["parameters"] as? [String : Any], encoding: encoding, headers: details["headers"] as? [String : String]);
 
         ONGDeviceClient.sharedInstance().fetchResource(request) { response, error in
             if let error = error {
-                completion(nil, error as NSError)
+                completion(nil, error)
             } else {
                 if let data = response?.data {
                     completion(String(data: data, encoding: .utf8), nil)
@@ -91,14 +91,14 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
         }
     }
 
-    fileprivate func implicitResourcesRequest(_ details: NSDictionary, _ completion: @escaping (String?, NSError?) -> Void) {
+    fileprivate func implicitResourcesRequest(_ details: NSDictionary, _ completion: @escaping (String?, Error?) -> Void) {
         let encoding = getEncodingByValue(details["encoding"] as! String);
 
         let implicitRequest = ONGResourceRequest.init(path: details["path"] as! String, method: details["method"] as! String, parameters: details["parameters"] as? [String : Any], encoding: encoding, headers: details["headers"] as? [String : String]);
 
         ONGUserClient.sharedInstance().fetchImplicitResource(implicitRequest) { response, error in
             if let error = error {
-                completion(nil, error as NSError)
+                completion(nil, error)
             } else {
                 if let data = response?.data {
                     completion(String(data: data, encoding: .utf8), nil)

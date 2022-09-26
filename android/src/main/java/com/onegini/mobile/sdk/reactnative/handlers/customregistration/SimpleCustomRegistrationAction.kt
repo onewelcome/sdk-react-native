@@ -8,8 +8,6 @@ interface SimpleCustomRegistrationAction {
 
     fun getIdProvider(): String
 
-    fun setCustomRegistrationObserver(observer: CustomRegistrationObserver)
-
     fun returnSuccess(result: String?)
 
     fun returnError(exception: Exception?)
