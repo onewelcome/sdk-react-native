@@ -1,4 +1,3 @@
-//@todo Later will be transferred to RN Wrapper
 package com.onegini.mobile.sdk.reactnative.handlers.pins
 
 import com.onegini.mobile.sdk.android.handlers.request.OneginiCreatePinRequestHandler
@@ -21,8 +20,7 @@ class CreatePinRequestHandler : OneginiCreatePinRequestHandler {
     }
 
     override fun onNextPinCreationAttempt(oneginiPinValidationError: OneginiPinValidationError) {
-        //TODO: This shouldnt be calling onError but instead be sending a different kind of event for recoverable errors. RNP-98
-        eventEmitter.onError(oneginiPinValidationError.errorType, oneginiPinValidationError.message ?: "")
+        eventEmitter.onPinNotAllowed(oneginiPinValidationError.errorType, oneginiPinValidationError.message ?: "")
     }
 
     override fun finishPinCreation() {

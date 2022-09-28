@@ -26,9 +26,9 @@ class CreatePinEventEmitter {
       .emit(Constants.ONEWELCOME_PIN_NOTIFICATION, dataMap)
   }
 
-  fun onError(errorCode: Int, errorMessage: String) {
+  fun onPinNotAllowed(errorCode: Int, errorMessage: String) {
     val data = Arguments.createMap()
-    data.putString("action", Constants.PIN_NOTIFICATION_SHOW_ERROR)
+    data.putString("action", Constants.PIN_NOTIFICATION_PIN_NOT_ALLOWED)
     data.putString("flow", PinFlow.Create.toString())
     data.putInt("errorType", errorCode)
     data.putString("errorMsg", errorMessage)

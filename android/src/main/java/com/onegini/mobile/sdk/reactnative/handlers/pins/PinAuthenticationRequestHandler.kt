@@ -19,7 +19,7 @@ class PinAuthenticationRequestHandler : OneginiPinAuthenticationRequestHandler {
     }
 
     override fun onNextAuthenticationAttempt(attemptCounter: AuthenticationAttemptCounter) {
-        eventEmitter.onWrongPin(attemptCounter.remainingAttempts)
+        eventEmitter.onIncorrectPin(attemptCounter.remainingAttempts)
     }
 
     override fun finishAuthentication() {
