@@ -13,8 +13,6 @@
     "onewelcome-react-native-sdk.podspec"
   ],
   "scripts": {
-    "android": "tsc && react-native run-android",
-    "ios": "tsc && react-native run-ios --project-path './example/ios' --scheme 'RNExampleApp'",
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint ."
