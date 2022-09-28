@@ -28,7 +28,7 @@ export type PinCreateOpenEvent = {
   flow: PinFlow.Create;
   action: Pin.Open;
   profileId: string;
-  data: number; //pin length
+  pinLength: number;
 };
 
 export type IncorrectPinEvent = {

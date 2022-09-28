@@ -12,7 +12,7 @@ class CreatePinEventEmitter {
     val dataMap = Arguments.createMap()
     dataMap.putString("action", Constants.PIN_NOTIFICATION_OPEN_VIEW)
     dataMap.putString("flow", PinFlow.Create.toString())
-    dataMap.putInt("data", pinLength)
+    dataMap.putInt("pinLength", pinLength)
     dataMap.putString("profileId", profileId);
     reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
       .emit(Constants.ONEWELCOME_PIN_NOTIFICATION, dataMap)
