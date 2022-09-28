@@ -107,7 +107,7 @@ extension AuthenticatorsHandler: ONGAuthenticatorRegistrationDelegate {
     func userClient(_: ONGUserClient, didReceive challenge: ONGPinChallenge) {
         pinChallenge = challenge
         if let pinError = mapErrorFromPinChallenge(challenge) {
-            pinAuthenticationEventEmitter.onPinError(error: pinError)
+            pinAuthenticationEventEmitter.onIncorrectPin(error: pinError, remainingFailureCount: challenge.remainingFailureCount)
         } else {
             pinAuthenticationEventEmitter.onPinOpen(profileId: challenge.userProfile.profileId)
         }

@@ -30,11 +30,7 @@ class LoginHandler: NSObject {
     func handleDidReceiveChallenge(_ challenge: ONGPinChallenge) {
         pinChallenge = challenge
         if let pinError = mapErrorFromPinChallenge(challenge) {
-            if (challenge.remainingFailureCount != challenge.maxFailureCount) {
-                pinAuthenticationEventEmitter.onWrongPin(error: pinError, remainingFailureCount: challenge.remainingFailureCount)
-            } else {
-                pinAuthenticationEventEmitter.onPinError(error: pinError)
-            }
+            pinAuthenticationEventEmitter.onIncorrectPin(error: pinError, remainingFailureCount: challenge.remainingFailureCount)
         } else {
             pinAuthenticationEventEmitter.onPinOpen(profileId: challenge.userProfile.profileId)
         }
