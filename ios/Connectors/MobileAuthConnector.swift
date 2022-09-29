@@ -24,7 +24,7 @@ class MobileAuthConnector : BridgeToMobileAuthConnectorProtocol {
         }
     }
 
-  private func sendEvent(data: Any!) {
+  private func sendEvent(data: Any) {
     bridgeConnector?.sendBridgeEvent(eventName: OneWelcomeBridgeEvents.authWithOtpNotification, data: data)
   }
 }

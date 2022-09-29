@@ -12,12 +12,11 @@ class LoginHandler: NSObject {
 
     func handlePin(_ pin: String?) {
         guard let pinChallenge = self.pinChallenge else { return }
-
-        if(pin != nil) {
-            pinChallenge.sender.respond(withPin: pin!, challenge: pinChallenge)
-        } else {
+        guard let pin = pin else {
             pinChallenge.sender.cancel(pinChallenge)
+            return
         }
+        pinChallenge.sender.respond(withPin: pin, challenge: pinChallenge)
     }
 
     fileprivate func mapErrorFromPinChallenge(_ challenge: ONGPinChallenge) -> Error? {

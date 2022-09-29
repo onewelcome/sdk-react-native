@@ -3,7 +3,7 @@ protocol BridgeToRegistrationConnectorProtocol: AnyObject {
     var registrationHandler: RegistrationConnectorToHandlerProtocol { get }
 
     func handleCustomRegistrationAction(_ action: String, _ identityProviderId: String, _ code: String?) -> Void
-    func sendCustomRegistrationNotification(_ event: CustomRegistrationNotification,_ data: NSMutableDictionary?) -> Void
+    func sendCustomRegistrationNotification(_ event: CustomRegistrationNotification,_ data: NSMutableDictionary) -> Void
 }
 
 class RegistrationConnector : BridgeToRegistrationConnectorProtocol {
@@ -28,21 +28,20 @@ class RegistrationConnector : BridgeToRegistrationConnectorProtocol {
         }
     }
 
-    func sendCustomRegistrationNotification(_ event: CustomRegistrationNotification,_ data: NSMutableDictionary?) {
-        
+    func sendCustomRegistrationNotification(_ event: CustomRegistrationNotification,_ data: NSMutableDictionary) {
         switch (event){
             case .initRegistration:
-                data?.setValue(CustomRegistrationNotification.initRegistration.rawValue, forKey: "action")
+                data.setValue(CustomRegistrationNotification.initRegistration.rawValue, forKey: "action")
                 sendEvent(data: data)
                 break
             case .finishRegistration:
-                data?.setValue(CustomRegistrationNotification.finishRegistration.rawValue, forKey: "action")
+                data.setValue(CustomRegistrationNotification.finishRegistration.rawValue, forKey: "action")
                 sendEvent(data: data)
                 break;
         }
     }
 
-  private func sendEvent(data: Any!) {
+  private func sendEvent(data: Any) {
       bridgeConnector?.sendBridgeEvent(eventName: OneWelcomeBridgeEvents.customRegistrationNotification, data: data)
   }
 }
