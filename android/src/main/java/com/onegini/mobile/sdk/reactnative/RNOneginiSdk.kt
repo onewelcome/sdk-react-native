@@ -2,7 +2,6 @@
 package com.onegini.mobile.sdk.reactnative
 
 import android.net.Uri
-import android.util.Log
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
@@ -47,12 +46,6 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 
 
 class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
-
-    companion object {
-        private const val LOG_TAG = "RNOneginiSdk"
-        private const val TAG = "RNOneginiSdk"
-    }
-
     private val sdkWrapper: OneginiSdkWrapper
 
     private val reactContext: ReactApplicationContext
@@ -415,8 +408,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     fun authenticateUserImplicitly(profileId: String?, scopes: ReadableArray?, promise: Promise) {
         profileId ?: promise.rejectWithNullError("profileId", "String").run { return }
         val scopesArray = ScopesMapper.toStringArray(scopes)
-        Log.d(LOG_TAG, "authenticateUserImplicitly profileId: $profileId")
-
         val userProfile = authenticatorManager.getUserProfile(profileId)
         if (userProfile == null) {
             promise.reject(OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.code, OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.message)
@@ -440,8 +431,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     @ReactMethod
     fun authenticateDeviceForResource(scopes: ReadableArray?, promise: Promise) {
         val scopesArray = ScopesMapper.toStringArray(scopes)
-        Log.d(LOG_TAG, "authenticateDeviceForResource scopes: $scopes")
-
         oneginiSDK.oneginiClient.deviceClient.authenticateDevice(
             scopesArray,
             object : OneginiDeviceAuthenticationHandler {
@@ -461,9 +450,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     fun resourceRequest(type: String?, details: ReadableMap?, promise: Promise) {
         type ?: promise.rejectWithNullError("type", "String").run { return }
         details ?: promise.rejectWithNullError("details", "String").run { return }
-
-        Log.d(LOG_TAG, "resourceRequest [type: $type] call with $details")
-
         val requestDetails = ResourceRequestDetailsMapper.toResourceRequestDetails(details)
 
         when (type) {
