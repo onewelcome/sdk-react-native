@@ -14,7 +14,7 @@ class PinAuthenticationEventEmitter() {
     dataMap.putString("flow", PinFlow.Authentication.toString())
     dataMap.putString("profileId", profileId);
     reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
-      .emit(Constants.ONEWELCOME_PIN_NOTIFICATION, dataMap)
+      .emit(Constants.ONEWELCOME_PIN_AUTHENTICATION_NOTIFICATION, dataMap)
   }
 
   fun onPinClose() {
@@ -22,7 +22,7 @@ class PinAuthenticationEventEmitter() {
     dataMap.putString("action", Constants.PIN_NOTIFICATION_CLOSE_VIEW)
     dataMap.putString("flow", PinFlow.Authentication.toString())
     reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
-      .emit(Constants.ONEWELCOME_PIN_NOTIFICATION, dataMap)
+      .emit(Constants.ONEWELCOME_PIN_AUTHENTICATION_NOTIFICATION, dataMap)
   }
 
   fun onIncorrectPin(remainingAttempts: Int) {
@@ -33,6 +33,6 @@ class PinAuthenticationEventEmitter() {
     dataMap.putInt("errorType", OneginiWrapperErrors.WRONG_PIN_ERROR.code.toInt())
     dataMap.putString("errorMsg", OneginiWrapperErrors.WRONG_PIN_ERROR.message)
     reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
-      .emit(Constants.ONEWELCOME_PIN_NOTIFICATION, dataMap)
+      .emit(Constants.ONEWELCOME_PIN_AUTHENTICATION_NOTIFICATION, dataMap)
   }
 }
