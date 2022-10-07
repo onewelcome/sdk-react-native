@@ -143,7 +143,6 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                 reject(String(WrapperError.parametersNotCorrect.code), "Incorrect customAction supplied: \(action)", WrapperError.parametersNotCorrect)
                 break
         }
-        bridgeConnector.toRegistrationConnector.handleCustomRegistrationAction(action, identityProviderId, token)
         resolve(nil)
     }
 
