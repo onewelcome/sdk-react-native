@@ -35,8 +35,8 @@ class RegistrationHandler: NSObject, BrowserHandlerToRegisterHandlerProtocol {
 
     func handleRedirectURL(url: URL?) {
         guard let browserRegistrationChallenge = self.browserRegistrationChallenge else { return }
-        if(url != nil) {
-            browserRegistrationChallenge.sender.respond(with: url!, challenge: browserRegistrationChallenge)
+        if let url = url {
+            browserRegistrationChallenge.sender.respond(with: url, challenge: browserRegistrationChallenge)
         } else {
             browserRegistrationChallenge.sender.cancel(browserRegistrationChallenge)
         }
@@ -45,13 +45,11 @@ class RegistrationHandler: NSObject, BrowserHandlerToRegisterHandlerProtocol {
     func handlePin(_ pin: String?) {
         
         guard let createPinChallenge = self.createPinChallenge else { return }
-
-        if(pin != nil) {
-            createPinChallenge.sender.respond(withCreatedPin: pin!, challenge: createPinChallenge)
-
-        } else {
+        guard let pin = pin else{
             createPinChallenge.sender.cancel(createPinChallenge)
+            return
         }
+        createPinChallenge.sender.respond(withCreatedPin: pin, challenge: createPinChallenge)
     }
 
     func handleOTPCode(_ code: String? = nil, _ cancelled: Bool? = false) {
@@ -71,7 +69,7 @@ class RegistrationHandler: NSObject, BrowserHandlerToRegisterHandlerProtocol {
         }
     }
 
-    private func sendCustomRegistrationNotification(_ event: CustomRegistrationNotification,_ data: NSMutableDictionary?) {
+    private func sendCustomRegistrationNotification(_ event: CustomRegistrationNotification,_ data: NSMutableDictionary) {
         BridgeConnector.shared?.toRegistrationConnector.sendCustomRegistrationNotification(event, data);
     }
 }
