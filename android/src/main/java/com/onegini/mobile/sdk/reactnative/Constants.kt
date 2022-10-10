@@ -18,6 +18,9 @@ object Constants {
     const val PIN_ACTION_CANCEL = "cancel"
     const val PIN_ACTION_PROVIDE = "provide"
 
+    // Registration
+    const val REGISTRATION_NOTIFICATION = "ONEWELCOME_REGISTRATION_NOTIFICATION"
+
     // Custom registration
     const val CUSTOM_REGISTRATION_NOTIFICATION = "ONEWELCOME_CUSTOM_REGISTRATION_NOTIFICATION"
     const val CUSTOM_REGISTRATION_NOTIFICATION_INIT_REGISTRATION = "initRegistration"
