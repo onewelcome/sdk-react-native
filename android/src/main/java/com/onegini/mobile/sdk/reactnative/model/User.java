@@ -1,4 +1,3 @@
-//@todo Later will be transferred to RN Wrapper
 package com.onegini.mobile.sdk.reactnative.model;
 
 import com.onegini.mobile.sdk.android.model.entity.UserProfile;
