@@ -10,9 +10,13 @@ class RegistrationRequestHandler : OneginiBrowserRegistrationRequestHandler {
   /**
    * Finish registration action with result from web browser
    */
-  fun handleRegistrationCallback(uri: Uri?) {
+  fun handleRegistrationCallback(uri: Uri?): Boolean {
+    callback?.let {
       callback?.handleRegistrationCallback(uri)
       callback = null
+      return true
+    }
+    return false;
   }
 
   /**
