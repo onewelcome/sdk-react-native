@@ -12,6 +12,7 @@
 		496788F428C8CE5400EB65A8 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496788F328C8CE5400EB65A8 /* Enums.swift */; };
 		496788F928C8CFBD00EB65A8 /* CreatePinEventEmitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496788F728C8CFBD00EB65A8 /* CreatePinEventEmitter.swift */; };
 		496788FA28C8CFBD00EB65A8 /* PinAuthenticationEventEmitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496788F828C8CFBD00EB65A8 /* PinAuthenticationEventEmitter.swift */; };
+		496788FC28CB793B00EB65A8 /* RegistrationEventEmitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496788FB28CB793B00EB65A8 /* RegistrationEventEmitter.swift */; };
 		C78992E525816243002CA5AF /* LoginHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78992E425816243002CA5AF /* LoginHandler.swift */; };
 		C7AA005E2558E4B80001AB19 /* RNOneginiSdk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AA005D2558E4B80001AB19 /* RNOneginiSdk.swift */; };
 		C7AA00652558E55B0001AB19 /* BridgeConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AA00642558E55B0001AB19 /* BridgeConnector.swift */; };
@@ -46,6 +47,7 @@
 		496788F328C8CE5400EB65A8 /* Enums.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 		496788F728C8CFBD00EB65A8 /* CreatePinEventEmitter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreatePinEventEmitter.swift; sourceTree = "<group>"; };
 		496788F828C8CFBD00EB65A8 /* PinAuthenticationEventEmitter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PinAuthenticationEventEmitter.swift; sourceTree = "<group>"; };
+		496788FB28CB793B00EB65A8 /* RegistrationEventEmitter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationEventEmitter.swift; sourceTree = "<group>"; };
 		C78992E425816243002CA5AF /* LoginHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginHandler.swift; sourceTree = "<group>"; };
 		C7AA005C2558E4B70001AB19 /* RNOneginiSdk-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RNOneginiSdk-Bridging-Header.h"; sourceTree = "<group>"; };
 		C7AA005D2558E4B80001AB19 /* RNOneginiSdk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RNOneginiSdk.swift; sourceTree = "<group>"; };
@@ -86,6 +88,7 @@
 			children = (
 				496788F728C8CFBD00EB65A8 /* CreatePinEventEmitter.swift */,
 				496788F828C8CFBD00EB65A8 /* PinAuthenticationEventEmitter.swift */,
+				496788FB28CB793B00EB65A8 /* RegistrationEventEmitter.swift */,
 			);
 			path = EventEmitters;
 			sourceTree = "<group>";
@@ -226,6 +229,7 @@
 				496788F428C8CE5400EB65A8 /* Enums.swift in Sources */,
 				F0622594258CD03F00527A7D /* AppToWebHandler.swift in Sources */,
 				C7BD311125AC5DF10057440C /* MobileAuthHandler.swift in Sources */,
+				496788FC28CB793B00EB65A8 /* RegistrationEventEmitter.swift in Sources */,
 				C7AA00652558E55B0001AB19 /* BridgeConnector.swift in Sources */,
 				C7AA0205255925FA0001AB19 /* RNOneginiSdk.m in Sources */,
 				C7BD310E25AC5DC80057440C /* MobileAuthConnector.swift in Sources */,

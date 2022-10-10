@@ -19,19 +19,7 @@ class RegistrationHandler: NSObject, BrowserHandlerToRegisterHandlerProtocol {
     var browserConntroller: BrowserHandlerProtocol?
     var signUpCompletion: ((Bool, ONGUserProfile?, Error?) -> Void)?
     let createPinEventEmitter = CreatePinEventEmitter()
-
-    func presentBrowserUserRegistrationView(registrationUserURL: URL) {
-        if(browserConntroller != nil) {
-            browserConntroller?.handleUrl(url: registrationUserURL)
-        } else {
-            if #available(iOS 12.0, *) {
-                browserConntroller = BrowserViewController(registerHandlerProtocol: self)
-                browserConntroller?.handleUrl(url: registrationUserURL)
-            } else {
-              // Fallback on earlier versions
-            }
-        }
-    }
+    let registrationEventEmitter = RegistrationEventEmitter()
 
     func handleRedirectURL(url: URL?) {
         guard let browserRegistrationChallenge = self.browserRegistrationChallenge else { return }
@@ -137,7 +125,7 @@ extension RegistrationHandler : RegistrationConnectorToHandlerProtocol {
 extension RegistrationHandler: ONGRegistrationDelegate {
     func userClient(_: ONGUserClient, didReceive challenge: ONGBrowserRegistrationChallenge) {
         browserRegistrationChallenge = challenge
-        presentBrowserUserRegistrationView(registrationUserURL: challenge.url)
+        registrationEventEmitter.onSendUrl(challenge.url)
     }
 
     func userClient(_: ONGUserClient, didReceivePinRegistrationChallenge challenge: ONGCreatePinChallenge) {
