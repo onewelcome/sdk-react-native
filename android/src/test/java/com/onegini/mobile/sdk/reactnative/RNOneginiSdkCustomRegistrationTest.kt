@@ -20,7 +20,7 @@ import org.junit.Before
 import org.junit.Test
 import java.util.*
 
-
+// TODO: Refactor these tests in RNP-106
 class RNOneginiSdkCustomRegistrationTest {
 
     companion object {
@@ -77,11 +77,11 @@ class RNOneginiSdkCustomRegistrationTest {
         mockkStatic(Arguments::class)
         every { Arguments.createMap() } returns returnMap
 
-        val calback = mockkClass(OneginiCustomRegistrationCallback::class, relaxed = true)
+        val callback = mockkClass(OneginiCustomRegistrationCallback::class, relaxed = true)
         val customInfo = CustomInfo(10, "data")
-        (actions[0] as SimpleCustomRegistrationActionImpl).finishRegistration(calback, customInfo)
+        (actions[0] as SimpleCustomRegistrationActionImpl).finishRegistration(callback, customInfo)
 
-        assertEquals("ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION", emitNameSlot.captured)
+        assertEquals(Constants.CUSTOM_REGISTRATION_NOTIFICATION, emitNameSlot.captured)
         assertEquals(returnMap, emitDataSlot.captured)
         verify { returnMap.putString("identityProviderId", PROVIDER_ID) }
         verify { returnMap.putString("action", "finishRegistration") }
@@ -90,10 +90,10 @@ class RNOneginiSdkCustomRegistrationTest {
 
         val promise = mockkClass(Promise::class, relaxed = true)
         rNOneginiSdk.submitCustomRegistrationAction(Constants.CUSTOM_REGISTRATION_ACTION_PROVIDE, PROVIDER_ID, RESULT, promise)
-        verify { calback.returnSuccess(RESULT) }
+        verify { callback.returnSuccess(RESULT) }
 
         rNOneginiSdk.submitCustomRegistrationAction(Constants.CUSTOM_REGISTRATION_ACTION_CANCEL, PROVIDER_ID, RESULT, promise)
-        verify { calback.returnError(any()) }
+        verify { callback.returnError(any()) }
     }
 
     @Test
@@ -125,11 +125,11 @@ class RNOneginiSdkCustomRegistrationTest {
         mockkStatic(Arguments::class)
         every { Arguments.createMap() } returns returnMap
 
-        val calback = mockkClass(OneginiCustomRegistrationCallback::class, relaxed = true)
+        val callback = mockkClass(OneginiCustomRegistrationCallback::class, relaxed = true)
         val customInfo = CustomInfo(10, "data")
-        (actions[0] as SimpleCustomTwoStepRegistrationActionImpl).initRegistration(calback, customInfo)
+        (actions[0] as SimpleCustomTwoStepRegistrationActionImpl).initRegistration(callback, customInfo)
 
-        assertEquals("ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION", emitNameSlot.captured)
+        assertEquals(Constants.CUSTOM_REGISTRATION_NOTIFICATION, emitNameSlot.captured)
         assertEquals(returnMap, emitDataSlot.captured)
         verify { returnMap.putString("identityProviderId", PROVIDER_ID) }
         verify { returnMap.putString("action", "initRegistration") }
@@ -138,10 +138,10 @@ class RNOneginiSdkCustomRegistrationTest {
 
         val promise = mockkClass(Promise::class, relaxed = true)
         rNOneginiSdk.submitCustomRegistrationAction(Constants.CUSTOM_REGISTRATION_ACTION_PROVIDE, PROVIDER_ID, RESULT, promise)
-        verify { calback.returnSuccess(RESULT) }
+        verify { callback.returnSuccess(RESULT) }
 
         rNOneginiSdk.submitCustomRegistrationAction(Constants.CUSTOM_REGISTRATION_ACTION_CANCEL, PROVIDER_ID, RESULT, promise)
-        verify { calback.returnError(any()) }
+        verify { callback.returnError(any()) }
     }
 
     @Test
@@ -173,23 +173,25 @@ class RNOneginiSdkCustomRegistrationTest {
         mockkStatic(Arguments::class)
         every { Arguments.createMap() } returns returnMap
 
-        val calback = mockkClass(OneginiCustomRegistrationCallback::class, relaxed = true)
+        val callback = mockkClass(OneginiCustomRegistrationCallback::class, relaxed = true)
         val customInfo = CustomInfo(10, "data")
-        (actions[0] as SimpleCustomTwoStepRegistrationActionImpl).finishRegistration(calback, customInfo)
+        (actions[0] as SimpleCustomTwoStepRegistrationActionImpl).finishRegistration(callback, customInfo)
 
-        assertEquals("ONEGINI_CUSTOM_REGISTRATION_NOTIFICATION", emitNameSlot.captured)
+        assertEquals(Constants.CUSTOM_REGISTRATION_NOTIFICATION, emitNameSlot.captured)
         assertEquals(returnMap, emitDataSlot.captured)
-        verify { returnMap.putString("identityProviderId", PROVIDER_ID) }
-        verify { returnMap.putString("action", "finishRegistration") }
-        verify { customInfoSlot.captured.putString("data", customInfo.data) }
-        verify { customInfoSlot.captured.putInt("status", customInfo.status) }
+        verify {
+            returnMap.putString("identityProviderId", PROVIDER_ID)
+            returnMap.putString("action", "finishRegistration")
+            customInfoSlot.captured.putString("data", customInfo.data)
+            customInfoSlot.captured.putInt("status", customInfo.status)
+        }
 
         val promise = mockkClass(Promise::class, relaxed = true)
         rNOneginiSdk.submitCustomRegistrationAction(Constants.CUSTOM_REGISTRATION_ACTION_PROVIDE, PROVIDER_ID, RESULT, promise)
-        verify { calback.returnSuccess(RESULT) }
+        verify { callback.returnSuccess(RESULT) }
         rNOneginiSdk.submitCustomRegistrationAction(Constants.CUSTOM_REGISTRATION_ACTION_CANCEL, PROVIDER_ID, RESULT, promise)
 
-        verify { calback.returnError(any()) }
+        verify { callback.returnError(any()) }
     }
 
     @Test

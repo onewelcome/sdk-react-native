@@ -21,15 +21,6 @@ class GetUserProfileUseCaseTests {
     lateinit var oneginiSdk: OneginiSDK
 
     @Test
-    fun `when id is null should return null`() {
-        lenient().`when`(oneginiSdk.oneginiClient.userClient.userProfiles).thenReturn(setOf(UserProfile("123456"), UserProfile("234567")))
-
-        val profile = GetUserProfileUseCase(oneginiSdk)(null)
-
-        Assert.assertEquals(null, profile)
-    }
-
-    @Test
     fun `should return profile for given id`() {
         lenient().`when`(oneginiSdk.oneginiClient.userClient.userProfiles).thenReturn(setOf(UserProfile("123456"), UserProfile("234567")))
 

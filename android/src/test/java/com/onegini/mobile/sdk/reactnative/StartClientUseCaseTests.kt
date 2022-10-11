@@ -39,14 +39,14 @@ class StartClientUseCaseTests {
             it.getArgument<OneginiInitializationHandler>(0).onSuccess(emptySet())
         }
 
-        StartClientUseCase(oneginiSdk, reactApplicationContext)(TestData.config, promiseMock)
+        StartClientUseCase(oneginiSdk)(TestData.config, promiseMock)
 
         verify(promiseMock).resolve(null)
     }
 
     @Test
     fun `when wrong configs are provided should reject`() {
-        StartClientUseCase(oneginiSdk, reactApplicationContext)(JavaOnlyMap(), promiseMock)
+        StartClientUseCase(oneginiSdk)(JavaOnlyMap(), promiseMock)
         verify(promiseMock).reject(OneginiWrapperErrors.WRONG_CONFIG_MODEL.code, OneginiWrapperErrors.WRONG_CONFIG_MODEL.message)
     }
     
@@ -61,22 +61,7 @@ class StartClientUseCaseTests {
             it.getArgument<OneginiInitializationHandler>(0).onError(error)
         }
 
-        StartClientUseCase(oneginiSdk, reactApplicationContext)(TestData.config, promiseMock)
+        StartClientUseCase(oneginiSdk)(TestData.config, promiseMock)
         verify(promiseMock).reject(errorType.toString(), "Problem with smth")
-    }
-
-    @Test
-    fun `when succeed should calls setup methods on oneginiSDK`() {
-        // mock SDK start success
-        `when`(oneginiSdk.oneginiClient.start(any())).thenAnswer {
-            it.getArgument<OneginiInitializationHandler>(0).onSuccess(emptySet())
-        }
-
-        StartClientUseCase(oneginiSdk, reactApplicationContext)(TestData.config, promiseMock)
-        verify(oneginiSdk).setCreatePinEventEmitter(any())
-        verify(oneginiSdk).setPinAuthenticationEvementEmitter(any())
-        verify(oneginiSdk).setCustomRegistrationObserver(any())
-        verify(oneginiSdk).setMobileAuthOtpRequestObserver(any())
-        verify(oneginiSdk).setFingerprintAuthenticationObserver(any())
     }
 }

@@ -20,7 +20,7 @@ import io.mockk.impl.annotations.MockK
 import org.junit.Before
 import org.junit.Test
 
-//TODO: Refactor this into Clean architecture(UseCase) after we move fingerprint functions to UseCase
+// TODO: Refactor these tests in RNP-106
 class RNOneginiSdkFingerprintTest {
 
     companion object {

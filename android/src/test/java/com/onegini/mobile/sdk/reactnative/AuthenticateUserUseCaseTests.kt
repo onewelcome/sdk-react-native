@@ -64,7 +64,7 @@ class AuthenticateUserUseCaseTests {
 
         authenticateUserUseCase("123", "1", promiseMock)
 
-        verify(promiseMock).reject(OneginiWrapperErrors.USER_PROFILE_IS_NULL.code, OneginiWrapperErrors.USER_PROFILE_IS_NULL.message)
+        verify(promiseMock).reject(OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.code, OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.message)
     }
 
     @Test
