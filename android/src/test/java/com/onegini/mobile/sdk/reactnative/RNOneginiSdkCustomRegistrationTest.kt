@@ -47,6 +47,7 @@ class RNOneginiSdkCustomRegistrationTest {
         every { reactApplicationContext.getJSModule<DeviceEventManagerModule.RCTDeviceEventEmitter>(any()) } returns rCTDeviceEventEmitter
         rNOneginiSdk = RNOneginiSdk(reactApplicationContext)
     }
+
     @Test
     fun customRegistrationNotification_isTwoStep_false_finishRegistration() {
 
