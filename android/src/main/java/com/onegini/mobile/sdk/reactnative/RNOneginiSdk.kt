@@ -24,6 +24,7 @@ import com.onegini.mobile.sdk.android.handlers.error.OneginiLogoutError
 import com.onegini.mobile.sdk.android.handlers.error.OneginiMobileAuthEnrollmentError
 import com.onegini.mobile.sdk.android.handlers.error.OneginiMobileAuthWithOtpError
 import com.onegini.mobile.sdk.android.model.OneginiAppToWebSingleSignOn
+import com.onegini.mobile.sdk.android.model.OneginiAuthenticator
 import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.Constants.PinFlow
@@ -43,6 +44,7 @@ import com.onegini.mobile.sdk.reactnative.network.AnonymousService
 import com.onegini.mobile.sdk.reactnative.network.ImplicitUserService
 import com.onegini.mobile.sdk.reactnative.network.UserService
 import io.reactivex.rxjava3.disposables.CompositeDisposable
+import java.lang.Exception
 
 
 class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
@@ -131,11 +133,12 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     @ReactMethod
     fun isFingerprintAuthenticatorRegistered(profileId: String?, promise: Promise) {
         profileId ?: promise.rejectWithNullError("profileId", "String").run { return }
-        try {
-            promise.resolve(authenticatorManager.isFingerprintAuthenticatorRegistered(profileId))
-        } catch (e: OneginiError) {
-            promise.reject(e.errorType.toString(), e.message)
+        authenticatorManager.getUserProfile(profileId)?.let { userProfile ->
+            val authenticator = authenticatorManager.getRegisteredAuthenticators(userProfile, OneginiAuthenticator.FINGERPRINT)
+            promise.resolve(authenticator != null)
+            return
         }
+        promise.reject(OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.code, OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.message)
     }
 
     @ReactMethod
@@ -156,17 +159,29 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     fun submitFingerprintAcceptAuthenticationRequest(promise: Promise) {
-        oneginiSDK.fingerprintAuthenticationRequestHandler?.acceptAuthenticationRequest()
+        oneginiSDK.fingerprintAuthenticationRequestHandler?.let { fingerprintHandler ->
+            fingerprintHandler.acceptAuthenticationRequest()
+            promise.resolve(null)
+        }
+        promise.reject(OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.code, OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.message)
     }
 
     @ReactMethod
     fun submitFingerprintDenyAuthenticationRequest(promise: Promise) {
-        oneginiSDK.fingerprintAuthenticationRequestHandler?.denyAuthenticationRequest()
+        oneginiSDK.fingerprintAuthenticationRequestHandler?.let { fingerprintHandler ->
+            fingerprintHandler.denyAuthenticationRequest()
+            promise.resolve(null)
+        }
+        promise.reject(OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.code, OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.message)
     }
 
     @ReactMethod
     fun submitFingerprintFallbackToPin(promise: Promise) {
-        oneginiSDK.fingerprintAuthenticationRequestHandler?.fallbackToPin()
+        oneginiSDK.fingerprintAuthenticationRequestHandler?.let { fingerprintHandler ->
+            fingerprintHandler.fallbackToPin()
+            promise.resolve(null)
+        }
+        promise.reject(OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.code, OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.message)
     }
 
     @ReactMethod
