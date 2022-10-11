@@ -4,6 +4,7 @@ import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.onegini.mobile.sdk.android.handlers.OneginiInitializationHandler
+import com.onegini.mobile.sdk.android.handlers.error.OneginiInitializationError
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.StartClientUseCase
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 import org.junit.*
@@ -46,36 +47,23 @@ class StartClientUseCaseTests {
     @Test
     fun `when wrong configs are provided should reject`() {
         StartClientUseCase(oneginiSdk, reactApplicationContext)(JavaOnlyMap(), promiseMock)
-
-        argumentCaptor<String> {
-            verify(promiseMock).reject(this.capture(), this.capture())
-
-            Assert.assertEquals(OneginiWrapperErrors.WRONG_CONFIG_MODEL.code, this.firstValue)
-            Assert.assertEquals(OneginiWrapperErrors.WRONG_CONFIG_MODEL.message, this.secondValue)
-        }
+        verify(promiseMock).reject(OneginiWrapperErrors.WRONG_CONFIG_MODEL.code, OneginiWrapperErrors.WRONG_CONFIG_MODEL.message)
     }
-//  @todo: Fix this test
     
-//    @Test
-//    fun `when oneginiClient_start fails should reject and pass proper errors`() {
-//        val error = mock<OneginiInitializationError>()
-//        val errorType = OneginiInitializationError.CONFIGURATION_ERROR
-//        `when`(error.errorType).thenReturn(errorType)
-//        `when`(error.message).thenReturn("Problem with smth")
-//        // mock SDK start error
-//        `when`(oneginiSdk.oneginiClient.start(any())).thenAnswer {
-//            it.getArgument<OneginiInitializationHandler>(0).onError(error)
-//        }
-//
-//        StartClientUseCase(oneginiSdk, reactApplicationContext)(TestData.config, promiseMock)
-//
-//        argumentCaptor<String> {
-//            verify(promiseMock).reject(this.capture(), this.capture())
-//
-//            Assert.assertEquals(errorType.toString(), this.firstValue)
-//            Assert.assertEquals("Problem with smth", this.secondValue)
-//        }
-//    }
+    @Test
+    fun `when oneginiClient_start fails should reject and pass proper errors`() {
+        val error = mock<OneginiInitializationError>()
+        val errorType = OneginiInitializationError.GENERAL_ERROR
+        `when`(error.errorType).thenReturn(errorType)
+        `when`(error.message).thenReturn("Problem with smth")
+        // mock SDK start error
+        `when`(oneginiSdk.oneginiClient.start(any())).thenAnswer {
+            it.getArgument<OneginiInitializationHandler>(0).onError(error)
+        }
+
+        StartClientUseCase(oneginiSdk, reactApplicationContext)(TestData.config, promiseMock)
+        verify(promiseMock).reject(errorType.toString(), "Problem with smth")
+    }
 
     @Test
     fun `when succeed should calls setup methods on oneginiSDK`() {

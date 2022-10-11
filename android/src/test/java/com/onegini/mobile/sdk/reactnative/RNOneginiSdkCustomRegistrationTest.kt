@@ -17,7 +17,6 @@ import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import org.junit.Assert.assertEquals
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import java.util.*
 
@@ -48,8 +47,6 @@ class RNOneginiSdkCustomRegistrationTest {
         every { reactApplicationContext.getJSModule<DeviceEventManagerModule.RCTDeviceEventEmitter>(any()) } returns rCTDeviceEventEmitter
         rNOneginiSdk = RNOneginiSdk(reactApplicationContext)
     }
-    // TODO: Fix these tests / refactor customRegistration api. Below tests use functions that no longer exist. 
-    @Ignore
     @Test
     fun customRegistrationNotification_isTwoStep_false_finishRegistration() {
 

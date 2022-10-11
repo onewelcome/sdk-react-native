@@ -48,8 +48,8 @@ class GetAllAuthenticatorsUseCaseTests {
         argumentCaptor<String> {
             verify(promiseMock).reject(capture(), capture())
 
-            assertEquals(OneginiWrapperErrors.USER_PROFILE_IS_NULL.code, firstValue)
-            assertEquals(OneginiWrapperErrors.USER_PROFILE_IS_NULL.message, secondValue)
+            assertEquals(OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.code, firstValue)
+            assertEquals(OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.message, secondValue)
         }
     }
 

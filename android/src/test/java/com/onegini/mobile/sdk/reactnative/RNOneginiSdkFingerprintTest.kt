@@ -20,7 +20,7 @@ import io.mockk.impl.annotations.MockK
 import org.junit.Before
 import org.junit.Test
 
-
+//TODO: Refactor this into Clean architecture(UseCase) after we move fingerprint functions to UseCase
 class RNOneginiSdkFingerprintTest {
 
     companion object {
@@ -112,7 +112,7 @@ class RNOneginiSdkFingerprintTest {
 
         verify { promise.resolve(returnMap) }
     }
-
+    @Test
     fun deregisterFingerprintAuthenticator_onSuccess() {
         val oneginiClient = setupOneginiClient()
 
@@ -124,7 +124,7 @@ class RNOneginiSdkFingerprintTest {
         val oneginiAuthenticator = mockkClass(OneginiAuthenticator::class, relaxed = true)
         every { oneginiAuthenticator.type } returns OneginiAuthenticator.FINGERPRINT
         authenticators.add(oneginiAuthenticator)
-        every { userClient.getNotRegisteredAuthenticators(USER_PROFILE) } returns authenticators
+        every { userClient.getRegisteredAuthenticators(USER_PROFILE) } returns authenticators
         Utils.startClient(rNOneginiSdk, oneginiClient, null, true)
 
         val handlerSlot = slot<OneginiAuthenticatorDeregistrationHandler>()
