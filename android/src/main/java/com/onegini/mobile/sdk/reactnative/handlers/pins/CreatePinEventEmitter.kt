@@ -12,7 +12,7 @@ class CreatePinEventEmitter {
     val dataMap = Arguments.createMap()
     dataMap.putString("action", Constants.PIN_NOTIFICATION_OPEN_VIEW)
     dataMap.putString("flow", PinFlow.Create.toString())
-    dataMap.putInt("data", pinLength)
+    dataMap.putInt("pinLength", pinLength)
     dataMap.putString("profileId", profileId);
     reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
       .emit(Constants.ONEWELCOME_PIN_NOTIFICATION, dataMap)
@@ -26,9 +26,9 @@ class CreatePinEventEmitter {
       .emit(Constants.ONEWELCOME_PIN_NOTIFICATION, dataMap)
   }
 
-  fun onError(errorCode: Int, errorMessage: String) {
+  fun onPinNotAllowed(errorCode: Int, errorMessage: String) {
     val data = Arguments.createMap()
-    data.putString("action", Constants.PIN_NOTIFICATION_SHOW_ERROR)
+    data.putString("action", Constants.PIN_NOTIFICATION_PIN_NOT_ALLOWED)
     data.putString("flow", PinFlow.Create.toString())
     data.putInt("errorType", errorCode)
     data.putString("errorMsg", errorMessage)

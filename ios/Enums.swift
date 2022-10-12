@@ -3,6 +3,8 @@ enum PinNotification: String {
     case open
     case close
     case showError
+    case incorrectPin
+    case pinNotAllowed
 }
 
 // Pin actions from RN Bridge

@@ -114,7 +114,7 @@ extension RegistrationHandler : RegistrationConnectorToHandlerProtocol {
     func handleDidReceivePinRegistrationChallenge(_ challenge: ONGCreatePinChallenge) {
         createPinChallenge = challenge
         if let pinError = mapErrorFromPinChallenge(challenge) {
-            createPinEventEmitter.onPinError(error: pinError)
+            createPinEventEmitter.onPinNotAllowed(error: pinError)
         } else {
             createPinEventEmitter.onPinOpen(profileId: challenge.userProfile.profileId, pinLength: challenge.pinLength)
         }

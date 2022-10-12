@@ -1,5 +1,3 @@
-import {userInfo} from './data-types';
-
 export type SdkEvent =
   | PinEvent
   | CustomRegistrationEvent
@@ -7,7 +5,11 @@ export type SdkEvent =
   | MobileAuthOtpEvent;
 
 // Pin
-export type PinEvent = PinCloseEvent | PinOpenEvent | PinErrorEvent;
+export type PinEvent =
+  | PinCloseEvent
+  | PinOpenEvent
+  | PinNotAllowedEvent
+  | IncorrectPinEvent;
 
 export type PinCloseEvent = {
   action: Pin.Close;
@@ -26,19 +28,18 @@ export type PinCreateOpenEvent = {
   flow: PinFlow.Create;
   action: Pin.Open;
   profileId: string;
-  data: number; //pin length
+  pinLength: number;
 };
 
-export type PinErrorEvent = WrongPinEvent | GenericPinErrorEvent;
-export type WrongPinEvent = {
-  action: Pin.Error;
-  errorType: PinErrorCode.WrongPinErrorCode;
+export type IncorrectPinEvent = {
+  action: Pin.IncorrectPin;
+  errorType: number;
   errorMsg: string;
-  userInfo?: userInfo;
+  remainingFailureCount: number;
 };
 
-export type GenericPinErrorEvent = {
-  action: Pin.Error;
+export type PinNotAllowedEvent = {
+  action: Pin.PinNotAllowed;
   errorType: number;
   errorMsg: string;
 };
@@ -136,6 +137,8 @@ export enum Pin {
   Close = 'close',
   Error = 'showError',
   Changed = 'changed',
+  PinNotAllowed = 'pinNotAllowed',
+  IncorrectPin = 'incorrectPin',
 }
 
 export enum CustomRegistrationAction {
