@@ -10,7 +10,7 @@ import io.mockk.*
 import java.util.*
 import kotlin.collections.HashMap
 import kotlin.collections.set
-
+// TODO: Remove this in RNP-106
 object Utils {
 
     fun createProvider(id: String, isTwoStep: Boolean): HashMap<String, *> {
@@ -18,10 +18,6 @@ object Utils {
         map["id"] = id
         map["isTwoStep"] = isTwoStep
         return map
-    }
-
-    fun startClient(rNOneginiSdk: RNOneginiSdk, oneginiClient: OneginiClient, arrayProviders: ArrayList<Any>?) {
-        startClient(rNOneginiSdk, oneginiClient, arrayProviders, false)
     }
 
     fun startClient(rNOneginiSdk: RNOneginiSdk, oneginiClient: OneginiClient, arrayProviders: ArrayList<Any>?, enableFingerprint: Boolean) {

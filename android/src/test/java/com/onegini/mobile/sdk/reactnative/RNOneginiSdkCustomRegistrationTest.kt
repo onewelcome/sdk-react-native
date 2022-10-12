@@ -61,7 +61,7 @@ class RNOneginiSdkCustomRegistrationTest {
         arrayProviders.add(createProvider(PROVIDER_ID, false))
 
         val oneginiClient = mockkClass(OneginiClient::class)
-        Utils.startClient(rNOneginiSdk, oneginiClient, arrayProviders)
+        Utils.startClient(rNOneginiSdk, oneginiClient, arrayProviders, false)
 
         val actions = OneginiComponents.oneginiSDK.simpleCustomRegistrationActions
         assertEquals(1, actions.size)
@@ -109,7 +109,7 @@ class RNOneginiSdkCustomRegistrationTest {
         arrayProviders.add(createProvider(PROVIDER_ID, true))
 
         val oneginiClient = mockkClass(OneginiClient::class)
-        Utils.startClient(rNOneginiSdk, oneginiClient, arrayProviders)
+        Utils.startClient(rNOneginiSdk, oneginiClient, arrayProviders, false)
 
         val actions = OneginiComponents.oneginiSDK.simpleCustomRegistrationActions
         assertEquals(1, actions.size)
@@ -157,7 +157,7 @@ class RNOneginiSdkCustomRegistrationTest {
         arrayProviders.add(createProvider(PROVIDER_ID, true))
 
         val oneginiClient = mockkClass(OneginiClient::class)
-        Utils.startClient(rNOneginiSdk, oneginiClient, arrayProviders)
+        Utils.startClient(rNOneginiSdk, oneginiClient, arrayProviders, false)
 
         val actions = OneginiComponents.oneginiSDK.simpleCustomRegistrationActions
         assertEquals(1, actions.size)
