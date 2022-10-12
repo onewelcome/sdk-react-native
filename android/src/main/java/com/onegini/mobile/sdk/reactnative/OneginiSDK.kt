@@ -57,8 +57,8 @@ class OneginiSDK(private val reactApplicationContext: ReactApplicationContext) {
         val clientBuilder = OneginiClientBuilder(applicationContext, createPinRequestHandler, pinAuthenticationRequestHandler)
 
         clientBuilder.setBrowserRegistrationRequestHandler(registrationRequestHandler) // Set http connect / read timeout
-                .setHttpConnectTimeout(TimeUnit.SECONDS.toMillis(5).toInt())
-                .setHttpReadTimeout(TimeUnit.SECONDS.toMillis(20).toInt())
+                .setHttpConnectTimeout(Constants.httpConnectTimeoutBrowserRegistrationMiliseconds)
+                .setHttpReadTimeout(Constants.httpReadTimeoutBrowserRegistrationMiliseconds)
 
         setProviders(clientBuilder)
 
