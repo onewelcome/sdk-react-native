@@ -162,7 +162,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         oneginiSDK.fingerprintAuthenticationRequestHandler?.let { fingerprintHandler ->
             fingerprintHandler.acceptAuthenticationRequest()
             promise.resolve(null)
-        }
+        } ?:
         promise.reject(OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.code, OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.message)
     }
 
@@ -171,7 +171,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         oneginiSDK.fingerprintAuthenticationRequestHandler?.let { fingerprintHandler ->
             fingerprintHandler.denyAuthenticationRequest()
             promise.resolve(null)
-        }
+        } ?:
         promise.reject(OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.code, OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.message)
     }
 
@@ -180,7 +180,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         oneginiSDK.fingerprintAuthenticationRequestHandler?.let { fingerprintHandler ->
             fingerprintHandler.fallbackToPin()
             promise.resolve(null)
-        }
+        } ?:
         promise.reject(OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.code, OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.message)
     }
 
