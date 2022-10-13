@@ -1,4 +1,3 @@
-// @todo Later will be transferred to RN Wrapper
 package com.onegini.mobile.sdk.reactnative
 
 import android.content.Context
@@ -14,7 +13,6 @@ import com.onegini.mobile.sdk.reactnative.handlers.mobileauthotp.MobileAuthOtpRe
 import com.onegini.mobile.sdk.reactnative.handlers.pins.CreatePinRequestHandler
 import com.onegini.mobile.sdk.reactnative.handlers.pins.PinAuthenticationRequestHandler
 import com.onegini.mobile.sdk.reactnative.model.rn.OneginiReactNativeConfig
-import java.util.concurrent.TimeUnit
 
 class OneginiSDK(private val reactApplicationContext: ReactApplicationContext) {
 
@@ -53,19 +51,14 @@ class OneginiSDK(private val reactApplicationContext: ReactApplicationContext) {
         pinAuthenticationRequestHandler = PinAuthenticationRequestHandler()
         createPinRequestHandler = CreatePinRequestHandler()
 
-        //twoWayOtpIdentityProvider = TwoWayOtpIdentityProvider(context)
         val clientBuilder = OneginiClientBuilder(applicationContext, createPinRequestHandler, pinAuthenticationRequestHandler)
 
-        clientBuilder.setBrowserRegistrationRequestHandler(registrationRequestHandler) // Set http connect / read timeout
+        clientBuilder.setBrowserRegistrationRequestHandler(registrationRequestHandler)
                 .setHttpConnectTimeout(Constants.httpConnectTimeoutBrowserRegistrationMiliseconds)
                 .setHttpReadTimeout(Constants.httpReadTimeoutBrowserRegistrationMiliseconds)
 
         setProviders(clientBuilder)
-
-        // Set config model
         setConfigModel(clientBuilder)
-
-        // Set security controller
         setSecurityController(clientBuilder)
 
         if (config.enableMobileAuthenticationOtp) {
