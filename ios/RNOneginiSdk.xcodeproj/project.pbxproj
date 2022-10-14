@@ -17,7 +17,6 @@
 		C7AA005E2558E4B80001AB19 /* RNOneginiSdk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AA005D2558E4B80001AB19 /* RNOneginiSdk.swift */; };
 		C7AA00652558E55B0001AB19 /* BridgeConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AA00642558E55B0001AB19 /* BridgeConnector.swift */; };
 		C7AA006C2558E5920001AB19 /* RegistrationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AA006B2558E5920001AB19 /* RegistrationHandler.swift */; };
-		C7AA00722558E5A80001AB19 /* BrowserHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AA00712558E5A80001AB19 /* BrowserHandler.swift */; };
 		C7AA00982558E6D40001AB19 /* ErrorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AA00972558E6D40001AB19 /* ErrorExtension.swift */; };
 		C7AA0205255925FA0001AB19 /* RNOneginiSdk.m in Sources */ = {isa = PBXBuildFile; fileRef = C7AA0204255925FA0001AB19 /* RNOneginiSdk.m */; };
 		C7BD310E25AC5DC80057440C /* MobileAuthConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7BD310D25AC5DC80057440C /* MobileAuthConnector.swift */; };
@@ -53,7 +52,6 @@
 		C7AA005D2558E4B80001AB19 /* RNOneginiSdk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RNOneginiSdk.swift; sourceTree = "<group>"; };
 		C7AA00642558E55B0001AB19 /* BridgeConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BridgeConnector.swift; sourceTree = "<group>"; };
 		C7AA006B2558E5920001AB19 /* RegistrationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationHandler.swift; sourceTree = "<group>"; };
-		C7AA00712558E5A80001AB19 /* BrowserHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserHandler.swift; sourceTree = "<group>"; };
 		C7AA00972558E6D40001AB19 /* ErrorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorExtension.swift; sourceTree = "<group>"; };
 		C7AA0204255925FA0001AB19 /* RNOneginiSdk.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNOneginiSdk.m; sourceTree = "<group>"; };
 		C7BD310D25AC5DC80057440C /* MobileAuthConnector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAuthConnector.swift; sourceTree = "<group>"; };
@@ -125,7 +123,6 @@
 				496788EC28C8CD0100EB65A8 /* ChangePinHandler.swift */,
 				F0622593258CD03F00527A7D /* AppToWebHandler.swift */,
 				C7AA006B2558E5920001AB19 /* RegistrationHandler.swift */,
-				C7AA00712558E5A80001AB19 /* BrowserHandler.swift */,
 				C78992E425816243002CA5AF /* LoginHandler.swift */,
 				C7EF0BCA259443AA00D14892 /* ResourcesHandler.swift */,
 				C7BD311025AC5DF10057440C /* MobileAuthHandler.swift */,
@@ -225,7 +222,6 @@
 				496788ED28C8CD0100EB65A8 /* ChangePinHandler.swift in Sources */,
 				496788FA28C8CFBD00EB65A8 /* PinAuthenticationEventEmitter.swift in Sources */,
 				C7EF0BCB259443AA00D14892 /* ResourcesHandler.swift in Sources */,
-				C7AA00722558E5A80001AB19 /* BrowserHandler.swift in Sources */,
 				496788F428C8CE5400EB65A8 /* Enums.swift in Sources */,
 				F0622594258CD03F00527A7D /* AppToWebHandler.swift in Sources */,
 				C7BD311125AC5DF10057440C /* MobileAuthHandler.swift in Sources */,

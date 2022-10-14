@@ -12,7 +12,7 @@ protocol RegistrationConnectorToHandlerProtocol: AnyObject {
 }
 
 
-class RegistrationHandler: NSObject, BrowserHandlerToRegisterHandlerProtocol {
+class RegistrationHandler: NSObject {
     private var createPinChallenge: ONGCreatePinChallenge?
     private var browserRegistrationChallenge: ONGBrowserRegistrationChallenge?
     private var customRegistrationChallenge: ONGCustomRegistrationChallenge?
