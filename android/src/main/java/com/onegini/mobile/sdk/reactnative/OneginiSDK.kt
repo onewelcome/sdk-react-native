@@ -1,4 +1,3 @@
-// @todo Later will be transferred to RN Wrapper
 package com.onegini.mobile.sdk.reactnative
 
 import android.content.Context
@@ -6,7 +5,7 @@ import com.facebook.react.bridge.ReactApplicationContext
 import com.onegini.mobile.sdk.android.client.OneginiClient
 import com.onegini.mobile.sdk.android.client.OneginiClientBuilder
 import com.onegini.mobile.sdk.android.model.OneginiClientConfigModel
-import com.onegini.mobile.sdk.reactnative.handlers.RegistrationRequestHandler
+import com.onegini.mobile.sdk.reactnative.handlers.registration.RegistrationRequestHandler
 import com.onegini.mobile.sdk.reactnative.handlers.customregistration.SimpleCustomRegistrationAction
 import com.onegini.mobile.sdk.reactnative.handlers.customregistration.SimpleCustomRegistrationFactory
 import com.onegini.mobile.sdk.reactnative.handlers.fingerprint.FingerprintAuthenticationRequestHandler
@@ -48,7 +47,7 @@ class OneginiSDK(private val reactApplicationContext: ReactApplicationContext) {
 
     private fun buildSDK(context: Context): OneginiClient {
         val applicationContext = context.applicationContext
-        registrationRequestHandler = RegistrationRequestHandler(applicationContext)
+        registrationRequestHandler = RegistrationRequestHandler()
         pinAuthenticationRequestHandler = PinAuthenticationRequestHandler()
         createPinRequestHandler = CreatePinRequestHandler()
 

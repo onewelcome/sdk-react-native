@@ -12,11 +12,11 @@ enum MobileAuthAuthenticatorType: String {
 }
 
 class MobileAuthHandler: NSObject {
-    var userProfile: ONGUserProfile?
-    var message: String?
-    var authenticatorType: MobileAuthAuthenticatorType?
-    var confirmation: ((Bool) -> Void)?
-    var mobileAuthCompletion: ((Bool, Error?) -> Void)?
+    private var userProfile: ONGUserProfile?
+    private var message: String?
+    private var authenticatorType: MobileAuthAuthenticatorType?
+    private var confirmation: ((Bool) -> Void)?
+    private var mobileAuthCompletion: ((Bool, Error?) -> Void)?
 
     fileprivate func handleConfirmationMobileAuth(_ accepted: Bool) {
         guard let confirmation = confirmation else { fatalError() }

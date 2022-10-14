@@ -2,7 +2,8 @@ export type SdkEvent =
   | PinEvent
   | CustomRegistrationEvent
   | FingerprintEvent
-  | MobileAuthOtpEvent;
+  | MobileAuthOtpEvent
+  | RegistrationURLEvent;
 
 // Pin
 export type PinEvent =
@@ -42,6 +43,10 @@ export type PinNotAllowedEvent = {
   action: Pin.PinNotAllowed;
   errorType: number;
   errorMsg: string;
+};
+//Registration
+export type RegistrationURLEvent = {
+  url: string;
 };
 
 //CustomRegistration
@@ -119,6 +124,7 @@ export enum SdkNotification {
   CustomRegistration = 'ONEWELCOME_CUSTOM_REGISTRATION_NOTIFICATION',
   MobileAuthOtp = 'ONEWELCOME_MOBILE_AUTH_OTP_NOTIFICATION',
   Fingerprint = 'ONEWELCOME_FINGERPRINT_NOTIFICATION',
+  Registration = 'ONEWELCOME_REGISTRATION_NOTIFICATION',
 }
 
 export enum PinAction {

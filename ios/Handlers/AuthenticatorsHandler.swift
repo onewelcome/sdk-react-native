@@ -7,11 +7,11 @@ protocol BridgeToAuthenticatorsHandlerProtocol: AnyObject {
 }
 
 class AuthenticatorsHandler: NSObject {
-    var pinChallenge: ONGPinChallenge?
-    var registrationCompletion: ((Bool, Error?) -> Void)?
-    var deregistrationCompletion: ((Bool, Error?) -> Void)?
-    let pinAuthenticationEventEmitter = PinAuthenticationEventEmitter()
-    let createPinEventEmitter = CreatePinEventEmitter()
+    private var pinChallenge: ONGPinChallenge?
+    private var registrationCompletion: ((Bool, Error?) -> Void)?
+    private var deregistrationCompletion: ((Bool, Error?) -> Void)?
+    private let pinAuthenticationEventEmitter = PinAuthenticationEventEmitter()
+    private let createPinEventEmitter = CreatePinEventEmitter()
 
     func handlePin(_ pin: String?) {
         guard let pinChallenge = self.pinChallenge else { return }

@@ -14,6 +14,7 @@ enum OneWelcomeBridgeEvents: String {
     case fingerprintNotification = "ONEWELCOME_FINGERPRINT_NOTIFICATION"
     case customRegistrationNotification = "ONEWELCOME_CUSTOM_REGISTRATION_NOTIFICATION"
     case authWithOtpNotification = "ONEWELCOME_MOBILE_AUTH_OTP_NOTIFICATION"
+    case registrationNotification = "ONEWELCOME_REGISTRATION_NOTIFICATION"
 }
 
 @objc(RNOneginiSdk)
@@ -30,7 +31,9 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     override func supportedEvents() -> [String] {
-        return [OneWelcomeBridgeEvents.pinNotification.rawValue, OneWelcomeBridgeEvents.fingerprintNotification.rawValue, OneWelcomeBridgeEvents.customRegistrationNotification.rawValue, OneWelcomeBridgeEvents.authWithOtpNotification.rawValue]
+        return [OneWelcomeBridgeEvents.pinNotification.rawValue, OneWelcomeBridgeEvents.fingerprintNotification.rawValue, OneWelcomeBridgeEvents.customRegistrationNotification.rawValue, OneWelcomeBridgeEvents.authWithOtpNotification.rawValue,
+            OneWelcomeBridgeEvents.registrationNotification.rawValue,
+        ]
     }
 
     func sendBridgeEvent(eventName: OneWelcomeBridgeEvents, data: Any) -> Void {
@@ -181,7 +184,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     @objc
-    func cancelRegistration(resolver resolve: @escaping RCTPromiseResolveBlock,
+    func cancelRegistration(_ resolve: @escaping RCTPromiseResolveBlock,
                             rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         bridgeConnector.toRegistrationConnector.registrationHandler.cancelRegistration()
         resolve(nil)

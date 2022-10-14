@@ -1,4 +1,3 @@
-//@todo Later will be transferred to RN Wrapper
 package com.onegini.mobile.sdk.reactnative;
 
 import com.facebook.react.ReactPackage;

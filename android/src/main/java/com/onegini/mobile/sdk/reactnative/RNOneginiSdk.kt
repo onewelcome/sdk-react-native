@@ -1,4 +1,3 @@
-// @todo Later will be transferred to RN Wrapper later
 package com.onegini.mobile.sdk.reactnative
 
 import android.net.Uri
@@ -253,7 +252,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     fun cancelRegistration(promise: Promise) {
-        registrationManager.cancelRegistration()
+        oneginiSDK.registrationRequestHandler.cancelRegistration()
         promise.resolve(null)
     }
 

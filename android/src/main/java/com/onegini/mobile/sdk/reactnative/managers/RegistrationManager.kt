@@ -18,8 +18,4 @@ class RegistrationManager(private val oneginiSDK: OneginiSDK) {
     fun handleRegistrationCallback(uri: String?): Boolean {
         return oneginiSDK.registrationRequestHandler.handleRegistrationCallback(Uri.parse(uri))
     }
-
-    fun cancelRegistration() {
-        oneginiSDK.registrationRequestHandler.onRegistrationCanceled()
-    }
 }

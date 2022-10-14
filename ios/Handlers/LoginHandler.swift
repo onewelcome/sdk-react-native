@@ -6,9 +6,9 @@ protocol BridgeToLoginHandlerProtocol: AnyObject {
 
 
 class LoginHandler: NSObject {
-    var pinChallenge: ONGPinChallenge?
-    var loginCompletion: ((ONGUserProfile?, Error?) -> Void)?
-    let pinAuthenticationEventEmitter = PinAuthenticationEventEmitter()
+    private var pinChallenge: ONGPinChallenge?
+    private var loginCompletion: ((ONGUserProfile?, Error?) -> Void)?
+    private let pinAuthenticationEventEmitter = PinAuthenticationEventEmitter()
 
     func handlePin(_ pin: String?) {
         guard let pinChallenge = self.pinChallenge else { return }

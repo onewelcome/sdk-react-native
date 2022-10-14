@@ -50,6 +50,11 @@ interface NativeMethods {
     callback?: (event: Events.FingerprintEvent) => void,
   ): EmitterSubscription;
 
+  addEventListener(
+    eventType: Events.SdkNotification.Registration,
+    callback?: (event: Events.RegistrationURLEvent) => void,
+  ): EmitterSubscription;
+
   // Setup
   startClient(sdkConfig?: Types.Config): Promise<string | null>;
 
