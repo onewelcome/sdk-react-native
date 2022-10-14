@@ -252,7 +252,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     fun cancelRegistration(promise: Promise) {
-        registrationManager.cancelRegistration()
+        oneginiSDK.registrationRequestHandler.cancelRegistration()
         promise.resolve(null)
     }
 

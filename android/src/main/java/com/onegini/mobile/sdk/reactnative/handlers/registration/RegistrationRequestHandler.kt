@@ -22,7 +22,7 @@ class RegistrationRequestHandler : OneginiBrowserRegistrationRequestHandler {
   /**
    * Cancel registration action in case of web browser error
    */
-  fun onRegistrationCanceled() {
+  fun cancelRegistration() {
       callback?.denyRegistration()
       callback = null
   }
