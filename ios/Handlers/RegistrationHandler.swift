@@ -13,13 +13,12 @@ protocol RegistrationConnectorToHandlerProtocol: AnyObject {
 
 
 class RegistrationHandler: NSObject, BrowserHandlerToRegisterHandlerProtocol {
-    var createPinChallenge: ONGCreatePinChallenge?
-    var browserRegistrationChallenge: ONGBrowserRegistrationChallenge?
-    var customRegistrationChallenge: ONGCustomRegistrationChallenge?
-    var browserConntroller: BrowserHandlerProtocol?
-    var signUpCompletion: ((Bool, ONGUserProfile?, Error?) -> Void)?
-    let createPinEventEmitter = CreatePinEventEmitter()
-    let registrationEventEmitter = RegistrationEventEmitter()
+    private var createPinChallenge: ONGCreatePinChallenge?
+    private var browserRegistrationChallenge: ONGBrowserRegistrationChallenge?
+    private var customRegistrationChallenge: ONGCustomRegistrationChallenge?
+    private var signUpCompletion: ((Bool, ONGUserProfile?, Error?) -> Void)?
+    private let createPinEventEmitter = CreatePinEventEmitter()
+    private let registrationEventEmitter = RegistrationEventEmitter()
 
     func handleRedirectURL(url: URL?) {
         guard let browserRegistrationChallenge = self.browserRegistrationChallenge else { return }
