@@ -9,12 +9,12 @@ enum PINEntryMode {
 }
 
 class ChangePinHandler: NSObject {
-    var flow: PinFlow?
-    var changePinCompletion: ((Bool, Error?) -> Void)?
-    let pinAuthenticationEventEmitter = PinAuthenticationEventEmitter()
-    let createPinEventEmitter = CreatePinEventEmitter()
-    let loginHandler: LoginHandler
-    let registrationHandler: RegistrationConnectorToHandlerProtocol
+    private var flow: PinFlow?
+    private var changePinCompletion: ((Bool, Error?) -> Void)?
+    private let pinAuthenticationEventEmitter = PinAuthenticationEventEmitter()
+    private let createPinEventEmitter = CreatePinEventEmitter()
+    private let loginHandler: LoginHandler
+    private let registrationHandler: RegistrationConnectorToHandlerProtocol
     
     init(loginHandler: LoginHandler, registrationHandler: RegistrationConnectorToHandlerProtocol) {
         self.loginHandler = loginHandler
