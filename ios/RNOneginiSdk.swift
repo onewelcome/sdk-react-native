@@ -184,7 +184,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     @objc
-    func cancelRegistration(resolver resolve: @escaping RCTPromiseResolveBlock,
+    func cancelRegistration(_ resolve: @escaping RCTPromiseResolveBlock,
                             rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         bridgeConnector.toRegistrationConnector.registrationHandler.cancelRegistration()
         resolve(nil)
