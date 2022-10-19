@@ -101,7 +101,7 @@ interface NativeMethods {
     profileId: string,
     idOneginiAuthenticator: string,
   ): Promise<void>;
-  validatePinWithPolicy(pin: string): Promise<null>;
+  validatePinWithPolicy(pin: string): Promise<void>;
 
   // PIN
   submitPinAction(
