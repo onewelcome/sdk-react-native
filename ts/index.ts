@@ -70,7 +70,7 @@ interface NativeMethods {
   authenticateUserImplicitly(
     profileId: string,
     scopes?: string[],
-  ): Promise<any>;
+  ): Promise<void>;
   authenticateDeviceForResource(scopes?: string[]): Promise<any>;
   resourceRequest(
     type: Types.ResourceRequestType,
@@ -177,7 +177,7 @@ const nativeMethods: NativeMethods = {
   authenticateUserImplicitly: (
     profileId: string,
     scopes?: string[],
-  ): Promise<any> => {
+  ): Promise<void> => {
     return scopes
       ? RNOneginiSdk.authenticateUserImplicitly(profileId, scopes)
       : RNOneginiSdk.authenticateUserImplicitly(profileId, []);
