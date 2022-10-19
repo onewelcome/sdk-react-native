@@ -212,8 +212,10 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
             switch flow {
             case PinFlow.create.rawValue:
                 bridgeConnector.toRegistrationConnector.registrationHandler.handlePinAction(pin, action: pinAction)
+                resolve(nil)
             case PinFlow.authentication.rawValue:
                 bridgeConnector.toLoginHandler.handlePinAction(pin, action: pinAction)
+                resolve(nil)
             default:
                 reject(String(WrapperError.parametersNotCorrect.code), "Incorrect pinflow supplied: \(flow)", WrapperError.parametersNotCorrect)
                 break
