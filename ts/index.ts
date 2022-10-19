@@ -83,8 +83,8 @@ interface NativeMethods {
     scopes?: String[],
   ): Promise<Types.Profile>;
   deregisterUser(profileId: string): Promise<void>;
-  handleRegistrationCallback(uri: string): Promise<any>;
-  cancelRegistration(): Promise<any>;
+  handleRegistrationCallback(uri: string): Promise<void>;
+  cancelRegistration(): Promise<void>;
 
   // Authentication
   authenticateUser(
@@ -112,7 +112,7 @@ interface NativeMethods {
   changePin(): Promise<void>;
 
   // OTP
-  enrollMobileAuthentication(): Promise<any>;
+  enrollMobileAuthentication(): Promise<void>;
   acceptMobileAuthConfirmation(): Promise<void>;
   denyMobileAuthConfirmation(): Promise<void>;
   handleMobileAuthWithOtp(otpCode: string): Promise<void>;
@@ -120,7 +120,7 @@ interface NativeMethods {
     customAction: Events.CustomRegistrationAction,
     identityProviderId: string,
     token: string | null,
-  ): Promise<any>;
+  ): Promise<void>;
 
   // Fingerprint
   registerFingerprintAuthenticator(profileId: string): Promise<any>;
