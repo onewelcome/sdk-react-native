@@ -109,7 +109,7 @@ interface NativeMethods {
     action: Events.PinAction,
     pin: string | null,
   ): Promise<any>;
-  changePin(): Promise<any>;
+  changePin(): Promise<void>;
 
   // OTP
   enrollMobileAuthentication(): Promise<any>;
