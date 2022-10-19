@@ -165,7 +165,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
             if let error = error {
                 reject("\(error.code)", error.localizedDescription, error)
               } else {
-                resolve(true)
+                resolve(nil)
               }
         }
     }
