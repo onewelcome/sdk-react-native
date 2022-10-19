@@ -189,6 +189,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         idOneginiAuthenticator ?: promise.rejectWithNullError("idOneginiAuthenticator", "String").run { return }
         try {
             authenticatorManager.setPreferredAuthenticator(profileId, idOneginiAuthenticator)
+            promise.resolve(null)
         } catch (e: OneginiError) {
             promise.reject(e.errorType.toString(), e.message)
         }

@@ -105,7 +105,7 @@ interface NativeMethods {
   setPreferredAuthenticator(
     profileId: string,
     idOneginiAuthenticator: string,
-  ): Promise<any>; // TODO: check this path and check if resolve is called on Native side
+  ): Promise<void>;
   validatePinWithPolicy(pin: string): Promise<null>;
 
   // PIN
