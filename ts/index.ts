@@ -129,7 +129,7 @@ interface NativeMethods {
 
   // Fingerprint
   registerFingerprintAuthenticator(profileId: string): Promise<any>;
-  deregisterFingerprintAuthenticator(profileId: string): Promise<any>;
+  deregisterFingerprintAuthenticator(profileId: string): Promise<void>;
   isFingerprintAuthenticatorRegistered(profileId: string): Promise<boolean>;
   submitFingerprintAcceptAuthenticationRequest(): Promise<any>;
   submitFingerprintDenyAuthenticationRequest(): Promise<any>;
