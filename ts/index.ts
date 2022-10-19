@@ -119,7 +119,7 @@ interface NativeMethods {
   // OTP
   enrollMobileAuthentication(): Promise<any>;
   acceptMobileAuthConfirmation(): Promise<void>;
-  denyMobileAuthConfirmation(): Promise<any>;
+  denyMobileAuthConfirmation(): Promise<void>;
   handleMobileAuthWithOtp(otpCode: string): Promise<any>;
   submitCustomRegistrationAction(
     customAction: Events.CustomRegistrationAction,

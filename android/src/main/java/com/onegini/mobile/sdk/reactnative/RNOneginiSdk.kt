@@ -374,6 +374,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
             return
         }
         handler.denyAuthenticationRequest()
+        promise.resolve(null)
     }
 
     @ReactMethod
