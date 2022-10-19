@@ -363,6 +363,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
             return
         }
         handler.acceptAuthenticationRequest()
+        promise.resolve(null)
     }
 
     @ReactMethod
