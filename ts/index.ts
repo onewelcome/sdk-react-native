@@ -82,7 +82,7 @@ interface NativeMethods {
     identityProviderId: string | null,
     scopes?: String[],
   ): Promise<Types.Profile>;
-  deregisterUser(profileId: string): Promise<any>;
+  deregisterUser(profileId: string): Promise<void>;
   handleRegistrationCallback(uri: string): Promise<any>;
   cancelRegistration(): Promise<any>;
 
