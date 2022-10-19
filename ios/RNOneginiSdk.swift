@@ -374,7 +374,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     @objc
     func denyMobileAuthConfirmation(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         bridgeConnector.toMobileAuthConnector.mobileAuthHandler.handleMobileAuthConfirmation(accepted: false)
-        resolve(true)
+        resolve(nil)
     }
 
     // Authenticators management
