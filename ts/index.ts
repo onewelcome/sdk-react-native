@@ -96,7 +96,7 @@ interface NativeMethods {
     profileId: string,
     authenticatorId: string | null,
   ): Promise<Types.AuthData>;
-  logout(): Promise<any>; // any or void when we have null from native?
+  logout(): Promise<void>;
   getAllAuthenticators(profileId: string): Promise<Types.Authenticator[]>; // TODO: use it in ExampleApp
   getRegisteredAuthenticators(
     profileId: string,
