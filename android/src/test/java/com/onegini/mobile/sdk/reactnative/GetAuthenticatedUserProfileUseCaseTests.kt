@@ -4,6 +4,7 @@ import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.Promise
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAuthenticatedUserProfileUseCase
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
@@ -46,10 +47,6 @@ class GetAuthenticatedUserProfileUseCaseTests {
 
         GetAuthenticatedUserProfileUseCase(oneginiSdk)(promiseMock)
 
-        argumentCaptor<JavaOnlyMap> {
-            verify(promiseMock).resolve(this.capture())
-
-            Assert.assertEquals(null, this.firstValue.getString("profileId"))
-        }
+        verify(promiseMock).reject(OneginiWrapperErrors.NO_PROFILE_AUTHENTICATED.code, OneginiWrapperErrors.NO_PROFILE_AUTHENTICATED.message)
     }
 }
