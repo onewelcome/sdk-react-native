@@ -177,8 +177,11 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
             return
         }
 
-        bridgeConnector.toRegistrationConnector.registrationHandler.processRedirectURL(url: urlOBject)
-        resolve(nil)
+        if (bridgeConnector.toRegistrationConnector.registrationHandler.processRedirectURL(url: urlOBject)) {
+            resolve(nil)
+        } else {
+            reject(String(WrapperError.registrationNotInProgress.code), WrapperError.registrationNotInProgress.description, WrapperError.registrationNotInProgress)
+        }
     }
 
     @objc
