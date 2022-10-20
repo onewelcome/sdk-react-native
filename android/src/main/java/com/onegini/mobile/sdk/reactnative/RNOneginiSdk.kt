@@ -389,8 +389,10 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
             promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.code, OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.message)
             return
         }
-        handler.acceptAuthenticationRequest()
-        promise.resolve(null)
+        when (handler.acceptAuthenticationRequest()) {
+            true -> promise.resolve(null)
+            false -> promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_NOT_IN_PROGRESS.code, OneginiWrapperErrors.MOBILE_AUTH_OTP_NOT_IN_PROGRESS.message)
+        }
     }
 
     @ReactMethod
@@ -400,8 +402,10 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
             promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.code, OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.message)
             return
         }
-        handler.denyAuthenticationRequest()
-        promise.resolve(null)
+        when (handler.denyAuthenticationRequest()) {
+            true -> promise.resolve(null)
+            false -> promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_NOT_IN_PROGRESS.code, OneginiWrapperErrors.MOBILE_AUTH_OTP_NOT_IN_PROGRESS.message)
+        }
     }
 
     @ReactMethod
