@@ -1,4 +1,4 @@
-package com.onegini.mobile
+package com.onegini.mobile.sdk.reactnative
 
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetUserProfileUseCase
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
@@ -19,15 +19,6 @@ class GetUserProfileUseCaseTests {
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     lateinit var oneginiSdk: OneginiSDK
-
-    @Test
-    fun `when id is null should return null`() {
-        lenient().`when`(oneginiSdk.oneginiClient.userClient.userProfiles).thenReturn(setOf(UserProfile("123456"), UserProfile("234567")))
-
-        val profile = GetUserProfileUseCase(oneginiSdk)(null)
-
-        Assert.assertEquals(null, profile)
-    }
 
     @Test
     fun `should return profile for given id`() {

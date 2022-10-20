@@ -5,11 +5,18 @@ import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.AuthenticateUserUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.DeregisterUserUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAccessTokenUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAllAuthenticatorsUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAuthenticatedUserProfileUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetIdentityProvidersUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetRedirectUriUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetRegisteredAuthenticatorsUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetUserProfilesUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.RegisterUserUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.StartClientUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.ValidatePinWithPolicyUseCase
 import com.onegini.mobile.sdk.reactnative.clean.wrapper.OneginiSdkWrapper
 import io.mockk.clearAllMocks
 import io.mockk.every
@@ -26,9 +33,6 @@ class OneginiSdkWrapperTests {
 
     @Mock
     lateinit var oneginiSdk: OneginiSDK
-
-    @Mock
-    lateinit var reactApplicationContext: ReactApplicationContext
 
     @Mock
     lateinit var promiseMock: Promise
@@ -55,6 +59,9 @@ class OneginiSdkWrapperTests {
     lateinit var getRegisteredAuthenticatorsUseCase: GetRegisteredAuthenticatorsUseCase
 
     @Mock
+    lateinit var validatePinWithPolicyUseCase: ValidatePinWithPolicyUseCase
+
+    @Mock
     lateinit var getUserProfilesUseCase: GetUserProfilesUseCase
 
     @Mock
@@ -78,7 +85,6 @@ class OneginiSdkWrapperTests {
 
         wrapper = OneginiSdkWrapper(
             oneginiSdk,
-            reactApplicationContext,
             startClientUseCase,
             getIdentityProvidersUseCase,
             getAccessTokenUseCase,
@@ -86,6 +92,7 @@ class OneginiSdkWrapperTests {
             getAuthenticatedUserProfileUseCase,
             getAllAuthenticatorsUseCase,
             getRegisteredAuthenticatorsUseCase,
+            validatePinWithPolicyUseCase,
             getUserProfilesUseCase,
             getRedirectUriUseCase,
             deregisterUserUseCase,

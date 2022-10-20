@@ -39,4 +39,7 @@ object Constants {
     const val FINGERPRINT_NOTIFICATION_ON_NEXT_AUTHENTICATION_ATTEMPT = "onNextAuthenticationAttempt"
     const val FINGERPRINT_NOTIFICATION_ON_FINGERPRINT_CAPTURED = "onFingerprintCaptured"
     const val FINGERPRINT_NOTIFICATION_FINISH_AUTHENTICATION = "finishAuthentication"
+
+    const val httpConnectTimeoutBrowserRegistrationMiliseconds = 5000
+    const val httpReadTimeoutBrowserRegistrationMiliseconds = 20000
 }

@@ -6,7 +6,7 @@ import com.facebook.react.bridge.ReactApplicationContext
 import com.onegini.mobile.sdk.android.handlers.OneginiInitializationHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiInitializationError
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.StartClientUseCase
-import com.onegini.mobile.sdk.reactnative.exception.OneginReactNativeException
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 import org.junit.*
 import org.junit.runner.RunWith
 import org.mockito.Answers
@@ -39,57 +39,29 @@ class StartClientUseCaseTests {
             it.getArgument<OneginiInitializationHandler>(0).onSuccess(emptySet())
         }
 
-        StartClientUseCase(oneginiSdk, reactApplicationContext)(TestData.config, promiseMock)
+        StartClientUseCase(oneginiSdk)(TestData.config, promiseMock)
 
         verify(promiseMock).resolve(null)
     }
 
     @Test
     fun `when wrong configs are provided should reject`() {
-        StartClientUseCase(oneginiSdk, reactApplicationContext)(JavaOnlyMap(), promiseMock)
-
-        argumentCaptor<String> {
-            verify(promiseMock).reject(this.capture(), this.capture())
-
-            Assert.assertEquals(OneginReactNativeException.WRONG_CONFIG_MODEL.toString(), this.firstValue)
-            Assert.assertEquals("Provided config model parameters are wrong", this.secondValue)
-        }
+        StartClientUseCase(oneginiSdk)(JavaOnlyMap(), promiseMock)
+        verify(promiseMock).reject(OneginiWrapperErrors.WRONG_CONFIG_MODEL.code, OneginiWrapperErrors.WRONG_CONFIG_MODEL.message)
     }
-
+    
     @Test
     fun `when oneginiClient_start fails should reject and pass proper errors`() {
         val error = mock<OneginiInitializationError>()
-        val errorType = OneginiInitializationError.CONFIGURATION_ERROR
+        val errorType = OneginiInitializationError.GENERAL_ERROR
         `when`(error.errorType).thenReturn(errorType)
         `when`(error.message).thenReturn("Problem with smth")
-
         // mock SDK start error
         `when`(oneginiSdk.oneginiClient.start(any())).thenAnswer {
             it.getArgument<OneginiInitializationHandler>(0).onError(error)
         }
 
-        StartClientUseCase(oneginiSdk, reactApplicationContext)(TestData.config, promiseMock)
-
-        argumentCaptor<String> {
-            verify(promiseMock).reject(this.capture(), this.capture())
-
-            Assert.assertEquals(errorType.toString(), this.firstValue)
-            Assert.assertEquals("Problem with smth", this.secondValue)
-        }
-    }
-
-    @Test
-    fun `when succeed should calls setup methods on oneginiSDK`() {
-        // mock SDK start success
-        `when`(oneginiSdk.oneginiClient.start(any())).thenAnswer {
-            it.getArgument<OneginiInitializationHandler>(0).onSuccess(emptySet())
-        }
-
-        StartClientUseCase(oneginiSdk, reactApplicationContext)(TestData.config, promiseMock)
-        verify(oneginiSdk).setCreatePinEventEmitter(any())
-        verify(oneginiSdk).setPinAuthenticationEvementEmitter(any())
-        verify(oneginiSdk).setCustomRegistrationObserver(any())
-        verify(oneginiSdk).setMobileAuthOtpRequestObserver(any())
-        verify(oneginiSdk).setFingerprintAuthenticationObserver(any())
+        StartClientUseCase(oneginiSdk)(TestData.config, promiseMock)
+        verify(promiseMock).reject(errorType.toString(), "Problem with smth")
     }
 }

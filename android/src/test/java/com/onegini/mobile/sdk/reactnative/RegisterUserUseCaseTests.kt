@@ -23,6 +23,7 @@ import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.any
 import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
 
 @RunWith(MockitoJUnitRunner::class)
@@ -84,24 +85,13 @@ class RegisterUserUseCaseTests {
     @Test
     fun `when no provider is provided should call registerUser with null identity provider`() {
         RegisterUserUseCase(oneginiSdk)(null, scopes, promiseMock)
-
-        argumentCaptor<OneginiIdentityProvider> {
-            verify(oneginiSdk.oneginiClient.userClient).registerUser(capture(), any(), any())
-
-            Assert.assertEquals(null, firstValue)
-        }
+        verify(oneginiSdk.oneginiClient.userClient).registerUser(eq(null), any(), any())
     }
 
     @Test
     fun `when provider with provided id is not found should reject with proper errors`() {
         RegisterUserUseCase(oneginiSdk)("someId", scopes, promiseMock)
-
-        argumentCaptor<String> {
-            verify(promiseMock).reject(capture(), capture())
-
-            Assert.assertEquals(OneginiWrapperErrors.IDENTITY_PROVIDER_NOT_FOUND.code, firstValue)
-            Assert.assertEquals(OneginiWrapperErrors.IDENTITY_PROVIDER_NOT_FOUND.message, secondValue)
-        }
+        verify(promiseMock).reject(OneginiWrapperErrors.IDENTITY_PROVIDER_NOT_FOUND.code, OneginiWrapperErrors.IDENTITY_PROVIDER_NOT_FOUND.message)
     }
 
     @Test
@@ -111,13 +101,7 @@ class RegisterUserUseCaseTests {
         }
 
         RegisterUserUseCase(oneginiSdk)("id1", scopes, promiseMock)
-
-        argumentCaptor<String> {
-            verify(promiseMock).reject(capture(), capture())
-
-            Assert.assertEquals("666", firstValue)
-            Assert.assertEquals("MyError", secondValue)
-        }
+        verify(promiseMock).reject("666", "MyError")
     }
 
     @Test
@@ -128,7 +112,6 @@ class RegisterUserUseCaseTests {
 
         argumentCaptor<OneginiIdentityProvider> {
             verify(oneginiSdk.oneginiClient.userClient).registerUser(capture(), any(), any())
-
             Assert.assertEquals("id1", firstValue.id)
             Assert.assertEquals("name1", firstValue.name)
         }

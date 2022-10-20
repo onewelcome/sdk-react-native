@@ -1,9 +1,9 @@
-package com.onegini.mobile
+package com.onegini.mobile.sdk.reactnative
 
 import com.facebook.react.bridge.Promise
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.DeregisterUserUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetUserProfileUseCase
-import com.onegini.mobile.exception.OneginiWrapperErrors
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.android.handlers.OneginiDeregisterUserProfileHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiDeregistrationError
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
@@ -52,7 +52,7 @@ class DeregisterUserUseCaseTests {
 
         deregisterUserUseCase("123", promiseMock)
 
-        verify(promiseMock).reject(OneginiWrapperErrors.USER_PROFILE_IS_NULL.code, OneginiWrapperErrors.USER_PROFILE_IS_NULL.message)
+        verify(promiseMock).reject(OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.code, OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.message)
     }
 
     @Test
@@ -73,13 +73,7 @@ class DeregisterUserUseCaseTests {
         deregisterUserUseCase("123456", promiseMock)
 
         verify(oneginiSdk.oneginiClient.userClient).deregisterUser(any(), any())
-
-        argumentCaptor<String> {
-            verify(promiseMock).reject(capture(), capture())
-
-            Assert.assertEquals("666", firstValue)
-            Assert.assertEquals("MyError", secondValue)
-        }
+        verify(promiseMock).reject("666", "MyError")
     }
 
     @Test

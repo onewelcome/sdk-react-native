@@ -4,7 +4,6 @@ import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.Promise
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetIdentityProvidersUseCase
-import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -12,7 +11,6 @@ import org.mockito.Answers
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.verify
 
 @RunWith(MockitoJUnitRunner::class)
@@ -42,12 +40,7 @@ class GetIdentityProvidersUseCaseTests {
         val provider2 = JavaOnlyMap()
         provider2.putString("id", TestData.identityProvider2.id)
         provider2.putString("name", TestData.identityProvider2.name)
-
-        argumentCaptor<JavaOnlyArray> {
-            verify(promiseMock).resolve(this.capture())
-
-            Assert.assertEquals(JavaOnlyArray.of(provider1, provider2), this.firstValue)
-        }
+        verify(promiseMock).resolve(JavaOnlyArray.of(provider1, provider2))
     }
 
     @Test
@@ -55,11 +48,6 @@ class GetIdentityProvidersUseCaseTests {
         `when`(oneginiSdk.oneginiClient.userClient.identityProviders).thenReturn(setOf())
 
         GetIdentityProvidersUseCase(oneginiSdk)(promiseMock)
-
-        argumentCaptor<JavaOnlyArray> {
-            verify(promiseMock).resolve(this.capture())
-
-            Assert.assertEquals(JavaOnlyArray.of(), this.firstValue)
-        }
+        verify(promiseMock).resolve(JavaOnlyArray.of())
     }
 }
