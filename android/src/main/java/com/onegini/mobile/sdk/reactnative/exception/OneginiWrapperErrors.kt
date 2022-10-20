@@ -12,4 +12,5 @@ enum class OneginiWrapperErrors(val code: String, val message: String) {
     REGISTRATION_NOT_IN_PROGRESS("8010", "Registration is currently not in progress"),
     FINGERPRINT_IS_NOT_ENABLED("8011", "The fingerprint is not enabled in the configuration"),
     NO_PROFILE_AUTHENTICATED("8012", "No profile is currently authenticated"),
+    MOBILE_AUTH_OTP_NOT_IN_PROGRESS("8013", "There is currently no mobile authentication in progress"),
 }
