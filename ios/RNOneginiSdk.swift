@@ -87,14 +87,11 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
     @objc
     func getAuthenticatedUserProfile(_ resolve: RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
-        //TODO: Fix this error, clearly this errorcode is wrong
         guard let authenticatedProfile = userClient.authenticatedUserProfile() else {
-            let error = NSError(domain: ONGGenericErrorDomain, code: ONGGenericError.serverNotReachable.rawValue, userInfo: [NSLocalizedDescriptionKey : "No authenticated user profiles found."])
-            reject("\(error.code)", error.localizedDescription, error)
+            reject(String(WrapperError.noProfileAuthenticated.code), WrapperError.noProfileAuthenticated.description, WrapperError.noProfileAuthenticated)
             return
         }
-
-        resolve(["profileId": authenticatedProfile.value(forKey: "profileId")])
+        resolve(["profileId": authenticatedProfile.profileId])
     }
 
     @objc
