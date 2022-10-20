@@ -66,8 +66,11 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     @objc
     func getAccessToken(_ resolve: RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
         let accessToken = userClient.accessToken
-
-        resolve(accessToken ?? nil)
+        guard let accessToken = accessToken else {
+            reject(String(WrapperError.noProfileAuthenticated.code), WrapperError.noProfileAuthenticated.localizedDescription, WrapperError.noProfileAuthenticated)
+            return
+        }
+        resolve(accessToken)
     }
 
     @objc

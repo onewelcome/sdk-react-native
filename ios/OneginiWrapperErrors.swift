@@ -3,6 +3,7 @@ enum WrapperError : Error {
     case identityProviderNotFound
     case malformedUrl
     case parametersNotCorrect
+    case noProfileAuthenticated
     
     var description: String {
         switch self {
@@ -14,6 +15,8 @@ enum WrapperError : Error {
             return "The supplied url is malformed"
         case .parametersNotCorrect:
             return "The supplied parameters are not correct"
+        case .noProfileAuthenticated:
+            return "No profile is currently authenticated"
         }
     }
     var code: Int {
@@ -26,6 +29,8 @@ enum WrapperError : Error {
             return 8009
         case .malformedUrl:
             return 8010
+        case .noProfileAuthenticated:
+            return 8011
         }
     }
 }
