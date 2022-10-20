@@ -1,6 +1,6 @@
 protocol RegistrationConnectorToHandlerProtocol: AnyObject {
     func signUp(identityProvider: ONGIdentityProvider?, scopes: [String], completion: @escaping (Bool, ONGUserProfile?, Error?) -> Void)
-    func processRedirectURL(url: URL)
+    func processRedirectURL(url: URL) -> Bool
     func processOTPCode(code: String?)
     func cancelRegistration()
     func cancelCustomRegistration()
@@ -20,13 +20,10 @@ class RegistrationHandler: NSObject {
     private let createPinEventEmitter = CreatePinEventEmitter()
     private let registrationEventEmitter = RegistrationEventEmitter()
 
-    func handleRedirectURL(url: URL?) {
-        guard let browserRegistrationChallenge = self.browserRegistrationChallenge else { return }
-        if let url = url {
-            browserRegistrationChallenge.sender.respond(with: url, challenge: browserRegistrationChallenge)
-        } else {
-            browserRegistrationChallenge.sender.cancel(browserRegistrationChallenge)
-        }
+    func handleRedirectURL(url: URL) -> Bool {
+        guard let browserRegistrationChallenge = self.browserRegistrationChallenge else { return false }
+        browserRegistrationChallenge.sender.respond(with: url, challenge: browserRegistrationChallenge)
+        return true
     }
 
     func handlePin(_ pin: String?) {
@@ -71,8 +68,8 @@ extension RegistrationHandler : RegistrationConnectorToHandlerProtocol {
         ONGUserClient.sharedInstance().registerUser(with: identityProvider, scopes: scopes, delegate: self)
     }
 
-    func processRedirectURL(url: URL) {
-        handleRedirectURL(url: url)
+    func processRedirectURL(url: URL) -> Bool {
+        return handleRedirectURL(url: url)
     }
 
     func processOTPCode(code: String?) {
@@ -84,9 +81,12 @@ extension RegistrationHandler : RegistrationConnectorToHandlerProtocol {
     }
 
     func cancelRegistration() {
-        handleRedirectURL(url: nil)
-        guard let createPinChallenge = self.createPinChallenge else { return }
-        createPinChallenge.sender.cancel(createPinChallenge)
+        if let browserRegistrationChallenge = self.browserRegistrationChallenge {
+            browserRegistrationChallenge.sender.cancel(browserRegistrationChallenge)
+        }
+        if let createPinChallenge = self.createPinChallenge {
+            createPinChallenge.sender.cancel(createPinChallenge)
+        }
     }
     
     func handlePinAction(_ pin: String?, action: PinAction) {

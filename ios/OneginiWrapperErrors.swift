@@ -4,6 +4,7 @@ enum WrapperError : Error {
     case malformedUrl
     case parametersNotCorrect
     case noProfileAuthenticated
+    case registrationNotInProgress
     
     var description: String {
         switch self {
@@ -17,6 +18,8 @@ enum WrapperError : Error {
             return "The supplied parameters are not correct"
         case .noProfileAuthenticated:
             return "No profile is currently authenticated"
+        case .registrationNotInProgress:
+            return "Registration is currently not in progress"
         }
     }
     var code: Int {
@@ -31,6 +34,8 @@ enum WrapperError : Error {
             return 8010
         case .noProfileAuthenticated:
             return 8011
+        case .registrationNotInProgress:
+            return 8012
         }
     }
 }
