@@ -67,7 +67,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func getAccessToken(_ resolve: RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
         let accessToken = userClient.accessToken
         guard let accessToken = accessToken else {
-            reject(String(WrapperError.noProfileAuthenticated.code), WrapperError.noProfileAuthenticated.localizedDescription, WrapperError.noProfileAuthenticated)
+            reject(String(WrapperError.noProfileAuthenticated.code), WrapperError.noProfileAuthenticated.description, WrapperError.noProfileAuthenticated)
             return
         }
         resolve(accessToken)
@@ -155,7 +155,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         let profile = userClient.userProfiles().first(where: { $0.profileId == profileId })
         guard let profile = profile else {
-            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.localizedDescription, WrapperError.profileDoesNotExist)
+            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.description, WrapperError.profileDoesNotExist)
             return
         }
         userClient.deregisterUser(profile) {
@@ -241,7 +241,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         let profile = userClient.userProfiles().first(where: { $0.profileId == profileId })
         guard let profile = profile else {
-            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.localizedDescription, WrapperError.profileDoesNotExist)
+            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.description, WrapperError.profileDoesNotExist)
             return
         }
         let authenticators = userClient.allAuthenticators(forUser: profile)
@@ -290,7 +290,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                                     rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         let profile = userClient.userProfiles().first(where: { $0.profileId == profileId })
         guard let profile = profile else {
-            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.localizedDescription, WrapperError.profileDoesNotExist)
+            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.description, WrapperError.profileDoesNotExist)
             return
         }
 
@@ -381,7 +381,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         let profile = userClient.userProfiles().first(where: { $0.profileId == profileId })
         guard let profile = profile else {
-            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.localizedDescription, WrapperError.profileDoesNotExist)
+            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.description, WrapperError.profileDoesNotExist)
             return
         }
         
@@ -402,7 +402,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         let profile = userClient.userProfiles().first(where: { $0.profileId == profileId })
         guard let profile = profile else {
-            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.localizedDescription, WrapperError.profileDoesNotExist)
+            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.description, WrapperError.profileDoesNotExist)
             return
         }
 
@@ -423,7 +423,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         let profile = userClient.userProfiles().first(where: { $0.profileId == profileId })
         guard let profile = profile else {
-            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.localizedDescription, WrapperError.profileDoesNotExist)
+            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.description, WrapperError.profileDoesNotExist)
             return
         }
 
@@ -460,7 +460,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         let profile = userClient.userProfiles().first(where: { $0.profileId == profileId})
         guard let profile = profile else {
-            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.localizedDescription, WrapperError.profileDoesNotExist)
+            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.description, WrapperError.profileDoesNotExist)
             return
         }
         bridgeConnector.toAuthenticatorsHandler.registerAuthenticator(profile, ONGAuthenticatorType.biometric) {
@@ -480,7 +480,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         let profile = userClient.userProfiles().first(where: { $0.profileId == profileId })
         guard let profile = profile else {
-            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.localizedDescription, WrapperError.profileDoesNotExist)
+            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.description, WrapperError.profileDoesNotExist)
             return
         }
 
@@ -501,7 +501,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         let profile = userClient.userProfiles().first(where: { $0.profileId == profileId })
         guard let profile = profile else {
-            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.localizedDescription, WrapperError.profileDoesNotExist)
+            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.description, WrapperError.profileDoesNotExist)
             return
         }
         let isAuthenticatorRegistered = bridgeConnector.toAuthenticatorsHandler.isAuthenticatorRegistered(ONGAuthenticatorType.biometric, profile)
