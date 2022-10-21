@@ -1,11 +1,16 @@
 // Pin notification actions for RN Bridge
-enum PinNotification: String {
+enum PinAuthNotification: String {
     case open
     case close
-    case showError
     case incorrectPin
+}
+
+enum PinCreateNotification: String {
+    case open
+    case close
     case pinNotAllowed
 }
+
 
 // Pin actions from RN Bridge
 enum PinAction: String {
