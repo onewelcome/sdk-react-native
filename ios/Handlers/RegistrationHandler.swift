@@ -118,6 +118,7 @@ extension RegistrationHandler : RegistrationConnectorToHandlerProtocol {
     func handleDidFailToRegister() {
         createPinChallenge = nil
         customRegistrationChallenge = nil
+        browserRegistrationChallenge = nil
         createPinEventEmitter.onPinClose()
     }
     
@@ -125,6 +126,7 @@ extension RegistrationHandler : RegistrationConnectorToHandlerProtocol {
     func handleDidRegisterUser() {
         createPinChallenge = nil
         customRegistrationChallenge = nil
+        browserRegistrationChallenge = nil
         createPinEventEmitter.onPinClose()
     }
 }
