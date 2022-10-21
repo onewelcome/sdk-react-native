@@ -5,6 +5,8 @@ import com.onegini.mobile.sdk.reactnative.Constants.PinFlow
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiPinCallback
 import com.onegini.mobile.sdk.android.handlers.error.OneginiPinValidationError
+import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 
 class CreatePinRequestHandler : OneginiCreatePinRequestHandler {
     private var pinCallback: OneginiPinCallback? = null
@@ -25,13 +27,22 @@ class CreatePinRequestHandler : OneginiCreatePinRequestHandler {
 
     override fun finishPinCreation() {
         eventEmitter.onPinClose()
+        pinCallback = null
     }
 
-    fun onPinProvided(pin: CharArray) {
-        pinCallback?.acceptAuthenticationRequest(pin)
+    fun onPinProvided(pin: CharArray): Boolean {
+        pinCallback?.let { callBack ->
+            callBack.acceptAuthenticationRequest(pin)
+            return true
+        }
+        return false
     }
 
-    fun pinCancelled() {
-        pinCallback?.denyAuthenticationRequest()
+    @Throws(OneginiReactNativeException::class)
+    fun cancelPin() {
+        pinCallback?.let { callback ->
+            callback.denyAuthenticationRequest()
+            pinCallback = null
+        } ?: throw OneginiReactNativeException(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code.toInt(), OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
     }
 }
