@@ -7,17 +7,16 @@ import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 
 class SimpleCustomTwoStepRegistrationActionImpl(private val idProvider: String) : OneginiCustomTwoStepRegistrationAction, SimpleCustomRegistrationAction {
 
-    var eventEmitter: CustomRegistrationEventEmitter = CustomRegistrationEventEmitter()
+    private var eventEmitter: CustomRegistrationEventEmitter = CustomRegistrationEventEmitter()
+    private var callback: OneginiCustomRegistrationCallback? = null
 
-    var calback: OneginiCustomRegistrationCallback? = null
-
-    override fun initRegistration(calback: OneginiCustomRegistrationCallback, info: CustomInfo?) {
-        this.calback = calback
+    override fun initRegistration(callback: OneginiCustomRegistrationCallback, info: CustomInfo?) {
+        this.callback = callback
         eventEmitter.initRegistration(idProvider, info)
     }
 
-    override fun finishRegistration(calback: OneginiCustomRegistrationCallback, info: CustomInfo?) {
-        this.calback = calback
+    override fun finishRegistration(callback: OneginiCustomRegistrationCallback, info: CustomInfo?) {
+        this.callback = callback
         eventEmitter.finishRegistration(idProvider, info)
     }
 
@@ -29,11 +28,19 @@ class SimpleCustomTwoStepRegistrationActionImpl(private val idProvider: String) 
         return idProvider
     }
 
-    override fun returnSuccess(result: String?) {
-        calback?.returnSuccess(result)
+    override fun returnSuccess(result: String?): Boolean {
+        callback?.let { customRegistrationCallback ->
+            customRegistrationCallback.returnSuccess(result)
+            return true
+        }
+        return false
     }
 
-    override fun returnError(exception: Exception?) {
-        calback?.returnError(exception)
+    override fun returnError(exception: Exception?): Boolean {
+        callback?.let { customRegistrationCallback ->
+            customRegistrationCallback.returnError(exception)
+            return true
+        }
+        return false
     }
 }
