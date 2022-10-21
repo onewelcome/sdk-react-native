@@ -276,8 +276,22 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     fun cancelRegistration(promise: Promise) {
-        oneginiSDK.registrationRequestHandler.cancelRegistration()
-        promise.resolve(null)
+        var canceled = oneginiSDK.registrationRequestHandler.cancelRegistration()
+        canceled = oneginiSDK.createPinRequestHandler.pinCancelled() || canceled
+        canceled = cancelCustomRegistrations() || canceled
+        if (canceled) {
+            promise.resolve(null)
+        } else {
+            promise.reject(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
+        }
+    }
+
+    private fun cancelCustomRegistrations(): Boolean {
+        var canceled = false
+        for (action in oneginiSDK.simpleCustomRegistrationActions) {
+            canceled = action.returnError(null) || canceled
+        }
+        return canceled
     }
 
     @ReactMethod

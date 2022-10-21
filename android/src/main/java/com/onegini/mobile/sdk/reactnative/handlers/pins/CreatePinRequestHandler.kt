@@ -25,13 +25,22 @@ class CreatePinRequestHandler : OneginiCreatePinRequestHandler {
 
     override fun finishPinCreation() {
         eventEmitter.onPinClose()
+        pinCallback = null
     }
 
-    fun onPinProvided(pin: CharArray) {
-        pinCallback?.acceptAuthenticationRequest(pin)
+    fun onPinProvided(pin: CharArray): Boolean {
+        pinCallback?.let { callBack ->
+            callBack.acceptAuthenticationRequest(pin)
+            return true
+        }
+        return false
     }
 
-    fun pinCancelled() {
-        pinCallback?.denyAuthenticationRequest()
+    fun pinCancelled(): Boolean {
+        pinCallback?.let { callBack ->
+            callBack.denyAuthenticationRequest()
+            return true
+        }
+        return false
     }
 }
