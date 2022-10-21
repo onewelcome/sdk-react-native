@@ -31,6 +31,7 @@ class SimpleCustomTwoStepRegistrationActionImpl(private val idProvider: String) 
     override fun returnSuccess(result: String?): Boolean {
         callback?.let { customRegistrationCallback ->
             customRegistrationCallback.returnSuccess(result)
+            callback = null
             return true
         }
         return false
@@ -39,6 +40,7 @@ class SimpleCustomTwoStepRegistrationActionImpl(private val idProvider: String) 
     override fun returnError(exception: Exception?): Boolean {
         callback?.let { customRegistrationCallback ->
             customRegistrationCallback.returnError(exception)
+            callback = null
             return true
         }
         return false
