@@ -137,18 +137,18 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                                         resolver resolve: @escaping RCTPromiseResolveBlock,
                                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         switch action {
-            case CustomRegistrationAction.provide.rawValue:
-                bridgeConnector.toRegistrationConnector.registrationHandler.processOTPCode(code: token)
-                break
-            case CustomRegistrationAction.cancel.rawValue:
-                bridgeConnector.toRegistrationConnector.registrationHandler.cancelCustomRegistration()
-                break
-            default:
-                reject(String(WrapperError.parametersNotCorrect.code), "Incorrect customAction supplied: \(action)", WrapperError.parametersNotCorrect)
-                break
+        case CustomRegistrationAction.provide.rawValue:
+            return bridgeConnector.toRegistrationConnector.registrationHandler.processOTPCode(code: token) ?
+                resolve(nil) :
+                reject(String(WrapperError.registrationNotInProgress.code), WrapperError.registrationNotInProgress.description, WrapperError.registrationNotInProgress)
+        case CustomRegistrationAction.cancel.rawValue:
+            return bridgeConnector.toRegistrationConnector.registrationHandler.cancelCustomRegistration() ?
+                resolve(nil) :
+                reject(String(WrapperError.registrationNotInProgress.code), WrapperError.registrationNotInProgress.description, WrapperError.registrationNotInProgress)
+        default:
+            reject(String(WrapperError.parametersNotCorrect.code), "Incorrect customAction supplied: \(action)", WrapperError.parametersNotCorrect)
+        break
         }
-        bridgeConnector.toRegistrationConnector.handleCustomRegistrationAction(action, identityProviderId, token)
-        resolve(nil)
     }
 
     
