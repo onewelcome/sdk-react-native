@@ -31,8 +31,13 @@ interface NativeMethods {
   ): EmitterSubscription;
 
   addEventListener(
-    eventType: Events.SdkNotification.Pin,
-    callback?: (event: Events.PinEvent) => void,
+    eventType: Events.SdkNotification.PinCreate,
+    callback?: (event: Events.PinCreateEvent) => void,
+  ): EmitterSubscription;
+
+  addEventListener(
+    eventType: Events.SdkNotification.PinAuth,
+    callback?: (event: Events.PinAuthenticationEvent) => void,
   ): EmitterSubscription;
 
   addEventListener(

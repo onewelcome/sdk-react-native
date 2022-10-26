@@ -10,7 +10,8 @@ protocol ConnectorToRNBridgeProtocol: NSObject {
 
 // Pin notification actions for RN Bridge
 enum OneWelcomeBridgeEvents: String {
-    case pinNotification = "ONEWELCOME_PIN_NOTIFICATION"
+    case pinCreateNotification = "ONEWELCOME_PIN_CREATE_NOTIFICATION"
+    case pinAuthNotification = "ONEWELCOME_PIN_AUTHENTICATION_NOTIFICATION"
     case fingerprintNotification = "ONEWELCOME_FINGERPRINT_NOTIFICATION"
     case customRegistrationNotification = "ONEWELCOME_CUSTOM_REGISTRATION_NOTIFICATION"
     case authWithOtpNotification = "ONEWELCOME_MOBILE_AUTH_OTP_NOTIFICATION"
@@ -31,9 +32,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     override func supportedEvents() -> [String] {
-        return [OneWelcomeBridgeEvents.pinNotification.rawValue, OneWelcomeBridgeEvents.fingerprintNotification.rawValue, OneWelcomeBridgeEvents.customRegistrationNotification.rawValue, OneWelcomeBridgeEvents.authWithOtpNotification.rawValue,
-            OneWelcomeBridgeEvents.registrationNotification.rawValue,
-        ]
+        return [OneWelcomeBridgeEvents.pinAuthNotification.rawValue,OneWelcomeBridgeEvents.pinCreateNotification.rawValue, OneWelcomeBridgeEvents.fingerprintNotification.rawValue, OneWelcomeBridgeEvents.customRegistrationNotification.rawValue, OneWelcomeBridgeEvents.authWithOtpNotification.rawValue, OneWelcomeBridgeEvents.registrationNotification.rawValue]
     }
 
     func sendBridgeEvent(eventName: OneWelcomeBridgeEvents, data: Any) -> Void {
@@ -144,7 +143,6 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                 reject(String(WrapperError.parametersNotCorrect.code), "Incorrect customAction supplied: \(action)", WrapperError.parametersNotCorrect)
                 break
         }
-        bridgeConnector.toRegistrationConnector.handleCustomRegistrationAction(action, identityProviderId, token)
         resolve(nil)
     }
 

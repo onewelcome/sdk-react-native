@@ -15,7 +15,7 @@ class CreatePinEventEmitter {
     dataMap.putInt("pinLength", pinLength)
     dataMap.putString("profileId", profileId);
     reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
-      .emit(Constants.ONEWELCOME_PIN_NOTIFICATION, dataMap)
+      .emit(Constants.ONEWELCOME_PIN_CREATE_NOTIFICATION, dataMap)
   }
 
   fun onPinClose() {
@@ -23,7 +23,7 @@ class CreatePinEventEmitter {
     dataMap.putString("action", Constants.PIN_NOTIFICATION_CLOSE_VIEW)
     dataMap.putString("flow", PinFlow.Create.toString())
     reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
-      .emit(Constants.ONEWELCOME_PIN_NOTIFICATION, dataMap)
+      .emit(Constants.ONEWELCOME_PIN_CREATE_NOTIFICATION, dataMap)
   }
 
   fun onPinNotAllowed(errorCode: Int, errorMessage: String) {
@@ -33,6 +33,6 @@ class CreatePinEventEmitter {
     data.putInt("errorType", errorCode)
     data.putString("errorMsg", errorMessage)
     reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
-      .emit(Constants.ONEWELCOME_PIN_NOTIFICATION, data)
+      .emit(Constants.ONEWELCOME_PIN_CREATE_NOTIFICATION, data)
   }
 }

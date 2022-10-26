@@ -1,48 +1,61 @@
 export type SdkEvent =
-  | PinEvent
+  | PinCreateEvent
+  | PinAuthenticationEvent
   | CustomRegistrationEvent
   | FingerprintEvent
   | MobileAuthOtpEvent
   | RegistrationURLEvent;
 
 // Pin
-export type PinEvent =
-  | PinCloseEvent
-  | PinOpenEvent
-  | PinNotAllowedEvent
+export type PinCreateEvent =
+  | PinCreateCloseEvent
+  | PinCreateOpenEvent
+  | PinNotAllowedEvent;
+
+export type PinAuthenticationEvent =
+  | PinAuthenticationCloseEvent
+  | PinAuthenticationOpenEvent
   | IncorrectPinEvent;
 
-export type PinCloseEvent = {
-  action: Pin.Close;
-  flow: PinFlow;
-};
-
-export type PinOpenEvent = PinAuthenticationOpenEvent | PinCreateOpenEvent;
-
-export type PinAuthenticationOpenEvent = {
-  flow: PinFlow.Authentication;
-  action: Pin.Open;
-  profileId: string;
+// Create Pin
+export type PinCreateCloseEvent = {
+  action: PinCreate.Close;
+  flow: PinFlow.Create;
 };
 
 export type PinCreateOpenEvent = {
   flow: PinFlow.Create;
-  action: Pin.Open;
+  action: PinCreate.Open;
   profileId: string;
   pinLength: number;
 };
 
+export type PinNotAllowedEvent = {
+  flow: PinFlow.Create;
+  action: PinCreate.PinNotAllowed;
+  errorType: number;
+  errorMsg: string;
+};
+
+// Authentication Pin
+
+export type PinAuthenticationCloseEvent = {
+  action: PinAuthentication.Close;
+  flow: PinFlow.Authentication;
+};
+
+export type PinAuthenticationOpenEvent = {
+  flow: PinFlow.Authentication;
+  action: PinAuthentication.Open;
+  profileId: string;
+};
+
 export type IncorrectPinEvent = {
-  action: Pin.IncorrectPin;
+  flow: PinFlow.Authentication;
+  action: PinAuthentication.IncorrectPin;
   errorType: number;
   errorMsg: string;
   remainingFailureCount: number;
-};
-
-export type PinNotAllowedEvent = {
-  action: Pin.PinNotAllowed;
-  errorType: number;
-  errorMsg: string;
 };
 //Registration
 export type RegistrationURLEvent = {
@@ -120,7 +133,8 @@ export type finishFingerprintAuthenticationEvent = {
 };
 
 export enum SdkNotification {
-  Pin = 'ONEWELCOME_PIN_NOTIFICATION',
+  PinCreate = 'ONEWELCOME_PIN_CREATE_NOTIFICATION',
+  PinAuth = 'ONEWELCOME_PIN_AUTHENTICATION_NOTIFICATION',
   CustomRegistration = 'ONEWELCOME_CUSTOM_REGISTRATION_NOTIFICATION',
   MobileAuthOtp = 'ONEWELCOME_MOBILE_AUTH_OTP_NOTIFICATION',
   Fingerprint = 'ONEWELCOME_FINGERPRINT_NOTIFICATION',
@@ -138,12 +152,15 @@ export enum PinFlow {
   Change = 'Change',
 }
 
-export enum Pin {
+export enum PinCreate {
   Open = 'open',
   Close = 'close',
-  Error = 'showError',
-  Changed = 'changed',
   PinNotAllowed = 'pinNotAllowed',
+}
+
+export enum PinAuthentication {
+  Open = 'open',
+  Close = 'close',
   IncorrectPin = 'incorrectPin',
 }
 
