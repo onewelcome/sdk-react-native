@@ -15,12 +15,11 @@ class SimpleCustomRegistrationActionImpl(private val idProvider: String) : Onegi
     }
 
     override fun returnSuccess(result: String?): Boolean {
-        callback?.let { customRegistrationCallback ->
+        return callback?.let { customRegistrationCallback ->
             customRegistrationCallback.returnSuccess(result)
             callback = null
-            return true
-        }
-        return false
+            true
+        } ?: false
     }
 
     override fun returnError(exception: Exception?): Boolean {
