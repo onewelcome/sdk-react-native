@@ -216,7 +216,6 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                 resolve(nil)
             default:
                 reject(String(WrapperError.parametersNotCorrect.code), "Incorrect pinflow supplied: \(flow)", WrapperError.parametersNotCorrect)
-                break
             }
         } else {
             reject(String(WrapperError.parametersNotCorrect.code), "Incorrect action supplied: \(action)", WrapperError.parametersNotCorrect)

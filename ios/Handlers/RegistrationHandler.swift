@@ -40,7 +40,7 @@ class RegistrationHandler: NSObject {
         guard let customRegistrationChallenge = self.customRegistrationChallenge else { return false }
         if(cancelled == true) {
             customRegistrationChallenge.sender.cancel(customRegistrationChallenge)
-            return true;
+            return true
         }
         customRegistrationChallenge.sender.respond(withData: code, challenge: customRegistrationChallenge)
         return true
@@ -55,7 +55,7 @@ class RegistrationHandler: NSObject {
     }
 
     private func sendCustomRegistrationNotification(_ event: CustomRegistrationNotification,_ data: NSMutableDictionary) {
-        BridgeConnector.shared?.toRegistrationConnector.sendCustomRegistrationNotification(event, data);
+        BridgeConnector.shared?.toRegistrationConnector.sendCustomRegistrationNotification(event, data)
     }
 }
 
