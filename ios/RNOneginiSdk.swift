@@ -147,7 +147,6 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                 reject(String(WrapperError.registrationNotInProgress.code), WrapperError.registrationNotInProgress.description, WrapperError.registrationNotInProgress)
         default:
             reject(String(WrapperError.parametersNotCorrect.code), "Incorrect customAction supplied: \(action)", WrapperError.parametersNotCorrect)
-        break
         }
     }
 
@@ -221,7 +220,6 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                 resolve(nil)
             default:
                 reject(String(WrapperError.parametersNotCorrect.code), "Incorrect pinflow supplied: \(flow)", WrapperError.parametersNotCorrect)
-                break
             }
         } else {
             reject(String(WrapperError.parametersNotCorrect.code), "Incorrect action supplied: \(action)", WrapperError.parametersNotCorrect)
