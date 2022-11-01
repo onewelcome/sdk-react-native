@@ -371,14 +371,20 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
     @objc
     func acceptMobileAuthConfirmation(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        bridgeConnector.toMobileAuthConnector.mobileAuthHandler.handleMobileAuthConfirmation(accepted: true)
-        resolve(nil)
+        if (bridgeConnector.toMobileAuthConnector.mobileAuthHandler.handleMobileAuthConfirmation(accepted: true)) {
+            resolve(nil)
+        } else {
+            reject(String(WrapperError.mobileAuthNotInProgress.code), WrapperError.mobileAuthNotInProgress.description, WrapperError.mobileAuthNotInProgress)
+        }
     }
 
     @objc
     func denyMobileAuthConfirmation(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        bridgeConnector.toMobileAuthConnector.mobileAuthHandler.handleMobileAuthConfirmation(accepted: false)
-        resolve(nil)
+        if (bridgeConnector.toMobileAuthConnector.mobileAuthHandler.handleMobileAuthConfirmation(accepted: false)) {
+            resolve(nil)
+        } else {
+            reject(String(WrapperError.mobileAuthNotInProgress.code), WrapperError.mobileAuthNotInProgress.description, WrapperError.mobileAuthNotInProgress)
+        }
     }
 
     // Authenticators management
