@@ -59,7 +59,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func getRedirectUri(_ resolve: RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
         let redirectUri = ONGClient.sharedInstance().configModel.redirectURL
 
-        resolve([ "redirectUri" : redirectUri])
+        resolve(["redirectUri": redirectUri])
     }
 
     @objc
@@ -122,7 +122,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
             if let error = error {
                 reject("\(error.code)", error.localizedDescription, error)
             } else {
-                resolve(["profileId" : userProfile?.profileId])
+                resolve(["profileId": userProfile?.profileId])
             }
 
         }
@@ -259,7 +259,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
             if let error = error {
                 reject("\(error.code)", error.localizedDescription, error)
             } else {
-                resolve([ "userProfile" : ["profileId" : userProfile?.profileId]])
+                resolve(["userProfile": ["profileId": userProfile?.profileId]])
             }
         }
     }
