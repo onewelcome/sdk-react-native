@@ -6,21 +6,29 @@ import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 
 class SimpleCustomRegistrationActionImpl(private val idProvider: String) : OneginiCustomRegistrationAction, SimpleCustomRegistrationAction {
 
-    var eventEmitter: CustomRegistrationEventEmitter = CustomRegistrationEventEmitter()
+    private var eventEmitter: CustomRegistrationEventEmitter = CustomRegistrationEventEmitter()
+    private var callback: OneginiCustomRegistrationCallback? = null
 
-    var calback: OneginiCustomRegistrationCallback? = null
-
-    override fun finishRegistration(calback: OneginiCustomRegistrationCallback, info: CustomInfo?) {
-        this.calback = calback
+    override fun finishRegistration(callback: OneginiCustomRegistrationCallback, info: CustomInfo?) {
+        this.callback = callback
         eventEmitter.finishRegistration(idProvider, info)
     }
 
-    override fun returnSuccess(result: String?) {
-        calback?.returnSuccess(result)
+    override fun returnSuccess(result: String?): Boolean {
+        return callback?.let { customRegistrationCallback ->
+            customRegistrationCallback.returnSuccess(result)
+            callback = null
+            true
+        } ?: false
     }
 
-    override fun returnError(exception: Exception?) {
-        calback?.returnError(exception)
+    override fun returnError(exception: Exception?): Boolean {
+        callback?.let { customRegistrationCallback ->
+            customRegistrationCallback.returnError(exception)
+            callback = null
+            return true
+        }
+        return false
     }
 
     override fun getOneginiCustomRegistrationAction(): OneginiCustomRegistrationAction {

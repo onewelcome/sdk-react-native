@@ -233,7 +233,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     @ReactMethod
     fun submitCustomRegistrationAction(customAction: String?, identityProviderId: String?, token: String?, promise: Promise) {
         identityProviderId ?: promise.rejectWithNullError("identityProviderId", "String").run { return }
-        token ?: promise.rejectWithNullError("token", "String").run { return }
 
         val action = registrationManager.getSimpleCustomRegistrationAction(identityProviderId)
 
@@ -242,13 +241,22 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         }
 
         when (customAction) {
-            Constants.CUSTOM_REGISTRATION_ACTION_PROVIDE -> action.returnSuccess(token)
-            Constants.CUSTOM_REGISTRATION_ACTION_CANCEL -> action.returnError(java.lang.Exception(token))
+            Constants.CUSTOM_REGISTRATION_ACTION_PROVIDE -> {
+                when(action.returnSuccess(token)) {
+                    true -> promise.resolve(null)
+                    false -> promise.reject(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
+                }
+            }
+            Constants.CUSTOM_REGISTRATION_ACTION_CANCEL -> {
+                when(action.returnError(Exception(token))) {
+                    true -> promise.resolve(null)
+                    false -> promise.reject(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
+                }
+            }
             else -> {
                 promise.reject(OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.code, OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.message + ". Incorrect customAction supplied: $customAction")
             }
         }
-        promise.resolve(null)
     }
 
     @ReactMethod

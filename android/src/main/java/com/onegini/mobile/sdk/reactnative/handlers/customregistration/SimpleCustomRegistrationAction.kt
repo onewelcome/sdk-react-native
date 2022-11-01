@@ -8,7 +8,7 @@ interface SimpleCustomRegistrationAction {
 
     fun getIdProvider(): String
 
-    fun returnSuccess(result: String?)
+    fun returnSuccess(result: String?): Boolean
 
-    fun returnError(exception: Exception?)
+    fun returnError(exception: Exception?): Boolean
 }

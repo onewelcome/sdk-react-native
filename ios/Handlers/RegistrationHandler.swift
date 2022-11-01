@@ -1,9 +1,9 @@
 protocol RegistrationConnectorToHandlerProtocol: AnyObject {
     func signUp(identityProvider: ONGIdentityProvider?, scopes: [String], completion: @escaping (Bool, ONGUserProfile?, Error?) -> Void)
     func processRedirectURL(_ url: URL) -> Bool
-    func processOTPCode(_ code: String?)
+    func processOTPCode(_ code: String?) -> Bool
     func cancelRegistration()
-    func cancelCustomRegistration()
+    func cancelCustomRegistration() -> Bool
     func setCreatePinChallenge(_ challenge: ONGCreatePinChallenge?)
     func handlePinAction(_ pin: String?, action: PinAction)
     func handleDidReceivePinRegistrationChallenge(_ challenge: ONGCreatePinChallenge)
@@ -36,13 +36,14 @@ class RegistrationHandler: NSObject {
         createPinChallenge.sender.respond(withCreatedPin: pin, challenge: createPinChallenge)
     }
 
-    func handleOTPCode(_ code: String? = nil, _ cancelled: Bool? = false) {
-        guard let customRegistrationChallenge = self.customRegistrationChallenge else { return }
+    func handleOTPCode(_ code: String? = nil, _ cancelled: Bool? = false) -> Bool {
+        guard let customRegistrationChallenge = self.customRegistrationChallenge else { return false }
         if(cancelled == true) {
             customRegistrationChallenge.sender.cancel(customRegistrationChallenge)
-            return;
+            return true
         }
         customRegistrationChallenge.sender.respond(withData: code, challenge: customRegistrationChallenge)
+        return true
     }
 
     fileprivate func mapErrorFromPinChallenge(_ challenge: ONGCreatePinChallenge) -> Error? {
@@ -54,7 +55,7 @@ class RegistrationHandler: NSObject {
     }
 
     private func sendCustomRegistrationNotification(_ event: CustomRegistrationNotification,_ data: NSMutableDictionary) {
-        BridgeConnector.shared?.toRegistrationConnector.sendCustomRegistrationNotification(event, data);
+        BridgeConnector.shared?.toRegistrationConnector.sendCustomRegistrationNotification(event, data)
     }
 }
 
@@ -72,12 +73,12 @@ extension RegistrationHandler : RegistrationConnectorToHandlerProtocol {
         return handleRedirectURL(url)
     }
 
-    func processOTPCode(_ code: String?) {
+    func processOTPCode(_ code: String?) -> Bool {
         handleOTPCode(code)
     }
 
-    func cancelCustomRegistration() {
-        handleOTPCode(nil, true)
+    func cancelCustomRegistration() -> Bool {
+        return handleOTPCode(nil, true)
     }
 
     func cancelRegistration() {
