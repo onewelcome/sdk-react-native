@@ -134,7 +134,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         switch action {
             case CustomRegistrationAction.provide.rawValue:
-                bridgeConnector.toRegistrationConnector.registrationHandler.processOTPCode(code: token)
+                bridgeConnector.toRegistrationConnector.registrationHandler.processOTPCode(token)
                 break
             case CustomRegistrationAction.cancel.rawValue:
                 bridgeConnector.toRegistrationConnector.registrationHandler.cancelCustomRegistration()
@@ -177,7 +177,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
             return
         }
 
-        if (bridgeConnector.toRegistrationConnector.registrationHandler.processRedirectURL(url: urlOBject)) {
+        if (bridgeConnector.toRegistrationConnector.registrationHandler.processRedirectURL(urlOBject)) {
             resolve(nil)
         } else {
             reject(String(WrapperError.registrationNotInProgress.code), WrapperError.registrationNotInProgress.description, WrapperError.registrationNotInProgress)

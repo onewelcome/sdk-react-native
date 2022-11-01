@@ -1,7 +1,7 @@
 protocol RegistrationConnectorToHandlerProtocol: AnyObject {
     func signUp(identityProvider: ONGIdentityProvider?, scopes: [String], completion: @escaping (Bool, ONGUserProfile?, Error?) -> Void)
-    func processRedirectURL(url: URL) -> Bool
-    func processOTPCode(code: String?)
+    func processRedirectURL(_ url: URL) -> Bool
+    func processOTPCode(_ code: String?)
     func cancelRegistration()
     func cancelCustomRegistration()
     func setCreatePinChallenge(_ challenge: ONGCreatePinChallenge?)
@@ -20,7 +20,7 @@ class RegistrationHandler: NSObject {
     private let createPinEventEmitter = CreatePinEventEmitter()
     private let registrationEventEmitter = RegistrationEventEmitter()
 
-    func handleRedirectURL(url: URL) -> Bool {
+    func handleRedirectURL(_ url: URL) -> Bool {
         guard let browserRegistrationChallenge = self.browserRegistrationChallenge else { return false }
         browserRegistrationChallenge.sender.respond(with: url, challenge: browserRegistrationChallenge)
         return true
@@ -68,11 +68,11 @@ extension RegistrationHandler : RegistrationConnectorToHandlerProtocol {
         ONGUserClient.sharedInstance().registerUser(with: identityProvider, scopes: scopes, delegate: self)
     }
 
-    func processRedirectURL(url: URL) -> Bool {
-        return handleRedirectURL(url: url)
+    func processRedirectURL(_ url: URL) -> Bool {
+        return handleRedirectURL(url)
     }
 
-    func processOTPCode(code: String?) {
+    func processOTPCode(_ code: String?) {
         handleOTPCode(code)
     }
 
