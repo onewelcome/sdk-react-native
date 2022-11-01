@@ -4,6 +4,8 @@ import com.onegini.mobile.sdk.android.handlers.action.OneginiCustomRegistrationA
 import com.onegini.mobile.sdk.android.handlers.action.OneginiCustomTwoStepRegistrationAction
 import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiCustomRegistrationCallback
 import com.onegini.mobile.sdk.android.model.entity.CustomInfo
+import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 
 class SimpleCustomTwoStepRegistrationActionImpl(private val idProvider: String) : OneginiCustomTwoStepRegistrationAction, SimpleCustomRegistrationAction {
 
@@ -36,12 +38,14 @@ class SimpleCustomTwoStepRegistrationActionImpl(private val idProvider: String) 
         } ?: false
     }
 
-    override fun returnError(exception: Exception?): Boolean {
+    @Throws(OneginiReactNativeException::class)
+    override fun returnError(exception: Exception?) {
         callback?.let { customRegistrationCallback ->
             customRegistrationCallback.returnError(exception)
             callback = null
-            return true
-        }
-        return false
+        } ?: throw OneginiReactNativeException(
+            OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code.toInt(),
+            OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message
+        )
     }
 }

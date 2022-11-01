@@ -28,6 +28,7 @@ import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.Constants.PinFlow
 import com.onegini.mobile.sdk.reactnative.clean.wrapper.OneginiSdkWrapper
+import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.reactnative.exception.PARAM_CAN_NOT_BE_NULL
 import com.onegini.mobile.sdk.reactnative.managers.AuthenticatorManager
@@ -242,15 +243,19 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
         when (customAction) {
             Constants.CUSTOM_REGISTRATION_ACTION_PROVIDE -> {
-                when(action.returnSuccess(token)) {
-                    true -> promise.resolve(null)
-                    false -> promise.reject(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
+                try {
+                    action.returnSuccess(token)
+                    promise.resolve(null)
+                } catch (exception: OneginiReactNativeException) {
+                    promise.reject(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
                 }
             }
             Constants.CUSTOM_REGISTRATION_ACTION_CANCEL -> {
-                when(action.returnError(Exception(token))) {
-                    true -> promise.resolve(null)
-                    false -> promise.reject(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
+                try {
+                    action.returnError(Exception(token))
+                    promise.resolve(null)
+                } catch (exception: OneginiReactNativeException) {
+                    promise.reject(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
                 }
             }
             else -> {
@@ -276,8 +281,30 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     fun cancelRegistration(promise: Promise) {
-        oneginiSDK.registrationRequestHandler.cancelRegistration()
-        promise.resolve(null)
+        for (action in oneginiSDK.simpleCustomRegistrationActions) {
+            try {
+                cancelCreatePinSilent()
+                action.returnError(null)
+                return promise.resolve(null)
+            } catch (exception: OneginiReactNativeException) {}
+        }
+
+        try {
+            oneginiSDK.registrationRequestHandler.cancelRegistration()
+            cancelCreatePinSilent()
+            return promise.resolve(null)
+        } catch (exception: OneginiReactNativeException) {}
+
+        promise.reject(
+            OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code,
+            OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message
+        )
+    }
+
+    private fun cancelCreatePinSilent() {
+        try {
+            oneginiSDK.createPinRequestHandler.cancelPin()
+        } catch (exception: OneginiReactNativeException) {}
     }
 
     @ReactMethod
@@ -322,12 +349,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                 oneginiSDK.createPinRequestHandler.onPinProvided(pin.toCharArray())
                 return promise.resolve(null)
             }
-            PinFlow.Change.toString() -> {
-                oneginiSDK.createPinRequestHandler.onPinProvided(pin.toCharArray())
-                return promise.resolve(null)
-            } else -> {
-                promise.reject(OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.code, OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.message + ". Incorrect Pinflow supplied: $pinFlow")
-            }
         }
     }
 
@@ -338,14 +359,12 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                 return promise.resolve(null)
             }
             PinFlow.Create.toString() -> {
-                oneginiSDK.createPinRequestHandler.pinCancelled()
-                return promise.resolve(null)
-            }
-            PinFlow.Change.toString() -> {
-                oneginiSDK.createPinRequestHandler.pinCancelled()
-                return promise.resolve(null)
-            } else -> {
-            promise.reject(OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.code, OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.message + ". Incorrect Pinflow supplied: $pinFlow")
+                return try {
+                    oneginiSDK.createPinRequestHandler.cancelPin()
+                    promise.resolve(null)
+                } catch (exception: OneginiReactNativeException) {
+                    promise.reject(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
+                }
             }
         }
     }
