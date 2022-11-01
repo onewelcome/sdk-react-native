@@ -187,8 +187,14 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     @objc
     func cancelRegistration(_ resolve: @escaping RCTPromiseResolveBlock,
                             rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        bridgeConnector.toRegistrationConnector.registrationHandler.cancelRegistration()
-        resolve(nil)
+        var canceled = bridgeConnector.toRegistrationConnector.registrationHandler.cancelBrowserRegistration()
+        canceled = bridgeConnector.toRegistrationConnector.registrationHandler.cancelPinCreation() || canceled
+        canceled = bridgeConnector.toRegistrationConnector.registrationHandler.cancelCustomRegistration() || canceled
+        if (canceled) {
+            resolve(nil)
+        } else {
+            reject(String(WrapperError.registrationNotInProgress.code), WrapperError.registrationNotInProgress.description, WrapperError.registrationNotInProgress)
+        }
     }
     
     func mapStringToPinAction(action: String) -> PinAction? {

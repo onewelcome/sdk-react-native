@@ -2,7 +2,8 @@ protocol RegistrationConnectorToHandlerProtocol: AnyObject {
     func signUp(identityProvider: ONGIdentityProvider?, scopes: [String], completion: @escaping (Bool, ONGUserProfile?, Error?) -> Void)
     func processRedirectURL(_ url: URL) -> Bool
     func processOTPCode(_ code: String?) -> Bool
-    func cancelRegistration()
+    func cancelBrowserRegistration() -> Bool
+    func cancelPinCreation() -> Bool
     func cancelCustomRegistration() -> Bool
     func setCreatePinChallenge(_ challenge: ONGCreatePinChallenge?)
     func handlePinAction(_ pin: String?, action: PinAction)
@@ -81,13 +82,19 @@ extension RegistrationHandler : RegistrationConnectorToHandlerProtocol {
         return handleOTPCode(nil, true)
     }
 
-    func cancelRegistration() {
+    func cancelBrowserRegistration() -> Bool {
         if let browserRegistrationChallenge = self.browserRegistrationChallenge {
             browserRegistrationChallenge.sender.cancel(browserRegistrationChallenge)
+            return true
         }
+        return false
+    }
+    func cancelPinCreation() -> Bool {
         if let createPinChallenge = self.createPinChallenge {
             createPinChallenge.sender.cancel(createPinChallenge)
+            return true
         }
+        return false
     }
     
     func handlePinAction(_ pin: String?, action: PinAction) {
@@ -95,7 +102,7 @@ extension RegistrationHandler : RegistrationConnectorToHandlerProtocol {
             case PinAction.provide:
                 handlePin(pin)
             case PinAction.cancel:
-                cancelRegistration()
+                cancelPinCreation()
         }
     }
     
