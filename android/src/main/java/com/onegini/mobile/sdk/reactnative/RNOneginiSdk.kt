@@ -27,6 +27,7 @@ import com.onegini.mobile.sdk.android.model.OneginiAuthenticator
 import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.Constants.PinFlow
+import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.*
 import com.onegini.mobile.sdk.reactnative.clean.wrapper.OneginiSdkWrapper
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
@@ -69,6 +70,18 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         authenticatorManager = AuthenticatorManager(oneginiSDK)
     }
 
+    enum class FunctionParams(val paramName: String, val type: String ) {
+        RnConfig("rnConfig", "ReadableMap"),
+        ProfileId("profileId", "string"),
+        IdOneginiAuthenticator("idOneginiAuthenticator", "string"),
+        Pin("pin", "string"),
+        Uri("uri", "string"),
+        IdentityProviderId("identityProviderId", "string"),
+        OtpCode("otpCode", "string"),
+        Type("type", "string"),
+        Details("details", "string"),
+    }
+
     override fun canOverrideExistingModule(): Boolean {
         return true
     }
@@ -83,8 +96,10 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     fun startClient(rnConfig: ReadableMap?, promise: Promise) {
-        rnConfig ?: promise.rejectWithNullError("rnConfig", "ReadableMap").run { return }
-        sdkWrapper.startClient(rnConfig, promise)
+        when (rnConfig) {
+            null -> promise.rejectWithNullError(RnConfig.paramName, RnConfig.type)
+            else -> sdkWrapper.startClient(rnConfig, promise)
+        }
     }
 
     @ReactMethod
@@ -104,57 +119,71 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     fun getAllAuthenticators(profileId: String?, promise: Promise) {
-        profileId ?: promise.rejectWithNullError("profileId", "String").run { return }
-        sdkWrapper.getAllAuthenticators(profileId, promise)
+        when (profileId) {
+            null -> promise.rejectWithNullError(ProfileId.paramName, ProfileId.type)
+            else -> sdkWrapper.getAllAuthenticators(profileId, promise)
+        }
     }
 
     @ReactMethod
     fun getRegisteredAuthenticators(profileId: String?, promise: Promise) {
-        profileId ?: promise.rejectWithNullError("profileId", "String").run { return }
-        sdkWrapper.getRegisteredAuthenticators(profileId, promise)
+        when (profileId) {
+            null -> promise.rejectWithNullError(ProfileId.paramName, ProfileId.type)
+            else -> sdkWrapper.getRegisteredAuthenticators(profileId, promise)
+        }
     }
 
     @ReactMethod
     fun registerFingerprintAuthenticator(profileId: String?, promise: Promise) {
-        profileId ?: promise.rejectWithNullError("profileId", "String").run { return }
-        authenticatorManager.registerFingerprintAuthenticator(
-            profileId,
-            object : RegistrationCallback {
-                override fun onSuccess(customInfo: CustomInfo?) {
-                    promise.resolve(CustomInfoMapper.toWritableMap(customInfo))
-                }
-                override fun onError(code: String?, message: String?) {
-                    promise.reject(code, message)
-                }
+        when (profileId) {
+            null -> promise.rejectWithNullError(ProfileId.paramName, ProfileId.type)
+            else -> {
+                authenticatorManager.registerFingerprintAuthenticator(
+                    profileId,
+                    object : RegistrationCallback {
+                        override fun onSuccess(customInfo: CustomInfo?) {
+                            promise.resolve(CustomInfoMapper.toWritableMap(customInfo))
+                        }
+                        override fun onError(code: String?, message: String?) {
+                            promise.reject(code, message)
+                        }
+                    }
+                )
             }
-        )
+        }
     }
 
     @ReactMethod
     fun isFingerprintAuthenticatorRegistered(profileId: String?, promise: Promise) {
-        profileId ?: promise.rejectWithNullError("profileId", "String").run { return }
-        authenticatorManager.getUserProfile(profileId)?.let { userProfile ->
-            val authenticator = authenticatorManager.getRegisteredAuthenticators(userProfile, OneginiAuthenticator.FINGERPRINT)
-            promise.resolve(authenticator != null)
-            return
+        when (profileId) {
+            null -> promise.rejectWithNullError(ProfileId.paramName, ProfileId.type)
+            else -> {
+                authenticatorManager.getUserProfile(profileId)?.let { userProfile ->
+                    val authenticator = authenticatorManager.getRegisteredAuthenticators(userProfile, OneginiAuthenticator.FINGERPRINT)
+                    promise.resolve(authenticator != null)
+                } ?: promise.reject(OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.code, OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.message)
+            }
         }
-        promise.reject(OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.code, OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.message)
     }
 
     @ReactMethod
     fun deregisterFingerprintAuthenticator(profileId: String?, promise: Promise) {
-        profileId ?: promise.rejectWithNullError("profileId", "String").run { return }
-        authenticatorManager.deregisterFingerprintAuthenticator(
-            profileId,
-            object : DeregistrationCallback {
-                override fun onSuccess() {
-                    promise.resolve(null)
-                }
-                override fun onError(code: String?, message: String?) {
-                    promise.reject(code, message)
-                }
+        when (profileId) {
+            null -> promise.rejectWithNullError(ProfileId.paramName, ProfileId.type)
+            else -> {
+                authenticatorManager.deregisterFingerprintAuthenticator(
+                    profileId,
+                    object : DeregistrationCallback {
+                        override fun onSuccess() {
+                            promise.resolve(null)
+                        }
+                        override fun onError(code: String?, message: String?) {
+                            promise.reject(code, message)
+                        }
+                    }
+                )
             }
-        )
+        }
     }
 
     @ReactMethod
@@ -186,20 +215,26 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     fun setPreferredAuthenticator(profileId: String?, idOneginiAuthenticator: String?, promise: Promise) {
-        profileId ?: promise.rejectWithNullError("profileId", "String").run { return }
-        idOneginiAuthenticator ?: promise.rejectWithNullError("idOneginiAuthenticator", "String").run { return }
-        try {
-            authenticatorManager.setPreferredAuthenticator(profileId, idOneginiAuthenticator)
-            promise.resolve(null)
-        } catch (e: OneginiError) {
-            promise.reject(e.errorType.toString(), e.message)
+        when {
+            profileId == null -> promise.rejectWithNullError(ProfileId.paramName, ProfileId.type)
+            idOneginiAuthenticator == null -> promise.rejectWithNullError(IdOneginiAuthenticator.paramName, IdOneginiAuthenticator.type)
+            else -> {
+                try {
+                    authenticatorManager.setPreferredAuthenticator(profileId, idOneginiAuthenticator)
+                    promise.resolve(null)
+                } catch (e: OneginiError) {
+                    promise.reject(e.errorType.toString(), e.message)
+                }
+            }
         }
     }
 
     @ReactMethod
     fun validatePinWithPolicy(pin: String?, promise: Promise) {
-        pin ?: promise.rejectWithNullError("pin", "String").run { return }
-        sdkWrapper.validatePinWithPolicy(pin, promise)
+        when (pin) {
+            null -> promise.rejectWithNullError(Pin.paramName, Pin.type)
+            else -> sdkWrapper.validatePinWithPolicy(pin, promise)
+        }
     }
 
     @ReactMethod
@@ -209,57 +244,66 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     fun deregisterUser(profileId: String?, promise: Promise) {
-        profileId ?: promise.rejectWithNullError("profileId", "String").run { return }
-        sdkWrapper.deregisterUser(profileId, promise)
+        when (profileId) {
+            null -> promise.rejectWithNullError(ProfileId.paramName, ProfileId.type)
+            else -> sdkWrapper.deregisterUser(profileId, promise)
+        }
     }
 
     @ReactMethod
-    fun startSingleSignOn(url: String?, promise: Promise) {
-        url ?: promise.rejectWithNullError("url", "String").run { return }
-        val targetUri = Uri.parse(url)
-        oneginiSDK.oneginiClient.userClient.getAppToWebSingleSignOn(
-            targetUri,
-            object : OneginiAppToWebSingleSignOnHandler {
-                override fun onSuccess(oneginiAppToWebSingleSignOn: OneginiAppToWebSingleSignOn) {
-                    promise.resolve(OneginiAppToWebSingleSignOnMapper.toWritableMap(oneginiAppToWebSingleSignOn))
-                }
+    fun startSingleSignOn(uri: String?, promise: Promise) {
+        when (uri) {
+            null -> promise.rejectWithNullError(FunctionParams.Uri.paramName, FunctionParams.Uri.type)
+            else -> {
+                oneginiSDK.oneginiClient.userClient.getAppToWebSingleSignOn(
+                    Uri.parse(uri),
+                    object : OneginiAppToWebSingleSignOnHandler {
+                        override fun onSuccess(oneginiAppToWebSingleSignOn: OneginiAppToWebSingleSignOn) {
+                            promise.resolve(OneginiAppToWebSingleSignOnMapper.toWritableMap(oneginiAppToWebSingleSignOn))
+                        }
 
-                override fun onError(error: OneginiAppToWebSingleSignOnError) {
-                    promise.reject(error.errorType.toString(), error.message)
-                }
+                        override fun onError(error: OneginiAppToWebSingleSignOnError) {
+                            promise.reject(error.errorType.toString(), error.message)
+                        }
+                    }
+                )
             }
-        )
+        }
+
     }
 
     @ReactMethod
     fun submitCustomRegistrationAction(customAction: String?, identityProviderId: String?, token: String?, promise: Promise) {
-        identityProviderId ?: promise.rejectWithNullError("identityProviderId", "String").run { return }
-
-        val action = registrationManager.getSimpleCustomRegistrationAction(identityProviderId)
-
-        if (action == null) {
-            return promise.reject(OneginiWrapperErrors.IDENTITY_PROVIDER_NOT_FOUND.code, OneginiWrapperErrors.IDENTITY_PROVIDER_NOT_FOUND.message)
-        }
-
-        when (customAction) {
-            Constants.CUSTOM_REGISTRATION_ACTION_PROVIDE -> {
-                try {
-                    action.returnSuccess(token)
-                    promise.resolve(null)
-                } catch (exception: OneginiReactNativeException) {
-                    promise.reject(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
-                }
-            }
-            Constants.CUSTOM_REGISTRATION_ACTION_CANCEL -> {
-                try {
-                    action.returnError(Exception(token))
-                    promise.resolve(null)
-                } catch (exception: OneginiReactNativeException) {
-                    promise.reject(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
-                }
-            }
+        when (identityProviderId) {
+            null -> promise.rejectWithNullError(IdentityProviderId.paramName, IdentityProviderId.type)
             else -> {
-                promise.reject(OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.code, OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.message + ". Incorrect customAction supplied: $customAction")
+                val action = registrationManager.getSimpleCustomRegistrationAction(identityProviderId)
+
+                if (action == null) {
+                    return promise.reject(OneginiWrapperErrors.IDENTITY_PROVIDER_NOT_FOUND.code, OneginiWrapperErrors.IDENTITY_PROVIDER_NOT_FOUND.message)
+                }
+
+                when (customAction) {
+                    Constants.CUSTOM_REGISTRATION_ACTION_PROVIDE -> {
+                        try {
+                            action.returnSuccess(token)
+                            promise.resolve(null)
+                        } catch (exception: OneginiReactNativeException) {
+                            promise.reject(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
+                        }
+                    }
+                    Constants.CUSTOM_REGISTRATION_ACTION_CANCEL -> {
+                        try {
+                            action.returnError(Exception(token))
+                            promise.resolve(null)
+                        } catch (exception: OneginiReactNativeException) {
+                            promise.reject(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
+                        }
+                    }
+                    else -> {
+                        promise.reject(OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.code, OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.message + ". Incorrect customAction supplied: $customAction")
+                    }
+                }
             }
         }
     }
@@ -271,11 +315,15 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     fun handleRegistrationCallback(uri: String?, promise: Promise) {
-        uri ?: promise.rejectWithNullError("uri", "String").run { return }
-        return if (registrationManager.handleRegistrationCallback(uri)) {
-            promise.resolve(null)
-        } else {
-            promise.reject(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
+        when (uri) {
+            null -> promise.rejectWithNullError(FunctionParams.Uri.paramName, FunctionParams.Uri.type)
+            else -> {
+                return if (registrationManager.handleRegistrationCallback(uri)) {
+                    promise.resolve(null)
+                } else {
+                    promise.reject(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
+                }
+            }
         }
     }
 
@@ -324,7 +372,8 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     fun submitPinAction(pinFlow: String?, action: String?, pin: String?, promise: Promise) {
         when (action) {
             Constants.PIN_ACTION_PROVIDE -> {
-                pin ?: promise.rejectWithNullError("pin", "String").run { return }
+                // TODO: Fix this nullGuarding pattern when apply the changes in RNP-126
+                pin ?: promise.rejectWithNullError(Pin.paramName, Pin.type).run { return }
                 handleSubmitPinActionProvide(pinFlow, pin, promise)
                 return
             }
@@ -410,19 +459,23 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     fun handleMobileAuthWithOtp(otpCode: String?, promise: Promise) {
-        otpCode ?: promise.rejectWithNullError("otpCode", "String").run { return }
-        oneginiSDK.oneginiClient.userClient.handleMobileAuthWithOtp(
-            otpCode,
-            object : OneginiMobileAuthWithOtpHandler {
-                override fun onSuccess() {
-                    promise.resolve(null)
-                }
+        when (otpCode) {
+            null -> promise.rejectWithNullError(OtpCode.paramName, OtpCode.type)
+            else -> {
+                oneginiSDK.oneginiClient.userClient.handleMobileAuthWithOtp(
+                    otpCode,
+                    object : OneginiMobileAuthWithOtpHandler {
+                        override fun onSuccess() {
+                            promise.resolve(null)
+                        }
 
-                override fun onError(error: OneginiMobileAuthWithOtpError) {
-                    promise.reject(error.errorType.toString(), error.message)
-                }
+                        override fun onError(error: OneginiMobileAuthWithOtpError) {
+                            promise.reject(error.errorType.toString(), error.message)
+                        }
+                    }
+                )
             }
-        )
+        }
     }
 
     @ReactMethod
@@ -448,31 +501,36 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     fun authenticateUser(profileId: String?, authenticatorId: String?, promise: Promise) {
-        profileId ?: promise.rejectWithNullError("profileId", "String").run { return }
-        sdkWrapper.authenticateUser(profileId, authenticatorId, promise)
+        when (profileId) {
+            null -> promise.rejectWithNullError(ProfileId.paramName, ProfileId.type)
+            else -> sdkWrapper.authenticateUser(profileId, authenticatorId, promise)
+        }
     }
 
     @ReactMethod
     fun authenticateUserImplicitly(profileId: String?, scopes: ReadableArray?, promise: Promise) {
-        profileId ?: promise.rejectWithNullError("profileId", "String").run { return }
-        val scopesArray = ScopesMapper.toStringArray(scopes)
-        val userProfile = authenticatorManager.getUserProfile(profileId)
-        if (userProfile == null) {
-            promise.reject(OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.code, OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.message)
-        } else {
-            oneginiSDK.oneginiClient.userClient
-                .authenticateUserImplicitly(
-                    userProfile, scopesArray,
-                    object : OneginiImplicitAuthenticationHandler {
-                        override fun onSuccess(profile: UserProfile) {
-                            promise.resolve(null)
-                        }
-
-                        override fun onError(error: OneginiImplicitTokenRequestError) {
-                            promise.reject(error.errorType.toString(), error.message)
-                        }
-                    }
-                )
+        when (profileId) {
+            null -> promise.rejectWithNullError(ProfileId.paramName, ProfileId.type)
+            else -> {
+                val scopesArray = ScopesMapper.toStringArray(scopes)
+                val userProfile = authenticatorManager.getUserProfile(profileId)
+                if (userProfile == null) {
+                    promise.reject(OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.code, OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.message)
+                } else {
+                    oneginiSDK.oneginiClient.userClient
+                        .authenticateUserImplicitly(
+                            userProfile, scopesArray,
+                            object : OneginiImplicitAuthenticationHandler {
+                                override fun onSuccess(profile: UserProfile) {
+                                    promise.resolve(null)
+                                }
+                                override fun onError(error: OneginiImplicitTokenRequestError) {
+                                    promise.reject(error.errorType.toString(), error.message)
+                                }
+                            }
+                        )
+                }
+            }
         }
     }
 
@@ -493,45 +551,45 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         )
     }
 
-    // type: User, ImplicitUser, Anonymous
     @ReactMethod
     fun resourceRequest(type: String?, details: ReadableMap?, promise: Promise) {
-        type ?: promise.rejectWithNullError("type", "String").run { return }
-        details ?: promise.rejectWithNullError("details", "String").run { return }
-        val requestDetails = ResourceRequestDetailsMapper.toResourceRequestDetails(details)
-
-        when (type) {
-            "User" -> {
-                disposables.add(
-                    UserService.getInstance()
-                        .getResource(requestDetails)
-                        .subscribe({
-                            promise.resolve(JsonMapper.toWritableMap(it))
-                        }) { throwable -> promise.reject(OneginiWrapperErrors.RESOURCE_CALL_ERROR.code, throwable) }
-                )
-            }
-            "ImplicitUser" -> {
-                disposables.add(
-                    ImplicitUserService.getInstance()
-                        .getResource(requestDetails)
-                        .subscribe({
-                            promise.resolve(JsonMapper.toWritableMap(it))
-                        }) { throwable -> promise.reject(OneginiWrapperErrors.RESOURCE_CALL_ERROR.code, throwable) }
-                )
-            }
-            "Anonymous" -> {
-                disposables.add(
-                    AnonymousService.getInstance()
-                        .getResource(requestDetails)
-                        .subscribe({
-                            promise.resolve(JsonMapper.toWritableMap(it))
-                        }) { throwable -> promise.reject(OneginiWrapperErrors.RESOURCE_CALL_ERROR.code, throwable) }
-                )
+        when {
+            type == null -> promise.rejectWithNullError(Type.paramName, Type.type)
+            details == null -> promise.rejectWithNullError(Details.paramName, Details.type)
+            else -> {
+                val requestDetails = ResourceRequestDetailsMapper.toResourceRequestDetails(details)
+                when (type) {
+                    "User" -> {
+                        disposables.add(
+                            UserService.getInstance()
+                                .getResource(requestDetails)
+                                .subscribe({
+                                    promise.resolve(JsonMapper.toWritableMap(it))
+                                }) { throwable -> promise.reject(OneginiWrapperErrors.RESOURCE_CALL_ERROR.code, throwable) }
+                        )
+                    }
+                    "ImplicitUser" -> {
+                        disposables.add(
+                            ImplicitUserService.getInstance()
+                                .getResource(requestDetails)
+                                .subscribe({
+                                    promise.resolve(JsonMapper.toWritableMap(it))
+                                }) { throwable -> promise.reject(OneginiWrapperErrors.RESOURCE_CALL_ERROR.code, throwable) }
+                        )
+                    }
+                    "Anonymous" -> {
+                        disposables.add(
+                            AnonymousService.getInstance()
+                                .getResource(requestDetails)
+                                .subscribe({
+                                    promise.resolve(JsonMapper.toWritableMap(it))
+                                }) { throwable -> promise.reject(OneginiWrapperErrors.RESOURCE_CALL_ERROR.code, throwable) }
+                        )
+                    }
+                }
             }
         }
     }
-
-    //
 
     override fun onCatalystInstanceDestroy() {
         disposables.clear()

@@ -136,7 +136,7 @@ interface NativeMethods {
   submitFingerprintFallbackToPin(): Promise<any>;
 
   // App to Web
-  startSingleSignOn(url: string): Promise<Types.SingleSignOnData>;
+  startSingleSignOn(uri: string): Promise<Types.SingleSignOnData>;
 }
 
 //
