@@ -538,7 +538,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         )
     }
 
-    // type: User, ImplicitUser, Anonymous
     @ReactMethod
     fun resourceRequest(type: String?, details: ReadableMap?, promise: Promise) {
         when {
@@ -578,8 +577,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
             }
         }
     }
-
-    //
 
     override fun onCatalystInstanceDestroy() {
         disposables.clear()
