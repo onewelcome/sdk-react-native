@@ -1,7 +1,7 @@
 protocol MobileAuthConnectorToHandlerProtocol: AnyObject {
     func enrollForMobileAuth(_ completion: @escaping (Bool?, Error?) -> Void)
     func isUserEnrolledForMobileAuth() -> Bool
-    func handleMobileAuthConfirmation(accepted: Bool)
+    func handleMobileAuthConfirmation(accepted: Bool) -> Bool
     func handleOTPMobileAuth(_ otp: String, _ completion: @escaping (Bool, Error?) -> Void)
 }
 
@@ -18,10 +18,11 @@ class MobileAuthHandler: NSObject {
     private var confirmation: ((Bool) -> Void)?
     private var mobileAuthCompletion: ((Bool, Error?) -> Void)?
 
-    fileprivate func handleConfirmationMobileAuth(_ accepted: Bool) {
-        guard let confirmation = confirmation else { fatalError() }
+    fileprivate func handleConfirmationMobileAuth(_ accepted: Bool) -> Bool {
+        guard let confirmation = confirmation else { return false }
 
         confirmation(accepted)
+        return true
     }
 
 
@@ -49,14 +50,15 @@ extension MobileAuthHandler : MobileAuthConnectorToHandlerProtocol {
         return false
     }
 
-    func handleMobileAuthConfirmation(accepted: Bool) {
+    func handleMobileAuthConfirmation(accepted: Bool) -> Bool {
         if authenticatorType == .fingerprint {
             //@todo
         } else if authenticatorType == .confirmation {
-            handleConfirmationMobileAuth(accepted)
+            return handleConfirmationMobileAuth(accepted)
         } else if authenticatorType == .pin {
             //@todo
         }
+        return false
     }
 
     func handleOTPMobileAuth(_ otp: String, _ completion: @escaping (Bool, Error?) -> Void) {

@@ -19,11 +19,19 @@ class MobileAuthOtpRequestHandler : OneginiMobileAuthWithOtpRequestHandler {
         eventEmitter.finishAuthentication()
     }
 
-    fun acceptAuthenticationRequest() {
-        callback?.acceptAuthenticationRequest()
+    fun acceptAuthenticationRequest(): Boolean {
+        callback?.let { authCallback ->
+            authCallback.acceptAuthenticationRequest()
+            return true
+        }
+        return false
     }
 
-    fun denyAuthenticationRequest() {
-        callback?.denyAuthenticationRequest()
+    fun denyAuthenticationRequest(): Boolean {
+        callback?.let { authCallback ->
+            authCallback.denyAuthenticationRequest()
+            return true
+        }
+        return false
     }
 }

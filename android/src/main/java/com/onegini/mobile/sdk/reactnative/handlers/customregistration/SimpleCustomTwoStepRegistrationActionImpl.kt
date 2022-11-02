@@ -4,20 +4,21 @@ import com.onegini.mobile.sdk.android.handlers.action.OneginiCustomRegistrationA
 import com.onegini.mobile.sdk.android.handlers.action.OneginiCustomTwoStepRegistrationAction
 import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiCustomRegistrationCallback
 import com.onegini.mobile.sdk.android.model.entity.CustomInfo
+import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 
 class SimpleCustomTwoStepRegistrationActionImpl(private val idProvider: String) : OneginiCustomTwoStepRegistrationAction, SimpleCustomRegistrationAction {
 
-    var eventEmitter: CustomRegistrationEventEmitter = CustomRegistrationEventEmitter()
+    private var eventEmitter: CustomRegistrationEventEmitter = CustomRegistrationEventEmitter()
+    private var callback: OneginiCustomRegistrationCallback? = null
 
-    var calback: OneginiCustomRegistrationCallback? = null
-
-    override fun initRegistration(calback: OneginiCustomRegistrationCallback, info: CustomInfo?) {
-        this.calback = calback
+    override fun initRegistration(callback: OneginiCustomRegistrationCallback, info: CustomInfo?) {
+        this.callback = callback
         eventEmitter.initRegistration(idProvider, info)
     }
 
-    override fun finishRegistration(calback: OneginiCustomRegistrationCallback, info: CustomInfo?) {
-        this.calback = calback
+    override fun finishRegistration(callback: OneginiCustomRegistrationCallback, info: CustomInfo?) {
+        this.callback = callback
         eventEmitter.finishRegistration(idProvider, info)
     }
 
@@ -29,11 +30,22 @@ class SimpleCustomTwoStepRegistrationActionImpl(private val idProvider: String) 
         return idProvider
     }
 
-    override fun returnSuccess(result: String?) {
-        calback?.returnSuccess(result)
+    override fun returnSuccess(result: String?): Boolean {
+        return callback?.let { customRegistrationCallback ->
+            customRegistrationCallback.returnSuccess(result)
+            callback = null
+            true
+        } ?: false
     }
 
+    @Throws(OneginiReactNativeException::class)
     override fun returnError(exception: Exception?) {
-        calback?.returnError(exception)
+        callback?.let { customRegistrationCallback ->
+            customRegistrationCallback.returnError(exception)
+            callback = null
+        } ?: throw OneginiReactNativeException(
+            OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code.toInt(),
+            OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message
+        )
     }
 }

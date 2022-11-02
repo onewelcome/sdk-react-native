@@ -75,8 +75,8 @@ interface NativeMethods {
   authenticateUserImplicitly(
     profileId: string,
     scopes?: string[],
-  ): Promise<any>;
-  authenticateDeviceForResource(scopes?: string[]): Promise<any>;
+  ): Promise<void>;
+  authenticateDeviceForResource(scopes?: string[]): Promise<void>;
   resourceRequest(
     type: Types.ResourceRequestType,
     details: Types.ResourcesDetails,
@@ -87,16 +87,16 @@ interface NativeMethods {
     identityProviderId: string | null,
     scopes?: String[],
   ): Promise<Types.Profile>;
-  deregisterUser(profileId: string): Promise<any>;
-  handleRegistrationCallback(uri: string): Promise<any>;
-  cancelRegistration(): Promise<any>;
+  deregisterUser(profileId: string): Promise<void>;
+  handleRegistrationCallback(uri: string): Promise<void>;
+  cancelRegistration(): Promise<void>;
 
   // Authentication
   authenticateUser(
     profileId: string,
     authenticatorId: string | null,
   ): Promise<Types.AuthData>;
-  logout(): Promise<any>; // any or void when we have null from native?
+  logout(): Promise<void>;
   getAllAuthenticators(profileId: string): Promise<Types.Authenticator[]>; // TODO: use it in ExampleApp
   getRegisteredAuthenticators(
     profileId: string,
@@ -105,8 +105,8 @@ interface NativeMethods {
   setPreferredAuthenticator(
     profileId: string,
     idOneginiAuthenticator: string,
-  ): Promise<any>; // TODO: check this path and check if resolve is called on Native side
-  validatePinWithPolicy(pin: string): Promise<null>;
+  ): Promise<void>;
+  validatePinWithPolicy(pin: string): Promise<void>;
 
   // PIN
   submitPinAction(
@@ -114,22 +114,22 @@ interface NativeMethods {
     action: Events.PinAction,
     pin: string | null,
   ): Promise<any>;
-  changePin(): Promise<any>;
+  changePin(): Promise<void>;
 
   // OTP
-  enrollMobileAuthentication(): Promise<any>;
-  acceptMobileAuthConfirmation(): Promise<any>;
-  denyMobileAuthConfirmation(): Promise<any>;
-  handleMobileAuthWithOtp(otpCode: string): Promise<any>;
+  enrollMobileAuthentication(): Promise<void>;
+  acceptMobileAuthConfirmation(): Promise<void>;
+  denyMobileAuthConfirmation(): Promise<void>;
+  handleMobileAuthWithOtp(otpCode: string): Promise<void>;
   submitCustomRegistrationAction(
     customAction: Events.CustomRegistrationAction,
     identityProviderId: string,
     token: string | null,
-  ): Promise<any>;
+  ): Promise<void>;
 
   // Fingerprint
   registerFingerprintAuthenticator(profileId: string): Promise<any>;
-  deregisterFingerprintAuthenticator(profileId: string): Promise<any>;
+  deregisterFingerprintAuthenticator(profileId: string): Promise<void>;
   isFingerprintAuthenticatorRegistered(profileId: string): Promise<boolean>;
   submitFingerprintAcceptAuthenticationRequest(): Promise<any>;
   submitFingerprintDenyAuthenticationRequest(): Promise<any>;
@@ -182,13 +182,13 @@ const nativeMethods: NativeMethods = {
   authenticateUserImplicitly: (
     profileId: string,
     scopes?: string[],
-  ): Promise<any> => {
+  ): Promise<void> => {
     return scopes
       ? RNOneginiSdk.authenticateUserImplicitly(profileId, scopes)
       : RNOneginiSdk.authenticateUserImplicitly(profileId, []);
   },
 
-  authenticateDeviceForResource: (scopes?: string[]): Promise<any> => {
+  authenticateDeviceForResource: (scopes?: string[]): Promise<void> => {
     return scopes
       ? RNOneginiSdk.authenticateDeviceForResource(scopes)
       : RNOneginiSdk.authenticateDeviceForResource([]);

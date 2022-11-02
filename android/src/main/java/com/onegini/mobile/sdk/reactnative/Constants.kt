@@ -4,7 +4,6 @@ object Constants {
     enum class PinFlow {
         Authentication,
         Create,
-        Change,
     }
 
     // Pin notification actions for RN Bridge

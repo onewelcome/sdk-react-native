@@ -3,6 +3,9 @@ enum WrapperError : Error {
     case identityProviderNotFound
     case malformedUrl
     case parametersNotCorrect
+    case noProfileAuthenticated
+    case registrationNotInProgress
+    case mobileAuthNotInProgress
     
     var description: String {
         switch self {
@@ -14,6 +17,12 @@ enum WrapperError : Error {
             return "The supplied url is malformed"
         case .parametersNotCorrect:
             return "The supplied parameters are not correct"
+        case .noProfileAuthenticated:
+            return "No profile is currently authenticated"
+        case .registrationNotInProgress:
+            return "Registration is currently not in progress"
+        case .mobileAuthNotInProgress:
+            return "There is currently no mobile authentication in progress"
         }
     }
     var code: Int {
@@ -24,8 +33,14 @@ enum WrapperError : Error {
             return 8004
         case .parametersNotCorrect:
             return 8009
-        case .malformedUrl:
+        case .registrationNotInProgress:
             return 8010
+        case .noProfileAuthenticated:
+            return 8012
+        case .mobileAuthNotInProgress:
+            return 8013
+        case .malformedUrl:
+            return 8014
         }
     }
 }

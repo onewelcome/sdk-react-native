@@ -28,6 +28,7 @@ import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.Constants.PinFlow
 import com.onegini.mobile.sdk.reactnative.clean.wrapper.OneginiSdkWrapper
+import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.reactnative.exception.PARAM_CAN_NOT_BE_NULL
 import com.onegini.mobile.sdk.reactnative.managers.AuthenticatorManager
@@ -189,6 +190,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         idOneginiAuthenticator ?: promise.rejectWithNullError("idOneginiAuthenticator", "String").run { return }
         try {
             authenticatorManager.setPreferredAuthenticator(profileId, idOneginiAuthenticator)
+            promise.resolve(null)
         } catch (e: OneginiError) {
             promise.reject(e.errorType.toString(), e.message)
         }
@@ -232,7 +234,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     @ReactMethod
     fun submitCustomRegistrationAction(customAction: String?, identityProviderId: String?, token: String?, promise: Promise) {
         identityProviderId ?: promise.rejectWithNullError("identityProviderId", "String").run { return }
-        token ?: promise.rejectWithNullError("token", "String").run { return }
 
         val action = registrationManager.getSimpleCustomRegistrationAction(identityProviderId)
 
@@ -241,13 +242,26 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         }
 
         when (customAction) {
-            Constants.CUSTOM_REGISTRATION_ACTION_PROVIDE -> action.returnSuccess(token)
-            Constants.CUSTOM_REGISTRATION_ACTION_CANCEL -> action.returnError(java.lang.Exception(token))
+            Constants.CUSTOM_REGISTRATION_ACTION_PROVIDE -> {
+                try {
+                    action.returnSuccess(token)
+                    promise.resolve(null)
+                } catch (exception: OneginiReactNativeException) {
+                    promise.reject(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
+                }
+            }
+            Constants.CUSTOM_REGISTRATION_ACTION_CANCEL -> {
+                try {
+                    action.returnError(Exception(token))
+                    promise.resolve(null)
+                } catch (exception: OneginiReactNativeException) {
+                    promise.reject(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
+                }
+            }
             else -> {
                 promise.reject(OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.code, OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.message + ". Incorrect customAction supplied: $customAction")
             }
         }
-        promise.resolve(null)
     }
 
     @ReactMethod
@@ -267,8 +281,30 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     fun cancelRegistration(promise: Promise) {
-        oneginiSDK.registrationRequestHandler.cancelRegistration()
-        promise.resolve(null)
+        for (action in oneginiSDK.simpleCustomRegistrationActions) {
+            try {
+                cancelCreatePinSilent()
+                action.returnError(null)
+                return promise.resolve(null)
+            } catch (exception: OneginiReactNativeException) {}
+        }
+
+        try {
+            oneginiSDK.registrationRequestHandler.cancelRegistration()
+            cancelCreatePinSilent()
+            return promise.resolve(null)
+        } catch (exception: OneginiReactNativeException) {}
+
+        promise.reject(
+            OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code,
+            OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message
+        )
+    }
+
+    private fun cancelCreatePinSilent() {
+        try {
+            oneginiSDK.createPinRequestHandler.cancelPin()
+        } catch (exception: OneginiReactNativeException) {}
     }
 
     @ReactMethod
@@ -313,12 +349,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                 oneginiSDK.createPinRequestHandler.onPinProvided(pin.toCharArray())
                 return promise.resolve(null)
             }
-            PinFlow.Change.toString() -> {
-                oneginiSDK.createPinRequestHandler.onPinProvided(pin.toCharArray())
-                return promise.resolve(null)
-            } else -> {
-                promise.reject(OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.code, OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.message + ". Incorrect Pinflow supplied: $pinFlow")
-            }
         }
     }
 
@@ -329,14 +359,12 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                 return promise.resolve(null)
             }
             PinFlow.Create.toString() -> {
-                oneginiSDK.createPinRequestHandler.pinCancelled()
-                return promise.resolve(null)
-            }
-            PinFlow.Change.toString() -> {
-                oneginiSDK.createPinRequestHandler.pinCancelled()
-                return promise.resolve(null)
-            } else -> {
-            promise.reject(OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.code, OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.message + ". Incorrect Pinflow supplied: $pinFlow")
+                return try {
+                    oneginiSDK.createPinRequestHandler.cancelPin()
+                    promise.resolve(null)
+                } catch (exception: OneginiReactNativeException) {
+                    promise.reject(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
+                }
             }
         }
     }
@@ -361,7 +389,10 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
             promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.code, OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.message)
             return
         }
-        handler.acceptAuthenticationRequest()
+        when (handler.acceptAuthenticationRequest()) {
+            true -> promise.resolve(null)
+            false -> promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_NOT_IN_PROGRESS.code, OneginiWrapperErrors.MOBILE_AUTH_OTP_NOT_IN_PROGRESS.message)
+        }
     }
 
     @ReactMethod
@@ -371,7 +402,10 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
             promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.code, OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.message)
             return
         }
-        handler.denyAuthenticationRequest()
+        when (handler.denyAuthenticationRequest()) {
+            true -> promise.resolve(null)
+            false -> promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_NOT_IN_PROGRESS.code, OneginiWrapperErrors.MOBILE_AUTH_OTP_NOT_IN_PROGRESS.message)
+        }
     }
 
     @ReactMethod
