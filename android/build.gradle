@@ -17,7 +17,7 @@ buildscript {
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: "org.jlleitschuh.gradle.ktlint"
+//apply plugin: "org.jlleitschuh.gradle.ktlint"
 
 def safeExtGet(prop, fallback) {
     rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
