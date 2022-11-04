@@ -22,8 +22,6 @@ def do_post_install
   end
 end
 
-
-
 target 'RNOneginiSdk' do
   pod 'OneginiSDKiOS', '~> 11.0.0'
   config = use_native_modules!
@@ -49,5 +47,13 @@ target 'RNOneginiSdk' do
   post_install do |installer|
     react_native_post_install(installer)
     __apply_Xcode_12_5_M1_post_install_workaround(installer)
+    # Workaround for cli builds failing https://github.com/CocoaPods/CocoaPods/issues/11402#issuecomment-1201464693
+    installer.pods_project.targets.each do |target|
+      if target.respond_to?(:product_type) and target.product_type == "com.apple.product-type.bundle"
+        target.build_configurations.each do |config|
+            config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
+        end
+      end
+    end
   end
 end
