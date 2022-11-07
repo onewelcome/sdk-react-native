@@ -379,58 +379,25 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    fun submitPinAction(pinFlow: String?, action: String?, pin: String?, promise: Promise) {
-        when (action) {
-            Constants.PIN_ACTION_PROVIDE -> {
-                // TODO: Fix this nullGuarding pattern when apply the changes in RNP-126
-                pin ?: promise.rejectWithNullError(Pin.paramName, Pin.type).run { return }
-                handleSubmitPinActionProvide(pinFlow, pin, promise)
-                return
-            }
-            Constants.PIN_ACTION_CANCEL -> {
-                handleSubmitPinActionCancel(pinFlow, promise)
-                return
-            }
-            else -> {
-                promise.reject(OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.code, OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.message + ". Incorrect action supplied: $action")
-                return
-            }
-        }
-    }
-
-    private fun handleSubmitPinActionProvide(pinFlow: String?, pin: String, promise: Promise) {
-        when (pinFlow) {
-            PinFlow.Authentication.toString() -> {
-                return try {
-                    oneginiSDK.pinAuthenticationRequestHandler.acceptAuthenticationRequest(pin.toCharArray())
-                    promise.resolve(null)
-                } catch (exception: OneginiReactNativeException) {
-                    promise.reject(OneginiWrapperErrors.AUTHENTICATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.AUTHENTICATION_NOT_IN_PROGRESS.message)
+    fun submitPin(pinFlow: String?, pin: String?, promise: Promise) {
+        when (pin) {
+            null -> promise.rejectWithNullError(Pin.paramName, Pin.type)
+            else -> when (pinFlow) {
+                PinFlow.Authentication.toString() -> {
+                    return try {
+                        oneginiSDK.pinAuthenticationRequestHandler.acceptAuthenticationRequest(pin.toCharArray())
+                        promise.resolve(null)
+                    } catch (exception: OneginiReactNativeException) {
+                        promise.reject(OneginiWrapperErrors.AUTHENTICATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.AUTHENTICATION_NOT_IN_PROGRESS.message)
+                    }
                 }
-            }
-            PinFlow.Create.toString() -> {
-                return try {
-                    oneginiSDK.createPinRequestHandler.onPinProvided(pin.toCharArray())
-                    promise.resolve(null)
-                } catch (exception: OneginiReactNativeException) {
-                    promise.reject(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
-                }
-            }
-        }
-    }
-
-    private fun handleSubmitPinActionCancel(pinFlow: String?, promise: Promise) {
-        when (pinFlow) {
-            PinFlow.Authentication.toString() -> {
-                oneginiSDK.pinAuthenticationRequestHandler.denyAuthenticationRequest()
-                return promise.resolve(null)
-            }
-            PinFlow.Create.toString() -> {
-                return try {
-                    oneginiSDK.createPinRequestHandler.cancelPin()
-                    promise.resolve(null)
-                } catch (exception: OneginiReactNativeException) {
-                    promise.reject(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
+                PinFlow.Create.toString() -> {
+                    return try {
+                        oneginiSDK.createPinRequestHandler.onPinProvided(pin.toCharArray())
+                        promise.resolve(null)
+                    } catch (exception: OneginiReactNativeException) {
+                        promise.reject(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
+                    }
                 }
             }
         }
