@@ -115,6 +115,7 @@ interface NativeMethods {
     pin: string | null,
   ): Promise<any>;
   changePin(): Promise<void>;
+  cancelPinAuthentication(): Promise<void>;
 
   // OTP
   enrollMobileAuthentication(): Promise<void>;
