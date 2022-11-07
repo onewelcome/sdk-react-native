@@ -109,11 +109,7 @@ interface NativeMethods {
   validatePinWithPolicy(pin: string): Promise<void>;
 
   // PIN
-  submitPinAction(
-    flow: Events.PinFlow,
-    action: Events.PinAction,
-    pin: string | null,
-  ): Promise<any>;
+  submitPin(flow: Events.PinFlow, pin: string): Promise<any>;
   changePin(): Promise<void>;
   cancelPinAuthentication(): Promise<void>;
 
