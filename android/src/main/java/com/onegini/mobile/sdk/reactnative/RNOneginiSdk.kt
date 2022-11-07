@@ -328,6 +328,16 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
+    fun cancelPinAuthentication(promise: Promise) {
+        return try {
+            oneginiSDK.pinAuthenticationRequestHandler.denyAuthenticationRequest()
+            promise.resolve(null)
+        } catch (exception: OneginiReactNativeException) {
+            promise.reject(exception.errorType.toString(), exception.message)
+        }
+    }
+
+    @ReactMethod
     fun cancelRegistration(promise: Promise) {
         for (action in oneginiSDK.simpleCustomRegistrationActions) {
             try {
