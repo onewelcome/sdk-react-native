@@ -273,36 +273,17 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
-    fun submitCustomRegistrationAction(customAction: String?, identityProviderId: String?, token: String?, promise: Promise) {
+    fun submitCustomRegistrationAction(identityProviderId: String?, token: String?, promise: Promise) {
         when (identityProviderId) {
             null -> promise.rejectWithNullError(IdentityProviderId.paramName, IdentityProviderId.type)
             else -> {
                 val action = registrationManager.getSimpleCustomRegistrationAction(identityProviderId)
-
-                if (action == null) {
-                    return promise.reject(OneginiWrapperErrors.IDENTITY_PROVIDER_NOT_FOUND.code, OneginiWrapperErrors.IDENTITY_PROVIDER_NOT_FOUND.message)
-                }
-
-                when (customAction) {
-                    Constants.CUSTOM_REGISTRATION_ACTION_PROVIDE -> {
-                        try {
-                            action.returnSuccess(token)
-                            promise.resolve(null)
-                        } catch (exception: OneginiReactNativeException) {
-                            promise.reject(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
-                        }
-                    }
-                    Constants.CUSTOM_REGISTRATION_ACTION_CANCEL -> {
-                        try {
-                            action.returnError(Exception(token))
-                            promise.resolve(null)
-                        } catch (exception: OneginiReactNativeException) {
-                            promise.reject(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
-                        }
-                    }
-                    else -> {
-                        promise.reject(OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.code, OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.message + ". Incorrect customAction supplied: $customAction")
-                    }
+                    ?: return promise.reject(OneginiWrapperErrors.IDENTITY_PROVIDER_NOT_FOUND.code, OneginiWrapperErrors.IDENTITY_PROVIDER_NOT_FOUND.message)
+                try {
+                    action.returnSuccess(token)
+                    promise.resolve(null)
+                } catch (exception: OneginiReactNativeException) {
+                    promise.reject(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
                 }
             }
         }
