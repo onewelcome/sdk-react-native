@@ -37,6 +37,9 @@ class PinAuthenticationRequestHandler : OneginiPinAuthenticationRequestHandler {
     }
 
     fun denyAuthenticationRequest() {
-        callback?.denyAuthenticationRequest()
+        callback?.let { pinCallback ->
+            pinCallback.denyAuthenticationRequest()
+            callback = null
+        } ?: throw OneginiReactNativeException(OneginiWrapperErrors.AUTHENTICATION_NOT_IN_PROGRESS.code.toInt(), OneginiWrapperErrors.AUTHENTICATION_NOT_IN_PROGRESS.message)
     }
 }
