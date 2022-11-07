@@ -144,7 +144,6 @@ export enum SdkNotification {
 export enum PinFlow {
   Authentication = 'Authentication',
   Create = 'Create',
-  Change = 'Change',
 }
 
 export enum PinCreate {
