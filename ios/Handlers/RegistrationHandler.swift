@@ -6,7 +6,7 @@ protocol RegistrationConnectorToHandlerProtocol: AnyObject {
     func cancelPinCreation() -> Bool
     func cancelCustomRegistration() -> Bool
     func setCreatePinChallenge(_ challenge: ONGCreatePinChallenge?)
-    func handlePinAction(_ pin: String?, action: PinAction)
+    func handlePinAction(_ pin: String?, action: PinAction) -> Bool
     func handleDidReceivePinRegistrationChallenge(_ challenge: ONGCreatePinChallenge)
     func handleDidFailToRegister()
     func handleDidRegisterUser()
@@ -27,14 +27,15 @@ class RegistrationHandler: NSObject {
         return true
     }
 
-    func handlePin(_ pin: String?) {
+    func handlePin(_ pin: String?) -> Bool {
         
-        guard let createPinChallenge = self.createPinChallenge else { return }
+        guard let createPinChallenge = self.createPinChallenge else { return false}
         guard let pin = pin else{
             createPinChallenge.sender.cancel(createPinChallenge)
-            return
+            return true
         }
         createPinChallenge.sender.respond(withCreatedPin: pin, challenge: createPinChallenge)
+        return true
     }
 
     func handleOTPCode(_ code: String? = nil, _ cancelled: Bool? = false) -> Bool {
@@ -97,12 +98,12 @@ extension RegistrationHandler : RegistrationConnectorToHandlerProtocol {
         return false
     }
     
-    func handlePinAction(_ pin: String?, action: PinAction) {
+    func handlePinAction(_ pin: String?, action: PinAction) -> Bool {
         switch action {
             case PinAction.provide:
-                handlePin(pin)
+                return handlePin(pin)
             case PinAction.cancel:
-                cancelPinCreation()
+                return cancelPinCreation()
         }
     }
     

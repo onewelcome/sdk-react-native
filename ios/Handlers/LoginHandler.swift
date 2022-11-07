@@ -1,7 +1,7 @@
 protocol BridgeToLoginHandlerProtocol: AnyObject {
     func authenticateUser(_ profile: ONGUserProfile, authenticator: ONGAuthenticator?, completion: @escaping (ONGUserProfile?, Error?) -> Void)
     func setAuthPinChallenge(_ challenge: ONGPinChallenge?)
-    func handlePinAction(_ pin: String?, action: PinAction)
+    func handlePinAction(_ pin: String?, action: PinAction) -> Bool
 }
 
 
@@ -10,13 +10,14 @@ class LoginHandler: NSObject {
     private var loginCompletion: ((ONGUserProfile?, Error?) -> Void)?
     private let pinAuthenticationEventEmitter = PinAuthenticationEventEmitter()
 
-    func handlePin(_ pin: String?) {
-        guard let pinChallenge = self.pinChallenge else { return }
+    func handlePin(_ pin: String?) -> Bool {
+        guard let pinChallenge = self.pinChallenge else { return false }
         guard let pin = pin else {
             pinChallenge.sender.cancel(pinChallenge)
-            return
+            return true
         }
         pinChallenge.sender.respond(withPin: pin, challenge: pinChallenge)
+        return true
     }
 
     fileprivate func mapErrorFromPinChallenge(_ challenge: ONGPinChallenge) -> Error? {
@@ -56,12 +57,12 @@ extension LoginHandler : BridgeToLoginHandlerProtocol {
     func setAuthPinChallenge(_ challenge: ONGPinChallenge?) {
         pinChallenge = challenge
     }
-    func handlePinAction(_ pin: String?, action: PinAction) {
+    func handlePinAction(_ pin: String?, action: PinAction) -> Bool {
         switch action {
             case PinAction.provide:
-                handlePin(pin)
+                return handlePin(pin)
             case PinAction.cancel:
-                handlePin(nil)
+                return handlePin(nil)
         }
     }
 }
