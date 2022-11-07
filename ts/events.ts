@@ -141,11 +141,6 @@ export enum SdkNotification {
   Registration = 'ONEWELCOME_REGISTRATION_NOTIFICATION',
 }
 
-export enum PinAction {
-  ProvidePin = 'provide',
-  Cancel = 'cancel',
-}
-
 export enum PinFlow {
   Authentication = 'Authentication',
   Create = 'Create',
@@ -162,11 +157,6 @@ export enum PinAuthentication {
   Open = 'open',
   Close = 'close',
   IncorrectPin = 'incorrectPin',
-}
-
-export enum CustomRegistrationAction {
-  ProvideToken = 'provide',
-  Cancel = 'cancel',
 }
 
 export enum CustomRegistration {
