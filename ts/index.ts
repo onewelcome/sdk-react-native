@@ -119,7 +119,6 @@ interface NativeMethods {
   denyMobileAuthConfirmation(): Promise<void>;
   handleMobileAuthWithOtp(otpCode: string): Promise<void>;
   submitCustomRegistrationAction(
-    customAction: Events.CustomRegistrationAction,
     identityProviderId: string,
     token: string | null,
   ): Promise<void>;
