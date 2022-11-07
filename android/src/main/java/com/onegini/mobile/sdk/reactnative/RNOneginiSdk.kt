@@ -391,12 +391,20 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     private fun handleSubmitPinActionProvide(pinFlow: String?, pin: String, promise: Promise) {
         when (pinFlow) {
             PinFlow.Authentication.toString() -> {
-                oneginiSDK.pinAuthenticationRequestHandler.acceptAuthenticationRequest(pin.toCharArray())
-                return promise.resolve(null)
+                return try {
+                    oneginiSDK.pinAuthenticationRequestHandler.acceptAuthenticationRequest(pin.toCharArray())
+                    promise.resolve(null)
+                } catch (exception: OneginiReactNativeException) {
+                    promise.reject(OneginiWrapperErrors.AUTHENTICATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.AUTHENTICATION_NOT_IN_PROGRESS.message)
+                }
             }
             PinFlow.Create.toString() -> {
-                oneginiSDK.createPinRequestHandler.onPinProvided(pin.toCharArray())
-                return promise.resolve(null)
+                return try {
+                    oneginiSDK.createPinRequestHandler.onPinProvided(pin.toCharArray())
+                    promise.resolve(null)
+                } catch (exception: OneginiReactNativeException) {
+                    promise.reject(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
+                }
             }
         }
     }
