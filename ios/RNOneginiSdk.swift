@@ -134,13 +134,19 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         switch action {
         case CustomRegistrationAction.provide.rawValue:
-            return bridgeConnector.toRegistrationConnector.registrationHandler.processOTPCode(token) ?
-                resolve(nil) :
-                reject(String(WrapperError.registrationNotInProgress.code), WrapperError.registrationNotInProgress.description, WrapperError.registrationNotInProgress)
+            do {
+                try bridgeConnector.toRegistrationConnector.registrationHandler.processOTPCode(token)
+                resolve(nil)
+            } catch {
+                reject(String(error.code), error.localizedDescription, error)
+            }
         case CustomRegistrationAction.cancel.rawValue:
-            return bridgeConnector.toRegistrationConnector.registrationHandler.cancelCustomRegistration() ?
-                resolve(nil) :
-                reject(String(WrapperError.registrationNotInProgress.code), WrapperError.registrationNotInProgress.description, WrapperError.registrationNotInProgress)
+            do {
+                try bridgeConnector.toRegistrationConnector.registrationHandler.cancelCustomRegistration()
+                resolve(nil)
+            } catch {
+                reject(String(error.code), error.localizedDescription, error)
+            }
         default:
             reject(String(WrapperError.parametersNotCorrect.code), "Incorrect customAction supplied: \(action)", WrapperError.parametersNotCorrect)
         }
@@ -176,11 +182,11 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
             reject(String(WrapperError.malformedUrl.code), WrapperError.malformedUrl.description, WrapperError.malformedUrl)
             return
         }
-
-        if (bridgeConnector.toRegistrationConnector.registrationHandler.processRedirectURL(urlOBject)) {
-            resolve(nil)
-        } else {
-            reject(String(WrapperError.registrationNotInProgress.code), WrapperError.registrationNotInProgress.description, WrapperError.registrationNotInProgress)
+        do {
+            try bridgeConnector.toRegistrationConnector.registrationHandler.processRedirectURL(urlOBject)
+            return resolve(nil)
+        } catch {
+            reject(String(error.code), error.localizedDescription, error)
         }
     }
 
@@ -188,9 +194,19 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func cancelRegistration(_ resolve: @escaping RCTPromiseResolveBlock,
                             rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         let registrationHandler = bridgeConnector.toRegistrationConnector.registrationHandler
-        var canceled = registrationHandler.cancelBrowserRegistration()
-        canceled = registrationHandler.cancelPinCreation() || canceled
-        canceled = registrationHandler.cancelCustomRegistration() || canceled
+        var canceled = false
+        do {
+            try registrationHandler.cancelBrowserRegistration()
+            canceled = true
+        } catch {}
+        do {
+            try registrationHandler.cancelPinCreation()
+            canceled = true
+        } catch {}
+        do {
+            try registrationHandler.cancelCustomRegistration()
+            canceled = true
+        } catch {}
         if canceled {
             resolve(nil)
         } else {

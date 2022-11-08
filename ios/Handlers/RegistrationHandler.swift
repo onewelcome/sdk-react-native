@@ -1,10 +1,10 @@
 protocol RegistrationConnectorToHandlerProtocol: AnyObject {
     func signUp(identityProvider: ONGIdentityProvider?, scopes: [String], completion: @escaping (Bool, ONGUserProfile?, Error?) -> Void)
-    func processRedirectURL(_ url: URL) -> Bool
-    func processOTPCode(_ code: String?) -> Bool
-    func cancelBrowserRegistration() -> Bool
-    func cancelPinCreation() -> Bool
-    func cancelCustomRegistration() -> Bool
+    func processRedirectURL(_ url: URL) throws
+    func processOTPCode(_ code: String?) throws
+    func cancelBrowserRegistration() throws
+    func cancelPinCreation() throws
+    func cancelCustomRegistration() throws
     func setCreatePinChallenge(_ challenge: ONGCreatePinChallenge?)
     func handlePinAction(_ pin: String?, action: PinAction) throws
     func handleDidReceivePinRegistrationChallenge(_ challenge: ONGCreatePinChallenge)
@@ -21,10 +21,10 @@ class RegistrationHandler: NSObject {
     private let createPinEventEmitter = CreatePinEventEmitter()
     private let registrationEventEmitter = RegistrationEventEmitter()
 
-    func handleRedirectURL(_ url: URL) -> Bool {
-        guard let browserRegistrationChallenge = self.browserRegistrationChallenge else { return false }
+    func handleRedirectURL(_ url: URL) throws {
+        guard let browserRegistrationChallenge = self.browserRegistrationChallenge else { throw WrapperError.registrationNotInProgress }
         browserRegistrationChallenge.sender.respond(with: url, challenge: browserRegistrationChallenge)
-        return true
+        return
     }
 
     func handlePin(_ pin: String?) throws {
@@ -37,14 +37,14 @@ class RegistrationHandler: NSObject {
         return
     }
 
-    func handleOTPCode(_ code: String? = nil, _ cancelled: Bool? = false) -> Bool {
-        guard let customRegistrationChallenge = self.customRegistrationChallenge else { return false }
+    func handleOTPCode(_ code: String? = nil, _ cancelled: Bool? = false) throws {
+        guard let customRegistrationChallenge = self.customRegistrationChallenge else { throw WrapperError.registrationNotInProgress }
         if(cancelled == true) {
             customRegistrationChallenge.sender.cancel(customRegistrationChallenge)
-            return true
+            return
         }
         customRegistrationChallenge.sender.respond(withData: code, challenge: customRegistrationChallenge)
-        return true
+        return
     }
 
     fileprivate func mapErrorFromPinChallenge(_ challenge: ONGCreatePinChallenge) -> Error? {
@@ -70,31 +70,31 @@ extension RegistrationHandler : RegistrationConnectorToHandlerProtocol {
         ONGUserClient.sharedInstance().registerUser(with: identityProvider, scopes: scopes, delegate: self)
     }
 
-    func processRedirectURL(_ url: URL) -> Bool {
-        return handleRedirectURL(url)
+    func processRedirectURL(_ url: URL) throws {
+        try handleRedirectURL(url)
     }
 
-    func processOTPCode(_ code: String?) -> Bool {
-        return handleOTPCode(code)
+    func processOTPCode(_ code: String?) throws {
+        try handleOTPCode(code)
     }
 
-    func cancelCustomRegistration() -> Bool {
-        return handleOTPCode(nil, true)
+    func cancelCustomRegistration() throws {
+        try handleOTPCode(nil, true)
     }
 
-    func cancelBrowserRegistration() -> Bool {
+    func cancelBrowserRegistration() throws {
         if let browserRegistrationChallenge = self.browserRegistrationChallenge {
             browserRegistrationChallenge.sender.cancel(browserRegistrationChallenge)
-            return true
+            return
         }
-        return false
+        throw WrapperError.registrationNotInProgress
     }
-    func cancelPinCreation() -> Bool {
+    func cancelPinCreation() throws {
         if let createPinChallenge = self.createPinChallenge {
             createPinChallenge.sender.cancel(createPinChallenge)
-            return true
+            return
         }
-        return false
+        throw WrapperError.registrationNotInProgress
     }
     
     func handlePinAction(_ pin: String?, action: PinAction) throws {
@@ -102,7 +102,7 @@ extension RegistrationHandler : RegistrationConnectorToHandlerProtocol {
             case PinAction.provide:
                 try handlePin(pin)
             case PinAction.cancel:
-                cancelPinCreation()
+                try cancelPinCreation()
         }
     }
     
