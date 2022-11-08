@@ -49,3 +49,9 @@ enum WrapperError : Error {
         }
     }
 }
+
+extension WrapperError: LocalizedError {
+    public var errorDescription: String? {
+        return self.description
+    }
+}
