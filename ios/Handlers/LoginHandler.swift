@@ -17,7 +17,6 @@ class LoginHandler: NSObject {
             return
         }
         pinChallenge.sender.respond(withPin: pin, challenge: pinChallenge)
-        return
     }
 
     fileprivate func mapErrorFromPinChallenge(_ challenge: ONGPinChallenge) -> Error? {

@@ -24,7 +24,6 @@ class RegistrationHandler: NSObject {
     func handleRedirectURL(_ url: URL) throws {
         guard let browserRegistrationChallenge = self.browserRegistrationChallenge else { throw WrapperError.registrationNotInProgress }
         browserRegistrationChallenge.sender.respond(with: url, challenge: browserRegistrationChallenge)
-        return
     }
 
     func handlePin(_ pin: String?) throws {
@@ -34,7 +33,6 @@ class RegistrationHandler: NSObject {
             return
         }
         createPinChallenge.sender.respond(withCreatedPin: pin, challenge: createPinChallenge)
-        return
     }
 
     func handleOTPCode(_ code: String? = nil, _ cancelled: Bool? = false) throws {
@@ -44,7 +42,6 @@ class RegistrationHandler: NSObject {
             return
         }
         customRegistrationChallenge.sender.respond(withData: code, challenge: customRegistrationChallenge)
-        return
     }
 
     fileprivate func mapErrorFromPinChallenge(_ challenge: ONGCreatePinChallenge) -> Error? {
@@ -83,11 +80,10 @@ extension RegistrationHandler : RegistrationConnectorToHandlerProtocol {
     }
 
     func cancelBrowserRegistration() throws {
-        if let browserRegistrationChallenge = self.browserRegistrationChallenge {
-            browserRegistrationChallenge.sender.cancel(browserRegistrationChallenge)
-            return
+        guard let browserRegistrationChallenge = self.browserRegistrationChallenge else {
+            throw WrapperError.registrationNotInProgress
         }
-        throw WrapperError.registrationNotInProgress
+        browserRegistrationChallenge.sender.cancel(browserRegistrationChallenge)
     }
     func cancelPinCreation() throws {
         if let createPinChallenge = self.createPinChallenge {
