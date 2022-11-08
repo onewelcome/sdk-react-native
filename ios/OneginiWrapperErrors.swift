@@ -1,4 +1,4 @@
-enum WrapperError : Error {
+enum WrapperError: LocalizedError {
     case profileDoesNotExist
     case identityProviderNotFound
     case malformedUrl
@@ -47,11 +47,5 @@ enum WrapperError : Error {
         case .authenticationNotInProgress:
             return 8015
         }
-    }
-}
-
-extension WrapperError: LocalizedError {
-    public var errorDescription: String? {
-        return self.description
     }
 }
