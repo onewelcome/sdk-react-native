@@ -195,18 +195,9 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                             rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         let registrationHandler = bridgeConnector.toRegistrationConnector.registrationHandler
         var canceled = false
-        do {
-            try registrationHandler.cancelBrowserRegistration()
-            canceled = true
-        } catch {}
-        do {
-            try registrationHandler.cancelPinCreation()
-            canceled = true
-        } catch {}
-        do {
-            try registrationHandler.cancelCustomRegistration()
-            canceled = true
-        } catch {}
+        if (try? registrationHandler.cancelBrowserRegistration()) != nil { canceled = true }
+        if (try? registrationHandler.cancelPinCreation()) != nil { canceled = true }
+        if (try? registrationHandler.cancelCustomRegistration()) != nil { canceled = true }
         if canceled {
             resolve(nil)
         } else {

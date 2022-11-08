@@ -86,11 +86,10 @@ extension RegistrationHandler : RegistrationConnectorToHandlerProtocol {
         browserRegistrationChallenge.sender.cancel(browserRegistrationChallenge)
     }
     func cancelPinCreation() throws {
-        if let createPinChallenge = self.createPinChallenge {
-            createPinChallenge.sender.cancel(createPinChallenge)
-            return
+        guard let createPinChallenge = self.createPinChallenge else {
+            throw WrapperError.registrationNotInProgress
         }
-        throw WrapperError.registrationNotInProgress
+        createPinChallenge.sender.cancel(createPinChallenge)
     }
     
     func handlePinAction(_ pin: String?, action: PinAction) throws {
