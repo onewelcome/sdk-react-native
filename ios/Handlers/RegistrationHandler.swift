@@ -6,7 +6,7 @@ protocol RegistrationConnectorToHandlerProtocol: AnyObject {
     func cancelPinCreation() -> Bool
     func cancelCustomRegistration() -> Bool
     func setCreatePinChallenge(_ challenge: ONGCreatePinChallenge?)
-    func handlePinAction(_ pin: String?, action: PinAction) -> Bool
+    func handlePinAction(_ pin: String?, action: PinAction) throws
     func handleDidReceivePinRegistrationChallenge(_ challenge: ONGCreatePinChallenge)
     func handleDidFailToRegister()
     func handleDidRegisterUser()
@@ -27,15 +27,14 @@ class RegistrationHandler: NSObject {
         return true
     }
 
-    func handlePin(_ pin: String?) -> Bool {
-        
-        guard let createPinChallenge = self.createPinChallenge else { return false}
+    func handlePin(_ pin: String?) throws {
+        guard let createPinChallenge = self.createPinChallenge else { throw WrapperError.registrationNotInProgress}
         guard let pin = pin else{
             createPinChallenge.sender.cancel(createPinChallenge)
-            return true
+            return
         }
         createPinChallenge.sender.respond(withCreatedPin: pin, challenge: createPinChallenge)
-        return true
+        return
     }
 
     func handleOTPCode(_ code: String? = nil, _ cancelled: Bool? = false) -> Bool {
@@ -98,12 +97,12 @@ extension RegistrationHandler : RegistrationConnectorToHandlerProtocol {
         return false
     }
     
-    func handlePinAction(_ pin: String?, action: PinAction) -> Bool {
+    func handlePinAction(_ pin: String?, action: PinAction) throws {
         switch action {
             case PinAction.provide:
-                return handlePin(pin)
+                try handlePin(pin)
             case PinAction.cancel:
-                return cancelPinCreation()
+                cancelPinCreation()
         }
     }
     

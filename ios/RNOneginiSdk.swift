@@ -216,13 +216,19 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
         if let pinAction = mapStringToPinAction(action: action) {
             switch flow {
             case PinFlow.create.rawValue:
-                bridgeConnector.toRegistrationConnector.registrationHandler.handlePinAction(pin, action: pinAction) ?
-                    resolve(nil) :
-                    reject(String(WrapperError.registrationNotInProgress.code), WrapperError.registrationNotInProgress.description, WrapperError.registrationNotInProgress)
+                do {
+                    try bridgeConnector.toRegistrationConnector.registrationHandler.handlePinAction(pin, action: pinAction)
+                    resolve(nil)
+                } catch {
+                    reject(String(error.code), error.localizedDescription, error)
+                }
             case PinFlow.authentication.rawValue:
-                bridgeConnector.toLoginHandler.handlePinAction(pin, action: pinAction) ?
-                resolve(nil) :
-                reject(String(WrapperError.authenticationNotInProgress.code), WrapperError.authenticationNotInProgress.description, WrapperError.authenticationNotInProgress)
+                do {
+                    try bridgeConnector.toLoginHandler.handlePinAction(pin, action: pinAction)
+                    resolve(nil)
+                } catch {
+                    reject(String(error.code), error.localizedDescription, error)
+                }
             default:
                 reject(String(WrapperError.parametersNotCorrect.code), "Incorrect pinflow supplied: \(flow)", WrapperError.parametersNotCorrect)
             }
