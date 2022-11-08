@@ -9,15 +9,15 @@ buildscript {
         }
 
         dependencies {
-            classpath('com.android.tools.build:gradle:7.2.2')
+            classpath('com.android.tools.build:gradle:4.2.2')
             classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10"
-            classpath 'org.jlleitschuh.gradle:ktlint-gradle:10.0.0'
+            classpath 'org.jlleitschuh.gradle:ktlint-gradle:11.0.0'
         }
 }
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: "org.jlleitschuh.gradle.ktlint"
+//apply plugin: "org.jlleitschuh.gradle.ktlint"
 
 def safeExtGet(prop, fallback) {
     rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
@@ -25,7 +25,6 @@ def safeExtGet(prop, fallback) {
 
 android {
     compileSdkVersion safeExtGet('compileSdkVersion', 31)
-    buildToolsVersion safeExtGet('buildToolsVersion', '31.0.0')
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -33,7 +32,7 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion safeExtGet('minSdkVersion', 23)
+        minSdkVersion safeExtGet('minSdkVersion', 24)
         targetSdkVersion safeExtGet('targetSdkVersion', 31)
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -62,7 +61,6 @@ repositories {
 dependencies {
     implementation 'com.facebook.react:react-native:+'  // From node_modules
     implementation "androidx.core:core-ktx:1.3.2"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.6.10"
 
     // Required -- JUnit 4 framework
     testImplementation 'junit:junit:4.12'
@@ -82,6 +80,8 @@ dependencies {
 }
 
 allprojects {
+    ext.artifactoryUser = project.hasProperty('artifactory_user') ? artifactory_user : System.getenv("ARTIFACTORY_USER")
+    ext.artifactoryPassword = project.hasProperty('artifactory_password') ? artifactory_password : System.getenv("ARTIFACTORY_PASSWORD")
     repositories {
         mavenLocal()
         mavenCentral()
@@ -96,12 +96,12 @@ allprojects {
 
         google()
         maven { url 'https://www.jitpack.io' }
-        if (project.hasProperty('onegini_artifactory_user') && project.hasProperty('onegini_artifactory_password')) {
+         if (artifactoryUser && artifactoryPassword) {
             maven {
                 url "https://repo.onegini.com/artifactory/onegini-sdk"
                 credentials {
-                    username "${onegini_artifactory_user}"
-                    password "${onegini_artifactory_password}"
+                    username artifactoryUser
+                    password artifactoryPassword
                 }
             }
         } else {
