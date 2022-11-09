@@ -29,6 +29,7 @@ import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.Constants.PinFlow
 import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.*
 import com.onegini.mobile.sdk.reactnative.clean.wrapper.OneginiSdkWrapper
+import com.onegini.mobile.sdk.reactnative.exception.CANCEL_CUSTOM_REGISTRATION_NOT_ALLOWED
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.reactnative.exception.PARAM_CAN_NOT_BE_NULL
@@ -45,7 +46,6 @@ import com.onegini.mobile.sdk.reactnative.network.AnonymousService
 import com.onegini.mobile.sdk.reactnative.network.ImplicitUserService
 import com.onegini.mobile.sdk.reactnative.network.UserService
 import io.reactivex.rxjava3.disposables.CompositeDisposable
-import java.lang.Exception
 
 
 class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
@@ -80,6 +80,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         OtpCode("otpCode", "string"),
         Type("type", "string"),
         Details("details", "string"),
+        Message("message", "string"),
     }
 
     override fun canOverrideExistingModule(): Boolean {
@@ -269,7 +270,32 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                 )
             }
         }
+    }
 
+    @ReactMethod
+    fun cancelBrowserRegistration(promise: Promise) {
+        try {
+            oneginiSDK.registrationRequestHandler.cancelRegistration()
+            return promise.resolve(null)
+        } catch (exception: OneginiReactNativeException) {
+            promise.reject(exception.errorType.toString(), exception.message)
+        }
+    }
+
+    @ReactMethod
+    fun cancelCustomRegistration(message: String?, promise: Promise) {
+        when (message) {
+            null -> promise.rejectWithNullError(Message.paramName, Message.type)
+            else -> {
+                for (action in oneginiSDK.simpleCustomRegistrationActions) {
+                    try {
+                        action.returnError(Exception(message))
+                        return promise.resolve(null)
+                    } catch (exception: OneginiReactNativeException) {}
+                }
+                promise.reject(OneginiWrapperErrors.ACTION_NOT_ALLOWED.code, CANCEL_CUSTOM_REGISTRATION_NOT_ALLOWED)
+            }
+        }
     }
 
     @ReactMethod
@@ -309,6 +335,15 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     @ReactMethod
+    fun cancelPinCreation(promise: Promise) {
+        try {
+            oneginiSDK.createPinRequestHandler.cancelPin()
+        } catch (exception: OneginiReactNativeException) {
+            promise.reject(OneginiWrapperErrors.PIN_CREATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.PIN_CREATION_NOT_IN_PROGRESS.message)
+        }
+    }
+
+    @ReactMethod
     fun cancelPinAuthentication(promise: Promise) {
         return try {
             oneginiSDK.pinAuthenticationRequestHandler.denyAuthenticationRequest()
@@ -316,34 +351,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         } catch (exception: OneginiReactNativeException) {
             promise.reject(exception.errorType.toString(), exception.message)
         }
-    }
-
-    @ReactMethod
-    fun cancelRegistration(promise: Promise) {
-        for (action in oneginiSDK.simpleCustomRegistrationActions) {
-            try {
-                cancelCreatePinSilent()
-                action.returnError(null)
-                return promise.resolve(null)
-            } catch (exception: OneginiReactNativeException) {}
-        }
-
-        try {
-            oneginiSDK.registrationRequestHandler.cancelRegistration()
-            cancelCreatePinSilent()
-            return promise.resolve(null)
-        } catch (exception: OneginiReactNativeException) {}
-
-        promise.reject(
-            OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code,
-            OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message
-        )
-    }
-
-    private fun cancelCreatePinSilent() {
-        try {
-            oneginiSDK.createPinRequestHandler.cancelPin()
-        } catch (exception: OneginiReactNativeException) {}
     }
 
     @ReactMethod

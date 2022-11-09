@@ -14,4 +14,6 @@ enum class OneginiWrapperErrors(val code: String, val message: String) {
     NO_PROFILE_AUTHENTICATED("8012", "No profile is currently authenticated"),
     MOBILE_AUTH_OTP_NOT_IN_PROGRESS("8013", "There is currently no mobile authentication in progress"),
     AUTHENTICATION_NOT_IN_PROGRESS("8015", "Authentication is currently not in progress"),
+    PIN_CREATION_NOT_IN_PROGRESS("8016", "Pin creation is currently not in progress"),
+    ACTION_NOT_ALLOWED("8017", "This action is currently not allowed"),
 }
