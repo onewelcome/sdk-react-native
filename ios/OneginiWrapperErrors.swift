@@ -8,7 +8,7 @@ enum WrapperError: LocalizedError {
     case mobileAuthNotInProgress
     case authenticationNotInProgress
     
-    var description: String {
+    var errorDescription: String? {
         switch self {
         case .identityProviderNotFound:
             return "Identity provider not found"
