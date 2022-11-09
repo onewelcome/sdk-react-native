@@ -191,17 +191,47 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     @objc
-    func cancelRegistration(_ resolve: @escaping RCTPromiseResolveBlock,
+    func cancelBrowserRegistration(_ resolve: @escaping RCTPromiseResolveBlock,
                             rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        let registrationHandler = bridgeConnector.toRegistrationConnector.registrationHandler
-        var canceled = false
-        if (try? registrationHandler.cancelBrowserRegistration()) != nil { canceled = true }
-        if (try? registrationHandler.cancelPinCreation()) != nil { canceled = true }
-        if (try? registrationHandler.cancelCustomRegistration()) != nil { canceled = true }
-        if canceled {
+        do {
+            try bridgeConnector.toRegistrationConnector.registrationHandler.cancelBrowserRegistration()
             resolve(nil)
-        } else {
-            reject(String(WrapperError.registrationNotInProgress.code), WrapperError.registrationNotInProgress.description, WrapperError.registrationNotInProgress)
+        } catch {
+            reject(String(error.code), error.localizedDescription, error)
+        }
+    }
+
+    @objc
+    func cancelCustomRegistration(_ message: String, resolver resolve: @escaping RCTPromiseResolveBlock,
+                            rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        do {
+            // Message here is not used, as we can not give a reason for canceling on iOS, only on Android
+            try bridgeConnector.toRegistrationConnector.registrationHandler.cancelCustomRegistration()
+            resolve(nil)
+        } catch {
+            reject(String(error.code), error.localizedDescription, error)
+        }
+    }
+
+    @objc
+    func cancelPinAuthentication(_ resolve: @escaping RCTPromiseResolveBlock,
+                            rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        do {
+            try bridgeConnector.toLoginHandler.cancelPinAuthentication()
+            resolve(nil)
+        } catch {
+            reject(String(error.code), error.localizedDescription, error)
+        }
+    }
+
+    @objc
+    func cancelPinCreation(_ resolve: @escaping RCTPromiseResolveBlock,
+                            rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        do {
+            try bridgeConnector.toRegistrationConnector.registrationHandler.cancelPinCreation()
+            resolve(nil)
+        } catch {
+            reject(String(error.code), error.localizedDescription, error)
         }
     }
     
