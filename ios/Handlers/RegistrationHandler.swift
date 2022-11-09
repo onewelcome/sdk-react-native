@@ -6,7 +6,7 @@ protocol RegistrationConnectorToHandlerProtocol: AnyObject {
     func cancelPinCreation() throws
     func cancelCustomRegistration() throws
     func setCreatePinChallenge(_ challenge: ONGCreatePinChallenge?)
-    func handlePinAction(_ pin: String?, action: PinAction) throws
+    func handlePin(_ pin: String?) throws
     func handleDidReceivePinRegistrationChallenge(_ challenge: ONGCreatePinChallenge)
     func handleDidFailToRegister()
     func handleDidRegisterUser()
@@ -90,15 +90,6 @@ extension RegistrationHandler : RegistrationConnectorToHandlerProtocol {
             throw WrapperError.registrationNotInProgress
         }
         createPinChallenge.sender.cancel(createPinChallenge)
-    }
-    
-    func handlePinAction(_ pin: String?, action: PinAction) throws {
-        switch action {
-            case PinAction.provide:
-                try handlePin(pin)
-            case PinAction.cancel:
-                try cancelPinCreation()
-        }
     }
     
     func handleDidReceivePinRegistrationChallenge(_ challenge: ONGCreatePinChallenge) {

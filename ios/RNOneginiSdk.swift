@@ -129,26 +129,14 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     @objc
-    func submitCustomRegistrationAction(_ action: String, identityProviderId: String, token: String?,
+    func submitCustomRegistrationAction(_ identityProviderId: String, token: String?,
                                         resolver resolve: @escaping RCTPromiseResolveBlock,
                                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        switch action {
-        case CustomRegistrationAction.provide.rawValue:
-            do {
-                try bridgeConnector.toRegistrationConnector.registrationHandler.processOTPCode(token)
-                resolve(nil)
-            } catch {
-                reject(String(error.code), error.localizedDescription, error)
-            }
-        case CustomRegistrationAction.cancel.rawValue:
-            do {
-                try bridgeConnector.toRegistrationConnector.registrationHandler.cancelCustomRegistration()
-                resolve(nil)
-            } catch {
-                reject(String(error.code), error.localizedDescription, error)
-            }
-        default:
-            reject(String(WrapperError.parametersNotCorrect.code), "Incorrect customAction supplied: \(action)", WrapperError.parametersNotCorrect)
+        do {
+            try bridgeConnector.toRegistrationConnector.registrationHandler.processOTPCode(token)
+            resolve(nil)
+        } catch {
+            reject(String(error.code), error.localizedDescription, error)
         }
     }
 
@@ -235,42 +223,27 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
         }
     }
     
-    func mapStringToPinAction(action: String) -> PinAction? {
-        switch action {
-        case PinAction.provide.rawValue:
-            return .provide
-        case PinAction.cancel.rawValue:
-            return .cancel
-        default:
-            return nil
-        }
-    }
-    
     @objc
-    func submitPinAction(_ flow: String, action: String, pin: String,
+    func submitPin(_ flow: String, pin: String,
                          resolver resolve: @escaping RCTPromiseResolveBlock,
                          rejecter reject: @escaping RCTPromiseRejectBlock) {
-        if let pinAction = mapStringToPinAction(action: action) {
-            switch flow {
-            case PinFlow.create.rawValue:
-                do {
-                    try bridgeConnector.toRegistrationConnector.registrationHandler.handlePinAction(pin, action: pinAction)
-                    resolve(nil)
-                } catch {
-                    reject(String(error.code), error.localizedDescription, error)
-                }
-            case PinFlow.authentication.rawValue:
-                do {
-                    try bridgeConnector.toLoginHandler.handlePinAction(pin, action: pinAction)
-                    resolve(nil)
-                } catch {
-                    reject(String(error.code), error.localizedDescription, error)
-                }
-            default:
-                reject(String(WrapperError.parametersNotCorrect.code), "Incorrect pinflow supplied: \(flow)", WrapperError.parametersNotCorrect)
+        switch flow {
+        case PinFlow.create.rawValue:
+            do {
+                try bridgeConnector.toRegistrationConnector.registrationHandler.handlePin(pin)
+                resolve(nil)
+            } catch {
+                reject(String(error.code), error.localizedDescription, error)
             }
-        } else {
-            reject(String(WrapperError.parametersNotCorrect.code), "Incorrect action supplied: \(action)", WrapperError.parametersNotCorrect)
+        case PinFlow.authentication.rawValue:
+            do {
+                try bridgeConnector.toLoginHandler.handlePin(pin)
+                resolve(nil)
+            } catch {
+                reject(String(error.code), error.localizedDescription, error)
+            }
+        default:
+            reject(String(WrapperError.parametersNotCorrect.code), "Incorrect pinflow supplied: \(flow)", WrapperError.parametersNotCorrect)
         }
     }
 
