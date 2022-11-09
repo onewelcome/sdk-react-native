@@ -32,7 +32,9 @@ class RegisterUserUseCase(private val oneginiSDK: OneginiSDK) {
                 }
 
                 override fun onError(error: OneginiRegistrationError) {
-                    promise.reject(error.errorType.toString(), error.message)
+                    error.cause?.let { cause ->
+                        promise.reject(error.errorType.toString(), cause.message)
+                    } ?:  promise.reject(error.errorType.toString(), error.message)
                 }
             }
         )
