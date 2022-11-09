@@ -89,7 +89,8 @@ interface NativeMethods {
   ): Promise<Types.Profile>;
   deregisterUser(profileId: string): Promise<void>;
   handleRegistrationCallback(uri: string): Promise<void>;
-  cancelRegistration(): Promise<void>;
+  cancelBrowserRegistration(): Promise<void>;
+  cancelCustomRegistration(message: string): Promise<void>;
 
   // Authentication
   authenticateUser(
@@ -112,6 +113,7 @@ interface NativeMethods {
   submitPin(flow: Events.PinFlow, pin: string): Promise<any>;
   changePin(): Promise<void>;
   cancelPinAuthentication(): Promise<void>;
+  cancelPinCreation(): Promise<void>;
 
   // OTP
   enrollMobileAuthentication(): Promise<void>;
