@@ -11,6 +11,6 @@ class GetAccessTokenUseCase(val oneginiSDK: OneginiSDK) {
             promise.resolve(token)
             return
         }
-        promise.reject(OneginiWrapperErrors.NO_PROFILE_AUTHENTICATED.code, OneginiWrapperErrors.NO_PROFILE_AUTHENTICATED.message)
+        promise.reject(OneginiWrapperErrors.NO_PROFILE_AUTHENTICATED.code.toString(), OneginiWrapperErrors.NO_PROFILE_AUTHENTICATED.message)
     }
 }

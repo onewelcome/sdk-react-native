@@ -30,7 +30,7 @@ class PinAuthenticationEventEmitter() {
     dataMap.putString("action", Constants.PIN_NOTIFICATION_INCORRECT_PIN)
     dataMap.putString("flow", PinFlow.Authentication.toString())
     dataMap.putString("remainingFailureCount", remainingAttempts.toString())
-    dataMap.putInt("errorType", OneginiWrapperErrors.WRONG_PIN_ERROR.code.toInt())
+    dataMap.putInt("errorType", OneginiWrapperErrors.WRONG_PIN_ERROR.code)
     dataMap.putString("errorMsg", OneginiWrapperErrors.WRONG_PIN_ERROR.message)
     reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
       .emit(Constants.ONEWELCOME_PIN_AUTHENTICATION_NOTIFICATION, dataMap)

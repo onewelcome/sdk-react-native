@@ -44,7 +44,7 @@ class SimpleCustomTwoStepRegistrationActionImpl(private val idProvider: String) 
             customRegistrationCallback.returnError(exception)
             callback = null
         } ?: throw OneginiReactNativeException(
-            OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code.toInt(),
+            OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code,
             OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message
         )
     }

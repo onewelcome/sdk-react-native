@@ -21,14 +21,14 @@ class StartClientUseCase(
         try {
             config = OneginiReactNativeConfigMapper.toOneginiReactNativeConfig(rnConfig)
         } catch (e: Exception) {
-            promise.reject(OneginiWrapperErrors.WRONG_CONFIG_MODEL.code, OneginiWrapperErrors.WRONG_CONFIG_MODEL.message)
+            promise.reject(OneginiWrapperErrors.WRONG_CONFIG_MODEL.code.toString(), OneginiWrapperErrors.WRONG_CONFIG_MODEL.message)
             return
         }
 
         try {
             oneginiSDK.init(config)
         } catch (e: Exception) {
-            promise.reject(OneginiWrapperErrors.WRONG_CONFIG_MODEL.code, OneginiWrapperErrors.WRONG_CONFIG_MODEL.message)
+            promise.reject(OneginiWrapperErrors.WRONG_CONFIG_MODEL.code.toString(), OneginiWrapperErrors.WRONG_CONFIG_MODEL.message)
             return
         }
 

@@ -31,7 +31,7 @@ class RegistrationRequestHandler : OneginiBrowserRegistrationRequestHandler {
     callback?.let { registrationCallback ->
       registrationCallback.denyRegistration()
       callback = null
-    } ?: throw OneginiReactNativeException(OneginiWrapperErrors.ACTION_NOT_ALLOWED.code.toInt(), CANCEL_BROWSER_REGISTRATION_NOT_ALLOWED)
+    } ?: throw OneginiReactNativeException(OneginiWrapperErrors.ACTION_NOT_ALLOWED.code, CANCEL_BROWSER_REGISTRATION_NOT_ALLOWED)
   }
 
   override fun startRegistration(uri: Uri, oneginiBrowserRegistrationCallback: OneginiBrowserRegistrationCallback) {
