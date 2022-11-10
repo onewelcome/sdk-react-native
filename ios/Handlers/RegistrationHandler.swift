@@ -24,6 +24,7 @@ class RegistrationHandler: NSObject {
     func handleRedirectURL(_ url: URL) throws {
         guard let browserRegistrationChallenge = self.browserRegistrationChallenge else { throw WrapperError.registrationNotInProgress }
         browserRegistrationChallenge.sender.respond(with: url, challenge: browserRegistrationChallenge)
+        self.browserRegistrationChallenge = nil
     }
 
     func handlePin(_ pin: String?) throws {
@@ -35,13 +36,10 @@ class RegistrationHandler: NSObject {
         createPinChallenge.sender.respond(withCreatedPin: pin, challenge: createPinChallenge)
     }
 
-    func handleOTPCode(_ code: String? = nil, _ cancelled: Bool? = false) throws {
+    func handleOTPCode(_ code: String? = nil) throws {
         guard let customRegistrationChallenge = self.customRegistrationChallenge else { throw WrapperError.registrationNotInProgress }
-        if(cancelled == true) {
-            customRegistrationChallenge.sender.cancel(customRegistrationChallenge)
-            return
-        }
         customRegistrationChallenge.sender.respond(withData: code, challenge: customRegistrationChallenge)
+        self.customRegistrationChallenge = nil
     }
 
     fileprivate func mapErrorFromPinChallenge(_ challenge: ONGCreatePinChallenge) -> Error? {
@@ -76,14 +74,19 @@ extension RegistrationHandler : RegistrationConnectorToHandlerProtocol {
     }
 
     func cancelCustomRegistration() throws {
-        try handleOTPCode(nil, true)
+        guard let customRegistrationChallenge = self.customRegistrationChallenge else {
+            throw WrapperError.actionNotAllowed(description: "Canceling the custom registration right now is not allowed. Registration is not in progress or pin creation has already started.")
+        }
+        customRegistrationChallenge.sender.cancel(customRegistrationChallenge)
+        handleDidFailToRegister()
     }
 
     func cancelBrowserRegistration() throws {
         guard let browserRegistrationChallenge = self.browserRegistrationChallenge else {
-            throw WrapperError.registrationNotInProgress
+            throw WrapperError.actionNotAllowed(description: "Canceling the browser registration right now is not allowed. Registration is not in progress or pin creation has already started.")
         }
         browserRegistrationChallenge.sender.cancel(browserRegistrationChallenge)
+        handleDidFailToRegister()
     }
     func cancelPinCreation() throws {
         guard let createPinChallenge = self.createPinChallenge else {
