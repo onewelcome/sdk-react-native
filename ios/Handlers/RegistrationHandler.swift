@@ -75,7 +75,7 @@ extension RegistrationHandler : RegistrationConnectorToHandlerProtocol {
 
     func cancelCustomRegistration() throws {
         guard let customRegistrationChallenge = self.customRegistrationChallenge else {
-            throw WrapperError.actionNotAllowed(description: "Canceling the custom registration right now is not allowed. Registration is not in progress or pin creation has already started.")
+            throw WrapperError.actionNotAllowed(description: CancelBrowserRegisrationNotAllowed)
         }
         customRegistrationChallenge.sender.cancel(customRegistrationChallenge)
         handleDidFailToRegister()
@@ -83,7 +83,7 @@ extension RegistrationHandler : RegistrationConnectorToHandlerProtocol {
 
     func cancelBrowserRegistration() throws {
         guard let browserRegistrationChallenge = self.browserRegistrationChallenge else {
-            throw WrapperError.actionNotAllowed(description: "Canceling the browser registration right now is not allowed. Registration is not in progress or pin creation has already started.")
+            throw WrapperError.actionNotAllowed(description: CancelCustomRegisrationNotAllowed)
         }
         browserRegistrationChallenge.sender.cancel(browserRegistrationChallenge)
         handleDidFailToRegister()

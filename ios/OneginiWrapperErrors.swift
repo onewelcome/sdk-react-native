@@ -10,7 +10,7 @@ enum WrapperError: LocalizedError {
     case pinCreationNotInProgress
     case actionNotAllowed(description: String)
     
-    var errorDescription: String? {
+    var errorDescription: String {
         switch self {
         case .identityProviderNotFound:
             return "Identity provider not found"

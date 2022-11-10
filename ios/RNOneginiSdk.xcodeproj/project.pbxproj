@@ -13,6 +13,7 @@
 		496788F928C8CFBD00EB65A8 /* CreatePinEventEmitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496788F728C8CFBD00EB65A8 /* CreatePinEventEmitter.swift */; };
 		496788FA28C8CFBD00EB65A8 /* PinAuthenticationEventEmitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496788F828C8CFBD00EB65A8 /* PinAuthenticationEventEmitter.swift */; };
 		496788FC28CB793B00EB65A8 /* RegistrationEventEmitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496788FB28CB793B00EB65A8 /* RegistrationEventEmitter.swift */; };
+		49CC152E291D314F005C21D0 /* StringConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CC152D291D314F005C21D0 /* StringConstants.swift */; };
 		C78992E525816243002CA5AF /* LoginHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78992E425816243002CA5AF /* LoginHandler.swift */; };
 		C7AA005E2558E4B80001AB19 /* RNOneginiSdk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AA005D2558E4B80001AB19 /* RNOneginiSdk.swift */; };
 		C7AA00652558E55B0001AB19 /* BridgeConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AA00642558E55B0001AB19 /* BridgeConnector.swift */; };
@@ -47,6 +48,7 @@
 		496788F728C8CFBD00EB65A8 /* CreatePinEventEmitter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreatePinEventEmitter.swift; sourceTree = "<group>"; };
 		496788F828C8CFBD00EB65A8 /* PinAuthenticationEventEmitter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PinAuthenticationEventEmitter.swift; sourceTree = "<group>"; };
 		496788FB28CB793B00EB65A8 /* RegistrationEventEmitter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationEventEmitter.swift; sourceTree = "<group>"; };
+		49CC152D291D314F005C21D0 /* StringConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringConstants.swift; sourceTree = "<group>"; };
 		C78992E425816243002CA5AF /* LoginHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginHandler.swift; sourceTree = "<group>"; };
 		C7AA005C2558E4B70001AB19 /* RNOneginiSdk-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RNOneginiSdk-Bridging-Header.h"; sourceTree = "<group>"; };
 		C7AA005D2558E4B80001AB19 /* RNOneginiSdk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RNOneginiSdk.swift; sourceTree = "<group>"; };
@@ -99,6 +101,7 @@
 				C7AA00632558E54D0001AB19 /* Connectors */,
 				C7AA005D2558E4B80001AB19 /* RNOneginiSdk.swift */,
 				C7AA0204255925FA0001AB19 /* RNOneginiSdk.m */,
+				49CC152D291D314F005C21D0 /* StringConstants.swift */,
 				496788F328C8CE5400EB65A8 /* Enums.swift */,
 				4960B01328DDAB830072B103 /* OneginiWrapperErrors.swift */,
 				134814211AA4EA7D00B7C361 /* Products */,
@@ -233,6 +236,7 @@
 				C7BD315925B838190057440C /* AuthenticatorsHandler.swift in Sources */,
 				C7EF09982590C55400D14892 /* RegistrationConnector.swift in Sources */,
 				4960B01428DDAB830072B103 /* OneginiWrapperErrors.swift in Sources */,
+				49CC152E291D314F005C21D0 /* StringConstants.swift in Sources */,
 				496788F928C8CFBD00EB65A8 /* CreatePinEventEmitter.swift in Sources */,
 				C78992E525816243002CA5AF /* LoginHandler.swift in Sources */,
 				C7AA006C2558E5920001AB19 /* RegistrationHandler.swift in Sources */,
