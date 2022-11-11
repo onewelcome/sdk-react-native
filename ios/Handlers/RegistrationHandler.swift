@@ -1,3 +1,4 @@
+
 protocol RegistrationConnectorToHandlerProtocol: AnyObject {
     func signUp(identityProvider: ONGIdentityProvider?, scopes: [String], completion: @escaping (Bool, ONGUserProfile?, Error?) -> Void)
     func processRedirectURL(_ url: URL) throws
@@ -20,6 +21,8 @@ class RegistrationHandler: NSObject {
     private var signUpCompletion: ((Bool, ONGUserProfile?, Error?) -> Void)?
     private let createPinEventEmitter = CreatePinEventEmitter()
     private let registrationEventEmitter = RegistrationEventEmitter()
+    static let cancelCustomRegisrationNotAllowed = "Canceling the custom registration right now is not allowed. Registration is not in progress or pin creation has already started."
+    static let cancelBrowserRegisrationNotAllowed = "Canceling the browser registration right now is not allowed. Registration is not in progress or pin creation has already started."
 
     func handleRedirectURL(_ url: URL) throws {
         guard let browserRegistrationChallenge = self.browserRegistrationChallenge else { throw WrapperError.registrationNotInProgress }
@@ -75,7 +78,7 @@ extension RegistrationHandler : RegistrationConnectorToHandlerProtocol {
 
     func cancelCustomRegistration() throws {
         guard let customRegistrationChallenge = self.customRegistrationChallenge else {
-            throw WrapperError.actionNotAllowed(description: CancelBrowserRegisrationNotAllowed)
+            throw WrapperError.actionNotAllowed(description: RegistrationHandler.cancelBrowserRegisrationNotAllowed)
         }
         customRegistrationChallenge.sender.cancel(customRegistrationChallenge)
         handleDidFailToRegister()
@@ -83,7 +86,7 @@ extension RegistrationHandler : RegistrationConnectorToHandlerProtocol {
 
     func cancelBrowserRegistration() throws {
         guard let browserRegistrationChallenge = self.browserRegistrationChallenge else {
-            throw WrapperError.actionNotAllowed(description: CancelCustomRegisrationNotAllowed)
+            throw WrapperError.actionNotAllowed(description: RegistrationHandler.cancelCustomRegisrationNotAllowed)
         }
         browserRegistrationChallenge.sender.cancel(browserRegistrationChallenge)
         handleDidFailToRegister()
