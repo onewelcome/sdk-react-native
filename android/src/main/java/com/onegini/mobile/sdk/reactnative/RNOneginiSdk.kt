@@ -33,6 +33,7 @@ import com.onegini.mobile.sdk.reactnative.exception.CANCEL_CUSTOM_REGISTRATION_N
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.reactnative.exception.PARAM_CAN_NOT_BE_NULL
+import com.onegini.mobile.sdk.reactnative.handlers.customregistration.SimpleCustomRegistrationAction
 import com.onegini.mobile.sdk.reactnative.managers.AuthenticatorManager
 import com.onegini.mobile.sdk.reactnative.managers.AuthenticatorManager.DeregistrationCallback
 import com.onegini.mobile.sdk.reactnative.managers.AuthenticatorManager.RegistrationCallback
@@ -287,15 +288,25 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         when (message) {
             null -> promise.rejectWithNullError(Message.paramName, Message.type)
             else -> {
-                for (action in oneginiSDK.simpleCustomRegistrationActions) {
+                getActiveCustomRegistrationAction()?.let { action ->
                     try {
                         action.returnError(Exception(message))
                         return promise.resolve(null)
-                    } catch (exception: OneginiReactNativeException) {}
-                }
-                promise.reject(OneginiWrapperErrors.ACTION_NOT_ALLOWED.code, CANCEL_CUSTOM_REGISTRATION_NOT_ALLOWED)
+                    } catch (exception: OneginiReactNativeException) {
+                        promise.reject(OneginiWrapperErrors.ACTION_NOT_ALLOWED.code, CANCEL_CUSTOM_REGISTRATION_NOT_ALLOWED)
+                    }
+                } ?: promise.reject(OneginiWrapperErrors.ACTION_NOT_ALLOWED.code, CANCEL_CUSTOM_REGISTRATION_NOT_ALLOWED)
             }
         }
+    }
+
+    private fun getActiveCustomRegistrationAction(): SimpleCustomRegistrationAction? {
+        for (action in oneginiSDK.simpleCustomRegistrationActions) {
+            if (action.isInProgress()){
+                return action
+            }
+        }
+        return null
     }
 
     @ReactMethod

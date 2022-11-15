@@ -38,6 +38,10 @@ class SimpleCustomRegistrationActionImpl(private val idProvider: String) : Onegi
         )
     }
 
+    override fun isInProgress(): Boolean {
+        return callback != null
+    }
+
     override fun getOneginiCustomRegistrationAction(): OneginiCustomRegistrationAction {
         return this
     }

@@ -50,4 +50,8 @@ class SimpleCustomTwoStepRegistrationActionImpl(private val idProvider: String) 
             OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message
         )
     }
+
+    override fun isInProgress(): Boolean {
+        return callback != null
+    }
 }

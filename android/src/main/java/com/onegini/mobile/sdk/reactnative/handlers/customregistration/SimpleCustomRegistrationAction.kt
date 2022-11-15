@@ -14,4 +14,6 @@ interface SimpleCustomRegistrationAction {
 
     @Throws(OneginiReactNativeException::class)
     fun returnError(exception: Exception?)
+
+    fun isInProgress(): Boolean
 }
