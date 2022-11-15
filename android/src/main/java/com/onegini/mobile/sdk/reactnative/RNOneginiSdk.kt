@@ -372,22 +372,36 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
             null -> promise.rejectWithNullError(Pin.paramName, Pin.type)
             else -> when (pinFlow) {
                 PinFlow.Authentication.toString() -> {
-                    return try {
-                        oneginiSDK.pinAuthenticationRequestHandler.acceptAuthenticationRequest(pin.toCharArray())
-                        promise.resolve(null)
-                    } catch (exception: OneginiReactNativeException) {
-                        promise.reject(OneginiWrapperErrors.AUTHENTICATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.AUTHENTICATION_NOT_IN_PROGRESS.message)
-                    }
+                    return handleSubmitAuthPin(pin, promise)
                 }
                 PinFlow.Create.toString() -> {
-                    return try {
-                        oneginiSDK.createPinRequestHandler.onPinProvided(pin.toCharArray())
-                        promise.resolve(null)
-                    } catch (exception: OneginiReactNativeException) {
-                        promise.reject(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
-                    }
+                    return handleSubmitCreatePin(pin, promise)
                 }
             }
+        }
+    }
+
+    private fun handleSubmitCreatePin(pin: String, promise: Promise) {
+        return try {
+            oneginiSDK.createPinRequestHandler.onPinProvided(pin.toCharArray())
+            promise.resolve(null)
+        } catch (exception: OneginiReactNativeException) {
+            promise.reject(
+                OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code,
+                OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message
+            )
+        }
+    }
+
+    private fun handleSubmitAuthPin(pin: String, promise: Promise) {
+        return try {
+            oneginiSDK.pinAuthenticationRequestHandler.acceptAuthenticationRequest(pin.toCharArray())
+            promise.resolve(null)
+        } catch (exception: OneginiReactNativeException) {
+            promise.reject(
+                OneginiWrapperErrors.AUTHENTICATION_NOT_IN_PROGRESS.code,
+                OneginiWrapperErrors.AUTHENTICATION_NOT_IN_PROGRESS.message
+            )
         }
     }
 
