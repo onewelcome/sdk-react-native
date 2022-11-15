@@ -16,12 +16,15 @@ class SimpleCustomRegistrationActionImpl(private val idProvider: String) : Onegi
         eventEmitter.finishRegistration(idProvider, info)
     }
 
-    override fun returnSuccess(result: String?): Boolean {
-        return callback?.let { customRegistrationCallback ->
+    @Throws(OneginiReactNativeException::class)
+    override fun returnSuccess(result: String?) {
+        callback?.let { customRegistrationCallback ->
             customRegistrationCallback.returnSuccess(result)
             callback = null
-            true
-        } ?: false
+        } ?: throw OneginiReactNativeException(
+            OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code.toInt(),
+            OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message
+        )
     }
 
     @Throws(OneginiReactNativeException::class)

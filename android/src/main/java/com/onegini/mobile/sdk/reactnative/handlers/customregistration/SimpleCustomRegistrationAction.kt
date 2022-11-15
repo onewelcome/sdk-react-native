@@ -9,7 +9,8 @@ interface SimpleCustomRegistrationAction {
 
     fun getIdProvider(): String
 
-    fun returnSuccess(result: String?): Boolean
+    @Throws(OneginiReactNativeException::class)
+    fun returnSuccess(result: String?)
 
     @Throws(OneginiReactNativeException::class)
     fun returnError(exception: Exception?)
