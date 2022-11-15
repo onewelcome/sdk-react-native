@@ -470,7 +470,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func validatePinWithPolicy(_ pin: String,
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        userClient.validatePin(withPolicy: pin) { (_ , error) -> Void in
+        userClient.validatePolicyCompliance(withPolicy: pin) { (_ , error) -> Void in
 
             if let error = error {
                 reject("\(error.code)", error.localizedDescription, error)
