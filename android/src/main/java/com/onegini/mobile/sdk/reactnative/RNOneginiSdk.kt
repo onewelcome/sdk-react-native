@@ -29,6 +29,9 @@ import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.Constants.PinFlow
 import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.*
 import com.onegini.mobile.sdk.reactnative.clean.wrapper.OneginiSdkWrapper
+import com.onegini.mobile.sdk.reactnative.di.DaggerLibraryComponent
+import com.onegini.mobile.sdk.reactnative.di.LibraryComponent
+import com.onegini.mobile.sdk.reactnative.di.LibraryModule
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.reactnative.exception.PARAM_CAN_NOT_BE_NULL
@@ -46,9 +49,19 @@ import com.onegini.mobile.sdk.reactnative.network.ImplicitUserService
 import com.onegini.mobile.sdk.reactnative.network.UserService
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import java.lang.Exception
+import javax.inject.Inject
 
 
 class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
+    @Inject
+    lateinit var exampleClassToBeInjected1: ExampleClassToBeInjected
+    @Inject
+    lateinit var exampleClassToBeInjected2: ExampleClassToBeInjected
+    @Inject
+    lateinit var exampleSingletonClassToBeInjected1: ExampleSingletonClassToBeInjected
+    @Inject
+    lateinit var exampleSingletonClassToBeInjected2: ExampleSingletonClassToBeInjected
+
     private val sdkWrapper: OneginiSdkWrapper
 
     private val reactContext: ReactApplicationContext
@@ -59,6 +72,16 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
         get() = OneginiComponents.oneginiSDK
 
     private val disposables = CompositeDisposable()
+
+    private lateinit var component: LibraryComponent
+
+    override fun initialize() {
+        super.initialize()
+        component = DaggerLibraryComponent.builder()
+            .libraryModule(LibraryModule(reactContext))
+            .build()
+        component.inject(this)
+    }
 
     init {
         OneginiComponents.init(reactContext)
@@ -96,6 +119,10 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     fun startClient(rnConfig: ReadableMap?, promise: Promise) {
+        exampleClassToBeInjected1.doSomething()
+        exampleClassToBeInjected2.doSomething()
+        exampleSingletonClassToBeInjected1.doSomething()
+        exampleSingletonClassToBeInjected2.doSomething()
         when (rnConfig) {
             null -> promise.rejectWithNullError(RnConfig.paramName, RnConfig.type)
             else -> sdkWrapper.startClient(rnConfig, promise)
