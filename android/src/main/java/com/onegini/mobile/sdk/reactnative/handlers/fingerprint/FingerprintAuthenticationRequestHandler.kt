@@ -3,12 +3,14 @@ package com.onegini.mobile.sdk.reactnative.handlers.fingerprint
 import com.onegini.mobile.sdk.android.handlers.request.OneginiFingerprintAuthenticationRequestHandler
 import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiFingerprintCallback
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
+import javax.inject.Inject
 
 
 class FingerprintAuthenticationRequestHandler : OneginiFingerprintAuthenticationRequestHandler {
+    @Inject
+    lateinit var eventEmitter: FingerprintAuthenticationEventEmitter
 
     private var callback: OneginiFingerprintCallback? = null
-    var eventEmitter: FingerprintAuthenticationEventEmitter = FingerprintAuthenticationEventEmitter()
 
     override fun startAuthentication(user: UserProfile, callback: OneginiFingerprintCallback) {
         this.callback = callback

@@ -6,10 +6,13 @@ import com.onegini.mobile.sdk.android.model.entity.AuthenticationAttemptCounter
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
+import javax.inject.Inject
 
 class PinAuthenticationRequestHandler : OneginiPinAuthenticationRequestHandler {
+    @Inject
+    lateinit var eventEmitter: PinAuthenticationEventEmitter
+
     private var callback: OneginiPinCallback? = null
-    private var eventEmitter = PinAuthenticationEventEmitter()
 
     override fun startAuthentication(
         userProfile: UserProfile,

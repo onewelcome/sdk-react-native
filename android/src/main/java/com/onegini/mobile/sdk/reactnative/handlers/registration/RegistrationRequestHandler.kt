@@ -5,10 +5,13 @@ import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiBrowserRe
 import android.net.Uri
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS
+import javax.inject.Inject
 
 class RegistrationRequestHandler : OneginiBrowserRegistrationRequestHandler {
+  @Inject
+  lateinit var eventEmitter: RegistrationEventEmitter
+
   private var callback: OneginiBrowserRegistrationCallback? = null
-  private var eventEmitter = RegistrationEventEmitter()
   /**
    * Finish registration action with result from web browser
    */
