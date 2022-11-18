@@ -68,8 +68,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     private val registrationManager: RegistrationManager
     private val authenticatorManager: AuthenticatorManager
 
-    private val oneginiSDK: OneginiSDK
-        get() = OneginiComponents.oneginiSDK
+    private val oneginiSDK = OneginiSDK(reactApplicationContext)
 
     private val disposables = CompositeDisposable()
 
@@ -84,7 +83,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     }
 
     init {
-        OneginiComponents.init(reactContext)
+        OneginiComponents.init(oneginiSDK)
 
         sdkWrapper = OneginiSdkWrapper(oneginiSDK)
 
