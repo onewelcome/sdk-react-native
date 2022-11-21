@@ -14,6 +14,7 @@ import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetIdentityProvidersUs
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetRedirectUriUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetRegisteredAuthenticatorsUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetUserProfilesUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.HandleRegistrationCallbackUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.RegisterUserUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.StartClientUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.ValidatePinWithPolicyUseCase
@@ -73,6 +74,10 @@ class OneginiSdkWrapperTests {
     @Mock
     lateinit var authenticateUserUseCase: AuthenticateUserUseCase
 
+    @Mock
+    lateinit var handleRegistrationCallbackUseCase: HandleRegistrationCallbackUseCase
+
+
     private lateinit var wrapper: OneginiSdkWrapper
 
     @Before
@@ -95,7 +100,8 @@ class OneginiSdkWrapperTests {
             getUserProfilesUseCase,
             getRedirectUriUseCase,
             deregisterUserUseCase,
-            authenticateUserUseCase
+            authenticateUserUseCase,
+            handleRegistrationCallbackUseCase,
         )
     }
 

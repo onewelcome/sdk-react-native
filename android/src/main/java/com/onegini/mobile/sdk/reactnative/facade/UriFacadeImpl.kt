@@ -2,7 +2,6 @@ package com.onegini.mobile.sdk.reactnative.facade
 
 import javax.inject.Singleton
 import javax.inject.Inject
-import com.onegini.mobile.sdk.reactnative.facade.UriFacade
 import android.net.Uri
 
 @Singleton
