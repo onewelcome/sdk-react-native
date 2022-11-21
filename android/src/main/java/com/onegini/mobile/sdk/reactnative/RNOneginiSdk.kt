@@ -56,14 +56,6 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
     @Inject
     lateinit var oneginiSDK: OneginiSDK
     @Inject
-    lateinit var exampleClassToBeInjected1: ExampleClassToBeInjected
-    @Inject
-    lateinit var exampleClassToBeInjected2: ExampleClassToBeInjected
-    @Inject
-    lateinit var exampleSingletonClassToBeInjected1: ExampleSingletonClassToBeInjected
-    @Inject
-    lateinit var exampleSingletonClassToBeInjected2: ExampleSingletonClassToBeInjected
-    @Inject
     lateinit var registrationManager: RegistrationManager
     @Inject
     lateinit var authenticatorManager: AuthenticatorManager
@@ -115,10 +107,6 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
 
     @ReactMethod
     fun startClient(rnConfig: ReadableMap?, promise: Promise) {
-        exampleClassToBeInjected1.doSomething()
-        exampleClassToBeInjected2.doSomething()
-        exampleSingletonClassToBeInjected1.doSomething()
-        exampleSingletonClassToBeInjected2.doSomething()
         when (rnConfig) {
             null -> promise.rejectWithNullError(RnConfig.paramName, RnConfig.type)
             else -> sdkWrapper.startClient(rnConfig, promise)
