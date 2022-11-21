@@ -199,29 +199,35 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
 
     @ReactMethod
     fun submitFingerprintAcceptAuthenticationRequest(promise: Promise) {
-        oneginiSDK.fingerprintAuthenticationRequestHandler?.let { fingerprintHandler ->
-            fingerprintHandler.acceptAuthenticationRequest()
-            promise.resolve(null)
-        } ?:
-        promise.reject(OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.code, OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.message)
+        when (oneginiSDK.config.enableFingerprint) {
+            false -> promise.reject(OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.code, OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.message)
+            true -> {
+                oneginiSDK.fingerprintAuthenticationRequestHandler.acceptAuthenticationRequest()
+                promise.resolve(null)
+            }
+        }
     }
 
     @ReactMethod
     fun submitFingerprintDenyAuthenticationRequest(promise: Promise) {
-        oneginiSDK.fingerprintAuthenticationRequestHandler?.let { fingerprintHandler ->
-            fingerprintHandler.denyAuthenticationRequest()
-            promise.resolve(null)
-        } ?:
-        promise.reject(OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.code, OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.message)
+        when (oneginiSDK.config.enableFingerprint) {
+            false -> promise.reject(OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.code, OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.message)
+            true -> {
+                oneginiSDK.fingerprintAuthenticationRequestHandler.denyAuthenticationRequest()
+                promise.resolve(null)
+            }
+        }
     }
 
     @ReactMethod
     fun submitFingerprintFallbackToPin(promise: Promise) {
-        oneginiSDK.fingerprintAuthenticationRequestHandler?.let { fingerprintHandler ->
-            fingerprintHandler.fallbackToPin()
-            promise.resolve(null)
-        } ?:
-        promise.reject(OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.code, OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.message)
+        when (oneginiSDK.config.enableFingerprint) {
+            false -> promise.reject(OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.code, OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.message)
+            true -> {
+                oneginiSDK.fingerprintAuthenticationRequestHandler.fallbackToPin()
+                promise.resolve(null)
+            }
+        }
     }
 
     @ReactMethod
@@ -452,27 +458,27 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
 
     @ReactMethod
     fun acceptMobileAuthConfirmation(promise: Promise) {
-        val handler = oneginiSDK.mobileAuthOtpRequestHandler
-        if (handler == null) {
-            promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.code, OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.message)
-            return
-        }
-        when (handler.acceptAuthenticationRequest()) {
-            true -> promise.resolve(null)
-            false -> promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_NOT_IN_PROGRESS.code, OneginiWrapperErrors.MOBILE_AUTH_OTP_NOT_IN_PROGRESS.message)
+        when (oneginiSDK.config.enableMobileAuthenticationOtp) {
+            false -> promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.code, OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.message)
+            true -> {
+                when (oneginiSDK.mobileAuthOtpRequestHandler.acceptAuthenticationRequest()) {
+                    true -> promise.resolve(null)
+                    false -> promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_NOT_IN_PROGRESS.code, OneginiWrapperErrors.MOBILE_AUTH_OTP_NOT_IN_PROGRESS.message)
+                }
+            }
         }
     }
 
     @ReactMethod
     fun denyMobileAuthConfirmation(promise: Promise) {
-        val handler = oneginiSDK.mobileAuthOtpRequestHandler
-        if (handler == null) {
-            promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.code, OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.message)
-            return
-        }
-        when (handler.denyAuthenticationRequest()) {
-            true -> promise.resolve(null)
-            false -> promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_NOT_IN_PROGRESS.code, OneginiWrapperErrors.MOBILE_AUTH_OTP_NOT_IN_PROGRESS.message)
+        when (oneginiSDK.config.enableMobileAuthenticationOtp) {
+            false -> promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.code, OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.message)
+            true -> {
+                when (oneginiSDK.mobileAuthOtpRequestHandler.denyAuthenticationRequest()) {
+                    true -> promise.resolve(null)
+                    false -> promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_NOT_IN_PROGRESS.code, OneginiWrapperErrors.MOBILE_AUTH_OTP_NOT_IN_PROGRESS.message)
+                }
+            }
         }
     }
 
