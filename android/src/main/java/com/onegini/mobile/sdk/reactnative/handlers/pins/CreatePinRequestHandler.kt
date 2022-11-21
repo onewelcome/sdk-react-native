@@ -7,7 +7,9 @@ import com.onegini.mobile.sdk.android.handlers.error.OneginiPinValidationError
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class CreatePinRequestHandler @Inject constructor(private val eventEmitter: CreatePinEventEmitter):
     OneginiCreatePinRequestHandler {
 

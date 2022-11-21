@@ -6,7 +6,9 @@ import android.net.Uri
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class RegistrationRequestHandler @Inject constructor(private val eventEmitter: RegistrationEventEmitter):
     OneginiBrowserRegistrationRequestHandler {
 
