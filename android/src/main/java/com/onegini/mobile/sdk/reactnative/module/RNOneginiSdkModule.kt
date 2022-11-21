@@ -1,4 +1,4 @@
-package com.onegini.mobile.sdk.reactnative.di
+package com.onegini.mobile.sdk.reactnative.module
 
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.modules.core.DeviceEventManagerModule
@@ -7,7 +7,7 @@ import dagger.Provides
 import javax.inject.Singleton
 
 @Module
-class LibraryModule(private val reactApplicationContext: ReactApplicationContext) {
+class RNOneginiSdkModule(private val reactApplicationContext: ReactApplicationContext) {
 
   @Provides
   @Singleton

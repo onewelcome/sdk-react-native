@@ -29,9 +29,8 @@ import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.Constants.PinFlow
 import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.*
 import com.onegini.mobile.sdk.reactnative.clean.wrapper.OneginiSdkWrapper
-import com.onegini.mobile.sdk.reactnative.di.DaggerLibraryComponent
-import com.onegini.mobile.sdk.reactnative.di.LibraryComponent
-import com.onegini.mobile.sdk.reactnative.di.LibraryModule
+import com.onegini.mobile.sdk.reactnative.DaggerRNOneginiSdkComponent
+import com.onegini.mobile.sdk.reactnative.module.RNOneginiSdkModule
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.reactnative.exception.PARAM_CAN_NOT_BE_NULL
@@ -71,12 +70,12 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
 
     private val disposables = CompositeDisposable()
 
-    private lateinit var component: LibraryComponent
+    private lateinit var component: RNOneginiSdkComponent
 
     override fun initialize() {
         super.initialize()
-        component = DaggerLibraryComponent.builder()
-            .libraryModule(LibraryModule(reactContext))
+        component = DaggerRNOneginiSdkComponent.builder().rNOneginiSdkModule(
+            RNOneginiSdkModule(reactContext))
             .build()
         component.inject(this)
     }
