@@ -1,16 +1,20 @@
 package com.onegini.mobile.sdk.reactnative.network
 
 import com.google.gson.JsonObject
-import com.onegini.mobile.sdk.reactnative.OneginiComponents
 import com.onegini.mobile.sdk.reactnative.model.ResourceRequestDetails
 import com.onegini.mobile.sdk.reactnative.network.client.ResourcesClient
+import com.onegini.mobile.sdk.reactnative.network.client.SecureResourceClient
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class UserService {
-    private val applicationDetailsRetrofitClient: ResourcesClient = OneginiComponents.secureResourceClient.prepareSecuredUserRetrofitClient(ResourcesClient::class.java)
-
+@Singleton
+class UserService @Inject constructor(private val secureResourceClient: SecureResourceClient){
+    private val applicationDetailsRetrofitClient: ResourcesClient by lazy {
+        secureResourceClient.prepareSecuredUserRetrofitClient(ResourcesClient::class.java)
+    }
     fun getResource(requestDetails: ResourceRequestDetails): Single<JsonObject> {
         val apiCall = when (requestDetails.method) {
             ApiCall.GET -> applicationDetailsRetrofitClient.getResourcesDetails(requestDetails.path, requestDetails.headers)
@@ -22,15 +26,5 @@ class UserService {
         return apiCall
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-    }
-
-    companion object {
-        private var INSTANCE: UserService? = null
-        fun getInstance(): UserService {
-            if (INSTANCE == null) {
-                INSTANCE = UserService()
-            }
-            return INSTANCE!!
-        }
     }
 }

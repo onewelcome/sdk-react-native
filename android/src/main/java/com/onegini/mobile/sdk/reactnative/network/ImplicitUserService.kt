@@ -1,17 +1,20 @@
 package com.onegini.mobile.sdk.reactnative.network
 
 import com.google.gson.JsonObject
-import com.onegini.mobile.sdk.reactnative.OneginiComponents
 import com.onegini.mobile.sdk.reactnative.model.ResourceRequestDetails
 import com.onegini.mobile.sdk.reactnative.network.client.ResourcesClient
+import com.onegini.mobile.sdk.reactnative.network.client.SecureResourceClient
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class ImplicitUserService private constructor() {
-
-    private val applicationDetailsRetrofitClient: ResourcesClient = OneginiComponents.secureResourceClient.prepareSecuredImplicitUserRetrofitClient(ResourcesClient::class.java)
-
+@Singleton
+class ImplicitUserService @Inject constructor(private val secureResourceClient: SecureResourceClient){
+    private val applicationDetailsRetrofitClient: ResourcesClient by lazy {
+        secureResourceClient.prepareSecuredImplicitUserRetrofitClient(ResourcesClient::class.java)
+    }
     fun getResource(requestDetails: ResourceRequestDetails): Single<JsonObject> {
         val apiCall = when (requestDetails.method) {
             ApiCall.GET -> applicationDetailsRetrofitClient.getResourcesDetails(requestDetails.path, requestDetails.headers)
@@ -23,15 +26,5 @@ class ImplicitUserService private constructor() {
         return apiCall
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-    }
-
-    companion object {
-        private var INSTANCE: ImplicitUserService? = null
-        fun getInstance(): ImplicitUserService {
-            if (INSTANCE == null) {
-                INSTANCE = ImplicitUserService()
-            }
-            return INSTANCE!!
-        }
     }
 }

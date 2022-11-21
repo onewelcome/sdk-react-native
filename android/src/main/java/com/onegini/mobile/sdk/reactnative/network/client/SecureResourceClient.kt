@@ -6,8 +6,11 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class SecureResourceClient(val oneginiSDK: OneginiSDK) {
+@Singleton
+class SecureResourceClient @Inject constructor(val oneginiSDK: OneginiSDK) {
     fun <T> prepareSecuredUserRetrofitClient(clazz: Class<T>): T {
         val okHttpClient: OkHttpClient = oneginiSDK.oneginiClient.userClient.resourceOkHttpClient
         return prepareSecuredRetrofitClient(clazz, okHttpClient)

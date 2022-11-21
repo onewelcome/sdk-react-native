@@ -52,7 +52,9 @@ import java.lang.Exception
 import javax.inject.Inject
 
 
-class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
+class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
+    @Inject
+    lateinit var oneginiSDK: OneginiSDK
     @Inject
     lateinit var exampleClassToBeInjected1: ExampleClassToBeInjected
     @Inject
@@ -61,14 +63,19 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     lateinit var exampleSingletonClassToBeInjected1: ExampleSingletonClassToBeInjected
     @Inject
     lateinit var exampleSingletonClassToBeInjected2: ExampleSingletonClassToBeInjected
+    @Inject
+    lateinit var registrationManager: RegistrationManager
+    @Inject
+    lateinit var authenticatorManager: AuthenticatorManager
+    @Inject
+    lateinit var sdkWrapper: OneginiSdkWrapper
+    @Inject
+    lateinit var userService: UserService
+    @Inject
+    lateinit var implicitUserService: ImplicitUserService
+    @Inject
+    lateinit var anonymousService: AnonymousService
 
-    private val sdkWrapper: OneginiSdkWrapper
-
-    private val reactContext: ReactApplicationContext
-    private val registrationManager: RegistrationManager
-    private val authenticatorManager: AuthenticatorManager
-
-    private val oneginiSDK = OneginiSDK(reactApplicationContext)
 
     private val disposables = CompositeDisposable()
 
@@ -80,16 +87,6 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
             .libraryModule(LibraryModule(reactContext))
             .build()
         component.inject(this)
-    }
-
-    init {
-        OneginiComponents.init(oneginiSDK)
-
-        sdkWrapper = OneginiSdkWrapper(oneginiSDK)
-
-        this.reactContext = reactContext
-        registrationManager = RegistrationManager(oneginiSDK)
-        authenticatorManager = AuthenticatorManager(oneginiSDK)
     }
 
     enum class FunctionParams(val paramName: String, val type: String ) {
@@ -595,7 +592,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                 when (type) {
                     "User" -> {
                         disposables.add(
-                            UserService.getInstance()
+                            userService
                                 .getResource(requestDetails)
                                 .subscribe({
                                     promise.resolve(JsonMapper.toWritableMap(it))
@@ -604,7 +601,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                     }
                     "ImplicitUser" -> {
                         disposables.add(
-                            ImplicitUserService.getInstance()
+                            implicitUserService
                                 .getResource(requestDetails)
                                 .subscribe({
                                     promise.resolve(JsonMapper.toWritableMap(it))
@@ -613,7 +610,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                     }
                     "Anonymous" -> {
                         disposables.add(
-                            AnonymousService.getInstance()
+                            anonymousService
                                 .getResource(requestDetails)
                                 .subscribe({
                                     promise.resolve(JsonMapper.toWritableMap(it))
