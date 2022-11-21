@@ -84,7 +84,6 @@ class OneginiSdkWrapperTests {
         every { Arguments.createMap() } answers { JavaOnlyMap() }
 
         wrapper = OneginiSdkWrapper(
-            oneginiSdk,
             startClientUseCase,
             getIdentityProvidersUseCase,
             getAccessTokenUseCase,
@@ -130,7 +129,7 @@ class OneginiSdkWrapperTests {
 
     @Test
     fun `when getAuthenticatedUserProfile method is called calls getAuthenticatedUserProfileUseCase with proper params`() {
-        wrapper.getAuthenticatedUserProfileUseCase(promiseMock)
+        wrapper.getAuthenticatedUserProfile(promiseMock)
 
         verify(getAuthenticatedUserProfileUseCase).invoke(promiseMock)
     }
