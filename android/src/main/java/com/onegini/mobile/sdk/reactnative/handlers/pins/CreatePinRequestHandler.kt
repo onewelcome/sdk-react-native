@@ -8,9 +8,8 @@ import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 import javax.inject.Inject
 
-class CreatePinRequestHandler : OneginiCreatePinRequestHandler {
-    @Inject
-    lateinit var eventEmitter: CreatePinEventEmitter
+class CreatePinRequestHandler @Inject constructor(private val eventEmitter: CreatePinEventEmitter):
+    OneginiCreatePinRequestHandler {
 
     private var pinCallback: OneginiPinCallback? = null
 

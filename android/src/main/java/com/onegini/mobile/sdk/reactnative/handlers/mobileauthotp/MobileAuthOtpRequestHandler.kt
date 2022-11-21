@@ -5,9 +5,9 @@ import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiAcceptDen
 import com.onegini.mobile.sdk.android.model.entity.OneginiMobileAuthenticationRequest
 import javax.inject.Inject
 
-class MobileAuthOtpRequestHandler : OneginiMobileAuthWithOtpRequestHandler {
-    @Inject
-    lateinit var eventEmitter: MobileAuthOtpRequestEventEmitter
+
+class MobileAuthOtpRequestHandler @Inject constructor(private val eventEmitter: MobileAuthOtpRequestEventEmitter):
+    OneginiMobileAuthWithOtpRequestHandler {
 
     private var callback: OneginiAcceptDenyCallback? = null
 

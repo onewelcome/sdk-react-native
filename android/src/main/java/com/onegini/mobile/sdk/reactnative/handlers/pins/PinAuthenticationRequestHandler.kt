@@ -7,10 +7,11 @@ import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 import javax.inject.Inject
+import javax.inject.Singleton
 
-class PinAuthenticationRequestHandler : OneginiPinAuthenticationRequestHandler {
-    @Inject
-    lateinit var eventEmitter: PinAuthenticationEventEmitter
+@Singleton
+class PinAuthenticationRequestHandler @Inject constructor(private val eventEmitter: PinAuthenticationEventEmitter):
+    OneginiPinAuthenticationRequestHandler {
 
     private var callback: OneginiPinCallback? = null
 

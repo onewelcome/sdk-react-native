@@ -1,7 +1,6 @@
 package com.onegini.mobile.sdk.reactnative.clean.wrapper
 
 import com.facebook.react.bridge.Promise
-import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.AuthenticateUserUseCase
@@ -10,28 +9,27 @@ import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAllAuthenticatorsUs
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetRedirectUriUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetRegisteredAuthenticatorsUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetUserProfilesUseCase
-import com.onegini.mobile.sdk.reactnative.OneginiSDK
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAccessTokenUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAuthenticatedUserProfileUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetIdentityProvidersUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.RegisterUserUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.StartClientUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.ValidatePinWithPolicyUseCase
+import javax.inject.Inject
 
-class OneginiSdkWrapper(
-    private val oneginiSDK: OneginiSDK,
-    val startClientUseCase: StartClientUseCase = StartClientUseCase(oneginiSDK),
-    val getIdentityProvidersUseCase: GetIdentityProvidersUseCase = GetIdentityProvidersUseCase(oneginiSDK),
-    val getAccessTokenUseCase: GetAccessTokenUseCase = GetAccessTokenUseCase(oneginiSDK),
-    val registerUserUseCase: RegisterUserUseCase = RegisterUserUseCase(oneginiSDK),
-    val getAuthenticatedUserProfileUseCase: GetAuthenticatedUserProfileUseCase = GetAuthenticatedUserProfileUseCase(oneginiSDK),
-    val getAllAuthenticatorsUseCase: GetAllAuthenticatorsUseCase = GetAllAuthenticatorsUseCase(oneginiSDK),
-    val getRegisteredAuthenticatorsUseCase: GetRegisteredAuthenticatorsUseCase = GetRegisteredAuthenticatorsUseCase(oneginiSDK),
-    val validatePinWithPolicyUseCase: ValidatePinWithPolicyUseCase = ValidatePinWithPolicyUseCase(oneginiSDK),
-    val getUserProfilesUseCase: GetUserProfilesUseCase = GetUserProfilesUseCase(oneginiSDK),
-    val getRedirectUriUseCase: GetRedirectUriUseCase = GetRedirectUriUseCase(oneginiSDK),
-    val deregisterUserUseCase: DeregisterUserUseCase = DeregisterUserUseCase(oneginiSDK),
-    val authenticateUserUseCase: AuthenticateUserUseCase = AuthenticateUserUseCase(oneginiSDK)
+class OneginiSdkWrapper @Inject constructor(
+    private val startClientUseCase: StartClientUseCase,
+    private val getIdentityProvidersUseCase: GetIdentityProvidersUseCase,
+    private val getAccessTokenUseCase: GetAccessTokenUseCase,
+    private val registerUserUseCase: RegisterUserUseCase,
+    private val getAuthenticatedUserProfileUseCase: GetAuthenticatedUserProfileUseCase,
+    private val getAllAuthenticatorsUseCase: GetAllAuthenticatorsUseCase,
+    private val getRegisteredAuthenticatorsUseCase: GetRegisteredAuthenticatorsUseCase,
+    private val validatePinWithPolicyUseCase: ValidatePinWithPolicyUseCase,
+    private val getUserProfilesUseCase: GetUserProfilesUseCase,
+    private val getRedirectUriUseCase: GetRedirectUriUseCase,
+    private val deregisterUserUseCase: DeregisterUserUseCase,
+    private val authenticateUserUseCase: AuthenticateUserUseCase,
 )  {
 
     fun startClient(rnConfig: ReadableMap, promise: Promise) {

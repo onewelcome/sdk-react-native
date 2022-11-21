@@ -5,10 +5,8 @@ import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiFingerpri
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import javax.inject.Inject
 
-
-class FingerprintAuthenticationRequestHandler : OneginiFingerprintAuthenticationRequestHandler {
-    @Inject
-    lateinit var eventEmitter: FingerprintAuthenticationEventEmitter
+class FingerprintAuthenticationRequestHandler @Inject constructor(private val eventEmitter: FingerprintAuthenticationEventEmitter):
+    OneginiFingerprintAuthenticationRequestHandler {
 
     private var callback: OneginiFingerprintCallback? = null
 

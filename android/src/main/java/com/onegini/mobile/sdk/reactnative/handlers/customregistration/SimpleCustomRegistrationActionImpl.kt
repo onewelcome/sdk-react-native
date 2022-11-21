@@ -5,11 +5,9 @@ import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiCustomReg
 import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
-import javax.inject.Inject
 
-class SimpleCustomRegistrationActionImpl(private val idProvider: String) : OneginiCustomRegistrationAction, SimpleCustomRegistrationAction {
-    @Inject
-    lateinit var eventEmitter: CustomRegistrationEventEmitter
+class SimpleCustomRegistrationActionImpl (private val idProvider: String, private val eventEmitter: CustomRegistrationEventEmitter):
+    OneginiCustomRegistrationAction, SimpleCustomRegistrationAction {
 
     private var callback: OneginiCustomRegistrationCallback? = null
 

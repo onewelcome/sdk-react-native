@@ -5,8 +5,11 @@ import com.onegini.mobile.sdk.reactnative.OneginiSDK
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.android.handlers.OneginiDeregisterUserProfileHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiDeregistrationError
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class DeregisterUserUseCase(
+@Singleton
+class DeregisterUserUseCase @Inject constructor(
     private val oneginiSDK: OneginiSDK,
     private val getUserProfileUseCase: GetUserProfileUseCase = GetUserProfileUseCase(oneginiSDK)
 ) {

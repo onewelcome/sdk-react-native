@@ -6,8 +6,11 @@ import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.reactnative.mapers.OneginiAuthenticatorMapper
 import com.onegini.mobile.sdk.android.model.OneginiAuthenticator
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class GetRegisteredAuthenticatorsUseCase(
+@Singleton
+class GetRegisteredAuthenticatorsUseCase @Inject constructor(
     private val oneginiSDK: OneginiSDK,
     private val getUserProfileUseCase: GetUserProfileUseCase = GetUserProfileUseCase(oneginiSDK)
 ) {

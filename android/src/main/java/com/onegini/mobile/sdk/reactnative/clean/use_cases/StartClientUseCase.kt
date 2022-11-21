@@ -1,7 +1,6 @@
 package com.onegini.mobile.sdk.reactnative.clean.use_cases
 
 import com.facebook.react.bridge.Promise
-import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReadableMap
 import com.onegini.mobile.sdk.android.handlers.OneginiInitializationHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiInitializationError
@@ -10,8 +9,11 @@ import com.onegini.mobile.sdk.reactnative.OneginiSDK
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.reactnative.mapers.OneginiReactNativeConfigMapper
 import com.onegini.mobile.sdk.reactnative.model.rn.OneginiReactNativeConfig
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class StartClientUseCase(
+@Singleton
+class StartClientUseCase @Inject constructor(
     private val oneginiSDK: OneginiSDK,
 ) {
     operator fun invoke(rnConfig: ReadableMap, promise: Promise) {

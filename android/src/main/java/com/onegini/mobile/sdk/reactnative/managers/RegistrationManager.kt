@@ -3,8 +3,9 @@ package com.onegini.mobile.sdk.reactnative.managers
 import android.net.Uri
 import com.onegini.mobile.sdk.reactnative.OneginiSDK
 import com.onegini.mobile.sdk.reactnative.handlers.customregistration.SimpleCustomRegistrationAction
+import javax.inject.Inject
 
-class RegistrationManager(private val oneginiSDK: OneginiSDK) {
+class RegistrationManager @Inject constructor(private val oneginiSDK: OneginiSDK) {
 
     fun getSimpleCustomRegistrationAction(id: String?): SimpleCustomRegistrationAction? {
         for (action in oneginiSDK.simpleCustomRegistrationActions) {

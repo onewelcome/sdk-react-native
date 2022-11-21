@@ -11,8 +11,11 @@ import com.onegini.mobile.sdk.reactnative.OneginiSDK
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.reactnative.mapers.ScopesMapper
 import com.onegini.mobile.sdk.reactnative.mapers.UserProfileMapper
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class RegisterUserUseCase(private val oneginiSDK: OneginiSDK) {
+@Singleton
+class RegisterUserUseCase @Inject constructor(private val oneginiSDK: OneginiSDK) {
 
     operator fun invoke(identityProviderId: String?, scopes: ReadableArray?, promise: Promise) {
         val identityProvider = getIdentityProvider(identityProviderId)
