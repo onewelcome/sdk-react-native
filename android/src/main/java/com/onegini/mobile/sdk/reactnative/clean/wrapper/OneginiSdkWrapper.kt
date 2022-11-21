@@ -98,7 +98,7 @@ class OneginiSdkWrapper @Inject constructor(
         getRedirectUriUseCase(promise)
     }
 
-    fun handleRegistrationCallback(uri: String?, promise: Promise) {
+    fun handleRegistrationCallback(uri: String, promise: Promise) {
         handleRegistrationCallbackUseCase(uri, promise)
     }
 
