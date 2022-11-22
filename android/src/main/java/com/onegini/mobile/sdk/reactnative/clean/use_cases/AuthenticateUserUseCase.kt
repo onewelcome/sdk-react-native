@@ -16,8 +16,8 @@ import javax.inject.Singleton
 @Singleton
 class AuthenticateUserUseCase @Inject constructor(
     private val oneginiSDK: OneginiSDK,
-    private val getRegisteredAuthenticatorsUseCase: GetRegisteredAuthenticatorsUseCase = GetRegisteredAuthenticatorsUseCase(oneginiSDK),
-    private val getUserProfileUseCase: GetUserProfileUseCase = GetUserProfileUseCase(oneginiSDK)
+    private val getRegisteredAuthenticatorsUseCase: GetRegisteredAuthenticatorsUseCase,
+    private val getUserProfileUseCase: GetUserProfileUseCase
 ) {
     operator fun invoke(profileId: String, authenticatorId: String?, promise: Promise) {
         val userProfile = getUserProfileUseCase(profileId)

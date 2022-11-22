@@ -11,7 +11,7 @@ import javax.inject.Singleton
 @Singleton
 class DeregisterUserUseCase @Inject constructor(
     private val oneginiSDK: OneginiSDK,
-    private val getUserProfileUseCase: GetUserProfileUseCase = GetUserProfileUseCase(oneginiSDK)
+    private val getUserProfileUseCase: GetUserProfileUseCase
 ) {
     operator fun invoke(profileId: String, promise: Promise) {
         val userProfile = getUserProfileUseCase(profileId)

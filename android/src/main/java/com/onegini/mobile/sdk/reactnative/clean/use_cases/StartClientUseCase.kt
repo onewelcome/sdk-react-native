@@ -13,9 +13,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class StartClientUseCase @Inject constructor(
-    private val oneginiSDK: OneginiSDK,
-) {
+class StartClientUseCase @Inject constructor(private val oneginiSDK: OneginiSDK) {
     operator fun invoke(rnConfig: ReadableMap, promise: Promise) {
 
         val config: OneginiReactNativeConfig
