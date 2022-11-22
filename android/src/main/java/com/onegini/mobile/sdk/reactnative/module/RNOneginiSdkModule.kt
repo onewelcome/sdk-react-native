@@ -15,10 +15,6 @@ class RNOneginiSdkModule(private val reactApplicationContext: ReactApplicationCo
 
   @Provides
   @Singleton
-  fun provideReactApplicationContext() = reactApplicationContext
-
-  @Provides
-  @Singleton
   fun provideDeviceEventEmitter(): DeviceEventManagerModule.RCTDeviceEventEmitter {
     return reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
   }

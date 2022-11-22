@@ -29,7 +29,6 @@ import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.Constants.PinFlow
 import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.*
 import com.onegini.mobile.sdk.reactnative.clean.wrapper.OneginiSdkWrapper
-import com.onegini.mobile.sdk.reactnative.DaggerRNOneginiSdkComponent
 import com.onegini.mobile.sdk.reactnative.module.RNOneginiSdkModule
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
@@ -70,12 +69,11 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
 
     private val disposables = CompositeDisposable()
 
-    private lateinit var component: RNOneginiSdkComponent
 
     override fun initialize() {
         super.initialize()
-        component = DaggerRNOneginiSdkComponent.builder().rNOneginiSdkModule(
-            RNOneginiSdkModule(reactContext))
+        val component = DaggerRNOneginiSdkComponent.builder()
+            .rNOneginiSdkModule(RNOneginiSdkModule(reactContext))
             .build()
         component.inject(this)
     }

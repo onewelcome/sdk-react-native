@@ -1,7 +1,6 @@
 package com.onegini.mobile.sdk.reactnative
 
 import android.content.Context
-import com.facebook.react.bridge.ReactApplicationContext
 import com.onegini.mobile.sdk.android.client.OneginiClient
 import com.onegini.mobile.sdk.android.client.OneginiClientBuilder
 import com.onegini.mobile.sdk.android.model.OneginiClientConfigModel
@@ -18,12 +17,12 @@ import javax.inject.Singleton
 
 @Singleton
 class OneginiSDK @Inject constructor(
-    private val reactApplicationContext: ReactApplicationContext,
-    val registrationRequestHandler: RegistrationRequestHandler,
-    val pinAuthenticationRequestHandler: PinAuthenticationRequestHandler,
-    val createPinRequestHandler: CreatePinRequestHandler,
-    val mobileAuthOtpRequestHandler: MobileAuthOtpRequestHandler,
-    val fingerprintAuthenticationRequestHandler: FingerprintAuthenticationRequestHandler,
+    private val applicationContext: Context,
+    private val registrationRequestHandler: RegistrationRequestHandler,
+    private val pinAuthenticationRequestHandler: PinAuthenticationRequestHandler,
+    private val createPinRequestHandler: CreatePinRequestHandler,
+    private val mobileAuthOtpRequestHandler: MobileAuthOtpRequestHandler,
+    private val fingerprintAuthenticationRequestHandler: FingerprintAuthenticationRequestHandler,
     private val simpleCustomRegistrationFactory: SimpleCustomRegistrationFactory,
 ) {
 
@@ -35,7 +34,7 @@ class OneginiSDK @Inject constructor(
     fun init(oneginiReactNativeConfig: OneginiReactNativeConfig) {
         this.config = oneginiReactNativeConfig
 
-        buildSDK(reactApplicationContext.applicationContext)
+        buildSDK(applicationContext)
     }
 
     val oneginiClient: OneginiClient
