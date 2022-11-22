@@ -7,8 +7,10 @@ import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 
-class SimpleCustomTwoStepRegistrationActionImpl constructor(private val idProvider: String, private val eventEmitter: CustomRegistrationEventEmitter):
-    OneginiCustomTwoStepRegistrationAction, SimpleCustomRegistrationAction {
+class SimpleCustomTwoStepRegistrationActionImpl(
+    private val idProvider: String,
+    private val eventEmitter: CustomRegistrationEventEmitter
+) : OneginiCustomTwoStepRegistrationAction, SimpleCustomRegistrationAction {
 
     private var callback: OneginiCustomRegistrationCallback? = null
 
