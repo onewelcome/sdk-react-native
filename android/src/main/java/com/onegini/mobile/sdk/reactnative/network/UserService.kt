@@ -2,7 +2,6 @@ package com.onegini.mobile.sdk.reactnative.network
 
 import com.google.gson.JsonObject
 import com.onegini.mobile.sdk.reactnative.Constants
-import com.onegini.mobile.sdk.reactnative.OneginiSDK
 import com.onegini.mobile.sdk.reactnative.model.ResourceRequestDetails
 import com.onegini.mobile.sdk.reactnative.network.client.ResourcesClient
 import dagger.Lazy
