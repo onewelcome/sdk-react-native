@@ -33,6 +33,11 @@ import com.onegini.mobile.sdk.reactnative.module.RNOneginiSdkModule
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.reactnative.exception.PARAM_CAN_NOT_BE_NULL
+import com.onegini.mobile.sdk.reactnative.handlers.fingerprint.FingerprintAuthenticationRequestHandler
+import com.onegini.mobile.sdk.reactnative.handlers.mobileauthotp.MobileAuthOtpRequestHandler
+import com.onegini.mobile.sdk.reactnative.handlers.pins.CreatePinRequestHandler
+import com.onegini.mobile.sdk.reactnative.handlers.pins.PinAuthenticationRequestHandler
+import com.onegini.mobile.sdk.reactnative.handlers.registration.RegistrationRequestHandler
 import com.onegini.mobile.sdk.reactnative.managers.AuthenticatorManager
 import com.onegini.mobile.sdk.reactnative.managers.AuthenticatorManager.DeregistrationCallback
 import com.onegini.mobile.sdk.reactnative.managers.AuthenticatorManager.RegistrationCallback
@@ -42,6 +47,7 @@ import com.onegini.mobile.sdk.reactnative.mapers.JsonMapper
 import com.onegini.mobile.sdk.reactnative.mapers.OneginiAppToWebSingleSignOnMapper
 import com.onegini.mobile.sdk.reactnative.mapers.ResourceRequestDetailsMapper
 import com.onegini.mobile.sdk.reactnative.mapers.ScopesMapper
+import com.onegini.mobile.sdk.reactnative.module.SecureResourceClientModule
 import com.onegini.mobile.sdk.reactnative.network.AnonymousService
 import com.onegini.mobile.sdk.reactnative.network.ImplicitUserService
 import com.onegini.mobile.sdk.reactnative.network.UserService
@@ -65,7 +71,16 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
     lateinit var implicitUserService: ImplicitUserService
     @Inject
     lateinit var anonymousService: AnonymousService
-
+    @Inject
+    lateinit var fingerprintAuthenticationRequestHandler: FingerprintAuthenticationRequestHandler
+    @Inject
+    lateinit var registrationRequestHandler: RegistrationRequestHandler
+    @Inject
+    lateinit var mobileAuthOtpRequestHandler: MobileAuthOtpRequestHandler
+    @Inject
+    lateinit var createPinRequestHandler: CreatePinRequestHandler
+    @Inject
+    lateinit var pinAuthenticationRequestHandler: PinAuthenticationRequestHandler
 
     private val disposables = CompositeDisposable()
 
@@ -199,7 +214,7 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
         when (oneginiSDK.config.enableFingerprint) {
             false -> promise.reject(OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.code, OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.message)
             true -> {
-                oneginiSDK.fingerprintAuthenticationRequestHandler.acceptAuthenticationRequest()
+                fingerprintAuthenticationRequestHandler.acceptAuthenticationRequest()
                 promise.resolve(null)
             }
         }
@@ -210,7 +225,7 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
         when (oneginiSDK.config.enableFingerprint) {
             false -> promise.reject(OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.code, OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.message)
             true -> {
-                oneginiSDK.fingerprintAuthenticationRequestHandler.denyAuthenticationRequest()
+                fingerprintAuthenticationRequestHandler.denyAuthenticationRequest()
                 promise.resolve(null)
             }
         }
@@ -221,7 +236,7 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
         when (oneginiSDK.config.enableFingerprint) {
             false -> promise.reject(OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.code, OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.message)
             true -> {
-                oneginiSDK.fingerprintAuthenticationRequestHandler.fallbackToPin()
+                fingerprintAuthenticationRequestHandler.fallbackToPin()
                 promise.resolve(null)
             }
         }
@@ -352,7 +367,7 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
         }
 
         try {
-            oneginiSDK.registrationRequestHandler.cancelRegistration()
+            registrationRequestHandler.cancelRegistration()
             cancelCreatePinSilent()
             return promise.resolve(null)
         } catch (exception: OneginiReactNativeException) {}
@@ -365,7 +380,7 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
 
     private fun cancelCreatePinSilent() {
         try {
-            oneginiSDK.createPinRequestHandler.cancelPin()
+            createPinRequestHandler.cancelPin()
         } catch (exception: OneginiReactNativeException) {}
     }
 
@@ -406,7 +421,7 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
         when (pinFlow) {
             PinFlow.Authentication.toString() -> {
                 return try {
-                    oneginiSDK.pinAuthenticationRequestHandler.acceptAuthenticationRequest(pin.toCharArray())
+                    pinAuthenticationRequestHandler.acceptAuthenticationRequest(pin.toCharArray())
                     promise.resolve(null)
                 } catch (exception: OneginiReactNativeException) {
                     promise.reject(OneginiWrapperErrors.AUTHENTICATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.AUTHENTICATION_NOT_IN_PROGRESS.message)
@@ -414,7 +429,7 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
             }
             PinFlow.Create.toString() -> {
                 return try {
-                    oneginiSDK.createPinRequestHandler.onPinProvided(pin.toCharArray())
+                    createPinRequestHandler.onPinProvided(pin.toCharArray())
                     promise.resolve(null)
                 } catch (exception: OneginiReactNativeException) {
                     promise.reject(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
@@ -426,12 +441,12 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
     private fun handleSubmitPinActionCancel(pinFlow: String?, promise: Promise) {
         when (pinFlow) {
             PinFlow.Authentication.toString() -> {
-                oneginiSDK.pinAuthenticationRequestHandler.denyAuthenticationRequest()
+                pinAuthenticationRequestHandler.denyAuthenticationRequest()
                 return promise.resolve(null)
             }
             PinFlow.Create.toString() -> {
                 return try {
-                    oneginiSDK.createPinRequestHandler.cancelPin()
+                    createPinRequestHandler.cancelPin()
                     promise.resolve(null)
                 } catch (exception: OneginiReactNativeException) {
                     promise.reject(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
@@ -458,7 +473,7 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
         when (oneginiSDK.config.enableMobileAuthenticationOtp) {
             false -> promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.code, OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.message)
             true -> {
-                when (oneginiSDK.mobileAuthOtpRequestHandler.acceptAuthenticationRequest()) {
+                when (mobileAuthOtpRequestHandler.acceptAuthenticationRequest()) {
                     true -> promise.resolve(null)
                     false -> promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_NOT_IN_PROGRESS.code, OneginiWrapperErrors.MOBILE_AUTH_OTP_NOT_IN_PROGRESS.message)
                 }
@@ -471,7 +486,7 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
         when (oneginiSDK.config.enableMobileAuthenticationOtp) {
             false -> promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.code, OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.message)
             true -> {
-                when (oneginiSDK.mobileAuthOtpRequestHandler.denyAuthenticationRequest()) {
+                when (mobileAuthOtpRequestHandler.denyAuthenticationRequest()) {
                     true -> promise.resolve(null)
                     false -> promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_NOT_IN_PROGRESS.code, OneginiWrapperErrors.MOBILE_AUTH_OTP_NOT_IN_PROGRESS.message)
                 }
