@@ -347,11 +347,7 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
         when (uri) {
             null -> promise.rejectWithNullError(FunctionParams.Uri.paramName, FunctionParams.Uri.type)
             else -> {
-                return if (registrationManager.handleRegistrationCallback(uri)) {
-                    promise.resolve(null)
-                } else {
-                    promise.reject(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
-                }
+                sdkWrapper.handleRegistrationCallback(uri, promise)
             }
         }
     }
