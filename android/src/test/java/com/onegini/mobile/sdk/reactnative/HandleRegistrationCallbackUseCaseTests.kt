@@ -4,16 +4,14 @@ import android.net.Uri
 import com.facebook.react.bridge.Promise
 import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiBrowserRegistrationCallback
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.HandleRegistrationCallbackUseCase
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS
 import com.onegini.mobile.sdk.reactnative.facade.UriFacade
 import com.onegini.mobile.sdk.reactnative.handlers.registration.RegistrationEventEmitter
 import com.onegini.mobile.sdk.reactnative.handlers.registration.RegistrationRequestHandler
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Answers
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.spy
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.verify
@@ -22,9 +20,6 @@ import org.mockito.kotlin.whenever
 @RunWith(MockitoJUnitRunner::class)
 
 class HandleRegistrationCallbackUseCaseTests {
-
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private lateinit var oneginiSdk: OneginiSDK
 
     @Mock
     private lateinit var callbackMock: OneginiBrowserRegistrationCallback
@@ -53,9 +48,8 @@ class HandleRegistrationCallbackUseCaseTests {
 
     @Before
     fun setup() {
-        registrationRequestHandler = RegistrationRequestHandler(registrationEventEmitter)
-        mockRegistrationRequestHandler()
-        handleRegistrationCallbackUseCase = HandleRegistrationCallbackUseCase(oneginiSdk, uriFacade)
+        registrationRequestHandler = spy(RegistrationRequestHandler(registrationEventEmitter))
+        handleRegistrationCallbackUseCase = HandleRegistrationCallbackUseCase(registrationRequestHandler, uriFacade)
     }
 
     @Test
@@ -70,32 +64,27 @@ class HandleRegistrationCallbackUseCaseTests {
         whenStartedRegistration()
         mockParseUri(validUriString)
         handleRegistrationCallbackUseCase(validUriString, promiseMock)
-        verify(oneginiSdk.registrationRequestHandler).handleRegistrationCallback(parsedUri)
+        verify(registrationRequestHandler).handleRegistrationCallback(parsedUri)
     }
 
     @Test
     fun `should reject when passing a uri and registration is not in progress`() {
         handleRegistrationCallbackUseCase(validUriString, promiseMock)
-        verify(promiseMock).reject(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
+        verify(promiseMock).reject(REGISTRATION_NOT_IN_PROGRESS.code, REGISTRATION_NOT_IN_PROGRESS.message)
     }
 
     @Test
     fun `should pass an invalid uri into the sdk to get handled there when registration is in progress`() {
         mockParseUri(invalidUri)
         handleRegistrationCallbackUseCase(invalidUri, promiseMock)
-        verify(oneginiSdk.registrationRequestHandler).handleRegistrationCallback(parsedUri)
+        verify(registrationRequestHandler).handleRegistrationCallback(parsedUri)
     }
 
     private fun whenStartedRegistration() {
-        oneginiSdk.registrationRequestHandler.startRegistration(uriMock, callbackMock)
+        registrationRequestHandler.startRegistration(uriMock, callbackMock)
     }
 
     private fun mockParseUri(uri: String) {
         whenever(uriFacade.parse(uri)).thenReturn(parsedUri)
-    }
-
-    private fun mockRegistrationRequestHandler() {
-        val spyRegistrationRequestHandler = spy(registrationRequestHandler)
-        `when`(oneginiSdk.registrationRequestHandler).thenReturn(spyRegistrationRequestHandler)
     }
 }
