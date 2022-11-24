@@ -3,6 +3,7 @@ package com.onegini.mobile.sdk.reactnative.clean.wrapper
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.AcceptMobileAuthConfirmationUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.AuthenticateUserUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.DeregisterUserUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAllAuthenticatorsUseCase
@@ -18,6 +19,7 @@ import com.onegini.mobile.sdk.reactnative.clean.use_cases.ValidatePinWithPolicyU
 import javax.inject.Inject
 
 class OneginiSdkWrapper @Inject constructor(
+    private val acceptMobileAuthConfirmationUseCase: AcceptMobileAuthConfirmationUseCase,
     private val startClientUseCase: StartClientUseCase,
     private val getIdentityProvidersUseCase: GetIdentityProvidersUseCase,
     private val getAccessTokenUseCase: GetAccessTokenUseCase,
@@ -145,7 +147,7 @@ class OneginiSdkWrapper @Inject constructor(
     }
 
     fun acceptMobileAuthConfirmation(promise: Promise) {
-        TODO("Not yet implemented")
+        acceptMobileAuthConfirmationUseCase(promise)
     }
 
     fun denyMobileAuthConfirmation(promise: Promise) {
