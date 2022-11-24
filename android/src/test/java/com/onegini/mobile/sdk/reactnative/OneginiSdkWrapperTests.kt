@@ -17,6 +17,7 @@ import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetUserProfilesUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.HandleRegistrationCallbackUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.RegisterUserUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.StartClientUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.StartSingleSignOnUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.ValidatePinWithPolicyUseCase
 import com.onegini.mobile.sdk.reactnative.clean.wrapper.OneginiSdkWrapper
 import io.mockk.clearAllMocks
@@ -77,6 +78,8 @@ class OneginiSdkWrapperTests {
     @Mock
     lateinit var handleRegistrationCallbackUseCase: HandleRegistrationCallbackUseCase
 
+    @Mock
+    lateinit var startSingleSignOnUseCase: StartSingleSignOnUseCase
 
     private lateinit var wrapper: OneginiSdkWrapper
 
@@ -88,20 +91,24 @@ class OneginiSdkWrapperTests {
         every { Arguments.createArray() } answers { JavaOnlyArray() }
         every { Arguments.createMap() } answers { JavaOnlyMap() }
 
+
+
+
         wrapper = OneginiSdkWrapper(
-            startClientUseCase,
-            getIdentityProvidersUseCase,
-            getAccessTokenUseCase,
-            registerUserUseCase,
-            getAuthenticatedUserProfileUseCase,
-            getAllAuthenticatorsUseCase,
-            getRegisteredAuthenticatorsUseCase,
-            validatePinWithPolicyUseCase,
-            getUserProfilesUseCase,
-            getRedirectUriUseCase,
-            deregisterUserUseCase,
             authenticateUserUseCase,
+            deregisterUserUseCase,
+            getAccessTokenUseCase,
+            getAllAuthenticatorsUseCase,
+            getAuthenticatedUserProfileUseCase,
+            getIdentityProvidersUseCase,
+            getRedirectUriUseCase,
+            getRegisteredAuthenticatorsUseCase,
+            getUserProfilesUseCase,
             handleRegistrationCallbackUseCase,
+            registerUserUseCase,
+            startClientUseCase,
+            startSingleSignOnUseCase,
+            validatePinWithPolicyUseCase,
         )
     }
 
@@ -180,5 +187,12 @@ class OneginiSdkWrapperTests {
         wrapper.authenticateUser("123456", "1", promiseMock)
 
         verify(authenticateUserUseCase).invoke("123456", "1", promiseMock)
+    }
+
+    @Test
+    fun `when startSingleSignOn method is called calls startSingleSignOnUseCase with proper params`() {
+        wrapper.startSingleSignOn("url",  promiseMock)
+
+        verify(startSingleSignOnUseCase).invoke("url", promiseMock)
     }
 }
