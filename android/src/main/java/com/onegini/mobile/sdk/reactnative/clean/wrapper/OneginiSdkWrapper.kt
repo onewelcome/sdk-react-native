@@ -15,23 +15,25 @@ import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetIdentityProvidersUs
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.HandleRegistrationCallbackUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.RegisterUserUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.StartClientUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.StartSingleSignOnUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.ValidatePinWithPolicyUseCase
 import javax.inject.Inject
 
 class OneginiSdkWrapper @Inject constructor(
-    private val startClientUseCase: StartClientUseCase,
-    private val getIdentityProvidersUseCase: GetIdentityProvidersUseCase,
-    private val getAccessTokenUseCase: GetAccessTokenUseCase,
-    private val registerUserUseCase: RegisterUserUseCase,
-    private val getAuthenticatedUserProfileUseCase: GetAuthenticatedUserProfileUseCase,
-    private val getAllAuthenticatorsUseCase: GetAllAuthenticatorsUseCase,
-    private val getRegisteredAuthenticatorsUseCase: GetRegisteredAuthenticatorsUseCase,
-    private val validatePinWithPolicyUseCase: ValidatePinWithPolicyUseCase,
-    private val getUserProfilesUseCase: GetUserProfilesUseCase,
-    private val getRedirectUriUseCase: GetRedirectUriUseCase,
-    private val deregisterUserUseCase: DeregisterUserUseCase,
     private val authenticateUserUseCase: AuthenticateUserUseCase,
+    private val deregisterUserUseCase: DeregisterUserUseCase,
+    private val getAccessTokenUseCase: GetAccessTokenUseCase,
+    private val getAllAuthenticatorsUseCase: GetAllAuthenticatorsUseCase,
+    private val getAuthenticatedUserProfileUseCase: GetAuthenticatedUserProfileUseCase,
+    private val getIdentityProvidersUseCase: GetIdentityProvidersUseCase,
+    private val getRedirectUriUseCase: GetRedirectUriUseCase,
+    private val getRegisteredAuthenticatorsUseCase: GetRegisteredAuthenticatorsUseCase,
+    private val getUserProfilesUseCase: GetUserProfilesUseCase,
     private val handleRegistrationCallbackUseCase: HandleRegistrationCallbackUseCase,
+    private val registerUserUseCase: RegisterUserUseCase,
+    private val startClientUseCase: StartClientUseCase,
+    private val startSingleSignOnUseCase: StartSingleSignOnUseCase,
+    private val validatePinWithPolicyUseCase: ValidatePinWithPolicyUseCase,
 )  {
 
     fun startClient(rnConfig: ReadableMap, promise: Promise) {
@@ -163,6 +165,6 @@ class OneginiSdkWrapper @Inject constructor(
     }
 
     fun startSingleSignOn(url: String, promise: Promise) {
-        TODO("Not yet implemented")
+        startSingleSignOnUseCase(url, promise)
     }
 }
