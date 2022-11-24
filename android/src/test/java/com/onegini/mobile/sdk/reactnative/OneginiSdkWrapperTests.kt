@@ -6,6 +6,7 @@ import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.AuthenticateUserUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.ChangePinUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.DeregisterUserUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAccessTokenUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAllAuthenticatorsUseCase
@@ -36,6 +37,9 @@ class OneginiSdkWrapperTests {
 
     @Mock
     lateinit var promiseMock: Promise
+
+    @Mock
+    lateinit var changePinUseCase: ChangePinUseCase
 
     @Mock
     lateinit var startClientUseCase: StartClientUseCase
@@ -84,6 +88,7 @@ class OneginiSdkWrapperTests {
         every { Arguments.createMap() } answers { JavaOnlyMap() }
 
         wrapper = OneginiSdkWrapper(
+            changePinUseCase,
             startClientUseCase,
             getIdentityProvidersUseCase,
             getAccessTokenUseCase,
