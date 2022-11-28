@@ -10,6 +10,6 @@ class GetAuthenticatedUserProfileUseCase(private val oneginiSDK: OneginiSDK) {
     operator fun invoke(promise: Promise) {
         oneginiSDK.oneginiClient.userClient.authenticatedUserProfile?.let { userProfile ->
             promise.resolve(UserProfileMapper.toWritableMap(userProfile))
-        } ?: promise.reject(OneginiWrapperErrors.NO_PROFILE_AUTHENTICATED.code, OneginiWrapperErrors.NO_PROFILE_AUTHENTICATED.message)
+        } ?: promise.reject(OneginiWrapperErrors.NO_PROFILE_AUTHENTICATED.code.toString(), OneginiWrapperErrors.NO_PROFILE_AUTHENTICATED.message)
     }
 }

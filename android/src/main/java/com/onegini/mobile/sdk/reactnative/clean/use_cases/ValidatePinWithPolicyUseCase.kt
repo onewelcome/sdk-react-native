@@ -10,7 +10,7 @@ import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 class ValidatePinWithPolicyUseCase(private val oneginiSDK: OneginiSDK) {
   operator fun invoke(pin: String?, promise: Promise) {
     if (pin == null) {
-      promise.reject(OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.code, "Expected parameter 'pin' to be String but was NULL")
+      promise.reject(OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.code.toString(), "Expected parameter 'pin' to be String but was NULL")
       return
     }
     oneginiSDK.oneginiClient.userClient.validatePinWithPolicy(pin.toCharArray(), object: OneginiPinValidationHandler {

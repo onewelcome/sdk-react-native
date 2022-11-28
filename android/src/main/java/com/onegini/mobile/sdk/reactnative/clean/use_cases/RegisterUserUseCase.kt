@@ -18,7 +18,7 @@ class RegisterUserUseCase(private val oneginiSDK: OneginiSDK) {
         val identityProvider = getIdentityProvider(identityProviderId)
 
         if (identityProvider == null && identityProviderId != null) {
-            promise.reject(OneginiWrapperErrors.IDENTITY_PROVIDER_NOT_FOUND.code, OneginiWrapperErrors.IDENTITY_PROVIDER_NOT_FOUND.message)
+            promise.reject(OneginiWrapperErrors.IDENTITY_PROVIDER_NOT_FOUND.code.toString(), OneginiWrapperErrors.IDENTITY_PROVIDER_NOT_FOUND.message)
             return
         }
 
