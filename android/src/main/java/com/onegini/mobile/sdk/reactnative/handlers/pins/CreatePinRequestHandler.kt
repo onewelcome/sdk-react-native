@@ -38,7 +38,6 @@ class CreatePinRequestHandler : OneginiCreatePinRequestHandler {
         } ?: throw OneginiReactNativeException(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code.toInt(), OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
     }
 
-    @Throws(OneginiReactNativeException::class)
     fun cancelPin() {
         pinCallback?.let { callback ->
             callback.denyAuthenticationRequest()

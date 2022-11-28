@@ -30,15 +30,16 @@ class SimpleCustomTwoStepRegistrationActionImpl(private val idProvider: String) 
         return idProvider
     }
 
-    override fun returnSuccess(result: String?): Boolean {
-        return callback?.let { customRegistrationCallback ->
+    override fun returnSuccess(result: String?) {
+        callback?.let { customRegistrationCallback ->
             customRegistrationCallback.returnSuccess(result)
             callback = null
-            true
-        } ?: false
+        } ?: throw OneginiReactNativeException(
+            OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code.toInt(),
+            OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message
+        )
     }
 
-    @Throws(OneginiReactNativeException::class)
     override fun returnError(exception: Exception?) {
         callback?.let { customRegistrationCallback ->
             customRegistrationCallback.returnError(exception)
@@ -47,5 +48,9 @@ class SimpleCustomTwoStepRegistrationActionImpl(private val idProvider: String) 
             OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code.toInt(),
             OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message
         )
+    }
+
+    override fun isInProgress(): Boolean {
+        return callback != null
     }
 }
