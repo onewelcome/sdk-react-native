@@ -4,6 +4,7 @@ import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.AuthenticateUserUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.CancelBrowserRegistrationUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.DeregisterUserUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAllAuthenticatorsUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetRedirectUriUseCase
@@ -19,6 +20,7 @@ import com.onegini.mobile.sdk.reactnative.clean.use_cases.ValidatePinWithPolicyU
 import javax.inject.Inject
 
 class OneginiSdkWrapper @Inject constructor(
+    private val cancelBrowserRegistrationUseCase: CancelBrowserRegistrationUseCase,
     private val startClientUseCase: StartClientUseCase,
     private val getIdentityProvidersUseCase: GetIdentityProvidersUseCase,
     private val getAccessTokenUseCase: GetAccessTokenUseCase,
@@ -89,9 +91,8 @@ class OneginiSdkWrapper @Inject constructor(
     fun deregisterUser(profileId: String, promise: Promise) {
         deregisterUserUseCase(profileId, promise)
     }
-
-    fun cancelRegistration(promise: Promise) {
-        TODO("Not yet implemented")
+    fun cancelBrowserRegistration(promise: Promise) {
+        cancelBrowserRegistrationUseCase(promise)
     }
 
     fun getRedirectUri(promise: Promise) {
