@@ -18,23 +18,28 @@ class SimpleCustomRegistrationActionImpl(
         eventEmitter.finishRegistration(idProvider, info)
     }
 
-    override fun returnSuccess(result: String?): Boolean {
-        return callback?.let { customRegistrationCallback ->
-            customRegistrationCallback.returnSuccess(result)
-            callback = null
-            true
-        } ?: false
-    }
-
-    @Throws(OneginiReactNativeException::class)
-    override fun returnError(exception: Exception?) {
+    override fun returnSuccess(result: String?) {
         callback?.let { customRegistrationCallback ->
-            customRegistrationCallback.returnError(exception)
+            customRegistrationCallback.returnSuccess(result)
             callback = null
         } ?: throw OneginiReactNativeException(
             OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code.toInt(),
             OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message
         )
+    }
+
+    override fun returnError(exception: Exception?) {
+        callback?.let { customRegistrationCallback ->
+            customRegistrationCallback.returnError(exception)
+            callback = null
+        } ?: throw OneginiReactNativeException(
+            OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code,
+            OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message
+        )
+    }
+
+    override fun isInProgress(): Boolean {
+        return callback != null
     }
 
     override fun getOneginiCustomRegistrationAction(): OneginiCustomRegistrationAction {
