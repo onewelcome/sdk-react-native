@@ -43,4 +43,8 @@ object Constants {
 
     const val httpConnectTimeoutBrowserRegistrationMiliseconds = 5000
     const val httpReadTimeoutBrowserRegistrationMiliseconds = 20000
+
+    const val ANONYMOUS_SERVICE = "anonymousService"
+    const val IMPLICIT_USER_SERVICE = "implicitUserService"
+    const val USER_SERVICE = "userService"
 }

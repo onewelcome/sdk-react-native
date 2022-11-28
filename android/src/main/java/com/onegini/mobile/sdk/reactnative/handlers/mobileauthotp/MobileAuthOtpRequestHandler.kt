@@ -3,10 +3,12 @@ package com.onegini.mobile.sdk.reactnative.handlers.mobileauthotp
 import com.onegini.mobile.sdk.android.handlers.request.OneginiMobileAuthWithOtpRequestHandler
 import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiAcceptDenyCallback
 import com.onegini.mobile.sdk.android.model.entity.OneginiMobileAuthenticationRequest
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class MobileAuthOtpRequestHandler : OneginiMobileAuthWithOtpRequestHandler {
-
-    var eventEmitter: MobileAuthOtpRequestEventEmitter = MobileAuthOtpRequestEventEmitter()
+@Singleton
+class MobileAuthOtpRequestHandler @Inject constructor(private val eventEmitter: MobileAuthOtpRequestEventEmitter):
+    OneginiMobileAuthWithOtpRequestHandler {
 
     private var callback: OneginiAcceptDenyCallback? = null
 

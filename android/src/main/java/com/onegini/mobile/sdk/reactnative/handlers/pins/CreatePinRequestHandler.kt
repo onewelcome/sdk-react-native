@@ -1,16 +1,19 @@
 package com.onegini.mobile.sdk.reactnative.handlers.pins
 
 import com.onegini.mobile.sdk.android.handlers.request.OneginiCreatePinRequestHandler
-import com.onegini.mobile.sdk.reactnative.Constants.PinFlow
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiPinCallback
 import com.onegini.mobile.sdk.android.handlers.error.OneginiPinValidationError
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class CreatePinRequestHandler : OneginiCreatePinRequestHandler {
+@Singleton
+class CreatePinRequestHandler @Inject constructor(private val eventEmitter: CreatePinEventEmitter):
+    OneginiCreatePinRequestHandler {
+
     private var pinCallback: OneginiPinCallback? = null
-    private var eventEmitter = CreatePinEventEmitter()
 
     override fun startPinCreation(
         userProfile: UserProfile,

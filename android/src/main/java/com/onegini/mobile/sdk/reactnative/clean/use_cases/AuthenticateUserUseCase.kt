@@ -10,11 +10,14 @@ import com.onegini.mobile.sdk.android.handlers.OneginiAuthenticationHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiAuthenticationError
 import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class AuthenticateUserUseCase(
+@Singleton
+class AuthenticateUserUseCase @Inject constructor(
     private val oneginiSDK: OneginiSDK,
-    private val getRegisteredAuthenticatorsUseCase: GetRegisteredAuthenticatorsUseCase = GetRegisteredAuthenticatorsUseCase(oneginiSDK),
-    private val getUserProfileUseCase: GetUserProfileUseCase = GetUserProfileUseCase(oneginiSDK)
+    private val getRegisteredAuthenticatorsUseCase: GetRegisteredAuthenticatorsUseCase,
+    private val getUserProfileUseCase: GetUserProfileUseCase
 ) {
     operator fun invoke(profileId: String, authenticatorId: String?, promise: Promise) {
         val userProfile = getUserProfileUseCase(profileId)

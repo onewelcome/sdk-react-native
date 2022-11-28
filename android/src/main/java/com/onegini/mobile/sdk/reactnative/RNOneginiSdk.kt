@@ -29,10 +29,16 @@ import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.Constants.PinFlow
 import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.*
 import com.onegini.mobile.sdk.reactnative.clean.wrapper.OneginiSdkWrapper
-import com.onegini.mobile.sdk.reactnative.exception.CANCEL_CUSTOM_REGISTRATION_NOT_ALLOWED
+import com.onegini.mobile.sdk.reactnative.module.RNOneginiSdkModule
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.reactnative.exception.PARAM_CAN_NOT_BE_NULL
+import com.onegini.mobile.sdk.reactnative.handlers.fingerprint.FingerprintAuthenticationRequestHandler
+import com.onegini.mobile.sdk.reactnative.handlers.mobileauthotp.MobileAuthOtpRequestHandler
+import com.onegini.mobile.sdk.reactnative.handlers.pins.CreatePinRequestHandler
+import com.onegini.mobile.sdk.reactnative.handlers.pins.PinAuthenticationRequestHandler
+import com.onegini.mobile.sdk.reactnative.handlers.registration.RegistrationRequestHandler
+import com.onegini.mobile.sdk.reactnative.exception.CANCEL_CUSTOM_REGISTRATION_NOT_ALLOWED
 import com.onegini.mobile.sdk.reactnative.handlers.customregistration.SimpleCustomRegistrationAction
 import com.onegini.mobile.sdk.reactnative.managers.AuthenticatorManager
 import com.onegini.mobile.sdk.reactnative.managers.AuthenticatorManager.DeregistrationCallback
@@ -47,28 +53,45 @@ import com.onegini.mobile.sdk.reactnative.network.AnonymousService
 import com.onegini.mobile.sdk.reactnative.network.ImplicitUserService
 import com.onegini.mobile.sdk.reactnative.network.UserService
 import io.reactivex.rxjava3.disposables.CompositeDisposable
+import java.lang.Exception
+import javax.inject.Inject
 
 
-class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
-    private val sdkWrapper: OneginiSdkWrapper
-
-    private val reactContext: ReactApplicationContext
-    private val registrationManager: RegistrationManager
-    private val authenticatorManager: AuthenticatorManager
-
-    private val oneginiSDK: OneginiSDK
-        get() = OneginiComponents.oneginiSDK
+class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
+    @Inject
+    lateinit var oneginiSDK: OneginiSDK
+    @Inject
+    lateinit var registrationManager: RegistrationManager
+    @Inject
+    lateinit var authenticatorManager: AuthenticatorManager
+    @Inject
+    lateinit var sdkWrapper: OneginiSdkWrapper
+    @Inject
+    lateinit var userService: UserService
+    @Inject
+    lateinit var implicitUserService: ImplicitUserService
+    @Inject
+    lateinit var anonymousService: AnonymousService
+    @Inject
+    lateinit var fingerprintAuthenticationRequestHandler: FingerprintAuthenticationRequestHandler
+    @Inject
+    lateinit var registrationRequestHandler: RegistrationRequestHandler
+    @Inject
+    lateinit var mobileAuthOtpRequestHandler: MobileAuthOtpRequestHandler
+    @Inject
+    lateinit var createPinRequestHandler: CreatePinRequestHandler
+    @Inject
+    lateinit var pinAuthenticationRequestHandler: PinAuthenticationRequestHandler
 
     private val disposables = CompositeDisposable()
 
-    init {
-        OneginiComponents.init(reactContext)
 
-        sdkWrapper = OneginiSdkWrapper(oneginiSDK)
-
-        this.reactContext = reactContext
-        registrationManager = RegistrationManager(oneginiSDK)
-        authenticatorManager = AuthenticatorManager(oneginiSDK)
+    override fun initialize() {
+        super.initialize()
+        val component = DaggerRNOneginiSdkComponent.builder()
+            .rNOneginiSdkModule(RNOneginiSdkModule(reactContext))
+            .build()
+        component.inject(this)
     }
 
     enum class FunctionParams(val paramName: String, val type: String ) {
@@ -190,29 +213,35 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     fun submitFingerprintAcceptAuthenticationRequest(promise: Promise) {
-        oneginiSDK.fingerprintAuthenticationRequestHandler?.let { fingerprintHandler ->
-            fingerprintHandler.acceptAuthenticationRequest()
-            promise.resolve(null)
-        } ?:
-        promise.reject(OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.code.toString(), OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.message)
+        when (oneginiSDK.config.enableFingerprint) {
+            false -> promise.reject(OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.code.toString(), OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.message)
+            true -> {
+                fingerprintAuthenticationRequestHandler.acceptAuthenticationRequest()
+                promise.resolve(null)
+            }
+        }
     }
 
     @ReactMethod
     fun submitFingerprintDenyAuthenticationRequest(promise: Promise) {
-        oneginiSDK.fingerprintAuthenticationRequestHandler?.let { fingerprintHandler ->
-            fingerprintHandler.denyAuthenticationRequest()
-            promise.resolve(null)
-        } ?:
-        promise.reject(OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.code.toString(), OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.message)
+        when (oneginiSDK.config.enableFingerprint) {
+            false -> promise.reject(OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.code.toString(), OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.message)
+            true -> {
+                fingerprintAuthenticationRequestHandler.denyAuthenticationRequest()
+                promise.resolve(null)
+            }
+        }
     }
 
     @ReactMethod
     fun submitFingerprintFallbackToPin(promise: Promise) {
-        oneginiSDK.fingerprintAuthenticationRequestHandler?.let { fingerprintHandler ->
-            fingerprintHandler.fallbackToPin()
-            promise.resolve(null)
-        } ?:
-        promise.reject(OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.code.toString(), OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.message)
+        when (oneginiSDK.config.enableFingerprint) {
+            false -> promise.reject(OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.code.toString(), OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.message)
+            true -> {
+                fingerprintAuthenticationRequestHandler.fallbackToPin()
+                promise.resolve(null)
+            }
+        }
     }
 
     @ReactMethod
@@ -276,7 +305,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     @ReactMethod
     fun cancelBrowserRegistration(promise: Promise) {
         try {
-            oneginiSDK.registrationRequestHandler.cancelRegistration()
+            registrationRequestHandler.cancelRegistration()
             return promise.resolve(null)
         } catch (exception: OneginiReactNativeException) {
             promise.reject(exception.errorType.toString(), exception.message)
@@ -348,7 +377,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     @ReactMethod
     fun cancelPinCreation(promise: Promise) {
         try {
-            oneginiSDK.createPinRequestHandler.cancelPin()
+            createPinRequestHandler.cancelPin()
         } catch (exception: OneginiReactNativeException) {
             promise.reject(OneginiWrapperErrors.PIN_CREATION_NOT_IN_PROGRESS.code.toString(), OneginiWrapperErrors.PIN_CREATION_NOT_IN_PROGRESS.message)
         }
@@ -357,7 +386,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
     @ReactMethod
     fun cancelPinAuthentication(promise: Promise) {
         return try {
-            oneginiSDK.pinAuthenticationRequestHandler.denyAuthenticationRequest()
+            pinAuthenticationRequestHandler.denyAuthenticationRequest()
             promise.resolve(null)
         } catch (exception: OneginiReactNativeException) {
             promise.reject(exception.errorType.toString(), exception.message)
@@ -394,7 +423,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     private fun handleSubmitCreatePin(pin: String, promise: Promise) {
         return try {
-            oneginiSDK.createPinRequestHandler.onPinProvided(pin.toCharArray())
+            createPinRequestHandler.onPinProvided(pin.toCharArray())
             promise.resolve(null)
         } catch (exception: OneginiReactNativeException) {
             promise.reject(
@@ -406,7 +435,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     private fun handleSubmitAuthPin(pin: String, promise: Promise) {
         return try {
-            oneginiSDK.pinAuthenticationRequestHandler.acceptAuthenticationRequest(pin.toCharArray())
+            pinAuthenticationRequestHandler.acceptAuthenticationRequest(pin.toCharArray())
             promise.resolve(null)
         } catch (exception: OneginiReactNativeException) {
             promise.reject(
@@ -431,27 +460,27 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
 
     @ReactMethod
     fun acceptMobileAuthConfirmation(promise: Promise) {
-        val handler = oneginiSDK.mobileAuthOtpRequestHandler
-        if (handler == null) {
-            promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.code.toString(), OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.message)
-            return
-        }
-        when (handler.acceptAuthenticationRequest()) {
-            true -> promise.resolve(null)
-            false -> promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_NOT_IN_PROGRESS.code.toString(), OneginiWrapperErrors.MOBILE_AUTH_OTP_NOT_IN_PROGRESS.message)
+        when (oneginiSDK.config.enableMobileAuthenticationOtp) {
+            false -> promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.code.toString(), OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.message)
+            true -> {
+                when (mobileAuthOtpRequestHandler.acceptAuthenticationRequest()) {
+                    true -> promise.resolve(null)
+                    false -> promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_NOT_IN_PROGRESS.code.toString(), OneginiWrapperErrors.MOBILE_AUTH_OTP_NOT_IN_PROGRESS.message)
+                }
+            }
         }
     }
 
     @ReactMethod
     fun denyMobileAuthConfirmation(promise: Promise) {
-        val handler = oneginiSDK.mobileAuthOtpRequestHandler
-        if (handler == null) {
-            promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.code.toString(), OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.message)
-            return
-        }
-        when (handler.denyAuthenticationRequest()) {
-            true -> promise.resolve(null)
-            false -> promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_NOT_IN_PROGRESS.code.toString(), OneginiWrapperErrors.MOBILE_AUTH_OTP_NOT_IN_PROGRESS.message)
+        when (oneginiSDK.config.enableMobileAuthenticationOtp) {
+            false -> promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.code.toString(), OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.message)
+            true -> {
+                when (mobileAuthOtpRequestHandler.denyAuthenticationRequest()) {
+                    true -> promise.resolve(null)
+                    false -> promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_NOT_IN_PROGRESS.code.toString(), OneginiWrapperErrors.MOBILE_AUTH_OTP_NOT_IN_PROGRESS.message)
+                }
+            }
         }
     }
 
@@ -559,7 +588,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                 when (type) {
                     "User" -> {
                         disposables.add(
-                            UserService.getInstance()
+                            userService
                                 .getResource(requestDetails)
                                 .subscribe({
                                     promise.resolve(JsonMapper.toWritableMap(it))
@@ -568,7 +597,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                     }
                     "ImplicitUser" -> {
                         disposables.add(
-                            ImplicitUserService.getInstance()
+                            implicitUserService
                                 .getResource(requestDetails)
                                 .subscribe({
                                     promise.resolve(JsonMapper.toWritableMap(it))
@@ -577,7 +606,7 @@ class RNOneginiSdk(reactContext: ReactApplicationContext) : ReactContextBaseJava
                     }
                     "Anonymous" -> {
                         disposables.add(
-                            AnonymousService.getInstance()
+                            anonymousService
                                 .getResource(requestDetails)
                                 .subscribe({
                                     promise.resolve(JsonMapper.toWritableMap(it))

@@ -4,8 +4,11 @@ import com.facebook.react.bridge.Promise
 import com.onegini.mobile.sdk.reactnative.OneginiSDK
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.reactnative.mapers.UserProfileMapper
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class GetAuthenticatedUserProfileUseCase(private val oneginiSDK: OneginiSDK) {
+@Singleton
+class GetAuthenticatedUserProfileUseCase @Inject constructor(private val oneginiSDK: OneginiSDK) {
 
     operator fun invoke(promise: Promise) {
         oneginiSDK.oneginiClient.userClient.authenticatedUserProfile?.let { userProfile ->

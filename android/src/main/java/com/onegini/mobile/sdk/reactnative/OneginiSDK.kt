@@ -1,7 +1,6 @@
 package com.onegini.mobile.sdk.reactnative
 
 import android.content.Context
-import com.facebook.react.bridge.ReactApplicationContext
 import com.onegini.mobile.sdk.android.client.OneginiClient
 import com.onegini.mobile.sdk.android.client.OneginiClientBuilder
 import com.onegini.mobile.sdk.android.model.OneginiClientConfigModel
@@ -13,23 +12,21 @@ import com.onegini.mobile.sdk.reactnative.handlers.mobileauthotp.MobileAuthOtpRe
 import com.onegini.mobile.sdk.reactnative.handlers.pins.CreatePinRequestHandler
 import com.onegini.mobile.sdk.reactnative.handlers.pins.PinAuthenticationRequestHandler
 import com.onegini.mobile.sdk.reactnative.model.rn.OneginiReactNativeConfig
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class OneginiSDK(private val reactApplicationContext: ReactApplicationContext) {
-
-    lateinit var registrationRequestHandler: RegistrationRequestHandler
-        private set
-    lateinit var pinAuthenticationRequestHandler: PinAuthenticationRequestHandler
-        private set
-    lateinit var createPinRequestHandler: CreatePinRequestHandler
-        private set
+@Singleton
+class OneginiSDK @Inject constructor(
+    private val applicationContext: Context,
+    private val registrationRequestHandler: RegistrationRequestHandler,
+    private val pinAuthenticationRequestHandler: PinAuthenticationRequestHandler,
+    private val createPinRequestHandler: CreatePinRequestHandler,
+    private val mobileAuthOtpRequestHandler: MobileAuthOtpRequestHandler,
+    private val fingerprintAuthenticationRequestHandler: FingerprintAuthenticationRequestHandler,
+    private val simpleCustomRegistrationFactory: SimpleCustomRegistrationFactory,
+) {
 
     val simpleCustomRegistrationActions = ArrayList<SimpleCustomRegistrationAction>()
-
-    var mobileAuthOtpRequestHandler: MobileAuthOtpRequestHandler? = null
-        private set
-
-    var fingerprintAuthenticationRequestHandler: FingerprintAuthenticationRequestHandler? = null
-        private set
 
     lateinit var config: OneginiReactNativeConfig
         private set
@@ -37,7 +34,7 @@ class OneginiSDK(private val reactApplicationContext: ReactApplicationContext) {
     fun init(oneginiReactNativeConfig: OneginiReactNativeConfig) {
         this.config = oneginiReactNativeConfig
 
-        buildSDK(reactApplicationContext.applicationContext)
+        buildSDK(applicationContext)
     }
 
     val oneginiClient: OneginiClient
@@ -47,9 +44,6 @@ class OneginiSDK(private val reactApplicationContext: ReactApplicationContext) {
 
     private fun buildSDK(context: Context): OneginiClient {
         val applicationContext = context.applicationContext
-        registrationRequestHandler = RegistrationRequestHandler()
-        pinAuthenticationRequestHandler = PinAuthenticationRequestHandler()
-        createPinRequestHandler = CreatePinRequestHandler()
 
         val clientBuilder = OneginiClientBuilder(applicationContext, createPinRequestHandler, pinAuthenticationRequestHandler)
 
@@ -62,13 +56,11 @@ class OneginiSDK(private val reactApplicationContext: ReactApplicationContext) {
         setSecurityController(clientBuilder)
 
         if (config.enableMobileAuthenticationOtp) {
-            mobileAuthOtpRequestHandler = MobileAuthOtpRequestHandler()
-            clientBuilder.setMobileAuthWithOtpRequestHandler(mobileAuthOtpRequestHandler!!)
+            clientBuilder.setMobileAuthWithOtpRequestHandler(mobileAuthOtpRequestHandler)
         }
 
         if (config.enableFingerprint) {
-            fingerprintAuthenticationRequestHandler = FingerprintAuthenticationRequestHandler()
-            clientBuilder.setFingerprintAuthenticationRequestHandler(fingerprintAuthenticationRequestHandler!!)
+            clientBuilder.setFingerprintAuthenticationRequestHandler(fingerprintAuthenticationRequestHandler)
         }
 
         return clientBuilder.build()
@@ -76,7 +68,7 @@ class OneginiSDK(private val reactApplicationContext: ReactApplicationContext) {
 
     private fun setProviders(clientBuilder: OneginiClientBuilder) {
         config.identityProviders.forEach {
-            val provider = SimpleCustomRegistrationFactory.getSimpleCustomRegistrationProvider(it)
+            val provider = simpleCustomRegistrationFactory.getSimpleCustomRegistrationProvider(it)
             simpleCustomRegistrationActions.add(provider.action)
             clientBuilder.addCustomIdentityProvider(provider)
         }

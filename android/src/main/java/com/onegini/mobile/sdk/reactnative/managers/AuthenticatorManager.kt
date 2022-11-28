@@ -11,8 +11,11 @@ import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.OneginiSDK
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class AuthenticatorManager(private val oneginiSDK: OneginiSDK) {
+@Singleton
+class AuthenticatorManager @Inject constructor(private val oneginiSDK: OneginiSDK) {
 
     fun registerFingerprintAuthenticator(profileId: String, callback: RegistrationCallback) {
         val userProfile = getUserProfile(profileId)

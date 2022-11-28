@@ -6,10 +6,14 @@ import com.onegini.mobile.sdk.android.model.entity.AuthenticationAttemptCounter
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class PinAuthenticationRequestHandler : OneginiPinAuthenticationRequestHandler {
+@Singleton
+class PinAuthenticationRequestHandler @Inject constructor(private val eventEmitter: PinAuthenticationEventEmitter):
+    OneginiPinAuthenticationRequestHandler {
+
     private var callback: OneginiPinCallback? = null
-    private var eventEmitter = PinAuthenticationEventEmitter()
 
     override fun startAuthentication(
         userProfile: UserProfile,
@@ -25,13 +29,13 @@ class PinAuthenticationRequestHandler : OneginiPinAuthenticationRequestHandler {
     }
 
     override fun finishAuthentication() {
+        callback = null
         eventEmitter.onPinClose()
     }
 
     fun acceptAuthenticationRequest(pin: CharArray) {
         callback?.let { pinCallback ->
             pinCallback.acceptAuthenticationRequest(pin)
-            callback = null
         } ?: throw OneginiReactNativeException(OneginiWrapperErrors.AUTHENTICATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.AUTHENTICATION_NOT_IN_PROGRESS.message)
     }
 

@@ -5,9 +5,11 @@ import com.onegini.mobile.sdk.reactnative.OneginiSDK
 import com.onegini.mobile.sdk.android.handlers.OneginiPinValidationHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiPinValidationError
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
+import javax.inject.Inject
+import javax.inject.Singleton
 
-
-class ValidatePinWithPolicyUseCase(private val oneginiSDK: OneginiSDK) {
+@Singleton
+class ValidatePinWithPolicyUseCase @Inject constructor(private val oneginiSDK: OneginiSDK) {
   operator fun invoke(pin: String?, promise: Promise) {
     if (pin == null) {
       promise.reject(OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.code.toString(), "Expected parameter 'pin' to be String but was NULL")

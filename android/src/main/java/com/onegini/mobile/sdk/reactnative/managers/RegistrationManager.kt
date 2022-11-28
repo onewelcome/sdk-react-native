@@ -3,8 +3,15 @@ package com.onegini.mobile.sdk.reactnative.managers
 import android.net.Uri
 import com.onegini.mobile.sdk.reactnative.OneginiSDK
 import com.onegini.mobile.sdk.reactnative.handlers.customregistration.SimpleCustomRegistrationAction
+import com.onegini.mobile.sdk.reactnative.handlers.registration.RegistrationRequestHandler
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class RegistrationManager(private val oneginiSDK: OneginiSDK) {
+@Singleton
+class RegistrationManager @Inject constructor(
+    private val oneginiSDK: OneginiSDK,
+    private val registrationRequestHandler: RegistrationRequestHandler
+) {
 
     fun getSimpleCustomRegistrationAction(id: String?): SimpleCustomRegistrationAction? {
         for (action in oneginiSDK.simpleCustomRegistrationActions) {
@@ -16,6 +23,6 @@ class RegistrationManager(private val oneginiSDK: OneginiSDK) {
     }
 
     fun handleRegistrationCallback(uri: String?): Boolean {
-        return oneginiSDK.registrationRequestHandler.handleRegistrationCallback(Uri.parse(uri))
+        return registrationRequestHandler.handleRegistrationCallback(Uri.parse(uri))
     }
 }

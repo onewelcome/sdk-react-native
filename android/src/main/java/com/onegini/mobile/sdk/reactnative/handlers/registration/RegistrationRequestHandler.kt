@@ -7,10 +7,14 @@ import com.onegini.mobile.sdk.reactnative.exception.CANCEL_BROWSER_REGISTRATION_
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class RegistrationRequestHandler : OneginiBrowserRegistrationRequestHandler {
+@Singleton
+class RegistrationRequestHandler @Inject constructor(private val eventEmitter: RegistrationEventEmitter):
+    OneginiBrowserRegistrationRequestHandler {
+
   private var callback: OneginiBrowserRegistrationCallback? = null
-  private var eventEmitter = RegistrationEventEmitter()
   /**
    * Finish registration action with result from web browser
    */

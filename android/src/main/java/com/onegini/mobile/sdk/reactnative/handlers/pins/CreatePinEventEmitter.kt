@@ -4,9 +4,11 @@ import com.facebook.react.bridge.Arguments
 import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.onegini.mobile.sdk.reactnative.Constants
 import com.onegini.mobile.sdk.reactnative.Constants.PinFlow
-import com.onegini.mobile.sdk.reactnative.OneginiComponents.reactApplicationContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class CreatePinEventEmitter {
+@Singleton
+class CreatePinEventEmitter @Inject constructor(private val deviceEventEmitter: DeviceEventManagerModule.RCTDeviceEventEmitter) {
 
   fun onPinOpen(profileId: String, pinLength: Int) {
     val dataMap = Arguments.createMap()
@@ -14,16 +16,14 @@ class CreatePinEventEmitter {
     dataMap.putString("flow", PinFlow.Create.toString())
     dataMap.putInt("pinLength", pinLength)
     dataMap.putString("profileId", profileId);
-    reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
-      .emit(Constants.ONEWELCOME_PIN_CREATE_NOTIFICATION, dataMap)
+    deviceEventEmitter.emit(Constants.ONEWELCOME_PIN_CREATE_NOTIFICATION, dataMap)
   }
 
   fun onPinClose() {
     val dataMap = Arguments.createMap()
     dataMap.putString("action", Constants.PIN_NOTIFICATION_CLOSE_VIEW)
     dataMap.putString("flow", PinFlow.Create.toString())
-    reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
-      .emit(Constants.ONEWELCOME_PIN_CREATE_NOTIFICATION, dataMap)
+    deviceEventEmitter.emit(Constants.ONEWELCOME_PIN_CREATE_NOTIFICATION, dataMap)
   }
 
   fun onPinNotAllowed(errorCode: Int, errorMessage: String) {
@@ -32,7 +32,6 @@ class CreatePinEventEmitter {
     data.putString("flow", PinFlow.Create.toString())
     data.putInt("errorType", errorCode)
     data.putString("errorMsg", errorMessage)
-    reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
-      .emit(Constants.ONEWELCOME_PIN_CREATE_NOTIFICATION, data)
+    deviceEventEmitter.emit(Constants.ONEWELCOME_PIN_CREATE_NOTIFICATION, data)
   }
 }
