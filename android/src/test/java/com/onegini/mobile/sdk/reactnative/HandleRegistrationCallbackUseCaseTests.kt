@@ -70,7 +70,7 @@ class HandleRegistrationCallbackUseCaseTests {
     @Test
     fun `should reject when passing a uri and registration is not in progress`() {
         handleRegistrationCallbackUseCase(validUriString, promiseMock)
-        verify(promiseMock).reject(REGISTRATION_NOT_IN_PROGRESS.code, REGISTRATION_NOT_IN_PROGRESS.message)
+        verify(promiseMock).reject(REGISTRATION_NOT_IN_PROGRESS.code.toString(), REGISTRATION_NOT_IN_PROGRESS.message)
     }
 
     @Test

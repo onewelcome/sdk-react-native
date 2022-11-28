@@ -91,7 +91,7 @@ class RegisterUserUseCaseTests {
     @Test
     fun `when provider with provided id is not found should reject with proper errors`() {
         RegisterUserUseCase(oneginiSdk)("someId", scopes, promiseMock)
-        verify(promiseMock).reject(OneginiWrapperErrors.IDENTITY_PROVIDER_NOT_FOUND.code, OneginiWrapperErrors.IDENTITY_PROVIDER_NOT_FOUND.message)
+        verify(promiseMock).reject(OneginiWrapperErrors.IDENTITY_PROVIDER_NOT_FOUND.code.toString(), OneginiWrapperErrors.IDENTITY_PROVIDER_NOT_FOUND.message)
     }
 
     @Test

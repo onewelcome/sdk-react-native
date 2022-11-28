@@ -40,7 +40,7 @@ class ValidatePinWithPolicyUseCaseTests {
         whenever(oneginiSdk.oneginiClient.userClient.authenticatedUserProfile).thenReturn(UserProfile("testId"))
         ValidatePinWithPolicyUseCase(oneginiSdk)(pin, promiseMock)
         verify(promiseMock, never()).resolve(anyOrNull())
-        verify(promiseMock).reject(OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.code, "Expected parameter 'pin' to be String but was NULL")
+        verify(promiseMock).reject(OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.code.toString(), "Expected parameter 'pin' to be String but was NULL")
     }
 
     @Test

@@ -20,7 +20,7 @@ class HandleRegistrationCallbackUseCase @Inject constructor(
             registrationRequestHandler.handleRegistrationCallback(uri)
             promise.resolve(null)
         } catch (exception: OneginiReactNativeException) {
-            promise.reject(REGISTRATION_NOT_IN_PROGRESS.code, REGISTRATION_NOT_IN_PROGRESS.message)
+            promise.reject(REGISTRATION_NOT_IN_PROGRESS.code.toString(), REGISTRATION_NOT_IN_PROGRESS.message)
         }
     }
 }
