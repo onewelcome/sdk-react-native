@@ -12,12 +12,14 @@ import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetUserProfilesUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAccessTokenUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAuthenticatedUserProfileUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetIdentityProvidersUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.LogoutUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.RegisterUserUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.StartClientUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.ValidatePinWithPolicyUseCase
 import javax.inject.Inject
 
 class OneginiSdkWrapper @Inject constructor(
+    private val logoutUseCase: LogoutUseCase,
     private val startClientUseCase: StartClientUseCase,
     private val getIdentityProvidersUseCase: GetIdentityProvidersUseCase,
     private val getAccessTokenUseCase: GetAccessTokenUseCase,
@@ -53,7 +55,7 @@ class OneginiSdkWrapper @Inject constructor(
     }
 
     fun logout(promise: Promise) {
-        TODO("Not yet implemented")
+        logoutUseCase(promise)
     }
 
     fun getAccessToken(promise: Promise) {
