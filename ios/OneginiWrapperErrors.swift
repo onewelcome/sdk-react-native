@@ -1,4 +1,4 @@
-enum WrapperError : Error {
+enum WrapperError: LocalizedError {
     case profileDoesNotExist
     case identityProviderNotFound
     case malformedUrl
@@ -6,8 +6,11 @@ enum WrapperError : Error {
     case noProfileAuthenticated
     case registrationNotInProgress
     case mobileAuthNotInProgress
+    case authenticationNotInProgress
+    case pinCreationNotInProgress
+    case actionNotAllowed(description: String)
     
-    var description: String {
+    var errorDescription: String {
         switch self {
         case .identityProviderNotFound:
             return "Identity provider not found"
@@ -23,6 +26,12 @@ enum WrapperError : Error {
             return "Registration is currently not in progress"
         case .mobileAuthNotInProgress:
             return "There is currently no mobile authentication in progress"
+        case .authenticationNotInProgress:
+            return "Authentication is currently not in progress"
+        case .pinCreationNotInProgress:
+            return "Pin creation is currently not in progress"
+        case .actionNotAllowed(let description):
+            return description
         }
     }
     var code: Int {
@@ -41,6 +50,12 @@ enum WrapperError : Error {
             return 8013
         case .malformedUrl:
             return 8014
+        case .authenticationNotInProgress:
+            return 8015
+        case .pinCreationNotInProgress:
+            return 8016
+        case .actionNotAllowed:
+            return 8017
         }
     }
 }

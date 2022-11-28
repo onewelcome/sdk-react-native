@@ -1,7 +1,8 @@
 protocol BridgeToLoginHandlerProtocol: AnyObject {
     func authenticateUser(_ profile: ONGUserProfile, authenticator: ONGAuthenticator?, completion: @escaping (ONGUserProfile?, Error?) -> Void)
     func setAuthPinChallenge(_ challenge: ONGPinChallenge?)
-    func handlePinAction(_ pin: String?, action: PinAction)
+    func handlePin(_ pin: String?) throws
+    func cancelPinAuthentication() throws
 }
 
 
@@ -10,8 +11,8 @@ class LoginHandler: NSObject {
     private var loginCompletion: ((ONGUserProfile?, Error?) -> Void)?
     private let pinAuthenticationEventEmitter = PinAuthenticationEventEmitter()
 
-    func handlePin(_ pin: String?) {
-        guard let pinChallenge = self.pinChallenge else { return }
+    func handlePin(_ pin: String?) throws {
+        guard let pinChallenge = self.pinChallenge else { throw WrapperError.authenticationNotInProgress }
         guard let pin = pin else {
             pinChallenge.sender.cancel(pinChallenge)
             return
@@ -56,13 +57,9 @@ extension LoginHandler : BridgeToLoginHandlerProtocol {
     func setAuthPinChallenge(_ challenge: ONGPinChallenge?) {
         pinChallenge = challenge
     }
-    func handlePinAction(_ pin: String?, action: PinAction) {
-        switch action {
-            case PinAction.provide:
-                handlePin(pin)
-            case PinAction.cancel:
-                handlePin(nil)
-        }
+    func cancelPinAuthentication() throws {
+        guard let pinChallenge = self.pinChallenge else { throw WrapperError.authenticationNotInProgress }
+        pinChallenge.sender.cancel(pinChallenge)
     }
 }
 

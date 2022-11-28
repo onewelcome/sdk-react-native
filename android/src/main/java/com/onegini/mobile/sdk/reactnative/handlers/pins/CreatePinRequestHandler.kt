@@ -30,6 +30,7 @@ class CreatePinRequestHandler : OneginiCreatePinRequestHandler {
         pinCallback = null
     }
 
+    @Throws(OneginiReactNativeException::class)
     fun onPinProvided(pin: CharArray): Boolean {
         pinCallback?.let { callBack ->
             callBack.acceptAuthenticationRequest(pin)
