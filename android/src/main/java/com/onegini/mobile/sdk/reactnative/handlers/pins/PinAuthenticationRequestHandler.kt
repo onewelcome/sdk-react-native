@@ -29,13 +29,13 @@ class PinAuthenticationRequestHandler @Inject constructor(private val eventEmitt
     }
 
     override fun finishAuthentication() {
+        callback = null
         eventEmitter.onPinClose()
     }
 
     fun acceptAuthenticationRequest(pin: CharArray) {
         callback?.let { pinCallback ->
             pinCallback.acceptAuthenticationRequest(pin)
-            callback = null
         } ?: throw OneginiReactNativeException(OneginiWrapperErrors.AUTHENTICATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.AUTHENTICATION_NOT_IN_PROGRESS.message)
     }
 
