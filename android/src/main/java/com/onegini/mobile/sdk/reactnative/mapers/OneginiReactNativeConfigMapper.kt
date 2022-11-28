@@ -7,7 +7,6 @@ import com.onegini.mobile.sdk.reactnative.model.rn.ReactNativeIdentityProvider
 
 object OneginiReactNativeConfigMapper {
 
-    @Throws(NullPointerException::class)
     fun toOneginiReactNativeConfig(rnConfig: ReadableMap): OneginiReactNativeConfig {
         return OneginiReactNativeConfig(
             rnConfig.getString("configModelClassName"),

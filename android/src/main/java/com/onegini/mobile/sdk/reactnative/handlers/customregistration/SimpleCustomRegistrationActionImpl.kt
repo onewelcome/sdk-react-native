@@ -16,7 +16,6 @@ class SimpleCustomRegistrationActionImpl(private val idProvider: String) : Onegi
         eventEmitter.finishRegistration(idProvider, info)
     }
 
-    @Throws(OneginiReactNativeException::class)
     override fun returnSuccess(result: String?) {
         callback?.let { customRegistrationCallback ->
             customRegistrationCallback.returnSuccess(result)
@@ -27,7 +26,6 @@ class SimpleCustomRegistrationActionImpl(private val idProvider: String) : Onegi
         )
     }
 
-    @Throws(OneginiReactNativeException::class)
     override fun returnError(exception: Exception?) {
         callback?.let { customRegistrationCallback ->
             customRegistrationCallback.returnError(exception)

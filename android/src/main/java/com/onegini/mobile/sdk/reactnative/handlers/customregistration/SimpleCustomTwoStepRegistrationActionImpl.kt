@@ -40,7 +40,6 @@ class SimpleCustomTwoStepRegistrationActionImpl(private val idProvider: String) 
         )
     }
 
-    @Throws(OneginiReactNativeException::class)
     override fun returnError(exception: Exception?) {
         callback?.let { customRegistrationCallback ->
             customRegistrationCallback.returnError(exception)
