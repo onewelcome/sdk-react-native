@@ -483,15 +483,7 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
 
     @ReactMethod
     fun denyMobileAuthConfirmation(promise: Promise) {
-        when (oneginiSDK.config.enableMobileAuthenticationOtp) {
-            false -> promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.code, OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.message)
-            true -> {
-                when (mobileAuthOtpRequestHandler.denyAuthenticationRequest()) {
-                    true -> promise.resolve(null)
-                    false -> promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_NOT_IN_PROGRESS.code, OneginiWrapperErrors.MOBILE_AUTH_OTP_NOT_IN_PROGRESS.message)
-                }
-            }
-        }
+        sdkWrapper.denyMobileAuthConfirmation(promise)
     }
 
     @ReactMethod
