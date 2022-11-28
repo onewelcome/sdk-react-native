@@ -1,12 +1,13 @@
+
 protocol RegistrationConnectorToHandlerProtocol: AnyObject {
     func signUp(identityProvider: ONGIdentityProvider?, scopes: [String], completion: @escaping (Bool, ONGUserProfile?, Error?) -> Void)
-    func processRedirectURL(_ url: URL) -> Bool
-    func processOTPCode(_ code: String?) -> Bool
-    func cancelBrowserRegistration() -> Bool
-    func cancelPinCreation() -> Bool
-    func cancelCustomRegistration() -> Bool
+    func processRedirectURL(_ url: URL) throws
+    func processOTPCode(_ code: String?) throws
+    func cancelBrowserRegistration() throws
+    func cancelPinCreation() throws
+    func cancelCustomRegistration() throws
     func setCreatePinChallenge(_ challenge: ONGCreatePinChallenge?)
-    func handlePinAction(_ pin: String?, action: PinAction)
+    func handlePin(_ pin: String?) throws
     func handleDidReceivePinRegistrationChallenge(_ challenge: ONGCreatePinChallenge)
     func handleDidFailToRegister()
     func handleDidRegisterUser()
@@ -20,16 +21,17 @@ class RegistrationHandler: NSObject {
     private var signUpCompletion: ((Bool, ONGUserProfile?, Error?) -> Void)?
     private let createPinEventEmitter = CreatePinEventEmitter()
     private let registrationEventEmitter = RegistrationEventEmitter()
+    static let cancelCustomRegistrationNotAllowed = "Canceling the custom registration right now is not allowed. Registration is not in progress or pin creation has already started."
+    static let cancelBrowserRegistrationNotAllowed = "Canceling the browser registration right now is not allowed. Registration is not in progress or pin creation has already started."
 
-    func handleRedirectURL(_ url: URL) -> Bool {
-        guard let browserRegistrationChallenge = self.browserRegistrationChallenge else { return false }
+    func handleRedirectURL(_ url: URL) throws {
+        guard let browserRegistrationChallenge = self.browserRegistrationChallenge else { throw WrapperError.registrationNotInProgress }
         browserRegistrationChallenge.sender.respond(with: url, challenge: browserRegistrationChallenge)
-        return true
+        self.browserRegistrationChallenge = nil
     }
 
-    func handlePin(_ pin: String?) {
-        
-        guard let createPinChallenge = self.createPinChallenge else { return }
+    func handlePin(_ pin: String?) throws {
+        guard let createPinChallenge = self.createPinChallenge else { throw WrapperError.registrationNotInProgress}
         guard let pin = pin else{
             createPinChallenge.sender.cancel(createPinChallenge)
             return
@@ -37,14 +39,10 @@ class RegistrationHandler: NSObject {
         createPinChallenge.sender.respond(withCreatedPin: pin, challenge: createPinChallenge)
     }
 
-    func handleOTPCode(_ code: String? = nil, _ cancelled: Bool? = false) -> Bool {
-        guard let customRegistrationChallenge = self.customRegistrationChallenge else { return false }
-        if(cancelled == true) {
-            customRegistrationChallenge.sender.cancel(customRegistrationChallenge)
-            return true
-        }
+    func handleOTPCode(_ code: String? = nil) throws {
+        guard let customRegistrationChallenge = self.customRegistrationChallenge else { throw WrapperError.registrationNotInProgress }
         customRegistrationChallenge.sender.respond(withData: code, challenge: customRegistrationChallenge)
-        return true
+        self.customRegistrationChallenge = nil
     }
 
     fileprivate func mapErrorFromPinChallenge(_ challenge: ONGCreatePinChallenge) -> Error? {
@@ -70,40 +68,34 @@ extension RegistrationHandler : RegistrationConnectorToHandlerProtocol {
         ONGUserClient.sharedInstance().registerUser(with: identityProvider, scopes: scopes, delegate: self)
     }
 
-    func processRedirectURL(_ url: URL) -> Bool {
-        return handleRedirectURL(url)
+    func processRedirectURL(_ url: URL) throws {
+        try handleRedirectURL(url)
     }
 
-    func processOTPCode(_ code: String?) -> Bool {
-        return handleOTPCode(code)
+    func processOTPCode(_ code: String?) throws {
+        try handleOTPCode(code)
     }
 
-    func cancelCustomRegistration() -> Bool {
-        return handleOTPCode(nil, true)
+    func cancelCustomRegistration() throws {
+        guard let customRegistrationChallenge = self.customRegistrationChallenge else {
+            throw WrapperError.actionNotAllowed(description: RegistrationHandler.cancelBrowserRegistrationNotAllowed)
+        }
+        customRegistrationChallenge.sender.cancel(customRegistrationChallenge)
+        handleDidFailToRegister()
     }
 
-    func cancelBrowserRegistration() -> Bool {
-        if let browserRegistrationChallenge = self.browserRegistrationChallenge {
-            browserRegistrationChallenge.sender.cancel(browserRegistrationChallenge)
-            return true
+    func cancelBrowserRegistration() throws {
+        guard let browserRegistrationChallenge = self.browserRegistrationChallenge else {
+            throw WrapperError.actionNotAllowed(description: RegistrationHandler.cancelCustomRegistrationNotAllowed)
         }
-        return false
+        browserRegistrationChallenge.sender.cancel(browserRegistrationChallenge)
+        handleDidFailToRegister()
     }
-    func cancelPinCreation() -> Bool {
-        if let createPinChallenge = self.createPinChallenge {
-            createPinChallenge.sender.cancel(createPinChallenge)
-            return true
+    func cancelPinCreation() throws {
+        guard let createPinChallenge = self.createPinChallenge else {
+            throw WrapperError.registrationNotInProgress
         }
-        return false
-    }
-    
-    func handlePinAction(_ pin: String?, action: PinAction) {
-        switch action {
-            case PinAction.provide:
-                handlePin(pin)
-            case PinAction.cancel:
-                cancelPinCreation()
-        }
+        createPinChallenge.sender.cancel(createPinChallenge)
     }
     
     func handleDidReceivePinRegistrationChallenge(_ challenge: ONGCreatePinChallenge) {

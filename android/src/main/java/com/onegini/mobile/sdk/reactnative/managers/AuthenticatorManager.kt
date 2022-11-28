@@ -67,7 +67,6 @@ class AuthenticatorManager(private val oneginiSDK: OneginiSDK) {
             })
     }
 
-    @Throws(OneginiError::class)
     fun isFingerprintAuthenticatorRegistered(profileId: String): Boolean {
         val userProfile = getUserProfile(profileId)
             ?: throw OneginiReactNativeException(
@@ -123,7 +122,6 @@ class AuthenticatorManager(private val oneginiSDK: OneginiSDK) {
     }
 
 
-    @Throws(OneginiError::class)
     fun getRegisteredAuthenticators(profileId: String): Set<OneginiAuthenticator> {
         val userProfile = getUserProfile(profileId)
             ?: throw OneginiReactNativeException(
@@ -134,7 +132,6 @@ class AuthenticatorManager(private val oneginiSDK: OneginiSDK) {
         return oneginiSDK.oneginiClient.userClient.getRegisteredAuthenticators(userProfile)
     }
 
-    @Throws(OneginiError::class)
     fun setPreferredAuthenticator(profileId: String, id: String) {
         val userProfile = getUserProfile(profileId)
             ?: throw OneginiReactNativeException(

@@ -28,7 +28,6 @@ class PinAuthenticationRequestHandler : OneginiPinAuthenticationRequestHandler {
         eventEmitter.onPinClose()
     }
 
-    @Throws(OneginiReactNativeException::class)
     fun acceptAuthenticationRequest(pin: CharArray) {
         callback?.let { pinCallback ->
             pinCallback.acceptAuthenticationRequest(pin)

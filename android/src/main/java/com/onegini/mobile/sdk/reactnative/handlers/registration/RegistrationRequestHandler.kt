@@ -26,7 +26,6 @@ class RegistrationRequestHandler : OneginiBrowserRegistrationRequestHandler {
   /**
    * Cancel registration action in case of web browser error
    */
-  @Throws(OneginiReactNativeException::class)
   fun cancelRegistration() {
     callback?.let { registrationCallback ->
       registrationCallback.denyRegistration()
