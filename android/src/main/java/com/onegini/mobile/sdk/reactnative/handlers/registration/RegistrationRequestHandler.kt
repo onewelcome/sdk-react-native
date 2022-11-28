@@ -7,6 +7,7 @@ import com.onegini.mobile.sdk.reactnative.exception.CANCEL_BROWSER_REGISTRATION_
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS
+import com.onegini.mobile.sdk.reactnative.facade.UriFacade
 import javax.inject.Inject
 import javax.inject.Singleton
 

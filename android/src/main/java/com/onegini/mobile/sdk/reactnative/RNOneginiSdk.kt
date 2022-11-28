@@ -304,12 +304,7 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
 
     @ReactMethod
     fun cancelBrowserRegistration(promise: Promise) {
-        try {
-            registrationRequestHandler.cancelRegistration()
-            return promise.resolve(null)
-        } catch (exception: OneginiReactNativeException) {
-            promise.reject(exception.errorType.toString(), exception.message)
-        }
+        sdkWrapper.cancelBrowserRegistration(promise)
     }
 
     @ReactMethod
