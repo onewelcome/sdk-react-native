@@ -337,16 +337,7 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
     fun submitCustomRegistrationAction(identityProviderId: String?, token: String?, promise: Promise) {
         when (identityProviderId) {
             null -> promise.rejectWithNullError(IdentityProviderId.paramName, IdentityProviderId.type)
-            else -> {
-                val action = registrationManager.getSimpleCustomRegistrationAction(identityProviderId)
-                    ?: return promise.reject(OneginiWrapperErrors.IDENTITY_PROVIDER_NOT_FOUND.code.toString(), OneginiWrapperErrors.IDENTITY_PROVIDER_NOT_FOUND.message)
-                try {
-                    action.returnSuccess(token)
-                    promise.resolve(null)
-                } catch (exception: OneginiReactNativeException) {
-                    promise.reject(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code.toString(), OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
-                }
-            }
+            else -> sdkWrapper.submitCustomRegistrationAction(identityProviderId, token, promise)
         }
     }
 

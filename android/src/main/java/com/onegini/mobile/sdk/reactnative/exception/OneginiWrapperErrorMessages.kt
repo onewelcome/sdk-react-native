@@ -5,4 +5,6 @@ const val CANCEL_CUSTOM_REGISTRATION_NOT_ALLOWED = "Canceling the custom registr
     "progress or pin creation has already started. "
 const val CANCEL_BROWSER_REGISTRATION_NOT_ALLOWED = "Canceling the browser registration right now is not allowed. Registration is not in " +
     "progress or pin creation has already started. "
+const val SUBMIT_CUSTOM_REGISTRATION_ACTION_NOT_ALLOWED = "Submitting of custom registration action right now is not allowed. " +
+    "Registration is not in progress or pin creation has already started. "
 
