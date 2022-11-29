@@ -311,26 +311,8 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
     fun cancelCustomRegistration(message: String?, promise: Promise) {
         when (message) {
             null -> promise.rejectWithNullError(Message.paramName, Message.type)
-            else -> {
-                getActiveCustomRegistrationAction()?.let { action ->
-                    try {
-                        action.returnError(Exception(message))
-                        return promise.resolve(null)
-                    } catch (exception: OneginiReactNativeException) {
-                        promise.reject(OneginiWrapperErrors.ACTION_NOT_ALLOWED.code.toString(), CANCEL_CUSTOM_REGISTRATION_NOT_ALLOWED)
-                    }
-                } ?: promise.reject(OneginiWrapperErrors.ACTION_NOT_ALLOWED.code.toString(), CANCEL_CUSTOM_REGISTRATION_NOT_ALLOWED)
-            }
+            else -> sdkWrapper.cancelCustomRegistration(message, promise)
         }
-    }
-
-    private fun getActiveCustomRegistrationAction(): SimpleCustomRegistrationAction? {
-        for (action in oneginiSDK.simpleCustomRegistrationActions) {
-            if (action.isInProgress()){
-                return action
-            }
-        }
-        return null
     }
 
     @ReactMethod
