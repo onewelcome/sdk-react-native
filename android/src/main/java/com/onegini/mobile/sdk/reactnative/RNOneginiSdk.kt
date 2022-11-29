@@ -340,11 +340,7 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
 
     @ReactMethod
     fun cancelPinCreation(promise: Promise) {
-        try {
-            createPinRequestHandler.cancelPin()
-        } catch (exception: OneginiReactNativeException) {
-            promise.reject(OneginiWrapperErrors.PIN_CREATION_NOT_IN_PROGRESS.code.toString(), OneginiWrapperErrors.PIN_CREATION_NOT_IN_PROGRESS.message)
-        }
+        sdkWrapper.cancelPinCreation(promise)
     }
 
     @ReactMethod
