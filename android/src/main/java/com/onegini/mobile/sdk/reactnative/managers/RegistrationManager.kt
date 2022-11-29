@@ -1,6 +1,5 @@
 package com.onegini.mobile.sdk.reactnative.managers
 
-import android.net.Uri
 import com.onegini.mobile.sdk.reactnative.OneginiSDK
 import com.onegini.mobile.sdk.reactnative.handlers.customregistration.SimpleCustomRegistrationAction
 import com.onegini.mobile.sdk.reactnative.handlers.registration.RegistrationRequestHandler
@@ -20,9 +19,5 @@ class RegistrationManager @Inject constructor(
             }
         }
         return null
-    }
-
-    fun handleRegistrationCallback(uri: String?): Boolean {
-        return registrationRequestHandler.handleRegistrationCallback(Uri.parse(uri))
     }
 }
