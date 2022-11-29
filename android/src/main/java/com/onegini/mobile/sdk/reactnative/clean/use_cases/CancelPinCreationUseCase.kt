@@ -12,6 +12,7 @@ class CancelPinCreationUseCase @Inject constructor(private val createPinRequestH
     operator fun invoke(promise: Promise) {
         try {
             createPinRequestHandler.cancelPin()
+            promise.resolve(null)
         } catch (exception: OneginiReactNativeException) {
             promise.reject(PIN_CREATION_NOT_IN_PROGRESS.code.toString(), PIN_CREATION_NOT_IN_PROGRESS.message)
         }

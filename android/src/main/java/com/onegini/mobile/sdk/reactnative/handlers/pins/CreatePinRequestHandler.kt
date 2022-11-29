@@ -37,13 +37,13 @@ class CreatePinRequestHandler @Inject constructor(private val eventEmitter: Crea
         pinCallback?.let { callBack ->
             callBack.acceptAuthenticationRequest(pin)
             return true
-        } ?: throw OneginiReactNativeException(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
+        } ?: throw OneginiReactNativeException(OneginiWrapperErrors.PIN_CREATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.PIN_CREATION_NOT_IN_PROGRESS.message)
     }
 
     fun cancelPin() {
         pinCallback?.let { callback ->
             callback.denyAuthenticationRequest()
             pinCallback = null
-        } ?: throw OneginiReactNativeException(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
+        } ?: throw OneginiReactNativeException(OneginiWrapperErrors.PIN_CREATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.PIN_CREATION_NOT_IN_PROGRESS.message)
     }
 }
