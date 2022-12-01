@@ -6,6 +6,7 @@ import com.facebook.react.bridge.ReadableMap
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.AuthenticateUserUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.CancelBrowserRegistrationUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.CancelCustomRegistrationUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.CancelPinAuthenticationUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.CancelPinCreationUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.DeregisterUserUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAllAuthenticatorsUseCase
@@ -23,6 +24,7 @@ import com.onegini.mobile.sdk.reactnative.clean.use_cases.ValidatePinWithPolicyU
 import javax.inject.Inject
 
 class OneginiSdkWrapper @Inject constructor(
+    private val cancelPinAuthenticationUseCase: CancelPinAuthenticationUseCase,
     private val cancelPinCreationUseCase: CancelPinCreationUseCase,
     private val cancelCustomRegistrationUseCase: CancelCustomRegistrationUseCase,
     private val cancelBrowserRegistrationUseCase: CancelBrowserRegistrationUseCase,
@@ -100,6 +102,10 @@ class OneginiSdkWrapper @Inject constructor(
 
     fun cancelPinCreation(promise: Promise) {
         cancelPinCreationUseCase(promise)
+    }
+
+    fun cancelPinAuthentication(promise: Promise) {
+        cancelPinAuthenticationUseCase(promise)
     }
 
     fun cancelBrowserRegistration(promise: Promise) {

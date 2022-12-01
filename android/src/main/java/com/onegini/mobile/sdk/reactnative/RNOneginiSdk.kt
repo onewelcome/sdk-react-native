@@ -345,12 +345,7 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
 
     @ReactMethod
     fun cancelPinAuthentication(promise: Promise) {
-        return try {
-            pinAuthenticationRequestHandler.denyAuthenticationRequest()
-            promise.resolve(null)
-        } catch (exception: OneginiReactNativeException) {
-            promise.reject(exception.errorType.toString(), exception.message)
-        }
+        sdkWrapper.cancelPinAuthentication(promise)
     }
 
     @ReactMethod
