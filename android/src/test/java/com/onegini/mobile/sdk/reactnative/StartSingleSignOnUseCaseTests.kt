@@ -34,7 +34,7 @@ class StartSingleSignOnUseCaseTests {
     @Mock
     private lateinit var uriFacade: UriFacade
 
-    // We need to deep stub here to mock a uri object's .toString() as we cant pass in a uriFacade
+    // We need to deep stub here to mock a uri object's .toString() as we cant pass a uriFacade into the OneginiAppToWebSingleSignOn
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private lateinit var oneginiAppToWebSingleSignOn: OneginiAppToWebSingleSignOn
 
@@ -82,7 +82,6 @@ class StartSingleSignOnUseCaseTests {
         startSingleSignOnUseCase(correctUri, promiseMock)
         verify(promiseMock).reject(oneginiAppToWebSingleSignOnError.errorType.toString(), oneginiAppToWebSingleSignOnError.message)
     }
-
 
     private fun mockSingleSignOnObject() {
         `when`(oneginiAppToWebSingleSignOn.token).thenReturn(mockedTokenString)

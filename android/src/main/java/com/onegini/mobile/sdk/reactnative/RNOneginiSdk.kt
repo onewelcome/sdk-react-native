@@ -278,10 +278,7 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
 
     @ReactMethod
     fun startSingleSignOn(uri: String?, promise: Promise) {
-        when (uri) {
-            null -> promise.rejectWithNullError(Uri.paramName, Uri.type)
-            else -> sdkWrapper.startSingleSignOn(uri, promise)
-        }
+        uri?.let { sdkWrapper.startSingleSignOn(uri, promise) } ?: promise.rejectWithNullError(Uri.paramName, Uri.type)
     }
 
     @ReactMethod
