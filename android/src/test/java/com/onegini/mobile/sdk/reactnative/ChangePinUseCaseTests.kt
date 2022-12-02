@@ -37,7 +37,7 @@ class ChangePinUseCaseTests {
         changePinUseCase = ChangePinUseCase(oneginiSdk)
     }
     @Test
-    fun `When android sdk calls onSuccess on the handler of changePin then promise should resolve with null`() {
+    fun `When android sdk calls onSuccess on the handler of changePin, Then promise should resolve with null`() {
         whenever(oneginiSdk.oneginiClient.userClient.changePin(any())).thenAnswer {
             it.getArgument<OneginiChangePinHandler>(0).onSuccess()
         }
@@ -46,7 +46,7 @@ class ChangePinUseCaseTests {
     }
 
     @Test
-    fun `When android sdk calls onError on the handler of changePin then promise should reject with the given code and message`() {
+    fun `When android sdk calls onError on the handler of changePin, Then promise should reject with the given code and message`() {
         whenever(oneginiSdk.oneginiClient.userClient.changePin(any())).thenAnswer {
             it.getArgument<OneginiChangePinHandler>(0).onError(oneginiChangePinError)
         }
