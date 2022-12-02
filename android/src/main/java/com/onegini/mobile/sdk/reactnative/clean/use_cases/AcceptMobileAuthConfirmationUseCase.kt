@@ -10,18 +10,24 @@ import javax.inject.Singleton
 
 
 @Singleton
-class AcceptMobileAuthConfirmationUseCase @Inject constructor(private val oneginiSDK: OneginiSDK, private val mobileAuthOtpRequestHandler: MobileAuthOtpRequestHandler) {
+class AcceptMobileAuthConfirmationUseCase @Inject constructor(
+    private val oneginiSDK: OneginiSDK,
+    private val mobileAuthOtpRequestHandler: MobileAuthOtpRequestHandler
+) {
     operator fun invoke(promise: Promise) {
-        when (oneginiSDK.config.enableMobileAuthenticationOtp) {
-            false -> promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.code, OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.message)
-            true -> {
-                try {
-                    mobileAuthOtpRequestHandler.acceptAuthenticationRequest()
-                    promise.resolve(null)
-                } catch (exception: OneginiReactNativeException) {
-                    promise.reject(exception.errorType.toString(), exception.message)
-                }
-            }
+        if (oneginiSDK.config.enableMobileAuthenticationOtp) {
+            tryAcceptAuthenticationRequest(promise)
+        } else {
+            promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.code, OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.message)
+        }
+    }
+
+    private fun tryAcceptAuthenticationRequest(promise: Promise) {
+        try {
+            mobileAuthOtpRequestHandler.acceptAuthenticationRequest()
+            promise.resolve(null)
+        } catch (exception: OneginiReactNativeException) {
+            promise.reject(exception.errorType.toString(), exception.message)
         }
     }
 }

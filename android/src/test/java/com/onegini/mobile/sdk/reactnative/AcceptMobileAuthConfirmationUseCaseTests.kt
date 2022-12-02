@@ -45,21 +45,21 @@ class AcceptMobileAuthConfirmationUseCaseTests {
     }
 
     @Test
-    fun `When mobile authentication with OTP is not enabled, the promise should reject with that error`() {
+    fun `When mobile authentication with OTP is not enabled, Then promise should reject with that error`() {
         disabledMobileAuthentication()
         AcceptMobileAuthConfirmationUseCase(oneginiSdk, mobileAuthOtpRequestHandler)(promiseMock)
         verify(promiseMock).reject(MOBILE_AUTH_OTP_IS_DISABLED.code, MOBILE_AUTH_OTP_IS_DISABLED.message)
     }
 
     @Test
-    fun `When MA-OTP is enabled and no mobile authentication is in progress, should reject with that error`() {
+    fun `When mobile authentication with OTP is enabled and is in progress, Then should reject with that error`() {
         enabledMobileAuthentication()
         AcceptMobileAuthConfirmationUseCase(oneginiSdk, mobileAuthOtpRequestHandler)(promiseMock)
         verify(promiseMock).reject(MOBILE_AUTH_OTP_NOT_IN_PROGRESS.code, MOBILE_AUTH_OTP_NOT_IN_PROGRESS.message)
     }
 
     @Test
-    fun `When MA-OTP is enabled and mobile authentication is in progress, should resolve with null`() {
+    fun `When mobile authentication with OTP is enabled and is in progress, Then should resolve with null`() {
         enabledMobileAuthentication()
         startMobileAuthentication()
         AcceptMobileAuthConfirmationUseCase(oneginiSdk, mobileAuthOtpRequestHandler)(promiseMock)
