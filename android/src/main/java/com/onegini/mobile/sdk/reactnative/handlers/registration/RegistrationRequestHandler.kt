@@ -18,8 +18,6 @@ class RegistrationRequestHandler @Inject constructor(private val eventEmitter: R
   /**
    * Finish registration action with result from web browser
    */
-  @Throws(OneginiReactNativeException::class)
-
   fun handleRegistrationCallback(uri: Uri?) {
     callback?.let { registrationCallback ->
       registrationCallback.handleRegistrationCallback(uri)
