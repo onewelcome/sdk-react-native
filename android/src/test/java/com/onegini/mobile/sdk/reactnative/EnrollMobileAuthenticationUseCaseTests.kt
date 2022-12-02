@@ -4,6 +4,7 @@ import com.facebook.react.bridge.Promise
 import com.onegini.mobile.sdk.android.handlers.OneginiMobileAuthEnrollmentHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiMobileAuthEnrollmentError
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.EnrollMobileAuthenticationUseCase
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -29,21 +30,27 @@ class EnrollMobileAuthenticationUseCaseTests {
     @Mock
     lateinit var oneginiMobileAuthEnrollmentError: OneginiMobileAuthEnrollmentError
 
+    lateinit var enrollMobileAuthenticationUseCase: EnrollMobileAuthenticationUseCase
+
+    @Before
+    fun setup() {
+        enrollMobileAuthenticationUseCase = EnrollMobileAuthenticationUseCase(oneginiSdk)
+    }
     @Test
-    fun `When android sdk calls onSuccess on the handler of enrollUserForMobileAuth, promise should resolve with null`() {
+    fun `When android sdk calls onSuccess on the handler of enrollUserForMobileAuth, Then promise should resolve with null`() {
         whenever(oneginiSdk.oneginiClient.userClient.enrollUserForMobileAuth(any())).thenAnswer {
             it.getArgument<OneginiMobileAuthEnrollmentHandler>(0).onSuccess()
         }
-        EnrollMobileAuthenticationUseCase(oneginiSdk)(promiseMock)
+        enrollMobileAuthenticationUseCase(promiseMock)
         verify(promiseMock).resolve(null)
     }
 
     @Test
-    fun `When android sdk calls onError on the handler of enrollUserForMobileAuth, promise should reject with the given code and message`() {
+    fun `When android sdk calls onError on the handler of enrollUserForMobileAuth, Then promise should reject with the given code and message`() {
         whenever(oneginiSdk.oneginiClient.userClient.enrollUserForMobileAuth(any())).thenAnswer {
             it.getArgument<OneginiMobileAuthEnrollmentHandler>(0).onError(oneginiMobileAuthEnrollmentError)
         }
-        EnrollMobileAuthenticationUseCase(oneginiSdk)(promiseMock)
+        enrollMobileAuthenticationUseCase(promiseMock)
         verify(promiseMock).reject(oneginiMobileAuthEnrollmentError.errorType.toString(), oneginiMobileAuthEnrollmentError.message)
     }
 
