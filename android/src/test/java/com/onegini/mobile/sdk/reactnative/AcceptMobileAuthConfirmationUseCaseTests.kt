@@ -39,22 +39,25 @@ class AcceptMobileAuthConfirmationUseCaseTests {
 
     lateinit var mobileAuthOtpRequestHandler: MobileAuthOtpRequestHandler
 
+    lateinit var acceptMobileAuthConfirmationUseCase: AcceptMobileAuthConfirmationUseCase
+
     @Before
     fun setup() {
         mobileAuthOtpRequestHandler = MobileAuthOtpRequestHandler(mobileAuthOtpRequestEventEmitter)
+        acceptMobileAuthConfirmationUseCase = AcceptMobileAuthConfirmationUseCase(oneginiSdk, mobileAuthOtpRequestHandler)
     }
 
     @Test
     fun `When mobile authentication with OTP is not enabled, Then promise should reject with that error`() {
         disabledMobileAuthentication()
-        AcceptMobileAuthConfirmationUseCase(oneginiSdk, mobileAuthOtpRequestHandler)(promiseMock)
+        acceptMobileAuthConfirmationUseCase(promiseMock)
         verify(promiseMock).reject(MOBILE_AUTH_OTP_IS_DISABLED.code.toString(), MOBILE_AUTH_OTP_IS_DISABLED.message)
     }
 
     @Test
     fun `When mobile authentication with OTP is enabled and is in progress, Then should reject with that error`() {
         enabledMobileAuthentication()
-        AcceptMobileAuthConfirmationUseCase(oneginiSdk, mobileAuthOtpRequestHandler)(promiseMock)
+        acceptMobileAuthConfirmationUseCase(promiseMock)
         verify(promiseMock).reject(MOBILE_AUTH_OTP_NOT_IN_PROGRESS.code.toString(), MOBILE_AUTH_OTP_NOT_IN_PROGRESS.message)
     }
 
@@ -62,7 +65,7 @@ class AcceptMobileAuthConfirmationUseCaseTests {
     fun `When mobile authentication with OTP is enabled and is in progress, Then should resolve with null`() {
         enabledMobileAuthentication()
         startMobileAuthentication()
-        AcceptMobileAuthConfirmationUseCase(oneginiSdk, mobileAuthOtpRequestHandler)(promiseMock)
+        acceptMobileAuthConfirmationUseCase(promiseMock)
         verify(promiseMock).resolve(null)
     }
 
@@ -77,5 +80,4 @@ class AcceptMobileAuthConfirmationUseCaseTests {
     private fun enabledMobileAuthentication() {
         `when`(oneginiSdk.config.enableMobileAuthenticationOtp).thenReturn(true)
     }
-
 }
