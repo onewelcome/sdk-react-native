@@ -1,11 +1,11 @@
 package com.onegini.mobile.sdk.reactnative.handlers.pins
 
-import com.onegini.mobile.sdk.android.handlers.request.OneginiCreatePinRequestHandler
-import com.onegini.mobile.sdk.android.model.entity.UserProfile
-import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiPinCallback
 import com.onegini.mobile.sdk.android.handlers.error.OneginiPinValidationError
+import com.onegini.mobile.sdk.android.handlers.request.OneginiCreatePinRequestHandler
+import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiPinCallback
+import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.PIN_CREATION_NOT_IN_PROGRESS
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -33,17 +33,17 @@ class CreatePinRequestHandler @Inject constructor(private val eventEmitter: Crea
         pinCallback = null
     }
 
-    fun onPinProvided(pin: CharArray): Boolean {
-        pinCallback?.let { callBack ->
-            callBack.acceptAuthenticationRequest(pin)
-            return true
-        } ?: throw OneginiReactNativeException(OneginiWrapperErrors.PIN_CREATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.PIN_CREATION_NOT_IN_PROGRESS.message)
+    fun onPinProvided(pin: CharArray) {
+        pinCallback?.acceptAuthenticationRequest(pin) ?: throw OneginiReactNativeException(
+            PIN_CREATION_NOT_IN_PROGRESS.code,
+            PIN_CREATION_NOT_IN_PROGRESS.message
+        )
     }
 
     fun cancelPin() {
-        pinCallback?.let { callback ->
-            callback.denyAuthenticationRequest()
-            pinCallback = null
-        } ?: throw OneginiReactNativeException(OneginiWrapperErrors.PIN_CREATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.PIN_CREATION_NOT_IN_PROGRESS.message)
+        pinCallback?.denyAuthenticationRequest() ?: throw OneginiReactNativeException(
+            PIN_CREATION_NOT_IN_PROGRESS.code,
+            PIN_CREATION_NOT_IN_PROGRESS.message
+        )
     }
 }
