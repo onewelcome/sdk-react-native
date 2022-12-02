@@ -343,9 +343,7 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
     fun handleRegistrationCallback(uri: String?, promise: Promise) {
         when (uri) {
             null -> promise.rejectWithNullError(FunctionParams.Uri.paramName, FunctionParams.Uri.type)
-            else -> {
-                sdkWrapper.handleRegistrationCallback(uri, promise)
-            }
+            else -> sdkWrapper.handleRegistrationCallback(uri, promise)
         }
     }
 
