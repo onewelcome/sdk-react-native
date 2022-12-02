@@ -9,7 +9,7 @@ buildscript {
         }
 
         dependencies {
-            classpath('com.android.tools.build:gradle:7.2.2')
+            classpath('com.android.tools.build:gradle:4.2.2')
             classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10"
         }
 }
@@ -31,7 +31,7 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion safeExtGet('minSdkVersion', 23)
+        minSdkVersion safeExtGet('minSdkVersion', 24)
         targetSdkVersion safeExtGet('targetSdkVersion', 31)
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
