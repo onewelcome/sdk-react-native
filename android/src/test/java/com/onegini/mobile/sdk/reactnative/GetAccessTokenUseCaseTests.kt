@@ -39,6 +39,6 @@ class GetAccessTokenUseCaseTests {
         Mockito.`when`(oneginiSdk.oneginiClient.accessToken).thenReturn(null)
 
         GetAccessTokenUseCase(oneginiSdk)(promiseMock)
-        verify(promiseMock).reject(OneginiWrapperErrors.NO_PROFILE_AUTHENTICATED.code, OneginiWrapperErrors.NO_PROFILE_AUTHENTICATED.message)
+        verify(promiseMock).reject(OneginiWrapperErrors.NO_PROFILE_AUTHENTICATED.code.toString(), OneginiWrapperErrors.NO_PROFILE_AUTHENTICATED.message)
     }
 }

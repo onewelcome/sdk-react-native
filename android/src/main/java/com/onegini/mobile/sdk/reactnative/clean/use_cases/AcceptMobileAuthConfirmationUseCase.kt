@@ -18,7 +18,7 @@ class AcceptMobileAuthConfirmationUseCase @Inject constructor(
         if (oneginiSDK.config.enableMobileAuthenticationOtp) {
             tryAcceptAuthenticationRequest(promise)
         } else {
-            promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.code, OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.message)
+            promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.code.toString(), OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.message)
         }
     }
 
