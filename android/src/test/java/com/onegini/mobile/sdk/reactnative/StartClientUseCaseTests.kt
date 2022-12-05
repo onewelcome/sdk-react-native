@@ -47,7 +47,7 @@ class StartClientUseCaseTests {
     @Test
     fun `when wrong configs are provided should reject`() {
         StartClientUseCase(oneginiSdk)(JavaOnlyMap(), promiseMock)
-        verify(promiseMock).reject(OneginiWrapperErrors.WRONG_CONFIG_MODEL.code, OneginiWrapperErrors.WRONG_CONFIG_MODEL.message)
+        verify(promiseMock).reject(OneginiWrapperErrors.WRONG_CONFIG_MODEL.code.toString(), OneginiWrapperErrors.WRONG_CONFIG_MODEL.message)
     }
     
     @Test

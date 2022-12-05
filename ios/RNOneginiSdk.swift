@@ -66,7 +66,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func getAccessToken(_ resolve: RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
         let accessToken = userClient.accessToken
         guard let accessToken = accessToken else {
-            reject(String(WrapperError.noProfileAuthenticated.code), WrapperError.noProfileAuthenticated.description, WrapperError.noProfileAuthenticated)
+            reject(String(WrapperError.noProfileAuthenticated.code), WrapperError.noProfileAuthenticated.localizedDescription, WrapperError.noProfileAuthenticated)
             return
         }
         resolve(accessToken)
@@ -87,7 +87,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     @objc
     func getAuthenticatedUserProfile(_ resolve: RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
         guard let authenticatedProfile = userClient.authenticatedUserProfile() else {
-            reject(String(WrapperError.noProfileAuthenticated.code), WrapperError.noProfileAuthenticated.description, WrapperError.noProfileAuthenticated)
+            reject(String(WrapperError.noProfileAuthenticated.code), WrapperError.noProfileAuthenticated.localizedDescription, WrapperError.noProfileAuthenticated)
             return
         }
         resolve(["profileId": authenticatedProfile.profileId])
@@ -129,26 +129,14 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     @objc
-    func submitCustomRegistrationAction(_ action: String, identityProviderId: String, token: String?,
+    func submitCustomRegistrationAction(_ identityProviderId: String, token: String?,
                                         resolver resolve: @escaping RCTPromiseResolveBlock,
                                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        switch action {
-        case CustomRegistrationAction.provide.rawValue:
-            do {
-                try bridgeConnector.toRegistrationConnector.registrationHandler.processOTPCode(token)
-                resolve(nil)
-            } catch {
-                reject(String(error.code), error.localizedDescription, error)
-            }
-        case CustomRegistrationAction.cancel.rawValue:
-            do {
-                try bridgeConnector.toRegistrationConnector.registrationHandler.cancelCustomRegistration()
-                resolve(nil)
-            } catch {
-                reject(String(error.code), error.localizedDescription, error)
-            }
-        default:
-            reject(String(WrapperError.parametersNotCorrect.code), "Incorrect customAction supplied: \(action)", WrapperError.parametersNotCorrect)
+        do {
+            try bridgeConnector.toRegistrationConnector.registrationHandler.processOTPCode(token)
+            resolve(nil)
+        } catch {
+            reject(String(error.code), error.localizedDescription, error)
         }
     }
 
@@ -159,7 +147,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         let profile = userClient.userProfiles().first(where: { $0.profileId == profileId })
         guard let profile = profile else {
-            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.description, WrapperError.profileDoesNotExist)
+            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.localizedDescription, WrapperError.profileDoesNotExist)
             return
         }
         userClient.deregisterUser(profile) {
@@ -179,7 +167,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                                     rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         let urlOBject = URL(string: url)
         guard let urlOBject = urlOBject else {
-            reject(String(WrapperError.malformedUrl.code), WrapperError.malformedUrl.description, WrapperError.malformedUrl)
+            reject(String(WrapperError.malformedUrl.code), WrapperError.malformedUrl.localizedDescription, WrapperError.malformedUrl)
             return
         }
         do {
@@ -191,56 +179,71 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     @objc
-    func cancelRegistration(_ resolve: @escaping RCTPromiseResolveBlock,
+    func cancelBrowserRegistration(_ resolve: @escaping RCTPromiseResolveBlock,
                             rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        let registrationHandler = bridgeConnector.toRegistrationConnector.registrationHandler
-        var canceled = false
-        if (try? registrationHandler.cancelBrowserRegistration()) != nil { canceled = true }
-        if (try? registrationHandler.cancelPinCreation()) != nil { canceled = true }
-        if (try? registrationHandler.cancelCustomRegistration()) != nil { canceled = true }
-        if canceled {
+        do {
+            try bridgeConnector.toRegistrationConnector.registrationHandler.cancelBrowserRegistration()
             resolve(nil)
-        } else {
-            reject(String(WrapperError.registrationNotInProgress.code), WrapperError.registrationNotInProgress.description, WrapperError.registrationNotInProgress)
+        } catch {
+            reject(String(error.code), error.localizedDescription, error)
         }
     }
-    
-    func mapStringToPinAction(action: String) -> PinAction? {
-        switch action {
-        case PinAction.provide.rawValue:
-            return .provide
-        case PinAction.cancel.rawValue:
-            return .cancel
-        default:
-            return nil
+
+    @objc
+    func cancelCustomRegistration(_ message: String, resolver resolve: @escaping RCTPromiseResolveBlock,
+                            rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        do {
+            // Message here is not used, as we can not give a reason for canceling on iOS, only on Android
+            try bridgeConnector.toRegistrationConnector.registrationHandler.cancelCustomRegistration()
+            resolve(nil)
+        } catch {
+            reject(String(error.code), error.localizedDescription, error)
+        }
+    }
+
+    @objc
+    func cancelPinAuthentication(_ resolve: @escaping RCTPromiseResolveBlock,
+                            rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        do {
+            try bridgeConnector.toLoginHandler.cancelPinAuthentication()
+            resolve(nil)
+        } catch {
+            reject(String(error.code), error.localizedDescription, error)
+        }
+    }
+
+    @objc
+    func cancelPinCreation(_ resolve: @escaping RCTPromiseResolveBlock,
+                            rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        do {
+            try bridgeConnector.toRegistrationConnector.registrationHandler.cancelPinCreation()
+            resolve(nil)
+        } catch {
+            reject(String(error.code), error.localizedDescription, error)
         }
     }
     
     @objc
-    func submitPinAction(_ flow: String, action: String, pin: String,
+    func submitPin(_ flow: String, pin: String,
                          resolver resolve: @escaping RCTPromiseResolveBlock,
                          rejecter reject: @escaping RCTPromiseRejectBlock) {
-        if let pinAction = mapStringToPinAction(action: action) {
-            switch flow {
-            case PinFlow.create.rawValue:
-                do {
-                    try bridgeConnector.toRegistrationConnector.registrationHandler.handlePinAction(pin, action: pinAction)
-                    resolve(nil)
-                } catch {
-                    reject(String(error.code), error.localizedDescription, error)
-                }
-            case PinFlow.authentication.rawValue:
-                do {
-                    try bridgeConnector.toLoginHandler.handlePinAction(pin, action: pinAction)
-                    resolve(nil)
-                } catch {
-                    reject(String(error.code), error.localizedDescription, error)
-                }
-            default:
-                reject(String(WrapperError.parametersNotCorrect.code), "Incorrect pinflow supplied: \(flow)", WrapperError.parametersNotCorrect)
+        switch flow {
+        case PinFlow.create.rawValue:
+            do {
+                try bridgeConnector.toRegistrationConnector.registrationHandler.handlePin(pin)
+                resolve(nil)
+            } catch {
+                reject(String(error.code), error.localizedDescription, error)
             }
-        } else {
-            reject(String(WrapperError.parametersNotCorrect.code), "Incorrect action supplied: \(action)", WrapperError.parametersNotCorrect)
+        case PinFlow.authentication.rawValue:
+            do {
+                try bridgeConnector.toLoginHandler.handlePin(pin)
+                resolve(nil)
+            } catch {
+                reject(String(error.code), error.localizedDescription, error)
+            }
+        default:
+            reject(String(WrapperError.parametersNotCorrect.code), "Incorrect pinflow supplied: \(flow)", WrapperError.parametersNotCorrect)
         }
     }
 
@@ -263,7 +266,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         let profile = userClient.userProfiles().first(where: { $0.profileId == profileId })
         guard let profile = profile else {
-            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.description, WrapperError.profileDoesNotExist)
+            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.localizedDescription, WrapperError.profileDoesNotExist)
             return
         }
         let authenticators = userClient.allAuthenticators(forUser: profile)
@@ -312,7 +315,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                                     rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         let profile = userClient.userProfiles().first(where: { $0.profileId == profileId })
         guard let profile = profile else {
-            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.description, WrapperError.profileDoesNotExist)
+            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.localizedDescription, WrapperError.profileDoesNotExist)
             return
         }
 
@@ -389,7 +392,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
         if (bridgeConnector.toMobileAuthConnector.mobileAuthHandler.handleMobileAuthConfirmation(accepted: true)) {
             resolve(nil)
         } else {
-            reject(String(WrapperError.mobileAuthNotInProgress.code), WrapperError.mobileAuthNotInProgress.description, WrapperError.mobileAuthNotInProgress)
+            reject(String(WrapperError.mobileAuthNotInProgress.code), WrapperError.mobileAuthNotInProgress.localizedDescription, WrapperError.mobileAuthNotInProgress)
         }
     }
 
@@ -398,7 +401,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
         if (bridgeConnector.toMobileAuthConnector.mobileAuthHandler.handleMobileAuthConfirmation(accepted: false)) {
             resolve(nil)
         } else {
-            reject(String(WrapperError.mobileAuthNotInProgress.code), WrapperError.mobileAuthNotInProgress.description, WrapperError.mobileAuthNotInProgress)
+            reject(String(WrapperError.mobileAuthNotInProgress.code), WrapperError.mobileAuthNotInProgress.localizedDescription, WrapperError.mobileAuthNotInProgress)
         }
     }
 
@@ -409,7 +412,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         let profile = userClient.userProfiles().first(where: { $0.profileId == profileId })
         guard let profile = profile else {
-            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.description, WrapperError.profileDoesNotExist)
+            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.localizedDescription, WrapperError.profileDoesNotExist)
             return
         }
         
@@ -430,7 +433,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         let profile = userClient.userProfiles().first(where: { $0.profileId == profileId })
         guard let profile = profile else {
-            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.description, WrapperError.profileDoesNotExist)
+            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.localizedDescription, WrapperError.profileDoesNotExist)
             return
         }
 
@@ -451,7 +454,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         let profile = userClient.userProfiles().first(where: { $0.profileId == profileId })
         guard let profile = profile else {
-            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.description, WrapperError.profileDoesNotExist)
+            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.localizedDescription, WrapperError.profileDoesNotExist)
             return
         }
 
@@ -488,7 +491,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         let profile = userClient.userProfiles().first(where: { $0.profileId == profileId})
         guard let profile = profile else {
-            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.description, WrapperError.profileDoesNotExist)
+            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.localizedDescription, WrapperError.profileDoesNotExist)
             return
         }
         bridgeConnector.toAuthenticatorsHandler.registerAuthenticator(profile, ONGAuthenticatorType.biometric) {
@@ -508,7 +511,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         let profile = userClient.userProfiles().first(where: { $0.profileId == profileId })
         guard let profile = profile else {
-            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.description, WrapperError.profileDoesNotExist)
+            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.localizedDescription, WrapperError.profileDoesNotExist)
             return
         }
 
@@ -529,7 +532,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         let profile = userClient.userProfiles().first(where: { $0.profileId == profileId })
         guard let profile = profile else {
-            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.description, WrapperError.profileDoesNotExist)
+            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.localizedDescription, WrapperError.profileDoesNotExist)
             return
         }
         let isAuthenticatorRegistered = bridgeConnector.toAuthenticatorsHandler.isAuthenticatorRegistered(ONGAuthenticatorType.biometric, profile)

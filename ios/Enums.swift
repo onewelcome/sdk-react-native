@@ -11,13 +11,6 @@ enum PinCreateNotification: String {
     case pinNotAllowed
 }
 
-
-// Pin actions from RN Bridge
-enum PinAction: String {
-    case provide
-    case cancel
-}
-
 // Pin flows from RN Bridge
 enum PinFlow: String {
     case create = "Create"
