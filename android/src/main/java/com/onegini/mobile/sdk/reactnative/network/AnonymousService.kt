@@ -1,7 +1,7 @@
 package com.onegini.mobile.sdk.reactnative.network
 
 import com.google.gson.JsonObject
-import com.onegini.mobile.sdk.reactnative.Constants
+import com.onegini.mobile.sdk.reactnative.Constants.ANONYMOUS_SERVICE
 import com.onegini.mobile.sdk.reactnative.model.ResourceRequestDetails
 import com.onegini.mobile.sdk.reactnative.network.client.ResourcesClient
 import dagger.Lazy
@@ -13,7 +13,7 @@ import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
-class AnonymousService @Inject constructor(@Named(Constants.ANONYMOUS_SERVICE) private val anonymousRetrofitClient: Lazy<ResourcesClient>) {
+class AnonymousService @Inject constructor(@Named(ANONYMOUS_SERVICE) private val anonymousRetrofitClient: Lazy<ResourcesClient>) {
     fun getResource(requestDetails: ResourceRequestDetails): Single<JsonObject> {
         val apiCall = when (requestDetails.method) {
             ApiCall.GET -> anonymousRetrofitClient.get().getResourcesDetails(requestDetails.path, requestDetails.headers)

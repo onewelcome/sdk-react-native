@@ -1,7 +1,7 @@
 package com.onegini.mobile.sdk.reactnative.network
 
 import com.google.gson.JsonObject
-import com.onegini.mobile.sdk.reactnative.Constants
+import com.onegini.mobile.sdk.reactnative.Constants.USER_SERVICE
 import com.onegini.mobile.sdk.reactnative.model.ResourceRequestDetails
 import com.onegini.mobile.sdk.reactnative.network.client.ResourcesClient
 import dagger.Lazy
@@ -13,7 +13,7 @@ import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
-class UserService  @Inject constructor(@Named(Constants.USER_SERVICE) private val userRetrofitClient: Lazy<ResourcesClient>){
+class UserService @Inject constructor(@Named(USER_SERVICE) private val userRetrofitClient: Lazy<ResourcesClient>){
 
     fun getResource(requestDetails: ResourceRequestDetails): Single<JsonObject> {
         val apiCall = when (requestDetails.method) {
