@@ -364,13 +364,7 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
     fun handleRegistrationCallback(uri: String?, promise: Promise) {
         when (uri) {
             null -> promise.rejectWithNullError(FunctionParams.Uri.paramName, FunctionParams.Uri.type)
-            else -> {
-                return if (registrationManager.handleRegistrationCallback(uri)) {
-                    promise.resolve(null)
-                } else {
-                    promise.reject(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code.toString(), OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
-                }
-            }
+            else -> sdkWrapper.handleRegistrationCallback(uri, promise)
         }
     }
 
