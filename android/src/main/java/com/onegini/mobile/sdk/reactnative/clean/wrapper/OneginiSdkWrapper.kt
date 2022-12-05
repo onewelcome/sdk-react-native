@@ -18,6 +18,7 @@ import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetIdentityProvidersUs
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.HandleMobileAuthWithOtpUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.HandleRegistrationCallbackUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.RegisterUserUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.SetPreferredAuthenticatorUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.StartClientUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.SubmitCustomRegistrationActionUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.StartSingleSignOnUseCase
@@ -40,6 +41,7 @@ class OneginiSdkWrapper @Inject constructor(
     private val getUserProfilesUseCase: GetUserProfilesUseCase,
     private val handleRegistrationCallbackUseCase: HandleRegistrationCallbackUseCase,
     private val registerUserUseCase: RegisterUserUseCase,
+    private val setPreferredAuthenticatorUseCase: SetPreferredAuthenticatorUseCase,
     private val startClientUseCase: StartClientUseCase,
     private val startSingleSignOnUseCase: StartSingleSignOnUseCase,
     private val submitCustomRegistrationActionUseCase: SubmitCustomRegistrationActionUseCase,
@@ -87,7 +89,7 @@ class OneginiSdkWrapper @Inject constructor(
     }
 
     fun setPreferredAuthenticator(profileId: String, idOneginiAuthenticator: String, promise: Promise) {
-        TODO("Not yet implemented")
+        setPreferredAuthenticatorUseCase(profileId, idOneginiAuthenticator, promise)
     }
 
     fun validatePinWithPolicy(pin: String?, promise: Promise) {

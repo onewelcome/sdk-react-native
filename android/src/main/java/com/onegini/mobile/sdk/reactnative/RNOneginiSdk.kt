@@ -244,14 +244,7 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
         when {
             profileId == null -> promise.rejectWithNullError(ProfileId.paramName, ProfileId.type)
             idOneginiAuthenticator == null -> promise.rejectWithNullError(IdOneginiAuthenticator.paramName, IdOneginiAuthenticator.type)
-            else -> {
-                try {
-                    authenticatorManager.setPreferredAuthenticator(profileId, idOneginiAuthenticator)
-                    promise.resolve(null)
-                } catch (e: OneginiError) {
-                    promise.reject(e.errorType.toString(), e.message)
-                }
-            }
+            else -> sdkWrapper.setPreferredAuthenticator(profileId, idOneginiAuthenticator, promise)
         }
     }
 
