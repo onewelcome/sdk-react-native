@@ -59,7 +59,7 @@ class StartSingleSignOnUseCaseTests {
     }
 
     @Test
-    fun `When oginini getAppToWebSingleSignOn calls onSuccess on the handler, promise should resolve with a map containing the content from the result`() {
+    fun `When oginini getAppToWebSingleSignOn calls onSuccess on the handler, Then promise should resolve with a map containing the content from the result`() {
         mockParseUri(correctUri)
         mockSingleSignOnObject()
         whenever(oneginiSdk.oneginiClient.userClient.getAppToWebSingleSignOn(any(), any())).thenAnswer {
@@ -74,7 +74,7 @@ class StartSingleSignOnUseCaseTests {
     }
 
     @Test
-    fun `When oginini getAppToWebSingleSignOn calls onError on the handler, promise should reject with the error message and code`() {
+    fun `When oginini getAppToWebSingleSignOn calls onError on the handler, Then promise should reject with the error message and code`() {
         mockParseUri(correctUri)
         whenever(oneginiSdk.oneginiClient.userClient.getAppToWebSingleSignOn(any(), any())).thenAnswer {
             it.getArgument<OneginiAppToWebSingleSignOnHandler>(1).onError(oneginiAppToWebSingleSignOnError)
