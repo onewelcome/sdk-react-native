@@ -1,20 +1,17 @@
 package com.onegini.mobile.sdk.reactnative
 
-import android.net.Uri
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
-import com.onegini.mobile.sdk.android.handlers.OneginiAppToWebSingleSignOnHandler
 import com.onegini.mobile.sdk.android.handlers.OneginiChangePinHandler
 import com.onegini.mobile.sdk.android.handlers.OneginiDeviceAuthenticationHandler
 import com.onegini.mobile.sdk.android.handlers.OneginiImplicitAuthenticationHandler
 import com.onegini.mobile.sdk.android.handlers.OneginiLogoutHandler
 import com.onegini.mobile.sdk.android.handlers.OneginiMobileAuthEnrollmentHandler
 import com.onegini.mobile.sdk.android.handlers.OneginiMobileAuthWithOtpHandler
-import com.onegini.mobile.sdk.android.handlers.error.OneginiAppToWebSingleSignOnError
 import com.onegini.mobile.sdk.android.handlers.error.OneginiChangePinError
 import com.onegini.mobile.sdk.android.handlers.error.OneginiDeviceAuthenticationError
 import com.onegini.mobile.sdk.android.handlers.error.OneginiError
@@ -22,7 +19,6 @@ import com.onegini.mobile.sdk.android.handlers.error.OneginiImplicitTokenRequest
 import com.onegini.mobile.sdk.android.handlers.error.OneginiLogoutError
 import com.onegini.mobile.sdk.android.handlers.error.OneginiMobileAuthEnrollmentError
 import com.onegini.mobile.sdk.android.handlers.error.OneginiMobileAuthWithOtpError
-import com.onegini.mobile.sdk.android.model.OneginiAppToWebSingleSignOn
 import com.onegini.mobile.sdk.android.model.OneginiAuthenticator
 import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
@@ -46,7 +42,6 @@ import com.onegini.mobile.sdk.reactnative.managers.AuthenticatorManager.Registra
 import com.onegini.mobile.sdk.reactnative.managers.RegistrationManager
 import com.onegini.mobile.sdk.reactnative.mapers.CustomInfoMapper
 import com.onegini.mobile.sdk.reactnative.mapers.JsonMapper
-import com.onegini.mobile.sdk.reactnative.mapers.OneginiAppToWebSingleSignOnMapper
 import com.onegini.mobile.sdk.reactnative.mapers.ResourceRequestDetailsMapper
 import com.onegini.mobile.sdk.reactnative.mapers.ScopesMapper
 import com.onegini.mobile.sdk.reactnative.network.AnonymousService
@@ -283,23 +278,7 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
 
     @ReactMethod
     fun startSingleSignOn(uri: String?, promise: Promise) {
-        when (uri) {
-            null -> promise.rejectWithNullError(FunctionParams.Uri.paramName, FunctionParams.Uri.type)
-            else -> {
-                oneginiSDK.oneginiClient.userClient.getAppToWebSingleSignOn(
-                    Uri.parse(uri),
-                    object : OneginiAppToWebSingleSignOnHandler {
-                        override fun onSuccess(oneginiAppToWebSingleSignOn: OneginiAppToWebSingleSignOn) {
-                            promise.resolve(OneginiAppToWebSingleSignOnMapper.toWritableMap(oneginiAppToWebSingleSignOn))
-                        }
-
-                        override fun onError(error: OneginiAppToWebSingleSignOnError) {
-                            promise.reject(error.errorType.toString(), error.message)
-                        }
-                    }
-                )
-            }
-        }
+        uri?.let { sdkWrapper.startSingleSignOn(uri, promise) } ?: promise.rejectWithNullError(Uri.paramName, Uri.type)
     }
 
     @ReactMethod
@@ -355,13 +334,7 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
     fun handleRegistrationCallback(uri: String?, promise: Promise) {
         when (uri) {
             null -> promise.rejectWithNullError(FunctionParams.Uri.paramName, FunctionParams.Uri.type)
-            else -> {
-                return if (registrationManager.handleRegistrationCallback(uri)) {
-                    promise.resolve(null)
-                } else {
-                    promise.reject(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code.toString(), OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
-                }
-            }
+            else -> sdkWrapper.handleRegistrationCallback(uri, promise)
         }
     }
 
@@ -386,15 +359,7 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
 
     @ReactMethod
     fun changePin(promise: Promise) {
-        oneginiSDK.oneginiClient.userClient.changePin(object : OneginiChangePinHandler {
-            override fun onSuccess() {
-                promise.resolve(null)
-            }
-
-            override fun onError(error: OneginiChangePinError) {
-                promise.reject(error?.errorType.toString(), error?.message)
-            }
-        })
+        sdkWrapper.changePin(promise)
     }
 
     @ReactMethod
@@ -438,28 +403,12 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
 
     @ReactMethod
     fun enrollMobileAuthentication(promise: Promise) {
-        oneginiSDK.oneginiClient.userClient.enrollUserForMobileAuth(object : OneginiMobileAuthEnrollmentHandler {
-            override fun onSuccess() {
-                promise.resolve(null)
-            }
-
-            override fun onError(error: OneginiMobileAuthEnrollmentError) {
-                promise.reject(error.errorType.toString(), error.message)
-            }
-        })
+        sdkWrapper.enrollMobileAuthentication(promise)
     }
 
     @ReactMethod
     fun acceptMobileAuthConfirmation(promise: Promise) {
-        when (oneginiSDK.config.enableMobileAuthenticationOtp) {
-            false -> promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.code.toString(), OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.message)
-            true -> {
-                when (mobileAuthOtpRequestHandler.acceptAuthenticationRequest()) {
-                    true -> promise.resolve(null)
-                    false -> promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_NOT_IN_PROGRESS.code.toString(), OneginiWrapperErrors.MOBILE_AUTH_OTP_NOT_IN_PROGRESS.message)
-                }
-            }
-        }
+        sdkWrapper.acceptMobileAuthConfirmation(promise)
     }
 
     @ReactMethod
@@ -479,20 +428,7 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
     fun handleMobileAuthWithOtp(otpCode: String?, promise: Promise) {
         when (otpCode) {
             null -> promise.rejectWithNullError(OtpCode.paramName, OtpCode.type)
-            else -> {
-                oneginiSDK.oneginiClient.userClient.handleMobileAuthWithOtp(
-                    otpCode,
-                    object : OneginiMobileAuthWithOtpHandler {
-                        override fun onSuccess() {
-                            promise.resolve(null)
-                        }
-
-                        override fun onError(error: OneginiMobileAuthWithOtpError) {
-                            promise.reject(error.errorType.toString(), error.message)
-                        }
-                    }
-                )
-            }
+            else -> sdkWrapper.handleMobileAuthWithOtp(otpCode, promise)
         }
     }
 
