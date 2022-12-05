@@ -69,7 +69,7 @@ class SubmitPinUseCaseTests {
     }
 
     @Test
-    fun `When called with create PinFlow with pin creation in progress, Then it call acceptAuthenticationRequest on the oneginiPinCallback with the given pin`() {
+    fun `When called with create PinFlow with pin creation in progress, Then it should call acceptAuthenticationRequest on the oneginiPinCallback with the given pin`() {
         whenPinCreationStarted()
         submitPinUseCase(Constants.PinFlow.Create.toString(), pin, promiseMock)
         verify(oneginiPinCallback).acceptAuthenticationRequest(pin.toCharArray())
@@ -90,7 +90,7 @@ class SubmitPinUseCaseTests {
     }
 
     @Test
-    fun `When called with authentication PinFlow with pin authentication in progress, Then it call acceptAuthenticationRequest on the oneginiPinCallback with the given pin`() {
+    fun `When called with authentication PinFlow with pin authentication in progress, Then it should call acceptAuthenticationRequest on the oneginiPinCallback with the given pin`() {
         whenPinAuthenticationStarted()
         submitPinUseCase(Constants.PinFlow.Authentication.toString(), pin, promiseMock)
         verify(oneginiPinCallback).acceptAuthenticationRequest(pin.toCharArray())
