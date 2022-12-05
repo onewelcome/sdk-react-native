@@ -27,10 +27,10 @@ class LogoutUseCaseTests {
     @Mock
     private lateinit var oneginiLogoutError: OneginiLogoutError
 
-    private lateinit var logoutUseCase: LogoutUseCase
-
     @Mock
     private lateinit var promiseMock: Promise
+
+    private lateinit var logoutUseCase: LogoutUseCase
 
     @Before
     fun setup() {
@@ -38,7 +38,7 @@ class LogoutUseCaseTests {
     }
 
     @Test
-    fun `When oginini getAppToWebSingleSignOn calls onSuccess on the handler, promise should resolve with a map containing the content from the result`() {
+    fun `When oginini getAppToWebSingleSignOn calls onSuccess on the handler, Then promise should resolve with a map containing the content from the result`() {
         whenever(oneginiSdk.oneginiClient.userClient.logout(any())).thenAnswer {
             it.getArgument<OneginiLogoutHandler>(0).onSuccess()
         }
@@ -47,7 +47,7 @@ class LogoutUseCaseTests {
     }
 
     @Test
-    fun `When oginini getAppToWebSingleSignOn calls onSuccess on the handler, promise should reject with the error message and code`() {
+    fun `When oginini getAppToWebSingleSignOn calls onSuccess on the handler, Then promise should reject with the error message and code`() {
         whenever(oneginiSdk.oneginiClient.userClient.logout(any())).thenAnswer {
             it.getArgument<OneginiLogoutHandler>(0).onError(oneginiLogoutError)
         }
