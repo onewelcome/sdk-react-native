@@ -359,38 +359,7 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
     fun submitPin(pinFlow: String?, pin: String?, promise: Promise) {
         when (pin) {
             null -> promise.rejectWithNullError(Pin.paramName, Pin.type)
-            else -> when (pinFlow) {
-                PinFlow.Authentication.toString() -> {
-                    return handleSubmitAuthPin(pin, promise)
-                }
-                PinFlow.Create.toString() -> {
-                    return handleSubmitCreatePin(pin, promise)
-                }
-            }
-        }
-    }
-
-    private fun handleSubmitCreatePin(pin: String, promise: Promise) {
-        return try {
-            createPinRequestHandler.onPinProvided(pin.toCharArray())
-            promise.resolve(null)
-        } catch (exception: OneginiReactNativeException) {
-            promise.reject(
-                OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code.toString(),
-                OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message
-            )
-        }
-    }
-
-    private fun handleSubmitAuthPin(pin: String, promise: Promise) {
-        return try {
-            pinAuthenticationRequestHandler.acceptAuthenticationRequest(pin.toCharArray())
-            promise.resolve(null)
-        } catch (exception: OneginiReactNativeException) {
-            promise.reject(
-                OneginiWrapperErrors.AUTHENTICATION_NOT_IN_PROGRESS.code.toString(),
-                OneginiWrapperErrors.AUTHENTICATION_NOT_IN_PROGRESS.message
-            )
+            else -> sdkWrapper.submitPin(pinFlow, pin, promise)
         }
     }
 
