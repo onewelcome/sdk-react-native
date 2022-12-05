@@ -13,10 +13,9 @@ import javax.inject.Singleton
 @Singleton
 class SubmitCustomRegistrationActionUseCase @Inject constructor(private val registrationManager: RegistrationManager) {
     operator fun invoke(identityProviderId: String, token: String?, promise: Promise) {
-        when (val action = registrationManager.getSimpleCustomRegistrationAction(identityProviderId)) {
-            null -> return promise.reject(IDENTITY_PROVIDER_NOT_FOUND.code.toString(), IDENTITY_PROVIDER_NOT_FOUND.message)
-            else -> tryReturnSuccess(action, token, promise)
-        }
+        registrationManager.getSimpleCustomRegistrationAction(identityProviderId)?.let { action ->
+            tryReturnSuccess(action, token, promise)
+        } ?: promise.reject(IDENTITY_PROVIDER_NOT_FOUND.code.toString(), IDENTITY_PROVIDER_NOT_FOUND.message)
     }
 
     private fun tryReturnSuccess(
