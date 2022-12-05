@@ -70,18 +70,6 @@ class AuthenticatorManager @Inject constructor(private val oneginiSDK: OneginiSD
             })
     }
 
-    fun isFingerprintAuthenticatorRegistered(profileId: String): Boolean {
-        val userProfile = getUserProfile(profileId)
-            ?: throw OneginiReactNativeException(
-                OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.code,
-                OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.message
-            )
-
-        val authenticator = getRegisteredAuthenticators(userProfile, OneginiAuthenticator.FINGERPRINT)
-
-        return authenticator != null
-    }
-
     fun getUserProfile(profileId: String?): UserProfile? {
         if (profileId == null) {
             return null
@@ -122,17 +110,6 @@ class AuthenticatorManager @Inject constructor(private val oneginiSDK: OneginiSD
             }
         }
         return null
-    }
-
-
-    fun getRegisteredAuthenticators(profileId: String): Set<OneginiAuthenticator> {
-        val userProfile = getUserProfile(profileId)
-            ?: throw OneginiReactNativeException(
-                OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.code,
-                OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.message
-            )
-
-        return oneginiSDK.oneginiClient.userClient.getRegisteredAuthenticators(userProfile)
     }
 
     fun setPreferredAuthenticator(profileId: String, id: String) {

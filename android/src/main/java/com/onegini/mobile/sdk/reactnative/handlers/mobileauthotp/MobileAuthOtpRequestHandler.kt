@@ -3,6 +3,9 @@ package com.onegini.mobile.sdk.reactnative.handlers.mobileauthotp
 import com.onegini.mobile.sdk.android.handlers.request.OneginiMobileAuthWithOtpRequestHandler
 import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiAcceptDenyCallback
 import com.onegini.mobile.sdk.android.model.entity.OneginiMobileAuthenticationRequest
+import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.MOBILE_AUTH_OTP_NOT_IN_PROGRESS
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -21,12 +24,12 @@ class MobileAuthOtpRequestHandler @Inject constructor(private val eventEmitter: 
         eventEmitter.finishAuthentication()
     }
 
-    fun acceptAuthenticationRequest(): Boolean {
+    @Throws(OneginiReactNativeException::class)
+    fun acceptAuthenticationRequest() {
         callback?.let { authCallback ->
             authCallback.acceptAuthenticationRequest()
-            return true
-        }
-        return false
+            callback = null
+        } ?: throw OneginiReactNativeException(MOBILE_AUTH_OTP_NOT_IN_PROGRESS.code.toInt(), MOBILE_AUTH_OTP_NOT_IN_PROGRESS.message)
     }
 
     fun denyAuthenticationRequest(): Boolean {
