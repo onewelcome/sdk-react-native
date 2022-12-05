@@ -15,6 +15,7 @@ import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetUserProfilesUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAccessTokenUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAuthenticatedUserProfileUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetIdentityProvidersUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.LogoutUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.HandleMobileAuthWithOtpUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.HandleRegistrationCallbackUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.RegisterUserUseCase
@@ -31,7 +32,6 @@ class OneginiSdkWrapper @Inject constructor(
     private val changePinUseCase: ChangePinUseCase,
     private val deregisterUserUseCase: DeregisterUserUseCase,
     private val enrollMobileAuthenticationUseCase: EnrollMobileAuthenticationUseCase,
-    private val handleMobileAuthWithOtpUseCase: HandleMobileAuthWithOtpUseCase,
     private val getAccessTokenUseCase: GetAccessTokenUseCase,
     private val getAllAuthenticatorsUseCase: GetAllAuthenticatorsUseCase,
     private val getAuthenticatedUserProfileUseCase: GetAuthenticatedUserProfileUseCase,
@@ -39,7 +39,9 @@ class OneginiSdkWrapper @Inject constructor(
     private val getRedirectUriUseCase: GetRedirectUriUseCase,
     private val getRegisteredAuthenticatorsUseCase: GetRegisteredAuthenticatorsUseCase,
     private val getUserProfilesUseCase: GetUserProfilesUseCase,
+    private val handleMobileAuthWithOtpUseCase: HandleMobileAuthWithOtpUseCase,
     private val handleRegistrationCallbackUseCase: HandleRegistrationCallbackUseCase,
+    private val logoutUseCase: LogoutUseCase,
     private val registerUserUseCase: RegisterUserUseCase,
     private val setPreferredAuthenticatorUseCase: SetPreferredAuthenticatorUseCase,
     private val startClientUseCase: StartClientUseCase,
@@ -69,7 +71,7 @@ class OneginiSdkWrapper @Inject constructor(
     }
 
     fun logout(promise: Promise) {
-        TODO("Not yet implemented")
+        logoutUseCase(promise)
     }
 
     fun getAccessToken(promise: Promise) {
