@@ -364,13 +364,7 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
     fun handleRegistrationCallback(uri: String?, promise: Promise) {
         when (uri) {
             null -> promise.rejectWithNullError(FunctionParams.Uri.paramName, FunctionParams.Uri.type)
-            else -> {
-                return if (registrationManager.handleRegistrationCallback(uri)) {
-                    promise.resolve(null)
-                } else {
-                    promise.reject(OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code.toString(), OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message)
-                }
-            }
+            else -> sdkWrapper.handleRegistrationCallback(uri, promise)
         }
     }
 
@@ -480,20 +474,7 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
     fun handleMobileAuthWithOtp(otpCode: String?, promise: Promise) {
         when (otpCode) {
             null -> promise.rejectWithNullError(OtpCode.paramName, OtpCode.type)
-            else -> {
-                oneginiSDK.oneginiClient.userClient.handleMobileAuthWithOtp(
-                    otpCode,
-                    object : OneginiMobileAuthWithOtpHandler {
-                        override fun onSuccess() {
-                            promise.resolve(null)
-                        }
-
-                        override fun onError(error: OneginiMobileAuthWithOtpError) {
-                            promise.reject(error.errorType.toString(), error.message)
-                        }
-                    }
-                )
-            }
+            else -> sdkWrapper.handleMobileAuthWithOtp(otpCode, promise)
         }
     }
 
