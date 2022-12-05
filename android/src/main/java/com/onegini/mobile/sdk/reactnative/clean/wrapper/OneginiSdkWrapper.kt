@@ -4,6 +4,7 @@ import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.AuthenticateUserUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.ChangePinUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.DeregisterUserUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAllAuthenticatorsUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetRedirectUriUseCase
@@ -20,6 +21,7 @@ import com.onegini.mobile.sdk.reactnative.clean.use_cases.ValidatePinWithPolicyU
 import javax.inject.Inject
 
 class OneginiSdkWrapper @Inject constructor(
+    private val changePinUseCase: ChangePinUseCase,
     private val handleMobileAuthWithOtpUseCase: HandleMobileAuthWithOtpUseCase,
     private val startClientUseCase: StartClientUseCase,
     private val getIdentityProvidersUseCase: GetIdentityProvidersUseCase,
@@ -137,7 +139,7 @@ class OneginiSdkWrapper @Inject constructor(
     }
 
     fun changePin(promise: Promise) {
-        TODO("Not yet implemented")
+        changePinUseCase(promise)
     }
 
     fun submitPinAction(pinFlow: String?, action: String?, pin: String?, promise: Promise) {

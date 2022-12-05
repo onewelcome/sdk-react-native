@@ -389,15 +389,7 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
 
     @ReactMethod
     fun changePin(promise: Promise) {
-        oneginiSDK.oneginiClient.userClient.changePin(object : OneginiChangePinHandler {
-            override fun onSuccess() {
-                promise.resolve(null)
-            }
-
-            override fun onError(error: OneginiChangePinError) {
-                promise.reject(error?.errorType.toString(), error?.message)
-            }
-        })
+        sdkWrapper.changePin(promise)
     }
 
     @ReactMethod
