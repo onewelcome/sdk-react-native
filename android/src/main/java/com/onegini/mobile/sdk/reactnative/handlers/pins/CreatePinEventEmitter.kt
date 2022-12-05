@@ -11,27 +11,33 @@ import javax.inject.Singleton
 class CreatePinEventEmitter @Inject constructor(private val deviceEventEmitter: DeviceEventManagerModule.RCTDeviceEventEmitter) {
 
   fun onPinOpen(profileId: String, pinLength: Int) {
-    val dataMap = Arguments.createMap()
-    dataMap.putString("action", Constants.PIN_NOTIFICATION_OPEN_VIEW)
-    dataMap.putString("flow", PinFlow.Create.toString())
-    dataMap.putInt("pinLength", pinLength)
-    dataMap.putString("profileId", profileId);
-    deviceEventEmitter.emit(Constants.ONEWELCOME_PIN_CREATE_NOTIFICATION, dataMap)
+    Arguments.createMap().apply {
+      putString("action", Constants.PIN_NOTIFICATION_OPEN_VIEW)
+      putString("flow", PinFlow.Create.toString())
+      putInt("pinLength", pinLength)
+      putString("profileId", profileId);
+    }.also { dataMap ->
+      deviceEventEmitter.emit(Constants.ONEWELCOME_PIN_CREATE_NOTIFICATION, dataMap)
+    }
   }
 
   fun onPinClose() {
-    val dataMap = Arguments.createMap()
-    dataMap.putString("action", Constants.PIN_NOTIFICATION_CLOSE_VIEW)
-    dataMap.putString("flow", PinFlow.Create.toString())
-    deviceEventEmitter.emit(Constants.ONEWELCOME_PIN_CREATE_NOTIFICATION, dataMap)
+    Arguments.createMap().apply {
+      putString("action", Constants.PIN_NOTIFICATION_CLOSE_VIEW)
+      putString("flow", PinFlow.Create.toString())
+    }.also { dataMap ->
+      deviceEventEmitter.emit(Constants.ONEWELCOME_PIN_CREATE_NOTIFICATION, dataMap)
+    }
   }
 
   fun onPinNotAllowed(errorCode: Int, errorMessage: String) {
-    val data = Arguments.createMap()
-    data.putString("action", Constants.PIN_NOTIFICATION_PIN_NOT_ALLOWED)
-    data.putString("flow", PinFlow.Create.toString())
-    data.putInt("errorType", errorCode)
-    data.putString("errorMsg", errorMessage)
-    deviceEventEmitter.emit(Constants.ONEWELCOME_PIN_CREATE_NOTIFICATION, data)
+    Arguments.createMap().apply {
+      putString("action", Constants.PIN_NOTIFICATION_PIN_NOT_ALLOWED)
+      putString("flow", PinFlow.Create.toString())
+      putInt("errorType", errorCode)
+      putString("errorMsg", errorMessage)
+    }.also { dataMap ->
+      deviceEventEmitter.emit(Constants.ONEWELCOME_PIN_CREATE_NOTIFICATION, dataMap)
+    }
   }
 }

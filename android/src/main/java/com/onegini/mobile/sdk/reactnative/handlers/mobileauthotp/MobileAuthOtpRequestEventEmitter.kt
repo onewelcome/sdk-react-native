@@ -11,15 +11,19 @@ import javax.inject.Singleton
 @Singleton
 class MobileAuthOtpRequestEventEmitter @Inject constructor(private val deviceEventEmitter: DeviceEventManagerModule.RCTDeviceEventEmitter) {
     fun startAuthentication(request: OneginiMobileAuthenticationRequest) {
-        val map = Arguments.createMap()
-        map.putString("action", Constants.MOBILE_AUTH_OTP_START_AUTHENTICATION)
-        OneginiMobileAuthenticationRequestMapper.add(map, request)
-        deviceEventEmitter.emit(Constants.MOBILE_AUTH_OTP_NOTIFICATION, map)
+        Arguments.createMap().apply {
+            putString("action", Constants.MOBILE_AUTH_OTP_START_AUTHENTICATION)
+            OneginiMobileAuthenticationRequestMapper.add(this, request)
+        }.also { dataMap ->
+            deviceEventEmitter.emit(Constants.MOBILE_AUTH_OTP_NOTIFICATION, dataMap)
+        }
     }
 
     fun finishAuthentication() {
-        val map = Arguments.createMap()
-        map.putString("action", Constants.MOBILE_AUTH_OTP_FINISH_AUTHENTICATION)
-        deviceEventEmitter.emit(Constants.MOBILE_AUTH_OTP_NOTIFICATION, map)
+        Arguments.createMap().apply {
+            putString("action", Constants.MOBILE_AUTH_OTP_FINISH_AUTHENTICATION)
+        }.also { dataMap ->
+            deviceEventEmitter.emit(Constants.MOBILE_AUTH_OTP_NOTIFICATION, dataMap)
+        }
     }
 }
