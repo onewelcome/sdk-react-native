@@ -15,14 +15,18 @@ class DenyMobileAuthConfirmationUseCase @Inject constructor(
     private val mobileAuthOtpRequestHandler: MobileAuthOtpRequestHandler
 ) {
     operator fun invoke(promise: Promise) {
-        when (oneginiSDK.config.enableMobileAuthenticationOtp) {
-            false -> promise.reject(MOBILE_AUTH_OTP_IS_DISABLED.code, MOBILE_AUTH_OTP_IS_DISABLED.message)
-            true -> {
-                when (mobileAuthOtpRequestHandler.denyAuthenticationRequest()) {
-                    true -> promise.resolve(null)
-                    false -> promise.reject(MOBILE_AUTH_OTP_NOT_IN_PROGRESS.code, MOBILE_AUTH_OTP_NOT_IN_PROGRESS.message)
-                }
-            }
+        if (oneginiSDK.config.enableMobileAuthenticationOtp) {
+            tryDenyAuthenticationRequest(promise)
+        } else {
+            promise.reject(MOBILE_AUTH_OTP_IS_DISABLED.code, MOBILE_AUTH_OTP_IS_DISABLED.message)
+        }
+    }
+
+    private fun tryDenyAuthenticationRequest(promise: Promise) {
+        if (mobileAuthOtpRequestHandler.denyAuthenticationRequest()) {
+            promise.resolve(null)
+        } else {
+            promise.reject(MOBILE_AUTH_OTP_NOT_IN_PROGRESS.code, MOBILE_AUTH_OTP_NOT_IN_PROGRESS.message)
         }
     }
 }

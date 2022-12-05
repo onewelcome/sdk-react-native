@@ -36,30 +36,33 @@ class DenyMobileAuthConfirmationUseCaseTests {
 
     lateinit var mobileAuthOtpRequestHandler: MobileAuthOtpRequestHandler
 
+    lateinit var denyMobileAuthConfirmationUseCase: DenyMobileAuthConfirmationUseCase
+
     @Before
     fun setup() {
         mobileAuthOtpRequestHandler = MobileAuthOtpRequestHandler(mobileAuthOtpRequestEventEmitter)
+        denyMobileAuthConfirmationUseCase = DenyMobileAuthConfirmationUseCase(oneginiSdk, mobileAuthOtpRequestHandler)
     }
 
     @Test
-    fun `When mobile authentication with OTP is not enabled, the promise should reject with that error`() {
+    fun `When mobile authentication with OTP is not enabled, Then the promise should reject with that error`() {
         disabledMobileAuthentication()
-        DenyMobileAuthConfirmationUseCase(oneginiSdk, mobileAuthOtpRequestHandler)(promiseMock)
+        denyMobileAuthConfirmationUseCase(promiseMock)
         verify(promiseMock).reject(MOBILE_AUTH_OTP_IS_DISABLED.code, MOBILE_AUTH_OTP_IS_DISABLED.message)
     }
 
     @Test
-    fun `When MA-OTP is enabled and no mobile authentication is in progress, should reject with that error`() {
+    fun `When MA-OTP is enabled and no mobile authentication is in progress, Then should reject with that error`() {
         enabledMobileAuthentication()
-        DenyMobileAuthConfirmationUseCase(oneginiSdk, mobileAuthOtpRequestHandler)(promiseMock)
+        denyMobileAuthConfirmationUseCase(promiseMock)
         verify(promiseMock).reject(MOBILE_AUTH_OTP_NOT_IN_PROGRESS.code, MOBILE_AUTH_OTP_NOT_IN_PROGRESS.message)
     }
 
     @Test
-    fun `When MA-OTP is enabled and mobile authentication is in progress, should resolve with null`() {
+    fun `When MA-OTP is enabled and mobile authentication is in progress, Then should resolve with null`() {
         enabledMobileAuthentication()
         startMobileAuthentication()
-        DenyMobileAuthConfirmationUseCase(oneginiSdk, mobileAuthOtpRequestHandler)(promiseMock)
+        denyMobileAuthConfirmationUseCase(promiseMock)
         verify(promiseMock).resolve(null)
     }
 
