@@ -52,14 +52,14 @@ class DenyMobileAuthConfirmationUseCaseTests {
     }
 
     @Test
-    fun `When MA-OTP is enabled and no mobile authentication is in progress, Then should reject with that error`() {
+    fun `When mobile authentication with OTP is enabled and no mobile authentication is in progress, Then should reject with that error`() {
         enabledMobileAuthentication()
         denyMobileAuthConfirmationUseCase(promiseMock)
         verify(promiseMock).reject(MOBILE_AUTH_OTP_NOT_IN_PROGRESS.code.toString(), MOBILE_AUTH_OTP_NOT_IN_PROGRESS.message)
     }
 
     @Test
-    fun `When MA-OTP is enabled and mobile authentication is in progress, Then should resolve with null`() {
+    fun `When mobile authentication with OTP is enabled and mobile authentication is in progress, Then should resolve with null`() {
         enabledMobileAuthentication()
         startMobileAuthentication()
         denyMobileAuthConfirmationUseCase(promiseMock)
