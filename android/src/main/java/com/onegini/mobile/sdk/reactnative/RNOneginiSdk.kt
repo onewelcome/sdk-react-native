@@ -368,15 +368,7 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
 
     @ReactMethod
     fun changePin(promise: Promise) {
-        oneginiSDK.oneginiClient.userClient.changePin(object : OneginiChangePinHandler {
-            override fun onSuccess() {
-                promise.resolve(null)
-            }
-
-            override fun onError(error: OneginiChangePinError) {
-                promise.reject(error?.errorType.toString(), error?.message)
-            }
-        })
+        sdkWrapper.changePin(promise)
     }
 
     @ReactMethod
@@ -420,28 +412,12 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
 
     @ReactMethod
     fun enrollMobileAuthentication(promise: Promise) {
-        oneginiSDK.oneginiClient.userClient.enrollUserForMobileAuth(object : OneginiMobileAuthEnrollmentHandler {
-            override fun onSuccess() {
-                promise.resolve(null)
-            }
-
-            override fun onError(error: OneginiMobileAuthEnrollmentError) {
-                promise.reject(error.errorType.toString(), error.message)
-            }
-        })
+        sdkWrapper.enrollMobileAuthentication(promise)
     }
 
     @ReactMethod
     fun acceptMobileAuthConfirmation(promise: Promise) {
-        when (oneginiSDK.config.enableMobileAuthenticationOtp) {
-            false -> promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.code.toString(), OneginiWrapperErrors.MOBILE_AUTH_OTP_IS_DISABLED.message)
-            true -> {
-                when (mobileAuthOtpRequestHandler.acceptAuthenticationRequest()) {
-                    true -> promise.resolve(null)
-                    false -> promise.reject(OneginiWrapperErrors.MOBILE_AUTH_OTP_NOT_IN_PROGRESS.code.toString(), OneginiWrapperErrors.MOBILE_AUTH_OTP_NOT_IN_PROGRESS.message)
-                }
-            }
-        }
+        sdkWrapper.acceptMobileAuthConfirmation(promise)
     }
 
     @ReactMethod
@@ -461,20 +437,7 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
     fun handleMobileAuthWithOtp(otpCode: String?, promise: Promise) {
         when (otpCode) {
             null -> promise.rejectWithNullError(OtpCode.paramName, OtpCode.type)
-            else -> {
-                oneginiSDK.oneginiClient.userClient.handleMobileAuthWithOtp(
-                    otpCode,
-                    object : OneginiMobileAuthWithOtpHandler {
-                        override fun onSuccess() {
-                            promise.resolve(null)
-                        }
-
-                        override fun onError(error: OneginiMobileAuthWithOtpError) {
-                            promise.reject(error.errorType.toString(), error.message)
-                        }
-                    }
-                )
-            }
+            else -> sdkWrapper.handleMobileAuthWithOtp(otpCode, promise)
         }
     }
 

@@ -3,8 +3,11 @@ package com.onegini.mobile.sdk.reactnative.clean.wrapper
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.AcceptMobileAuthConfirmationUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.AuthenticateUserUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.ChangePinUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.DeregisterUserUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.EnrollMobileAuthenticationUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAllAuthenticatorsUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetRedirectUriUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetRegisteredAuthenticatorsUseCase
@@ -12,6 +15,7 @@ import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetUserProfilesUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAccessTokenUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAuthenticatedUserProfileUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetIdentityProvidersUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.HandleMobileAuthWithOtpUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.HandleRegistrationCallbackUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.RegisterUserUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.StartClientUseCase
@@ -20,8 +24,12 @@ import com.onegini.mobile.sdk.reactnative.clean.use_cases.ValidatePinWithPolicyU
 import javax.inject.Inject
 
 class OneginiSdkWrapper @Inject constructor(
+    private val acceptMobileAuthConfirmationUseCase: AcceptMobileAuthConfirmationUseCase,
     private val authenticateUserUseCase: AuthenticateUserUseCase,
+    private val changePinUseCase: ChangePinUseCase,
     private val deregisterUserUseCase: DeregisterUserUseCase,
+    private val enrollMobileAuthenticationUseCase: EnrollMobileAuthenticationUseCase,
+    private val handleMobileAuthWithOtpUseCase: HandleMobileAuthWithOtpUseCase,
     private val getAccessTokenUseCase: GetAccessTokenUseCase,
     private val getAllAuthenticatorsUseCase: GetAllAuthenticatorsUseCase,
     private val getAuthenticatedUserProfileUseCase: GetAuthenticatedUserProfileUseCase,
@@ -137,7 +145,7 @@ class OneginiSdkWrapper @Inject constructor(
     }
 
     fun changePin(promise: Promise) {
-        TODO("Not yet implemented")
+        changePinUseCase(promise)
     }
 
     fun submitPinAction(pinFlow: String?, action: String?, pin: String?, promise: Promise) {
@@ -145,11 +153,11 @@ class OneginiSdkWrapper @Inject constructor(
     }
 
     fun enrollMobileAuthentication(promise: Promise) {
-        TODO("Not yet implemented")
+        enrollMobileAuthenticationUseCase(promise)
     }
 
     fun acceptMobileAuthConfirmation(promise: Promise) {
-        TODO("Not yet implemented")
+        acceptMobileAuthConfirmationUseCase(promise)
     }
 
     fun denyMobileAuthConfirmation(promise: Promise) {
@@ -157,7 +165,7 @@ class OneginiSdkWrapper @Inject constructor(
     }
 
     fun handleMobileAuthWithOtp(otpCode: String, promise: Promise) {
-        TODO("Not yet implemented")
+        handleMobileAuthWithOtpUseCase(otpCode, promise)
     }
 
     fun resourceRequest(type: String, details: ReadableMap, promise: Promise) {
