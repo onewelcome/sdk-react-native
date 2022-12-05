@@ -42,7 +42,7 @@ class SetPreferredAuthenticatorUseCaseTests {
     fun `When userProfile does not exist, Then should reject with PROFILE_DOES_NOT_EXIST error`() {
         whenProfileDoesNotExist()
         setPreferredAuthenticatorUseCase(profileId, TestData.authenticator1.id, promiseMock)
-        verify(promiseMock).reject(PROFILE_DOES_NOT_EXIST.code, PROFILE_DOES_NOT_EXIST.message)
+        verify(promiseMock).reject(PROFILE_DOES_NOT_EXIST.code.toString(), PROFILE_DOES_NOT_EXIST.message)
     }
 
     @Test
@@ -50,7 +50,7 @@ class SetPreferredAuthenticatorUseCaseTests {
         whenProfileExists()
         whenAuthenticatorDoesNotExist()
         setPreferredAuthenticatorUseCase(profileId, TestData.authenticator1.id, promiseMock)
-        verify(promiseMock).reject(AUTHENTICATOR_DOES_NOT_EXIST.code, AUTHENTICATOR_DOES_NOT_EXIST.message)
+        verify(promiseMock).reject(AUTHENTICATOR_DOES_NOT_EXIST.code.toString(), AUTHENTICATOR_DOES_NOT_EXIST.message)
     }
 
     @Test
