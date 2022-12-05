@@ -19,6 +19,7 @@ import com.onegini.mobile.sdk.reactnative.clean.use_cases.HandleMobileAuthWithOt
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.HandleRegistrationCallbackUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.RegisterUserUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.StartClientUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.SubmitCustomRegistrationActionUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.StartSingleSignOnUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.ValidatePinWithPolicyUseCase
 import javax.inject.Inject
@@ -41,6 +42,7 @@ class OneginiSdkWrapper @Inject constructor(
     private val registerUserUseCase: RegisterUserUseCase,
     private val startClientUseCase: StartClientUseCase,
     private val startSingleSignOnUseCase: StartSingleSignOnUseCase,
+    private val submitCustomRegistrationActionUseCase: SubmitCustomRegistrationActionUseCase,
     private val validatePinWithPolicyUseCase: ValidatePinWithPolicyUseCase,
 )  {
 
@@ -112,8 +114,8 @@ class OneginiSdkWrapper @Inject constructor(
         handleRegistrationCallbackUseCase(uri, promise)
     }
 
-    fun submitCustomRegistrationAction(customAction: String, identityProviderId: String, token: String?, promise: Promise) {
-        TODO("Not yet implemented")
+    fun submitCustomRegistrationAction(identityProviderId: String, token: String?, promise: Promise) {
+        submitCustomRegistrationActionUseCase(identityProviderId, token, promise)
     }
 
     fun getIdentityProviders(promise: Promise) {
