@@ -433,15 +433,7 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
 
     @ReactMethod
     fun enrollMobileAuthentication(promise: Promise) {
-        oneginiSDK.oneginiClient.userClient.enrollUserForMobileAuth(object : OneginiMobileAuthEnrollmentHandler {
-            override fun onSuccess() {
-                promise.resolve(null)
-            }
-
-            override fun onError(error: OneginiMobileAuthEnrollmentError) {
-                promise.reject(error.errorType.toString(), error.message)
-            }
-        })
+        sdkWrapper.enrollMobileAuthentication(promise)
     }
 
     @ReactMethod
