@@ -26,7 +26,6 @@ import org.mockito.kotlin.verify
 @RunWith(MockitoJUnitRunner::class)
 class SubmitCustomRegistrationActionUseCaseTests {
 
-
     @get:Rule
     val reactArgumentsTestRule = ReactArgumentsTestRule()
 
@@ -49,8 +48,8 @@ class SubmitCustomRegistrationActionUseCaseTests {
     lateinit var registrationManager: RegistrationManager
     lateinit var simpleCustomRegistrationFactory: SimpleCustomRegistrationFactory
 
-
     private val token = "testToken"
+
     @Before
     fun setup() {
         simpleCustomRegistrationFactory = SimpleCustomRegistrationFactory(customRegistrationEventEmitter)
@@ -59,20 +58,20 @@ class SubmitCustomRegistrationActionUseCaseTests {
     }
 
     @Test
-    fun `When identity provider does not exist, should reject with IDENTITY_PROVIDER_NOT_FOUND error`() {
+    fun `When identity provider does not exist, Then should reject with IDENTITY_PROVIDER_NOT_FOUND error`() {
         submitCustomRegistrationActionUseCase(TestData.identityProvider1.id, token, promiseMock)
         verify(promiseMock).reject(IDENTITY_PROVIDER_NOT_FOUND.code.toString(), IDENTITY_PROVIDER_NOT_FOUND.message)
     }
 
     @Test
-    fun `When identity provider exists but registration is not in progress, should reject with ACTION_NOT_ALLOWED error`() {
+    fun `When identity provider exists but registration is not in progress, Then should reject with ACTION_NOT_ALLOWED error`() {
         whenIdentityProviderExists(false)
         submitCustomRegistrationActionUseCase(TestData.identityProvider1.id, token, promiseMock)
         verify(promiseMock).reject(ACTION_NOT_ALLOWED.code.toString(), SUBMIT_CUSTOM_REGISTRATION_ACTION_NOT_ALLOWED)
     }
 
     @Test
-    fun `OneStep - When identity provider exists and registration is in progress, should resolve with null`() {
+    fun `OneStep - When identity provider exists and registration is in progress, Then should resolve with null`() {
         whenIdentityProviderExists(false)
         whenRegistrationIsInProgress()
         submitCustomRegistrationActionUseCase(TestData.identityProvider1.id, token, promiseMock)
@@ -80,7 +79,7 @@ class SubmitCustomRegistrationActionUseCaseTests {
     }
 
     @Test
-    fun `TwoStep - When identity provider exists and registration is in progress, should resolve with null`() {
+    fun `TwoStep - When identity provider exists and registration is in progress, Then should resolve with null`() {
         whenIdentityProviderExists(true)
         whenRegistrationIsInProgress()
         submitCustomRegistrationActionUseCase(TestData.identityProvider1.id, token, promiseMock)
@@ -88,7 +87,7 @@ class SubmitCustomRegistrationActionUseCaseTests {
     }
 
     @Test
-    fun `OneStep - When identity provider exists and registration is in progress, should call returnSuccess with the supplied token on the registration action`() {
+    fun `OneStep - When identity provider exists and registration is in progress, Then should call returnSuccess with the supplied token on the registration action`() {
         whenIdentityProviderExists(false)
         whenRegistrationIsInProgress()
         submitCustomRegistrationActionUseCase(TestData.identityProvider1.id, token, promiseMock)
@@ -96,7 +95,7 @@ class SubmitCustomRegistrationActionUseCaseTests {
     }
 
     @Test
-    fun `TwoStep - When identity provider exists and registration is in progress, should call returnSuccess with the supplied token on the registration action`() {
+    fun `TwoStep - When identity provider exists and registration is in progress, Then should call returnSuccess with the supplied token on the registration action`() {
         whenIdentityProviderExists(true)
         whenRegistrationIsInProgress()
         submitCustomRegistrationActionUseCase(TestData.identityProvider1.id, token, promiseMock)
