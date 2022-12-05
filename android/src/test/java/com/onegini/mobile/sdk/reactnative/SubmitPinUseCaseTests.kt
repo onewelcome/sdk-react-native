@@ -5,7 +5,9 @@ import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiPinCallba
 import com.onegini.mobile.sdk.android.model.entity.AuthenticationAttemptCounter
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.SubmitPinUseCase
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.AUTHENTICATION_NOT_IN_PROGRESS
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.INCORRECT_PIN_FLOW
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS
 import com.onegini.mobile.sdk.reactnative.handlers.pins.CreatePinEventEmitter
 import com.onegini.mobile.sdk.reactnative.handlers.pins.CreatePinRequestHandler
@@ -53,6 +55,11 @@ class SubmitPinUseCaseTests {
         submitPinUseCase = SubmitPinUseCase(createPinRequestHandler, pinAuthenticationRequestHandler)
     }
 
+    @Test
+    fun `When called with an incorrect PinFlow, Then it should reject with INCORRECT_PIN_FLOW`() {
+        submitPinUseCase("Not existing pinFlow", pin, promiseMock)
+        verify(promiseMock).reject(INCORRECT_PIN_FLOW.code.toString(), INCORRECT_PIN_FLOW.message)
+    }
 
     // Pin Create
     @Test

@@ -16,4 +16,5 @@ enum class OneginiWrapperErrors(val code: Int, val message: String) {
     AUTHENTICATION_NOT_IN_PROGRESS(8015, "Authentication is currently not in progress"),
     PIN_CREATION_NOT_IN_PROGRESS(8016, "Pin creation is currently not in progress"),
     ACTION_NOT_ALLOWED(8017, "This action is currently not allowed"),
+    INCORRECT_PIN_FLOW(8018, "Incorrect pinFlow supplied"),
 }

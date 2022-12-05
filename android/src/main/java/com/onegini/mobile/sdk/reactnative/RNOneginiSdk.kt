@@ -94,6 +94,7 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
         ProfileId("profileId", "string"),
         IdOneginiAuthenticator("idOneginiAuthenticator", "string"),
         Pin("pin", "string"),
+        PinFlow("pinFlow", "string"),
         Uri("uri", "string"),
         IdentityProviderId("identityProviderId", "string"),
         OtpCode("otpCode", "string"),
@@ -357,8 +358,9 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
 
     @ReactMethod
     fun submitPin(pinFlow: String?, pin: String?, promise: Promise) {
-        when (pin) {
-            null -> promise.rejectWithNullError(Pin.paramName, Pin.type)
+        when {
+            pin == null -> promise.rejectWithNullError(Pin.paramName, Pin.type)
+            pinFlow == null -> promise.rejectWithNullError(FunctionParams.PinFlow.paramName, FunctionParams.PinFlow.type)
             else -> sdkWrapper.submitPin(pinFlow, pin, promise)
         }
     }

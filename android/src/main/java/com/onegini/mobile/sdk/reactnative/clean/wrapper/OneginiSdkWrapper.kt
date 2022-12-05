@@ -159,7 +159,7 @@ class OneginiSdkWrapper @Inject constructor(
         changePinUseCase(promise)
     }
 
-    fun submitPin(pinFlow: String?, pin: String, promise: Promise) {
+    fun submitPin(pinFlow: String, pin: String, promise: Promise) {
         submitPinUseCase(pinFlow, pin, promise)
     }
 

@@ -3,7 +3,9 @@ package com.onegini.mobile.sdk.reactnative.clean.use_cases
 import com.facebook.react.bridge.Promise
 import com.onegini.mobile.sdk.reactnative.Constants
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.AUTHENTICATION_NOT_IN_PROGRESS
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.INCORRECT_PIN_FLOW
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS
 import com.onegini.mobile.sdk.reactnative.handlers.pins.CreatePinRequestHandler
 import com.onegini.mobile.sdk.reactnative.handlers.pins.PinAuthenticationRequestHandler
@@ -15,7 +17,7 @@ class SubmitPinUseCase @Inject constructor(
     private val createPinRequestHandler: CreatePinRequestHandler,
     private val pinAuthenticationRequestHandler: PinAuthenticationRequestHandler
 ) {
-    operator fun invoke(pinFlow: String?, pin: String, promise: Promise) {
+    operator fun invoke(pinFlow: String, pin: String, promise: Promise) {
         when (pinFlow) {
             Constants.PinFlow.Authentication.toString() -> {
                 return handleSubmitAuthPin(pin, promise)
@@ -23,6 +25,7 @@ class SubmitPinUseCase @Inject constructor(
             Constants.PinFlow.Create.toString() -> {
                 return handleSubmitCreatePin(pin, promise)
             }
+            else -> promise.reject(INCORRECT_PIN_FLOW.code.toString(), INCORRECT_PIN_FLOW.message)
         }
     }
 
