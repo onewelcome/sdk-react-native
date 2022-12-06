@@ -24,6 +24,7 @@ import com.onegini.mobile.sdk.reactnative.clean.use_cases.SetPreferredAuthentica
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.StartClientUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.SubmitCustomRegistrationActionUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.StartSingleSignOnUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.SubmitPinUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.ValidatePinWithPolicyUseCase
 
 import javax.inject.Inject
@@ -50,6 +51,7 @@ class OneginiSdkWrapper @Inject constructor(
     private val startClientUseCase: StartClientUseCase,
     private val startSingleSignOnUseCase: StartSingleSignOnUseCase,
     private val submitCustomRegistrationActionUseCase: SubmitCustomRegistrationActionUseCase,
+    private val submitPinUseCase: SubmitPinUseCase,
     private val validatePinWithPolicyUseCase: ValidatePinWithPolicyUseCase,
 )  {
 
@@ -157,8 +159,8 @@ class OneginiSdkWrapper @Inject constructor(
         changePinUseCase(promise)
     }
 
-    fun submitPinAction(pinFlow: String?, action: String?, pin: String?, promise: Promise) {
-        TODO("Not yet implemented")
+    fun submitPin(pinFlow: String, pin: String, promise: Promise) {
+        submitPinUseCase(pinFlow, pin, promise)
     }
 
     fun enrollMobileAuthentication(promise: Promise) {
