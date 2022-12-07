@@ -10,8 +10,10 @@ import javax.inject.Singleton
 @Singleton
 class RegistrationEventEmitter @Inject constructor(private val deviceEventEmitter: DeviceEventManagerModule.RCTDeviceEventEmitter) {
   fun onSendUrl(uri: Uri) {
-    val dataMap = Arguments.createMap()
-    dataMap.putString("url", uri.toString())
-    deviceEventEmitter.emit(Constants.REGISTRATION_NOTIFICATION, dataMap)
+    Arguments.createMap().apply {
+      putString("url", uri.toString())
+    }.also { dataMap ->
+      deviceEventEmitter.emit(Constants.REGISTRATION_NOTIFICATION, dataMap)
+    }
   }
 }

@@ -36,10 +36,10 @@ class HandleRegistrationCallbackUseCaseTests {
     @Mock
     private lateinit var uriFacade: UriFacade
 
-    private lateinit var handleRegistrationCallbackUseCase: HandleRegistrationCallbackUseCase
-
     @Mock
     private lateinit var registrationEventEmitter: RegistrationEventEmitter
+
+    private lateinit var handleRegistrationCallbackUseCase: HandleRegistrationCallbackUseCase
 
     private lateinit var registrationRequestHandler: RegistrationRequestHandler
 
