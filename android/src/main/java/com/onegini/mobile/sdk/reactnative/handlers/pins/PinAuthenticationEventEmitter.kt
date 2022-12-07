@@ -12,27 +12,33 @@ import javax.inject.Singleton
 class PinAuthenticationEventEmitter @Inject constructor(private val deviceEventEmitter: DeviceEventManagerModule.RCTDeviceEventEmitter) {
 
   fun onPinOpen(profileId: String) {
-    val dataMap = Arguments.createMap()
-    dataMap.putString("action", Constants.PIN_NOTIFICATION_OPEN_VIEW)
-    dataMap.putString("flow", PinFlow.Authentication.toString())
-    dataMap.putString("profileId", profileId);
-    deviceEventEmitter.emit(Constants.ONEWELCOME_PIN_AUTHENTICATION_NOTIFICATION, dataMap)
+    Arguments.createMap().apply {
+      putString("action", Constants.PIN_NOTIFICATION_OPEN_VIEW)
+      putString("flow", PinFlow.Authentication.toString())
+      putString("profileId", profileId);
+    }.also { dataMap ->
+      deviceEventEmitter.emit(Constants.ONEWELCOME_PIN_AUTHENTICATION_NOTIFICATION, dataMap)
+    }
   }
 
   fun onPinClose() {
-    val dataMap = Arguments.createMap()
-    dataMap.putString("action", Constants.PIN_NOTIFICATION_CLOSE_VIEW)
-    dataMap.putString("flow", PinFlow.Authentication.toString())
+    Arguments.createMap().apply {
+      putString("action", Constants.PIN_NOTIFICATION_CLOSE_VIEW)
+      putString("flow", PinFlow.Authentication.toString())
+    }.also { dataMap ->
     deviceEventEmitter.emit(Constants.ONEWELCOME_PIN_AUTHENTICATION_NOTIFICATION, dataMap)
+    }
   }
 
   fun onIncorrectPin(remainingAttempts: Int) {
-    val dataMap = Arguments.createMap()
-    dataMap.putString("action", Constants.PIN_NOTIFICATION_INCORRECT_PIN)
-    dataMap.putString("flow", PinFlow.Authentication.toString())
-    dataMap.putString("remainingFailureCount", remainingAttempts.toString())
-    dataMap.putInt("errorType", OneginiWrapperErrors.WRONG_PIN_ERROR.code)
-    dataMap.putString("errorMsg", OneginiWrapperErrors.WRONG_PIN_ERROR.message)
-    deviceEventEmitter.emit(Constants.ONEWELCOME_PIN_AUTHENTICATION_NOTIFICATION, dataMap)
+    Arguments.createMap().apply {
+      putString("action", Constants.PIN_NOTIFICATION_INCORRECT_PIN)
+      putString("flow", PinFlow.Authentication.toString())
+      putString("remainingFailureCount", remainingAttempts.toString())
+      putInt("errorType", OneginiWrapperErrors.WRONG_PIN_ERROR.code)
+      putString("errorMsg", OneginiWrapperErrors.WRONG_PIN_ERROR.message)
+    }.also { dataMap ->
+      deviceEventEmitter.emit(Constants.ONEWELCOME_PIN_AUTHENTICATION_NOTIFICATION, dataMap)
+    }
   }
 }

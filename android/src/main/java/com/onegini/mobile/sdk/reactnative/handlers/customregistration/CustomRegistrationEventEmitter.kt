@@ -12,18 +12,22 @@ import javax.inject.Singleton
 @Singleton
 class CustomRegistrationEventEmitter @Inject constructor(private val deviceEventEmitter: DeviceEventManagerModule.RCTDeviceEventEmitter) {
      fun initRegistration(idProvider: String, info: CustomInfo?) {
-        val map = Arguments.createMap()
-        map.putString("action", Constants.CUSTOM_REGISTRATION_NOTIFICATION_INIT_REGISTRATION)
-        OneginiIdentityProviderMapper.add(map, idProvider)
-        CustomInfoMapper.add(map, info)
-         deviceEventEmitter.emit(Constants.CUSTOM_REGISTRATION_NOTIFICATION, map)
+         Arguments.createMap().apply {
+             OneginiIdentityProviderMapper.add(this, idProvider)
+             CustomInfoMapper.add(this, info)
+             putString("action", Constants.CUSTOM_REGISTRATION_NOTIFICATION_INIT_REGISTRATION)
+         }.also { dataMap ->
+             deviceEventEmitter.emit(Constants.CUSTOM_REGISTRATION_NOTIFICATION, dataMap)
+         }
     }
 
     fun finishRegistration(idProvider: String, info: CustomInfo?) {
-        val map = Arguments.createMap()
-        map.putString("action", Constants.CUSTOM_REGISTRATION_NOTIFICATION_FINISH_REGISTRATION)
-        OneginiIdentityProviderMapper.add(map, idProvider)
-        CustomInfoMapper.add(map, info)
-        deviceEventEmitter.emit(Constants.CUSTOM_REGISTRATION_NOTIFICATION, map)
+        Arguments.createMap().apply {
+            putString("action", Constants.CUSTOM_REGISTRATION_NOTIFICATION_FINISH_REGISTRATION)
+            OneginiIdentityProviderMapper.add(this, idProvider)
+            CustomInfoMapper.add(this, info)
+        }.also { dataMap ->
+            deviceEventEmitter.emit(Constants.CUSTOM_REGISTRATION_NOTIFICATION, dataMap)
+        }
     }
 }

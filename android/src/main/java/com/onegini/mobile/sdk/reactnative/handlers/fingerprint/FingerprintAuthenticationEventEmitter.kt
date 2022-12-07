@@ -11,27 +11,35 @@ import javax.inject.Singleton
 @Singleton
 class FingerprintAuthenticationEventEmitter @Inject constructor(private val deviceEventEmitter: DeviceEventManagerModule.RCTDeviceEventEmitter) {
     fun startAuthentication(user: UserProfile) {
-        val map = Arguments.createMap()
-        UserProfileMapper.add(map, user)
-        map.putString("action", Constants.FINGERPRINT_NOTIFICATION_START_AUTHENTICATION)
-        deviceEventEmitter.emit(Constants.ONEWELCOME_FINGERPRINT_NOTIFICATION, map)
+        Arguments.createMap().apply {
+            UserProfileMapper.add(this, user)
+            putString("action", Constants.FINGERPRINT_NOTIFICATION_START_AUTHENTICATION)
+        }.also { dataMap ->
+            deviceEventEmitter.emit(Constants.ONEWELCOME_FINGERPRINT_NOTIFICATION, dataMap)
+        }
     }
 
     fun onNextAuthenticationAttempt() {
-        val map = Arguments.createMap()
-        map.putString("action", Constants.FINGERPRINT_NOTIFICATION_ON_NEXT_AUTHENTICATION_ATTEMPT)
-        deviceEventEmitter.emit(Constants.ONEWELCOME_FINGERPRINT_NOTIFICATION, map)
+        Arguments.createMap().apply {
+            putString("action", Constants.FINGERPRINT_NOTIFICATION_ON_NEXT_AUTHENTICATION_ATTEMPT)
+        }.also { dataMap ->
+            deviceEventEmitter.emit(Constants.ONEWELCOME_FINGERPRINT_NOTIFICATION, dataMap)
+        }
     }
 
     fun onFingerprintCaptured() {
-        val map = Arguments.createMap()
-        map.putString("action", Constants.FINGERPRINT_NOTIFICATION_ON_FINGERPRINT_CAPTURED)
-        deviceEventEmitter.emit(Constants.ONEWELCOME_FINGERPRINT_NOTIFICATION, map)
+        Arguments.createMap().apply {
+            putString("action", Constants.FINGERPRINT_NOTIFICATION_ON_FINGERPRINT_CAPTURED)
+        }.also { dataMap ->
+            deviceEventEmitter.emit(Constants.ONEWELCOME_FINGERPRINT_NOTIFICATION, dataMap)
+        }
     }
 
     fun finishAuthentication() {
-        val map = Arguments.createMap()
-        map.putString("action", Constants.FINGERPRINT_NOTIFICATION_FINISH_AUTHENTICATION)
-        deviceEventEmitter.emit(Constants.ONEWELCOME_FINGERPRINT_NOTIFICATION, map)
+        Arguments.createMap().apply {
+            putString("action", Constants.FINGERPRINT_NOTIFICATION_FINISH_AUTHENTICATION)
+        }.also { dataMap ->
+            deviceEventEmitter.emit(Constants.ONEWELCOME_FINGERPRINT_NOTIFICATION, dataMap)
+        }
     }
 }
