@@ -4,6 +4,7 @@ import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.AcceptMobileAuthConfirmationUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.AuthenticateUserImplicitlyUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.AuthenticateUserUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.DenyMobileAuthConfirmationUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.ChangePinUseCase
@@ -31,6 +32,7 @@ import javax.inject.Inject
 
 class OneginiSdkWrapper @Inject constructor(
     private val acceptMobileAuthConfirmationUseCase: AcceptMobileAuthConfirmationUseCase,
+    private val authenticateUserImplicitlyUseCase: AuthenticateUserImplicitlyUseCase,
     private val authenticateUserUseCase: AuthenticateUserUseCase,
     private val changePinUseCase: ChangePinUseCase,
     private val deregisterUserUseCase: DeregisterUserUseCase,
@@ -63,8 +65,8 @@ class OneginiSdkWrapper @Inject constructor(
         authenticateUserUseCase(profileId, authenticatorId, promise)
     }
 
-    fun authenticateUserImplicitly(profileId: String, scopes: ReadableArray, promise: Promise) {
-        TODO("Not yet implemented")
+    fun authenticateUserImplicitly(profileId: String, scopes: ReadableArray?, promise: Promise) {
+        authenticateUserImplicitlyUseCase(profileId, scopes, promise)
     }
 
     fun authenticateDeviceForResource(scopes: ReadableArray, promise: Promise) {
