@@ -45,13 +45,13 @@ class CancelBrowserRegistrationUseCaseTests {
     }
 
     @Test
-    fun `When registration has not started should reject with ACTION_NOT_ALLOWED`() {
+    fun `When registration has not started should, Then reject with ACTION_NOT_ALLOWED`() {
         cancelBrowserRegistrationUseCase(promiseMock)
         verify(promiseMock).reject(ACTION_NOT_ALLOWED.code.toString(), CANCEL_BROWSER_REGISTRATION_NOT_ALLOWED)
     }
 
     @Test
-    fun `When registration has started but pin creation has also started should reject with ACTION_NOT_ALLOWED`() {
+    fun `When registration has started but pin creation has also started, Then should reject with ACTION_NOT_ALLOWED`() {
         whenRegistrationStarted()
         whenPinCreationStarted()
         cancelBrowserRegistrationUseCase(promiseMock)
@@ -59,7 +59,7 @@ class CancelBrowserRegistrationUseCaseTests {
     }
 
     @Test
-    fun `When registration has started and pin creation has not started should resolve with null`() {
+    fun `When registration has started and pin creation has not started, Then should resolve with null`() {
         whenRegistrationStarted()
         cancelBrowserRegistrationUseCase(promiseMock)
         verify(promiseMock).resolve(null)
