@@ -5,7 +5,7 @@ import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiPinCallba
 import com.onegini.mobile.sdk.android.model.entity.AuthenticationAttemptCounter
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.AUTHENTICATION_NOT_IN_PROGRESS
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -34,15 +34,17 @@ class PinAuthenticationRequestHandler @Inject constructor(private val eventEmitt
     }
 
     fun acceptAuthenticationRequest(pin: CharArray) {
-        callback?.let { pinCallback ->
-            pinCallback.acceptAuthenticationRequest(pin)
-        } ?: throw OneginiReactNativeException(OneginiWrapperErrors.AUTHENTICATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.AUTHENTICATION_NOT_IN_PROGRESS.message)
+        callback?.acceptAuthenticationRequest(pin) ?: throw OneginiReactNativeException(
+            AUTHENTICATION_NOT_IN_PROGRESS.code,
+            AUTHENTICATION_NOT_IN_PROGRESS.message
+        )
     }
 
     fun denyAuthenticationRequest() {
-        callback?.let { pinCallback ->
-            pinCallback.denyAuthenticationRequest()
-            callback = null
-        } ?: throw OneginiReactNativeException(OneginiWrapperErrors.AUTHENTICATION_NOT_IN_PROGRESS.code, OneginiWrapperErrors.AUTHENTICATION_NOT_IN_PROGRESS.message)
+        callback?.denyAuthenticationRequest() ?: throw OneginiReactNativeException(
+            AUTHENTICATION_NOT_IN_PROGRESS.code,
+            AUTHENTICATION_NOT_IN_PROGRESS.message
+        )
+        callback = null
     }
 }

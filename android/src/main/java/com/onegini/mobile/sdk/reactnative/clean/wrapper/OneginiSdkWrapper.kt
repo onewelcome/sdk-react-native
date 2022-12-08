@@ -6,6 +6,9 @@ import com.facebook.react.bridge.ReadableMap
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.AcceptMobileAuthConfirmationUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.AuthenticateUserUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.CancelBrowserRegistrationUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.CancelCustomRegistrationUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.CancelPinAuthenticationUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.CancelPinCreationUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.DenyMobileAuthConfirmationUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.ChangePinUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.DeregisterUserUseCase
@@ -34,6 +37,9 @@ class OneginiSdkWrapper @Inject constructor(
     private val acceptMobileAuthConfirmationUseCase: AcceptMobileAuthConfirmationUseCase,
     private val authenticateUserUseCase: AuthenticateUserUseCase,
     private val cancelBrowserRegistrationUseCase: CancelBrowserRegistrationUseCase,
+    private val cancelCustomRegistrationUseCase: CancelCustomRegistrationUseCase,
+    private val cancelPinAuthenticationUseCase: CancelPinAuthenticationUseCase,
+    private val cancelPinCreationUseCase: CancelPinCreationUseCase,
     private val changePinUseCase: ChangePinUseCase,
     private val deregisterUserUseCase: DeregisterUserUseCase,
     private val denyMobileAuthConfirmationUseCase: DenyMobileAuthConfirmationUseCase,
@@ -112,8 +118,21 @@ class OneginiSdkWrapper @Inject constructor(
     fun deregisterUser(profileId: String, promise: Promise) {
         deregisterUserUseCase(profileId, promise)
     }
+
+    fun cancelPinCreation(promise: Promise) {
+        cancelPinCreationUseCase(promise)
+    }
+
+    fun cancelPinAuthentication(promise: Promise) {
+        cancelPinAuthenticationUseCase(promise)
+    }
+
     fun cancelBrowserRegistration(promise: Promise) {
         cancelBrowserRegistrationUseCase(promise)
+    }
+
+    fun cancelCustomRegistration(message: String, promise: Promise) {
+        cancelCustomRegistrationUseCase(message, promise)
     }
 
     fun getRedirectUri(promise: Promise) {

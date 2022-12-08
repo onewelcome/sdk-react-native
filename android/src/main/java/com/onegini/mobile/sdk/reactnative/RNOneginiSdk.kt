@@ -284,26 +284,8 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
     fun cancelCustomRegistration(message: String?, promise: Promise) {
         when (message) {
             null -> promise.rejectWithNullError(Message.paramName, Message.type)
-            else -> {
-                getActiveCustomRegistrationAction()?.let { action ->
-                    try {
-                        action.returnError(Exception(message))
-                        return promise.resolve(null)
-                    } catch (exception: OneginiReactNativeException) {
-                        promise.reject(OneginiWrapperErrors.ACTION_NOT_ALLOWED.code.toString(), CANCEL_CUSTOM_REGISTRATION_NOT_ALLOWED)
-                    }
-                } ?: promise.reject(OneginiWrapperErrors.ACTION_NOT_ALLOWED.code.toString(), CANCEL_CUSTOM_REGISTRATION_NOT_ALLOWED)
-            }
+            else -> sdkWrapper.cancelCustomRegistration(message, promise)
         }
-    }
-
-    private fun getActiveCustomRegistrationAction(): SimpleCustomRegistrationAction? {
-        for (action in oneginiSDK.simpleCustomRegistrationActions) {
-            if (action.isInProgress()){
-                return action
-            }
-        }
-        return null
     }
 
     @ReactMethod
@@ -329,21 +311,12 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
 
     @ReactMethod
     fun cancelPinCreation(promise: Promise) {
-        try {
-            createPinRequestHandler.cancelPin()
-        } catch (exception: OneginiReactNativeException) {
-            promise.reject(OneginiWrapperErrors.PIN_CREATION_NOT_IN_PROGRESS.code.toString(), OneginiWrapperErrors.PIN_CREATION_NOT_IN_PROGRESS.message)
-        }
+        sdkWrapper.cancelPinCreation(promise)
     }
 
     @ReactMethod
     fun cancelPinAuthentication(promise: Promise) {
-        return try {
-            pinAuthenticationRequestHandler.denyAuthenticationRequest()
-            promise.resolve(null)
-        } catch (exception: OneginiReactNativeException) {
-            promise.reject(exception.errorType.toString(), exception.message)
-        }
+        sdkWrapper.cancelPinAuthentication(promise)
     }
 
     @ReactMethod
