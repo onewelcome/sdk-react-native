@@ -45,13 +45,13 @@ class CancelPinAuthenticationUseCaseTests {
     }
 
     @Test
-    fun `When pin authentication has not started should reject with AUTHENTICATION_NOT_IN_PROGRESS`() {
+    fun `When pin authentication has not started, Then should reject with AUTHENTICATION_NOT_IN_PROGRESS`() {
         cancelPinAuthenticationUseCase(promiseMock)
         verify(promiseMock).reject(AUTHENTICATION_NOT_IN_PROGRESS.code.toString(), AUTHENTICATION_NOT_IN_PROGRESS.message)
     }
 
     @Test
-    fun `When pin authentication has started should resolve with null`() {
+    fun `When pin authentication has started, Then should resolve with null`() {
         whenPinAuthenticationStarted()
         cancelPinAuthenticationUseCase(promiseMock)
         verify(promiseMock).resolve(null)

@@ -49,6 +49,7 @@ class SubmitCustomRegistrationActionUseCaseTests {
     lateinit var simpleCustomRegistrationFactory: SimpleCustomRegistrationFactory
 
     private val token = "testToken"
+
     @Before
     fun setup() {
         simpleCustomRegistrationFactory = SimpleCustomRegistrationFactory(customRegistrationEventEmitter)

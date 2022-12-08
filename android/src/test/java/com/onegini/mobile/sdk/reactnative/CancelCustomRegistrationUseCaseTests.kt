@@ -46,7 +46,6 @@ class CancelCustomRegistrationUseCaseTests {
 
     lateinit var simpleCustomRegistrationFactory: SimpleCustomRegistrationFactory
 
-
     private val cancelMessage = "cancel message"
     private val successMessage = "success message"
 
@@ -57,16 +56,15 @@ class CancelCustomRegistrationUseCaseTests {
         cancelCustomRegistrationUseCase = CancelCustomRegistrationUseCase(oneginiSdk)
     }
 
-
     @Test
-    fun `When registration has not started should reject with ACTION_NOT_ALLOWED`() {
+    fun `When registration has not started, Then should reject with ACTION_NOT_ALLOWED`() {
         cancelCustomRegistrationUseCase(cancelMessage, promiseMock)
         verify(promiseMock).reject(ACTION_NOT_ALLOWED.code.toString(), CANCEL_CUSTOM_REGISTRATION_NOT_ALLOWED)
     }
 
     // ONE STEP
     @Test
-    fun `One Step - When registration has started but pin creation has also started should reject with ACTION_NOT_ALLOWED`() {
+    fun `One Step - When registration has started but pin creation has also started, Then should reject with ACTION_NOT_ALLOWED`() {
         whenRegistrationStarted(false)
         whenPinCreationStarted()
         cancelCustomRegistrationUseCase(cancelMessage, promiseMock)
@@ -74,14 +72,14 @@ class CancelCustomRegistrationUseCaseTests {
     }
 
     @Test
-    fun `One Step - When registration has started and pin creation has not started should resolve with null`() {
+    fun `One Step - When registration has started and pin creation has not started, Then should resolve with null`() {
         whenRegistrationStarted(false)
         cancelCustomRegistrationUseCase(cancelMessage, promiseMock)
         verify(promiseMock).resolve(null)
     }
 
     @Test
-    fun `One Step - When registration has started and pin creation has not started should call returnError on the action`() {
+    fun `One Step - When registration has started and pin creation has not started, Then should call returnError on the action`() {
         whenRegistrationStarted(false)
         cancelCustomRegistrationUseCase(cancelMessage, promiseMock)
         verify(oneginiSdk.simpleCustomRegistrationActions.first()).returnError(any())
@@ -89,7 +87,7 @@ class CancelCustomRegistrationUseCaseTests {
 
     // TWO STEP
     @Test
-    fun `Two Step - When registration has started but pin creation has also started should reject with ACTION_NOT_ALLOWED`() {
+    fun `Two Step - When registration has started but pin creation has also started, Then should reject with ACTION_NOT_ALLOWED`() {
         whenRegistrationStarted(true)
         whenPinCreationStarted()
         cancelCustomRegistrationUseCase(cancelMessage, promiseMock)
@@ -97,19 +95,18 @@ class CancelCustomRegistrationUseCaseTests {
     }
 
     @Test
-    fun `Two Step - When registration has started and pin creation has not started should resolve with null`() {
+    fun `Two Step - When registration has started and pin creation has not started, Then should resolve with null`() {
         whenRegistrationStarted(true)
         cancelCustomRegistrationUseCase(cancelMessage, promiseMock)
         verify(promiseMock).resolve(null)
     }
 
     @Test
-    fun `Two Step - When registration has started and pin creation has not started should call returnError on the action`() {
+    fun `Two Step - When registration has started and pin creation has not started, Then should call returnError on the action`() {
         whenRegistrationStarted(true)
         cancelCustomRegistrationUseCase(cancelMessage, promiseMock)
         verify(oneginiSdk.simpleCustomRegistrationActions.first()).returnError(any())
     }
-
 
     private fun whenRegistrationStarted(isTwoStep: Boolean) {
         // finishRegistration is what is called by the SDK when it starts registration
@@ -120,7 +117,6 @@ class CancelCustomRegistrationUseCaseTests {
     private fun whenPinCreationStarted() {
         oneginiSdk.simpleCustomRegistrationActions.first().returnSuccess(successMessage)
     }
-
 
     private fun whenIdentityProviderExists(isTwoStep: Boolean) {
         val identityProvider = ReactNativeIdentityProvider(TestData.identityProvider1.id, isTwoStep)

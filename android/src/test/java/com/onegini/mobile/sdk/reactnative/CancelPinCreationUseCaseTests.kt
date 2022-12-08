@@ -57,20 +57,20 @@ class CancelPinCreationUseCaseTests {
     }
 
     @Test
-    fun `When pin creation has not started should reject with PIN_CREATION_NOT_IN_PROGRESS`() {
+    fun `When pin creation has not started, Then should reject with PIN_CREATION_NOT_IN_PROGRESS`() {
         cancelPinCreationUseCase(promiseMock)
         verify(promiseMock).reject(PIN_CREATION_NOT_IN_PROGRESS.code.toString(), PIN_CREATION_NOT_IN_PROGRESS.message)
     }
 
     @Test
-    fun `When registration has started and pin creation has not started should reject with PIN_CREATION_NOT_IN_PROGRESS`() {
+    fun `When registration has started and pin creation has not started, Then should reject with PIN_CREATION_NOT_IN_PROGRESS`() {
         whenRegistrationStarted()
         cancelPinCreationUseCase(promiseMock)
         verify(promiseMock).reject(PIN_CREATION_NOT_IN_PROGRESS.code.toString(), PIN_CREATION_NOT_IN_PROGRESS.message)
     }
 
     @Test
-    fun `When pin creation has started should resolve with null`() {
+    fun `When pin creation has started, Then should resolve with null`() {
         whenRegistrationStarted()
         whenPinCreationStarted()
         cancelPinCreationUseCase(promiseMock)

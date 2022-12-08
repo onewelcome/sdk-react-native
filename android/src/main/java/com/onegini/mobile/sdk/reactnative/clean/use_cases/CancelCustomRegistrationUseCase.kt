@@ -14,17 +14,25 @@ import javax.inject.Singleton
 class CancelCustomRegistrationUseCase @Inject constructor(private val oneginiSdk: OneginiSDK) {
     operator fun invoke(message: String, promise: Promise) {
         getActiveCustomRegistrationAction()?.let { action ->
-            try {
-                action.returnError(Exception(message))
-                return promise.resolve(null)
-            } catch (exception: OneginiReactNativeException) {
-                promise.reject(OneginiWrapperErrors.ACTION_NOT_ALLOWED.code.toString(), CANCEL_CUSTOM_REGISTRATION_NOT_ALLOWED)
-            }
+            tryCancelCustomRegistrationAction(action, message, promise)
         } ?: promise.reject(OneginiWrapperErrors.ACTION_NOT_ALLOWED.code.toString(), CANCEL_CUSTOM_REGISTRATION_NOT_ALLOWED)
     }
 
+    private fun tryCancelCustomRegistrationAction(
+        action: SimpleCustomRegistrationAction,
+        message: String,
+        promise: Promise
+    ) {
+        try {
+            action.returnError(Exception(message))
+            promise.resolve(null)
+        } catch (exception: OneginiReactNativeException) {
+            promise.reject(OneginiWrapperErrors.ACTION_NOT_ALLOWED.code.toString(), CANCEL_CUSTOM_REGISTRATION_NOT_ALLOWED)
+        }
+    }
+
     private fun getActiveCustomRegistrationAction(): SimpleCustomRegistrationAction? {
-        for (action in oneginiSdk.simpleCustomRegistrationActions) {
+        oneginiSdk.simpleCustomRegistrationActions.forEach { action ->
             if (action.isInProgress()){
                 return action
             }
