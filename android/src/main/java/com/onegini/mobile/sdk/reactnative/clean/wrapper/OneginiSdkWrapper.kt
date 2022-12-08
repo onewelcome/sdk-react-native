@@ -136,10 +136,6 @@ class OneginiSdkWrapper @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    fun isFingerprintAuthenticatorRegistered(profileId: String, promise: Promise) {
-        TODO("Not yet implemented")
-    }
-
     fun deregisterFingerprintAuthenticator(profileId: String, promise: Promise) {
         TODO("Not yet implemented")
     }

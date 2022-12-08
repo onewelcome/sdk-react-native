@@ -175,19 +175,6 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
     }
 
     @ReactMethod
-    fun isFingerprintAuthenticatorRegistered(profileId: String?, promise: Promise) {
-        when (profileId) {
-            null -> promise.rejectWithNullError(ProfileId.paramName, ProfileId.type)
-            else -> {
-                authenticatorManager.getUserProfile(profileId)?.let { userProfile ->
-                    val authenticator = authenticatorManager.getRegisteredAuthenticators(userProfile, OneginiAuthenticator.FINGERPRINT)
-                    promise.resolve(authenticator != null)
-                } ?: promise.reject(OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.code.toString(), OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.message)
-            }
-        }
-    }
-
-    @ReactMethod
     fun deregisterFingerprintAuthenticator(profileId: String?, promise: Promise) {
         when (profileId) {
             null -> promise.rejectWithNullError(ProfileId.paramName, ProfileId.type)
