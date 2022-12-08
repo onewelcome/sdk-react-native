@@ -248,7 +248,6 @@ OR
 | **=== Fingerprint ===**                                   |
 | **`registerFingerprintAuthenticator(profileId):Promise`**     | Starts the process of registration a fingerprint |
 | **`deregisterFingerprintAuthenticator(profileId):Promise`**   | Starts the process of deregistration a fingerprint |
-| **`isFingerprintAuthenticatorRegistered(profileId):Promise`** | Returns boolean value which defines weather fingerprint authenticator already registered |
 | **`submitFingerprintAcceptAuthenticationRequest():Promise`**  | (Android only) User can return  accept authentication request |
 | **`submitFingerprintDenyAuthenticationRequest():Promise`**    | (Android only) User can return  deny authentication request |
 | **`submitFingerprintFallbackToPin():Promise`**                | (Android only) User can return  fallback to authentication by pin |
