@@ -378,26 +378,7 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
     fun authenticateUserImplicitly(profileId: String?, scopes: ReadableArray?, promise: Promise) {
         when (profileId) {
             null -> promise.rejectWithNullError(ProfileId.paramName, ProfileId.type)
-            else -> {
-                val scopesArray = ScopesMapper.toStringArray(scopes)
-                val userProfile = authenticatorManager.getUserProfile(profileId)
-                if (userProfile == null) {
-                    promise.reject(OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.code.toString(), OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.message)
-                } else {
-                    oneginiSDK.oneginiClient.userClient
-                        .authenticateUserImplicitly(
-                            userProfile, scopesArray,
-                            object : OneginiImplicitAuthenticationHandler {
-                                override fun onSuccess(profile: UserProfile) {
-                                    promise.resolve(null)
-                                }
-                                override fun onError(error: OneginiImplicitTokenRequestError) {
-                                    promise.reject(error.errorType.toString(), error.message)
-                                }
-                            }
-                        )
-                }
-            }
+            else -> sdkWrapper.authenticateUserImplicitly(profileId, scopes, promise)
         }
     }
 
