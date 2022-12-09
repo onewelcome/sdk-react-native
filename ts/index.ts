@@ -88,6 +88,10 @@ interface NativeMethods {
     scopes?: String[],
   ): Promise<Types.Profile>;
   deregisterUser(profileId: string): Promise<void>;
+  deregisterAuthenticator(
+    profileId: string,
+    idOneginiAuthenticator: string,
+  ): Promise<void>;
   handleRegistrationCallback(uri: string): Promise<void>;
   cancelBrowserRegistration(): Promise<void>;
   cancelCustomRegistration(message: string): Promise<void>;
