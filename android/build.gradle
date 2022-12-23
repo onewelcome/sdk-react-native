@@ -97,7 +97,6 @@ allprojects {
         }
 
         google()
-        maven { url 'https://www.jitpack.io' }
          if (artifactoryUser && artifactoryPassword) {
             maven {
                 url "https://repo.onegini.com/artifactory/onegini-sdk"
