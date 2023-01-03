@@ -526,20 +526,6 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
         }
     }
 
-    @objc
-    func isFingerprintAuthenticatorRegistered(_ profileId: String,
-                        resolver resolve: @escaping RCTPromiseResolveBlock,
-                        rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        let profile = userClient.userProfiles().first(where: { $0.profileId == profileId })
-        guard let profile = profile else {
-            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.localizedDescription, WrapperError.profileDoesNotExist)
-            return
-        }
-        let isAuthenticatorRegistered = bridgeConnector.toAuthenticatorsHandler.isAuthenticatorRegistered(ONGAuthenticatorType.biometric, profile)
-
-        resolve(isAuthenticatorRegistered)
-    }
-
     // Service methods
     private func oneginiSDKStartup(completion: @escaping (Bool, Error?) -> Void) {
         ONGClientBuilder().build()
