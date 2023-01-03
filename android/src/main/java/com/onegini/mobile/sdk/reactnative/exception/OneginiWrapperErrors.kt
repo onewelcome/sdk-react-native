@@ -6,7 +6,7 @@ enum class OneginiWrapperErrors(val code: Int, val message: String) {
     MOBILE_AUTH_OTP_IS_DISABLED(8003, "The Mobile auth Otp is disabled"),
     WRONG_PIN_ERROR(8004, "Wrong pin provided"),
     RESOURCE_CALL_ERROR(8005, "Resource call finished with error"),
-    AUTHENTICATOR_DOES_NOT_EXIST(8006, "The Fingerprint authenticator does not exist"),
+    AUTHENTICATOR_DOES_NOT_EXIST(8006, "The authenticator does not exist"),
     PROFILE_DOES_NOT_EXIST(8007, "The profileId does not exist"),
     PARAMETERS_NOT_CORRECT(8009, "The parameters to the called function are not correct"),
     REGISTRATION_NOT_IN_PROGRESS(8010, "Registration is currently not in progress"),
@@ -17,4 +17,5 @@ enum class OneginiWrapperErrors(val code: Int, val message: String) {
     PIN_CREATION_NOT_IN_PROGRESS(8016, "Pin creation is currently not in progress"),
     ACTION_NOT_ALLOWED(8017, "This action is currently not allowed"),
     INCORRECT_PIN_FLOW(8018, "Incorrect pinFlow supplied"),
+    AUTHENTICATOR_NOT_REGISTERED(8019, "The authenticator is not registered"),
 }

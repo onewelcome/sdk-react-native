@@ -258,6 +258,14 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
     }
 
     @ReactMethod
+    fun deregisterAuthenticator(idOneginiAuthenticator: String?, promise: Promise) {
+        when {
+            idOneginiAuthenticator == null -> promise.rejectWithNullError(IdOneginiAuthenticator.paramName, IdOneginiAuthenticator.type)
+            else -> sdkWrapper.deregisterAuthenticator(idOneginiAuthenticator, promise)
+        }
+    }
+
+    @ReactMethod
     fun startSingleSignOn(uri: String?, promise: Promise) {
         uri?.let { sdkWrapper.startSingleSignOn(uri, promise) } ?: promise.rejectWithNullError(Uri.paramName, Uri.type)
     }
