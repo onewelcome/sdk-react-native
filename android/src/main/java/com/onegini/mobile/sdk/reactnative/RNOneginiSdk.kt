@@ -155,6 +155,14 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
     }
 
     @ReactMethod
+    fun registerAuthenticator(authenticatorId: String?, promise: Promise) {
+        when (authenticatorId) {
+            null -> promise.rejectWithNullError(AuthenticatorId.paramName, AuthenticatorId.type)
+            else -> sdkWrapper.registerAuthenticator(authenticatorId, promise)
+        }
+    }
+
+    @ReactMethod
     fun registerFingerprintAuthenticator(profileId: String?, promise: Promise) {
         when (profileId) {
             null -> promise.rejectWithNullError(ProfileId.paramName, ProfileId.type)

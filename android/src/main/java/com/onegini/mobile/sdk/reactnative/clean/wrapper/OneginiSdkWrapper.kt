@@ -25,6 +25,7 @@ import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetUserProfilesUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.HandleMobileAuthWithOtpUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.HandleRegistrationCallbackUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.LogoutUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.RegisterAuthenticatorUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.RegisterUserUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.SetPreferredAuthenticatorUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.StartClientUseCase
@@ -57,6 +58,7 @@ class OneginiSdkWrapper @Inject constructor(
     private val handleMobileAuthWithOtpUseCase: HandleMobileAuthWithOtpUseCase,
     private val handleRegistrationCallbackUseCase: HandleRegistrationCallbackUseCase,
     private val logoutUseCase: LogoutUseCase,
+    private val registerAuthenticatorUseCase: RegisterAuthenticatorUseCase,
     private val registerUserUseCase: RegisterUserUseCase,
     private val setPreferredAuthenticatorUseCase: SetPreferredAuthenticatorUseCase,
     private val startClientUseCase: StartClientUseCase,
@@ -208,5 +210,9 @@ class OneginiSdkWrapper @Inject constructor(
 
     fun startSingleSignOn(url: String, promise: Promise) {
         startSingleSignOnUseCase(url, promise)
+    }
+
+    fun registerAuthenticator(authenticatorId: String, promise: Promise) {
+        registerAuthenticatorUseCase(authenticatorId, promise)
     }
 }
