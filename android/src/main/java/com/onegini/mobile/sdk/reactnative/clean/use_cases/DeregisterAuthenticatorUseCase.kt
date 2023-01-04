@@ -16,11 +16,11 @@ class DeregisterAuthenticatorUseCase @Inject constructor(
     private val oneginiSDK: OneginiSDK,
     private val authenticatorManager: AuthenticatorManager
 ) {
-    operator fun invoke(idOneginiAuthenticator: String, promise: Promise) {
+    operator fun invoke(authenticatorId: String, promise: Promise) {
         val userProfile = oneginiSDK.oneginiClient.userClient.authenticatedUserProfile ?:
             return promise.reject(NO_PROFILE_AUTHENTICATED.code.toString(), NO_PROFILE_AUTHENTICATED.message)
 
-        val authenticator = authenticatorManager.getAuthenticator(userProfile, idOneginiAuthenticator) ?:
+        val authenticator = authenticatorManager.getAuthenticator(userProfile, authenticatorId) ?:
             return promise.reject(AUTHENTICATOR_DOES_NOT_EXIST.code.toString(), AUTHENTICATOR_DOES_NOT_EXIST.message)
 
         if (!authenticator.isRegistered) {

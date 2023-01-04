@@ -106,7 +106,7 @@ interface NativeMethods {
   getAllAuthenticators(profileId: string): Promise<Types.Authenticator[]>;
   setPreferredAuthenticator(
     profileId: string,
-    idOneginiAuthenticator: string,
+    authenticatorId: string,
   ): Promise<void>;
   validatePinWithPolicy(pin: string): Promise<void>;
 
