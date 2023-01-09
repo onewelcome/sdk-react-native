@@ -34,6 +34,8 @@ class ResourceRequestUseCase @Inject constructor(
 
     private fun performResourceRequest(resourceClient: OkHttpClient, requestDetails: ResourceRequestDetails, promise: Promise) {
         // FIXME: RNP-138 We will need to expose a method to get the resourceBaseUrl in the RN side and then allow passing a full url here.
+        // FIXME: RNP-140: Support adding a body for requests that are not GET requests
+        // FIXME: RNP-128: Support Formdata requests
         val request = Request.Builder()
             .url(oneginiSDK.oneginiClient.configModel.resourceBaseUrl + requestDetails.path)
             .build()
