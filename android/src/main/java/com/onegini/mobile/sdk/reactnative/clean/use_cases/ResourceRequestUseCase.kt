@@ -36,19 +36,22 @@ class ResourceRequestUseCase @Inject constructor(
         // FIXME: RNP-138 We will need to expose a method to get the resourceBaseUrl in the RN side and then allow passing a full url here.
         // FIXME: RNP-140: Support adding a body for requests that are not GET requests
         // FIXME: RNP-128: Support Formdata requests
-        val request = Request.Builder()
-            .url(oneginiSDK.oneginiClient.configModel.resourceBaseUrl + requestDetails.path)
-            .build()
-        resourceClient.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                // FIXME: This is probably not how we want to send errors, but we'll have to think of a good way to do this.
-                promise.reject(RESOURCE_CALL_ERROR.code.toString(), RESOURCE_CALL_ERROR.message, e)
-            }
+        try {
+            val request = Request.Builder()
+                .url(requestDetails.path)
+                .build()
+            resourceClient.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    promise.reject(RESOURCE_CALL_ERROR.code.toString(), e.message)
+                }
 
-            override fun onResponse(call: Call, response: Response) {
-                promise.resolve(response.body?.string())
-            }
-        })
+                override fun onResponse(call: Call, response: Response) {
+                    promise.resolve(response.body?.string())
+                }
+            })
+        } catch (error: IllegalArgumentException) {
+            promise.reject(PARAMETERS_NOT_CORRECT.code.toString(), error.message)
+        }
     }
 
     private fun mapTypeToResourceClient(type: String): OkHttpClient {
