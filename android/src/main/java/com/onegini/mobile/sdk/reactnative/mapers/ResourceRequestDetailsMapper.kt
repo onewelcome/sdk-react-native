@@ -1,6 +1,8 @@
 package com.onegini.mobile.sdk.reactnative.mapers
 
 import com.facebook.react.bridge.ReadableMap
+import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.PARAMETERS_NOT_CORRECT
 import com.onegini.mobile.sdk.reactnative.model.ResourceRequestDetails
 import com.onegini.mobile.sdk.reactnative.network.ApiCall
 
@@ -22,11 +24,11 @@ object ResourceRequestDetailsMapper {
         val method = try {
             ApiCall.valueOf(map.getString("method") ?: "GET")
         } catch (e: IllegalArgumentException) {
-            ApiCall.GET
+            throw OneginiReactNativeException(PARAMETERS_NOT_CORRECT.code, "Supplied request method is not supported")
         }
 
         return ResourceRequestDetails(
-            path = map.getString("path") ?: "/",
+            path = map.getString("path") ?: throw OneginiReactNativeException(PARAMETERS_NOT_CORRECT.code, "Expected, but did not receive 'path' in details object"),
             method = method,
             encoding = map.getString("encoding") ?: "application/json",
             headers = headers,

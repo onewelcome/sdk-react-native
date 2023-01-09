@@ -3,6 +3,7 @@ package com.onegini.mobile.sdk.reactnative.clean.use_cases
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReadableMap
 import com.onegini.mobile.sdk.reactnative.OneginiSDK
+import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.PARAMETERS_NOT_CORRECT
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.RESOURCE_CALL_ERROR
 import com.onegini.mobile.sdk.reactnative.mapers.ResourceRequestDetailsMapper
@@ -22,9 +23,13 @@ class ResourceRequestUseCase @Inject constructor(
 ) {
 
     operator fun invoke(type: String, details: ReadableMap, promise: Promise) {
-        val requestDetails = ResourceRequestDetailsMapper.toResourceRequestDetails(details)
-        val resourceClient = mapTypeToResourceClient(type) ?: return promise.reject(PARAMETERS_NOT_CORRECT.code.toString(), "Supplied request type is not supported")
-        performResourceRequest(resourceClient, requestDetails, promise)
+        try {
+            val requestDetails = ResourceRequestDetailsMapper.toResourceRequestDetails(details)
+            val resourceClient = mapTypeToResourceClient(type)
+            performResourceRequest(resourceClient, requestDetails, promise)
+        } catch (error: OneginiReactNativeException) {
+            return promise.reject(error.errorType.toString(), error.message)
+        }
     }
 
     private fun performResourceRequest(resourceClient: OkHttpClient, requestDetails: ResourceRequestDetails, promise: Promise) {
@@ -34,7 +39,7 @@ class ResourceRequestUseCase @Inject constructor(
             .build()
         resourceClient.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                // FIXME: This is probably not how we want to send errors, but we'll have to think of a good way to do this. 
+                // FIXME: This is probably not how we want to send errors, but we'll have to think of a good way to do this.
                 promise.reject(RESOURCE_CALL_ERROR.code.toString(), RESOURCE_CALL_ERROR.message, e)
             }
 
@@ -44,12 +49,12 @@ class ResourceRequestUseCase @Inject constructor(
         })
     }
 
-    private fun mapTypeToResourceClient(type: String): OkHttpClient? {
+    private fun mapTypeToResourceClient(type: String): OkHttpClient {
         return when (type) {
             "User" -> oneginiSDK.oneginiClient.userClient.resourceOkHttpClient
             "ImplicitUser" -> oneginiSDK.oneginiClient.userClient.implicitResourceOkHttpClient
             "Anonymous" -> oneginiSDK.oneginiClient.deviceClient.anonymousResourceOkHttpClient
-            else -> null
+            else -> throw OneginiReactNativeException(PARAMETERS_NOT_CORRECT.code, "Supplied request type is not supported")
         }
     }
 }
