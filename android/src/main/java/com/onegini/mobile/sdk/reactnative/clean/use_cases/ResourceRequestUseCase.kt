@@ -6,6 +6,7 @@ import com.onegini.mobile.sdk.reactnative.OneginiSDK
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.PARAMETERS_NOT_CORRECT
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.RESOURCE_CALL_ERROR
+import com.onegini.mobile.sdk.reactnative.exception.REQUEST_TYPE_NOT_SUPPORTED
 import com.onegini.mobile.sdk.reactnative.mapers.ResourceRequestDetailsMapper
 import com.onegini.mobile.sdk.reactnative.model.ResourceRequestDetails
 import okhttp3.Call
@@ -24,8 +25,8 @@ class ResourceRequestUseCase @Inject constructor(
 
     operator fun invoke(type: String, details: ReadableMap, promise: Promise) {
         try {
-            val requestDetails = ResourceRequestDetailsMapper.toResourceRequestDetails(details)
             val resourceClient = mapTypeToResourceClient(type)
+            val requestDetails = ResourceRequestDetailsMapper.toResourceRequestDetails(details)
             performResourceRequest(resourceClient, requestDetails, promise)
         } catch (error: OneginiReactNativeException) {
             return promise.reject(error.errorType.toString(), error.message)
@@ -39,7 +40,9 @@ class ResourceRequestUseCase @Inject constructor(
         try {
             val request = Request.Builder()
                 .url(requestDetails.path)
+                .headers(requestDetails.headers)
                 .build()
+
             resourceClient.newCall(request).enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
                     promise.reject(RESOURCE_CALL_ERROR.code.toString(), e.message)
@@ -59,7 +62,7 @@ class ResourceRequestUseCase @Inject constructor(
             "User" -> oneginiSDK.oneginiClient.userClient.resourceOkHttpClient
             "ImplicitUser" -> oneginiSDK.oneginiClient.userClient.implicitResourceOkHttpClient
             "Anonymous" -> oneginiSDK.oneginiClient.deviceClient.anonymousResourceOkHttpClient
-            else -> throw OneginiReactNativeException(PARAMETERS_NOT_CORRECT.code, "Supplied request type is not supported")
+            else -> throw OneginiReactNativeException(PARAMETERS_NOT_CORRECT.code, REQUEST_TYPE_NOT_SUPPORTED)
         }
     }
 }
