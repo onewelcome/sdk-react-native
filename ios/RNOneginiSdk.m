@@ -42,8 +42,7 @@ RCT_EXTERN_METHOD(getAllAuthenticators:(NSString *)profileId resolver:(RCTPromis
 RCT_EXTERN_METHOD(getRegisteredAuthenticators:(NSString *)profileId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 RCT_EXTERN_METHOD(setPreferredAuthenticator:(NSString *)profileId authenticatorId:(NSString *)authenticatorId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 RCT_EXTERN_METHOD(validatePinWithPolicy:(NSString *)pin resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
-
+RCT_EXTERN_METHOD(deregisterAuthenticator:(NSString *)authenticatorId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 // Biometric
 RCT_EXTERN_METHOD(registerFingerprintAuthenticator:(NSString *)profileId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
-RCT_EXTERN_METHOD(deregisterFingerprintAuthenticator:(NSString *)profileId resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject)
 @end
