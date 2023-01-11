@@ -65,8 +65,8 @@ class RegisterAuthenticatorUseCaseTests {
     fun `When profile is authenticated and authenticator exists, Then it should call userclient_registerAuthenticator with the correct authenticator`() {
         whenProfileAuthenticated()
         whenAuthenticatorExists()
-        registerAuthenticatorUseCase(TestData.authenticator1.id, promiseMock)
-        verify(oneginiSdk.oneginiClient.userClient).registerAuthenticator(eq(TestData.authenticator1), any())
+        registerAuthenticatorUseCase(TestData.authenticator2.id, promiseMock)
+        verify(oneginiSdk.oneginiClient.userClient).registerAuthenticator(eq(TestData.authenticator2), any())
     }
 
     @Test
@@ -76,7 +76,7 @@ class RegisterAuthenticatorUseCaseTests {
         Mockito.`when`(oneginiSdk.oneginiClient.userClient.registerAuthenticator(any(), any())).thenAnswer {
             it.getArgument<OneginiAuthenticatorRegistrationHandler>(1).onSuccess(null)
         }
-        registerAuthenticatorUseCase(TestData.authenticator1.id, promiseMock)
+        registerAuthenticatorUseCase(TestData.authenticator2.id, promiseMock)
         verify(promiseMock).resolve(null)
     }
 
@@ -87,7 +87,7 @@ class RegisterAuthenticatorUseCaseTests {
         Mockito.`when`(oneginiSdk.oneginiClient.userClient.registerAuthenticator(any(), any())).thenAnswer {
             it.getArgument<OneginiAuthenticatorRegistrationHandler>(1).onError(authenticatorRegistrationError)
         }
-        registerAuthenticatorUseCase(TestData.authenticator1.id, promiseMock)
+        registerAuthenticatorUseCase(TestData.authenticator2.id, promiseMock)
         verify(promiseMock).reject(authenticatorRegistrationError.errorType.toString(), authenticatorRegistrationError.message)
 
     }
