@@ -29,6 +29,10 @@ class LoginHandler: NSObject {
     }
     
     func handleDidReceiveChallenge(_ challenge: ONGPinChallenge) {
+        // We need to cancel the active pinChallenge if we somehow received a new one from a different api.
+        if let pinChallenge = self.pinChallenge {
+            pinChallenge.sender.cancel(pinChallenge)
+        }
         pinChallenge = challenge
         if let pinError = mapErrorFromPinChallenge(challenge) {
             pinAuthenticationEventEmitter.onIncorrectPin(error: pinError, remainingFailureCount: challenge.remainingFailureCount)
