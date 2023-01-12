@@ -103,23 +103,15 @@ class AuthenticatorManager @Inject constructor(private val oneginiSDK: OneginiSD
     }
 
     fun getRegisteredAuthenticator(profile: UserProfile, id: String): OneginiAuthenticator? {
-        val registeredAuthenticators: Set<OneginiAuthenticator> = oneginiSDK.oneginiClient.userClient.getRegisteredAuthenticators(profile)
-        for (auth in registeredAuthenticators) {
-            if (auth.id == id) {
-                return auth
-            }
-        }
-        return null
+        return oneginiSDK.oneginiClient.userClient
+            .getRegisteredAuthenticators(profile)
+            .firstOrNull { it.id == id }
     }
 
     fun getAuthenticator(profile: UserProfile, id: String): OneginiAuthenticator? {
-        val allAuthenticators: Set<OneginiAuthenticator> = oneginiSDK.oneginiClient.userClient.getAllAuthenticators(profile)
-        for (auth in allAuthenticators) {
-            if (auth.id == id) {
-                return auth
-            }
-        }
-        return null
+        return oneginiSDK.oneginiClient.userClient
+            .getAllAuthenticators(profile)
+            .firstOrNull { it.id == id }
     }
 
     fun setPreferredAuthenticator(profileId: String, id: String) {
