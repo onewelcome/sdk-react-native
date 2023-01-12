@@ -25,6 +25,7 @@ import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetUserProfilesUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.HandleMobileAuthWithOtpUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.HandleRegistrationCallbackUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.LogoutUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.RegisterAuthenticatorUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.RegisterUserUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.SetPreferredAuthenticatorUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.StartClientUseCase
@@ -57,6 +58,7 @@ class OneginiSdkWrapper @Inject constructor(
     private val handleMobileAuthWithOtpUseCase: HandleMobileAuthWithOtpUseCase,
     private val handleRegistrationCallbackUseCase: HandleRegistrationCallbackUseCase,
     private val logoutUseCase: LogoutUseCase,
+    private val registerAuthenticatorUseCase: RegisterAuthenticatorUseCase,
     private val registerUserUseCase: RegisterUserUseCase,
     private val setPreferredAuthenticatorUseCase: SetPreferredAuthenticatorUseCase,
     private val startClientUseCase: StartClientUseCase,
@@ -106,8 +108,8 @@ class OneginiSdkWrapper @Inject constructor(
         getRegisteredAuthenticatorsUseCase(profileId, promise)
     }
 
-    fun setPreferredAuthenticator(profileId: String, idOneginiAuthenticator: String, promise: Promise) {
-        setPreferredAuthenticatorUseCase(profileId, idOneginiAuthenticator, promise)
+    fun setPreferredAuthenticator(profileId: String, authenticatorId: String, promise: Promise) {
+        setPreferredAuthenticatorUseCase(profileId, authenticatorId, promise)
     }
 
     fun validatePinWithPolicy(pin: String?, promise: Promise) {
@@ -122,8 +124,8 @@ class OneginiSdkWrapper @Inject constructor(
         deregisterUserUseCase(profileId, promise)
     }
 
-    fun deregisterAuthenticator(idOneginiAuthenticator: String, promise: Promise) {
-        deregisterAuthenticatorUseCase(idOneginiAuthenticator, promise)
+    fun deregisterAuthenticator(authenticatorId: String, promise: Promise) {
+        deregisterAuthenticatorUseCase(authenticatorId, promise)
     }
 
     fun cancelPinCreation(promise: Promise) {
@@ -208,5 +210,9 @@ class OneginiSdkWrapper @Inject constructor(
 
     fun startSingleSignOn(url: String, promise: Promise) {
         startSingleSignOnUseCase(url, promise)
+    }
+
+    fun registerAuthenticator(authenticatorId: String, promise: Promise) {
+        registerAuthenticatorUseCase(authenticatorId, promise)
     }
 }

@@ -78,7 +78,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
         let result: NSMutableArray = []
 
         for profile in profiles {
-            result.add(["profileId": profile.value(forKey: "profileId")])
+            result.add(["id": profile.value(forKey: "profileId")])
         }
 
         resolve(result)
@@ -90,7 +90,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
             reject(String(WrapperError.noProfileAuthenticated.code), WrapperError.noProfileAuthenticated.localizedDescription, WrapperError.noProfileAuthenticated)
             return
         }
-        resolve(["profileId": authenticatedProfile.profileId])
+        resolve(["id": authenticatedProfile.profileId])
     }
 
     @objc
@@ -122,7 +122,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
             if let error = error {
                 reject("\(error.code)", error.localizedDescription, error)
             } else {
-                resolve(["profileId": userProfile?.profileId])
+                resolve(["id": userProfile?.profileId])
             }
 
         }
@@ -277,7 +277,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
             if let error = error {
                 reject("\(error.code)", error.localizedDescription, error)
             } else {
-                resolve(["userProfile": ["profileId": userProfile?.profileId]])
+                resolve(["userProfile": ["Id": userProfile.profileId]])
             }
         }
     }
