@@ -1,6 +1,6 @@
 protocol BridgeToAuthenticatorsHandlerProtocol: AnyObject {
     func registerAuthenticator(_ userProfile: ONGUserProfile,_ authenticatorType: ONGAuthenticatorType, _ completion: @escaping (Bool, Error?) -> Void)
-    func deregisterAuthenticator(_ userProfile: ONGUserProfile, _ authenticatorId: String, _ completion: @escaping (Bool, Error?) -> Void)
+    func deregisterAuthenticator(_ userProfile: ONGUserProfile, _ authenticatorId: String, _ completion: @escaping (Error?) -> Void)
     func setPreferredAuthenticator(_ userProfile: ONGUserProfile, _ authenticatorId: String, _ completion: @escaping (Bool, Error?) -> Void)
     func getAuthenticatorsListForUserProfile(_ userProfile: ONGUserProfile) -> Array<ONGAuthenticator>
     func isAuthenticatorRegistered(_ authenticatorType: ONGAuthenticatorType, _ userProfile: ONGUserProfile) -> Bool
@@ -9,7 +9,7 @@ protocol BridgeToAuthenticatorsHandlerProtocol: AnyObject {
 class AuthenticatorsHandler: NSObject {
     private var pinChallenge: ONGPinChallenge?
     private var registrationCompletion: ((Bool, Error?) -> Void)?
-    private var deregistrationCompletion: ((Bool, Error?) -> Void)?
+    private var deregistrationCompletion: ((Error?) -> Void)?
     private let pinAuthenticationEventEmitter = PinAuthenticationEventEmitter()
     private let createPinEventEmitter = CreatePinEventEmitter()
 
@@ -59,14 +59,14 @@ extension AuthenticatorsHandler: BridgeToAuthenticatorsHandlerProtocol {
         ONGUserClient.sharedInstance().register(authenticator, delegate: self);
     }
 
-    func deregisterAuthenticator(_ userProfile: ONGUserProfile, _ authenticatorId: String,_ completion: @escaping (Bool, Error?) -> Void) {
+    func deregisterAuthenticator(_ userProfile: ONGUserProfile, _ authenticatorId: String,_ completion: @escaping (Error?) -> Void) {
         guard let authenticator = ONGUserClient.sharedInstance().allAuthenticators(forUser: userProfile).first(where: {$0.identifier == authenticatorId}) else {
-            completion(false, WrapperError.authenticatorDoesNotExist)
+            completion(WrapperError.authenticatorDoesNotExist)
             return;
         }
 
         if(authenticator.isRegistered != true) {
-            completion(false, WrapperError.authenticatorNotRegistered)
+            completion(WrapperError.authenticatorNotRegistered)
             return;
         }
 

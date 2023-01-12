@@ -516,7 +516,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
         }
 
         bridgeConnector.toAuthenticatorsHandler.deregisterAuthenticator(profile, authenticatorId) {
-            (_ , error) -> Void in
+            (error) -> Void in
 
             if let error = error {
                 reject("\(error.code)", error.localizedDescription, error)
