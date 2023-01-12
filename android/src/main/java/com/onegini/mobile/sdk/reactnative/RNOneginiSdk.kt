@@ -371,19 +371,7 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
 
     @ReactMethod
     fun authenticateDeviceForResource(scopes: ReadableArray?, promise: Promise) {
-        val scopesArray = ScopesMapper.toStringArray(scopes)
-        oneginiSDK.oneginiClient.deviceClient.authenticateDevice(
-            scopesArray,
-            object : OneginiDeviceAuthenticationHandler {
-                override fun onSuccess() {
-                    promise.resolve(null)
-                }
-
-                override fun onError(error: OneginiDeviceAuthenticationError) {
-                    promise.reject(error.errorType.toString(), error.message)
-                }
-            }
-        )
+        sdkWrapper.authenticateDeviceForResource(scopes, promise)
     }
 
     @ReactMethod
