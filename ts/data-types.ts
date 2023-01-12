@@ -21,7 +21,7 @@ export interface IdentityProvider {
 }
 
 export interface Profile {
-  profileId: string;
+  id: string;
 }
 
 export interface ImplicitUserDetails {

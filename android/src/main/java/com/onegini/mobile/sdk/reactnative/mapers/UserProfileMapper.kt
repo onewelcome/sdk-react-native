@@ -9,9 +9,9 @@ object UserProfileMapper {
 
     const val USERP_ROFILE = "userProfile"
 
-    fun toWritableMap(profileUser: UserProfile?): WritableMap {
+    fun toWritableMap(profileUser: UserProfile): WritableMap {
         val map = Arguments.createMap()
-        map.putString("profileId", profileUser?.profileId)
+        map.putString("id", profileUser.profileId)
         return map
     }
 

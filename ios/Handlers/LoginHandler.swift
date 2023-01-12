@@ -1,5 +1,5 @@
 protocol BridgeToLoginHandlerProtocol: AnyObject {
-    func authenticateUser(_ profile: ONGUserProfile, authenticator: ONGAuthenticator?, completion: @escaping (ONGUserProfile?, Error?) -> Void)
+    func authenticateUser(_ profile: ONGUserProfile, authenticator: ONGAuthenticator?, completion: @escaping (ONGUserProfile, Error?) -> Void)
     func setAuthPinChallenge(_ challenge: ONGPinChallenge?)
     func handlePin(_ pin: String?) throws
     func cancelPinAuthentication() throws
@@ -8,7 +8,7 @@ protocol BridgeToLoginHandlerProtocol: AnyObject {
 
 class LoginHandler: NSObject {
     private var pinChallenge: ONGPinChallenge?
-    private var loginCompletion: ((ONGUserProfile?, Error?) -> Void)?
+    private var loginCompletion: ((ONGUserProfile, Error?) -> Void)?
     private let pinAuthenticationEventEmitter = PinAuthenticationEventEmitter()
 
     func handlePin(_ pin: String?) throws {
@@ -50,7 +50,7 @@ class LoginHandler: NSObject {
 }
 
 extension LoginHandler : BridgeToLoginHandlerProtocol {
-    func authenticateUser(_ profile: ONGUserProfile, authenticator: ONGAuthenticator? = nil, completion: @escaping (ONGUserProfile?, Error?) -> Void) {
+    func authenticateUser(_ profile: ONGUserProfile, authenticator: ONGAuthenticator? = nil, completion: @escaping (ONGUserProfile, Error?) -> Void) {
         loginCompletion = completion
         ONGUserClient.sharedInstance().authenticateUser(profile, authenticator: authenticator, delegate: self)
     }
@@ -85,7 +85,7 @@ extension LoginHandler: ONGAuthenticationDelegate {
     func userClient(_ userClient: ONGUserClient, didFailToAuthenticateUser userProfile: ONGUserProfile, authenticator: ONGAuthenticator, error: Error) {
         handleDidFailToAuthenticateUser()
         // ChangePinHandler also makes use of the handle function but has it's own seperate completion callback, so let's leave the loginCompletion here.
-        loginCompletion?(nil, error)
+        loginCompletion?(userProfile, error)
         loginCompletion = nil
     }
 }
