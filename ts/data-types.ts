@@ -82,3 +82,8 @@ export interface ResourcesDetails {
   encoding: 'application/json' | 'none';
   headers: StringMap;
 }
+
+export enum BiometricAuthenticatorIds {
+  AndroidFingerprint = 'fingerprint',
+  iOSBiometric = 'com.onegini.authenticator.TouchID', // for both TouchID and FaceID
+}
