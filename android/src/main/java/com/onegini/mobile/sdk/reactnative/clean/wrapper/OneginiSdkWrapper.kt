@@ -11,28 +11,29 @@ import com.onegini.mobile.sdk.reactnative.clean.use_cases.CancelBrowserRegistrat
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.CancelCustomRegistrationUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.CancelPinAuthenticationUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.CancelPinCreationUseCase
-import com.onegini.mobile.sdk.reactnative.clean.use_cases.DenyMobileAuthConfirmationUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.ChangePinUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.DenyMobileAuthConfirmationUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.DeregisterAuthenticatorUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.DeregisterUserUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.EnrollMobileAuthenticationUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAccessTokenUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAllAuthenticatorsUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAuthenticatedUserProfileUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetIdentityProvidersUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetRedirectUriUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetRegisteredAuthenticatorsUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetUserProfilesUseCase
-import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAccessTokenUseCase
-import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAuthenticatedUserProfileUseCase
-import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetIdentityProvidersUseCase
-import com.onegini.mobile.sdk.reactnative.clean.use_cases.LogoutUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.HandleMobileAuthWithOtpUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.HandleRegistrationCallbackUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.LogoutUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.RegisterAuthenticatorUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.RegisterUserUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.SetPreferredAuthenticatorUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.StartClientUseCase
-import com.onegini.mobile.sdk.reactnative.clean.use_cases.SubmitCustomRegistrationActionUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.StartSingleSignOnUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.SubmitCustomRegistrationActionUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.SubmitPinUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.ValidatePinWithPolicyUseCase
-
 import javax.inject.Inject
 
 class OneginiSdkWrapper @Inject constructor(
@@ -45,6 +46,7 @@ class OneginiSdkWrapper @Inject constructor(
     private val cancelPinAuthenticationUseCase: CancelPinAuthenticationUseCase,
     private val cancelPinCreationUseCase: CancelPinCreationUseCase,
     private val changePinUseCase: ChangePinUseCase,
+    private val deregisterAuthenticatorUseCase: DeregisterAuthenticatorUseCase,
     private val deregisterUserUseCase: DeregisterUserUseCase,
     private val denyMobileAuthConfirmationUseCase: DenyMobileAuthConfirmationUseCase,
     private val enrollMobileAuthenticationUseCase: EnrollMobileAuthenticationUseCase,
@@ -58,6 +60,7 @@ class OneginiSdkWrapper @Inject constructor(
     private val handleMobileAuthWithOtpUseCase: HandleMobileAuthWithOtpUseCase,
     private val handleRegistrationCallbackUseCase: HandleRegistrationCallbackUseCase,
     private val logoutUseCase: LogoutUseCase,
+    private val registerAuthenticatorUseCase: RegisterAuthenticatorUseCase,
     private val registerUserUseCase: RegisterUserUseCase,
     private val setPreferredAuthenticatorUseCase: SetPreferredAuthenticatorUseCase,
     private val startClientUseCase: StartClientUseCase,
@@ -107,8 +110,8 @@ class OneginiSdkWrapper @Inject constructor(
         getRegisteredAuthenticatorsUseCase(profileId, promise)
     }
 
-    fun setPreferredAuthenticator(profileId: String, idOneginiAuthenticator: String, promise: Promise) {
-        setPreferredAuthenticatorUseCase(profileId, idOneginiAuthenticator, promise)
+    fun setPreferredAuthenticator(profileId: String, authenticatorId: String, promise: Promise) {
+        setPreferredAuthenticatorUseCase(profileId, authenticatorId, promise)
     }
 
     fun validatePinWithPolicy(pin: String?, promise: Promise) {
@@ -121,6 +124,10 @@ class OneginiSdkWrapper @Inject constructor(
 
     fun deregisterUser(profileId: String, promise: Promise) {
         deregisterUserUseCase(profileId, promise)
+    }
+
+    fun deregisterAuthenticator(authenticatorId: String, promise: Promise) {
+        deregisterAuthenticatorUseCase(authenticatorId, promise)
     }
 
     fun cancelPinCreation(promise: Promise) {
@@ -205,5 +212,9 @@ class OneginiSdkWrapper @Inject constructor(
 
     fun startSingleSignOn(url: String, promise: Promise) {
         startSingleSignOnUseCase(url, promise)
+    }
+
+    fun registerAuthenticator(authenticatorId: String, promise: Promise) {
+        registerAuthenticatorUseCase(authenticatorId, promise)
     }
 }

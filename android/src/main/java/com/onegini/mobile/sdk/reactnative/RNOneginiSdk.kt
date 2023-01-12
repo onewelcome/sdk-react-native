@@ -92,7 +92,7 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
     enum class FunctionParams(val paramName: String, val type: String ) {
         RnConfig("rnConfig", "ReadableMap"),
         ProfileId("profileId", "string"),
-        IdOneginiAuthenticator("idOneginiAuthenticator", "string"),
+        AuthenticatorId("authenticatorId", "string"),
         Pin("pin", "string"),
         PinFlow("pinFlow", "string"),
         Uri("uri", "string"),
@@ -151,6 +151,14 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
         when (profileId) {
             null -> promise.rejectWithNullError(ProfileId.paramName, ProfileId.type)
             else -> sdkWrapper.getRegisteredAuthenticators(profileId, promise)
+        }
+    }
+
+    @ReactMethod
+    fun registerAuthenticator(authenticatorId: String?, promise: Promise) {
+        when (authenticatorId) {
+            null -> promise.rejectWithNullError(AuthenticatorId.paramName, AuthenticatorId.type)
+            else -> sdkWrapper.registerAuthenticator(authenticatorId, promise)
         }
     }
 
@@ -228,11 +236,11 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
     }
 
     @ReactMethod
-    fun setPreferredAuthenticator(profileId: String?, idOneginiAuthenticator: String?, promise: Promise) {
+    fun setPreferredAuthenticator(profileId: String?, authenticatorId: String?, promise: Promise) {
         when {
             profileId == null -> promise.rejectWithNullError(ProfileId.paramName, ProfileId.type)
-            idOneginiAuthenticator == null -> promise.rejectWithNullError(IdOneginiAuthenticator.paramName, IdOneginiAuthenticator.type)
-            else -> sdkWrapper.setPreferredAuthenticator(profileId, idOneginiAuthenticator, promise)
+            authenticatorId == null -> promise.rejectWithNullError(AuthenticatorId.paramName, AuthenticatorId.type)
+            else -> sdkWrapper.setPreferredAuthenticator(profileId, authenticatorId, promise)
         }
     }
 
@@ -254,6 +262,14 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
         when (profileId) {
             null -> promise.rejectWithNullError(ProfileId.paramName, ProfileId.type)
             else -> sdkWrapper.deregisterUser(profileId, promise)
+        }
+    }
+
+    @ReactMethod
+    fun deregisterAuthenticator(authenticatorId: String?, promise: Promise) {
+        when {
+            authenticatorId == null -> promise.rejectWithNullError(AuthenticatorId.paramName, AuthenticatorId.type)
+            else -> sdkWrapper.deregisterAuthenticator(authenticatorId, promise)
         }
     }
 

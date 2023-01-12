@@ -78,7 +78,7 @@ class RegisterUserUseCaseTests {
         argumentCaptor<JavaOnlyMap> {
             verify(promiseMock).resolve(capture())
 
-            Assert.assertEquals("123456", firstValue.getString("profileId"))
+            Assert.assertEquals("123456", firstValue.getString("id"))
         }
     }
 

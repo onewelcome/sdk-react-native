@@ -62,19 +62,19 @@ class GetRegisteredAuthenticatorsUseCaseTests {
 
             assertEquals(2, firstValue.size())
 
-            assertEquals(TestData.authenticator1.id, firstValue.getMap(0)?.getString("id"))
-            assertEquals(TestData.authenticator1.name, firstValue.getMap(0)?.getString("name"))
-            assertEquals(TestData.authenticator1.type, firstValue.getMap(0)?.getInt("type"))
-            assertEquals(TestData.authenticator1.isPreferred, firstValue.getMap(0)?.getBoolean("isPreferred"))
-            assertEquals(TestData.authenticator1.isRegistered, firstValue.getMap(0)?.getBoolean("isRegistered"))
-            assertEquals(TestData.authenticator1.userProfile.profileId, firstValue.getMap(0)?.getMap("userProfile")?.getString("profileId"))
+            assertEquals(TestData.authenticator1.id, firstValue.getMap(0).getString("id"))
+            assertEquals(TestData.authenticator1.name, firstValue.getMap(0).getString("name"))
+            assertEquals(TestData.authenticator1.type, firstValue.getMap(0).getInt("type"))
+            assertEquals(TestData.authenticator1.isPreferred, firstValue.getMap(0).getBoolean("isPreferred"))
+            assertEquals(TestData.authenticator1.isRegistered, firstValue.getMap(0).getBoolean("isRegistered"))
+            assertEquals(TestData.authenticator1.userProfile.profileId, firstValue.getMap(0).getMap("userProfile")?.getString("id"))
 
-            assertEquals(TestData.authenticator2.id, firstValue.getMap(1)?.getString("id"))
-            assertEquals(TestData.authenticator2.name, firstValue.getMap(1)?.getString("name"))
-            assertEquals(TestData.authenticator2.type, firstValue.getMap(1)?.getInt("type"))
-            assertEquals(TestData.authenticator2.isPreferred, firstValue.getMap(1)?.getBoolean("isPreferred"))
-            assertEquals(TestData.authenticator2.isRegistered, firstValue.getMap(1)?.getBoolean("isRegistered"))
-            assertEquals(TestData.authenticator2.userProfile.profileId, firstValue.getMap(1)?.getMap("userProfile")?.getString("profileId"))
+            assertEquals(TestData.authenticator2.id, firstValue.getMap(1).getString("id"))
+            assertEquals(TestData.authenticator2.name, firstValue.getMap(1).getString("name"))
+            assertEquals(TestData.authenticator2.type, firstValue.getMap(1).getInt("type"))
+            assertEquals(TestData.authenticator2.isPreferred, firstValue.getMap(1).getBoolean("isPreferred"))
+            assertEquals(TestData.authenticator2.isRegistered, firstValue.getMap(1).getBoolean("isRegistered"))
+            assertEquals(TestData.authenticator2.userProfile.profileId, firstValue.getMap(1).getMap("userProfile")?.getString("id"))
         }
     }
 }

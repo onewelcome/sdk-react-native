@@ -8,9 +8,9 @@ import javax.inject.Singleton
 
 @Singleton
 class SetPreferredAuthenticatorUseCase @Inject constructor(private val authenticatorManager: AuthenticatorManager) {
-    operator fun invoke(profileId: String, idOneginiAuthenticator: String, promise: Promise) {
+    operator fun invoke(profileId: String, authenticatorId: String, promise: Promise) {
         try {
-            authenticatorManager.setPreferredAuthenticator(profileId, idOneginiAuthenticator)
+            authenticatorManager.setPreferredAuthenticator(profileId, authenticatorId)
             promise.resolve(null)
         } catch (e: OneginiReactNativeException) {
             promise.reject(e.errorType.toString(), e.message)
