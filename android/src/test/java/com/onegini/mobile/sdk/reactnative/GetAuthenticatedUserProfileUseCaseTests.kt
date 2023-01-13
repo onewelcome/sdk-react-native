@@ -37,7 +37,7 @@ class GetAuthenticatedUserProfileUseCaseTests {
         argumentCaptor<JavaOnlyMap> {
             verify(promiseMock).resolve(this.capture())
 
-            Assert.assertEquals("testId", this.firstValue.getString("profileId"))
+            Assert.assertEquals("testId", this.firstValue.getString("id"))
         }
     }
 

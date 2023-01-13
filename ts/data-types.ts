@@ -21,7 +21,7 @@ export interface IdentityProvider {
 }
 
 export interface Profile {
-  profileId: string;
+  id: string;
 }
 
 export interface ImplicitUserDetails {
@@ -80,4 +80,9 @@ export interface ResourcesDetails {
   method: 'GET' | 'POST' | 'PUT' | 'DELETE';
   parameters?: StringMap;
   headers?: StringMap;
+}
+
+export enum BiometricAuthenticatorIds {
+  AndroidFingerprint = 'fingerprint',
+  iOSBiometric = 'com.onegini.authenticator.TouchID', // for both TouchID and FaceID
 }

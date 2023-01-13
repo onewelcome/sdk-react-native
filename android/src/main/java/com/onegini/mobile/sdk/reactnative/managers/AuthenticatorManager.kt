@@ -102,14 +102,16 @@ class AuthenticatorManager @Inject constructor(private val oneginiSDK: OneginiSD
         return null
     }
 
-    fun getRegisteredAuthenticators(profile: UserProfile, id: String): OneginiAuthenticator? {
-        val registeredAuthenticators: Set<OneginiAuthenticator> = oneginiSDK.oneginiClient.userClient.getRegisteredAuthenticators(profile)
-        for (auth in registeredAuthenticators) {
-            if (auth.id == id) {
-                return auth
-            }
-        }
-        return null
+    fun getRegisteredAuthenticator(profile: UserProfile, id: String): OneginiAuthenticator? {
+        return oneginiSDK.oneginiClient.userClient
+            .getRegisteredAuthenticators(profile)
+            .firstOrNull { it.id == id }
+    }
+
+    fun getAuthenticator(profile: UserProfile, id: String): OneginiAuthenticator? {
+        return oneginiSDK.oneginiClient.userClient
+            .getAllAuthenticators(profile)
+            .firstOrNull { it.id == id }
     }
 
     fun setPreferredAuthenticator(profileId: String, id: String) {
@@ -119,7 +121,7 @@ class AuthenticatorManager @Inject constructor(private val oneginiSDK: OneginiSD
                 OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.message
             )
 
-        val authenticator = getRegisteredAuthenticators(userProfile, id)
+        val authenticator = getRegisteredAuthenticator(userProfile, id)
             ?: throw OneginiReactNativeException(
                 OneginiWrapperErrors.AUTHENTICATOR_DOES_NOT_EXIST.code,
                 OneginiWrapperErrors.AUTHENTICATOR_DOES_NOT_EXIST.message

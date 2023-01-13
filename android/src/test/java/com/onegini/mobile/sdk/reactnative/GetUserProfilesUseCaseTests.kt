@@ -37,8 +37,8 @@ class GetUserProfilesUseCaseTests {
             verify(promiseMock).resolve(capture())
 
             Assert.assertEquals(2, firstValue.size())
-            Assert.assertEquals("123456", firstValue.getMap(0)?.getString("profileId"))
-            Assert.assertEquals("234567", firstValue.getMap(1)?.getString("profileId"))
+            Assert.assertEquals("123456", firstValue.getMap(0).getString("id"))
+            Assert.assertEquals("234567", firstValue.getMap(1).getString("id"))
         }
     }
 }
