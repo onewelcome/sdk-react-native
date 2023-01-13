@@ -16,6 +16,7 @@ object ResourceRequestDetailsMapper {
         val parameters: MutableMap<String, String> = mutableMapOf()
         val headerBuilder = Headers.Builder()
 
+        // TODO: RNP-140: Check if we need to set content-type to a default value with POST
         map.getMap("headers")?.entryIterator?.forEach {
             val headerValue = it.value
             if (headerValue is String) {
@@ -37,7 +38,6 @@ object ResourceRequestDetailsMapper {
         return ResourceRequestDetails(
             path = map.getString("path") ?: throw OneginiReactNativeException(PARAMETERS_NOT_CORRECT.code, REQUEST_MISSING_PATH_PARAMETER),
             method = method,
-            encoding = map.getString("encoding") ?: "application/json",
             headers = headerBuilder.build(),
             parameters = parameters
         )

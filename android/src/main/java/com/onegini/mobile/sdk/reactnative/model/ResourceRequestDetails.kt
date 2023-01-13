@@ -6,7 +6,6 @@ import okhttp3.Headers
 data class ResourceRequestDetails(
         val path: String,
         val method: ApiCall,
-        val encoding: String,
         val headers: Headers,
         val parameters: Map<String, String>
 )

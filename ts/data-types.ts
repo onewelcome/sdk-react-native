@@ -79,6 +79,5 @@ export interface ResourcesDetails {
   path: string;
   method: 'GET' | 'POST' | 'PUT' | 'DELETE';
   parameters?: StringMap;
-  encoding?: string;
   headers?: StringMap;
 }
