@@ -39,7 +39,7 @@ class ResourceRequestUseCase @Inject constructor(
         // FIXME: RNP-128: Support Formdata requests
         try {
             val request = Request.Builder()
-                .url(requestDetails.path)
+                .url(oneginiSDK.oneginiClient.configModel.resourceBaseUrl + requestDetails.path)
                 .headers(requestDetails.headers)
                 .build()
 
