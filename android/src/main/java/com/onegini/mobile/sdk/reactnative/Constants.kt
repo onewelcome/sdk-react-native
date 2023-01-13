@@ -6,6 +6,11 @@ object Constants {
         Create,
     }
 
+    // Resource Requests
+    const val RESOURCE_REQUEST_USER = "User"
+    const val RESOURCE_REQUEST_IMPLICIT_USER = "ImplicitUser"
+    const val RESOURCE_REQUEST_ANONYMOUS = "Anonymous"
+
     // Pin notification actions for RN Bridge
     const val ONEWELCOME_PIN_CREATE_NOTIFICATION = "ONEWELCOME_PIN_CREATE_NOTIFICATION"
     const val ONEWELCOME_PIN_AUTHENTICATION_NOTIFICATION = "ONEWELCOME_PIN_AUTHENTICATION_NOTIFICATION"
@@ -15,10 +20,6 @@ object Constants {
     const val PIN_NOTIFICATION_INCORRECT_PIN = "incorrectPin"
     const val PIN_NOTIFICATION_PIN_NOT_ALLOWED = "pinNotAllowed"
 
-    // Pin actions for RN Bridge
-    const val PIN_ACTION_CANCEL = "cancel"
-    const val PIN_ACTION_PROVIDE = "provide"
-
     // Registration
     const val REGISTRATION_NOTIFICATION = "ONEWELCOME_REGISTRATION_NOTIFICATION"
 
@@ -26,10 +27,6 @@ object Constants {
     const val CUSTOM_REGISTRATION_NOTIFICATION = "ONEWELCOME_CUSTOM_REGISTRATION_NOTIFICATION"
     const val CUSTOM_REGISTRATION_NOTIFICATION_INIT_REGISTRATION = "initRegistration"
     const val CUSTOM_REGISTRATION_NOTIFICATION_FINISH_REGISTRATION = "finishRegistration"
-
-    // Custom registration actions for RN Bridge
-    const val CUSTOM_REGISTRATION_ACTION_CANCEL = "cancel"
-    const val CUSTOM_REGISTRATION_ACTION_PROVIDE = "provide"
 
     const val MOBILE_AUTH_OTP_NOTIFICATION = "ONEWELCOME_MOBILE_AUTH_OTP_NOTIFICATION"
     const val MOBILE_AUTH_OTP_START_AUTHENTICATION = "startAuthentication"
@@ -43,8 +40,4 @@ object Constants {
 
     const val httpConnectTimeoutBrowserRegistrationMiliseconds = 5000
     const val httpReadTimeoutBrowserRegistrationMiliseconds = 20000
-
-    const val ANONYMOUS_SERVICE = "anonymousService"
-    const val IMPLICIT_USER_SERVICE = "implicitUserService"
-    const val USER_SERVICE = "userService"
 }

@@ -28,6 +28,7 @@ import com.onegini.mobile.sdk.reactnative.clean.use_cases.HandleRegistrationCall
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.LogoutUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.RegisterAuthenticatorUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.RegisterUserUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.ResourceRequestUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.SetPreferredAuthenticatorUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.StartClientUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.StartSingleSignOnUseCase
@@ -62,6 +63,7 @@ class OneginiSdkWrapper @Inject constructor(
     private val logoutUseCase: LogoutUseCase,
     private val registerAuthenticatorUseCase: RegisterAuthenticatorUseCase,
     private val registerUserUseCase: RegisterUserUseCase,
+    private val resourceRequestUseCase: ResourceRequestUseCase,
     private val setPreferredAuthenticatorUseCase: SetPreferredAuthenticatorUseCase,
     private val startClientUseCase: StartClientUseCase,
     private val startSingleSignOnUseCase: StartSingleSignOnUseCase,
@@ -207,7 +209,7 @@ class OneginiSdkWrapper @Inject constructor(
     }
 
     fun resourceRequest(type: String, details: ReadableMap, promise: Promise) {
-        TODO("Not yet implemented")
+        resourceRequestUseCase(type, details, promise)
     }
 
     fun startSingleSignOn(url: String, promise: Promise) {

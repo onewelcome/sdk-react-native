@@ -6,27 +6,18 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
-import com.onegini.mobile.sdk.android.handlers.OneginiChangePinHandler
-import com.onegini.mobile.sdk.android.handlers.OneginiDeviceAuthenticationHandler
-import com.onegini.mobile.sdk.android.handlers.OneginiImplicitAuthenticationHandler
-import com.onegini.mobile.sdk.android.handlers.OneginiLogoutHandler
-import com.onegini.mobile.sdk.android.handlers.OneginiMobileAuthEnrollmentHandler
-import com.onegini.mobile.sdk.android.handlers.OneginiMobileAuthWithOtpHandler
-import com.onegini.mobile.sdk.android.handlers.error.OneginiChangePinError
-import com.onegini.mobile.sdk.android.handlers.error.OneginiDeviceAuthenticationError
-import com.onegini.mobile.sdk.android.handlers.error.OneginiError
-import com.onegini.mobile.sdk.android.handlers.error.OneginiImplicitTokenRequestError
-import com.onegini.mobile.sdk.android.handlers.error.OneginiLogoutError
-import com.onegini.mobile.sdk.android.handlers.error.OneginiMobileAuthEnrollmentError
-import com.onegini.mobile.sdk.android.handlers.error.OneginiMobileAuthWithOtpError
-import com.onegini.mobile.sdk.android.model.OneginiAuthenticator
 import com.onegini.mobile.sdk.android.model.entity.CustomInfo
-import com.onegini.mobile.sdk.android.model.entity.UserProfile
-import com.onegini.mobile.sdk.reactnative.Constants.PinFlow
-import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.*
+import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.AuthenticatorId
+import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.Details
+import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.IdentityProviderId
+import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.Message
+import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.OtpCode
+import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.Pin
+import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.ProfileId
+import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.RnConfig
+import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.Type
+import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.Uri
 import com.onegini.mobile.sdk.reactnative.clean.wrapper.OneginiSdkWrapper
-import com.onegini.mobile.sdk.reactnative.module.RNOneginiSdkModule
-import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.reactnative.exception.PARAM_CAN_NOT_BE_NULL
 import com.onegini.mobile.sdk.reactnative.handlers.fingerprint.FingerprintAuthenticationRequestHandler
@@ -34,21 +25,12 @@ import com.onegini.mobile.sdk.reactnative.handlers.mobileauthotp.MobileAuthOtpRe
 import com.onegini.mobile.sdk.reactnative.handlers.pins.CreatePinRequestHandler
 import com.onegini.mobile.sdk.reactnative.handlers.pins.PinAuthenticationRequestHandler
 import com.onegini.mobile.sdk.reactnative.handlers.registration.RegistrationRequestHandler
-import com.onegini.mobile.sdk.reactnative.exception.CANCEL_CUSTOM_REGISTRATION_NOT_ALLOWED
-import com.onegini.mobile.sdk.reactnative.handlers.customregistration.SimpleCustomRegistrationAction
 import com.onegini.mobile.sdk.reactnative.managers.AuthenticatorManager
 import com.onegini.mobile.sdk.reactnative.managers.AuthenticatorManager.DeregistrationCallback
 import com.onegini.mobile.sdk.reactnative.managers.AuthenticatorManager.RegistrationCallback
 import com.onegini.mobile.sdk.reactnative.managers.RegistrationManager
 import com.onegini.mobile.sdk.reactnative.mapers.CustomInfoMapper
-import com.onegini.mobile.sdk.reactnative.mapers.JsonMapper
-import com.onegini.mobile.sdk.reactnative.mapers.ResourceRequestDetailsMapper
-import com.onegini.mobile.sdk.reactnative.mapers.ScopesMapper
-import com.onegini.mobile.sdk.reactnative.network.AnonymousService
-import com.onegini.mobile.sdk.reactnative.network.ImplicitUserService
-import com.onegini.mobile.sdk.reactnative.network.UserService
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import java.lang.Exception
+import com.onegini.mobile.sdk.reactnative.module.RNOneginiSdkModule
 import javax.inject.Inject
 
 
@@ -62,12 +44,6 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
     @Inject
     lateinit var sdkWrapper: OneginiSdkWrapper
     @Inject
-    lateinit var userService: UserService
-    @Inject
-    lateinit var implicitUserService: ImplicitUserService
-    @Inject
-    lateinit var anonymousService: AnonymousService
-    @Inject
     lateinit var fingerprintAuthenticationRequestHandler: FingerprintAuthenticationRequestHandler
     @Inject
     lateinit var registrationRequestHandler: RegistrationRequestHandler
@@ -78,7 +54,6 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
     @Inject
     lateinit var pinAuthenticationRequestHandler: PinAuthenticationRequestHandler
 
-    private val disposables = CompositeDisposable()
 
 
     override fun initialize() {
@@ -395,43 +370,7 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
         when {
             type == null -> promise.rejectWithNullError(Type.paramName, Type.type)
             details == null -> promise.rejectWithNullError(Details.paramName, Details.type)
-            else -> {
-                val requestDetails = ResourceRequestDetailsMapper.toResourceRequestDetails(details)
-                when (type) {
-                    "User" -> {
-                        disposables.add(
-                            userService
-                                .getResource(requestDetails)
-                                .subscribe({
-                                    promise.resolve(JsonMapper.toWritableMap(it))
-                                }) { throwable -> promise.reject(OneginiWrapperErrors.RESOURCE_CALL_ERROR.code.toString(), throwable) }
-                        )
-                    }
-                    "ImplicitUser" -> {
-                        disposables.add(
-                            implicitUserService
-                                .getResource(requestDetails)
-                                .subscribe({
-                                    promise.resolve(JsonMapper.toWritableMap(it))
-                                }) { throwable -> promise.reject(OneginiWrapperErrors.RESOURCE_CALL_ERROR.code.toString(), throwable) }
-                        )
-                    }
-                    "Anonymous" -> {
-                        disposables.add(
-                            anonymousService
-                                .getResource(requestDetails)
-                                .subscribe({
-                                    promise.resolve(JsonMapper.toWritableMap(it))
-                                }) { throwable -> promise.reject(OneginiWrapperErrors.RESOURCE_CALL_ERROR.code.toString(), throwable) }
-                        )
-                    }
-                }
-            }
+            else -> sdkWrapper.resourceRequest(type, details, promise)
         }
-    }
-
-    override fun onCatalystInstanceDestroy() {
-        disposables.clear()
-        super.onCatalystInstanceDestroy()
     }
 }

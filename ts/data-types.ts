@@ -78,9 +78,8 @@ export interface StringMap {
 export interface ResourcesDetails {
   path: string;
   method: 'GET' | 'POST' | 'PUT' | 'DELETE';
-  parameters: StringMap;
-  encoding: 'application/json' | 'none';
-  headers: StringMap;
+  parameters?: StringMap;
+  headers?: StringMap;
 }
 
 export enum BiometricAuthenticatorIds {

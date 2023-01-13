@@ -54,7 +54,6 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
     }
 
     fileprivate func userResourcesRequest(_ details: NSDictionary, _ completion: @escaping (String?, Error?) -> Void) {
-        let encoding = getEncodingByValue(details["encoding"] as? String);
         guard let path = details["path"] as? String else {
             let error = NSError(domain: ONGFetchImplicitResourceErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey : "'path' can not be empty"])
             completion(nil, error)
@@ -65,7 +64,7 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
             completion(nil, error)
             return
         }
-        let request = ONGResourceRequest(path: path, method: method, parameters: details["parameters"] as? [String : Any], encoding: encoding, headers: details["headers"] as? [String : String]);
+        let request = ONGResourceRequest(path: path, method: method, parameters: details["parameters"] as? [String : Any], encoding: ONGParametersEncoding.formURL, headers: details["headers"] as? [String : String]);
 
         ONGUserClient.sharedInstance().fetchResource(request) { response, error in
             if let error = error {
@@ -82,7 +81,6 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
     }
     
     fileprivate func anonymousResourcesRequest(_ details: NSDictionary, _ completion: @escaping (String?, Error?) -> Void) {
-        let encoding = getEncodingByValue(details["encoding"] as? String);
         guard let path = details["path"] as? String else {
             let error = NSError(domain: ONGFetchImplicitResourceErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey : "'path' can not be empty"])
             completion(nil, error)
@@ -93,7 +91,7 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
             completion(nil, error)
             return
         }
-        let request = ONGResourceRequest(path: path, method: method, parameters: details["parameters"] as? [String : Any], encoding: encoding, headers: details["headers"] as? [String : String]);
+        let request = ONGResourceRequest(path: path, method: method, parameters: details["parameters"] as? [String : Any], encoding: ONGParametersEncoding.formURL, headers: details["headers"] as? [String : String]);
 
         ONGDeviceClient.sharedInstance().fetchResource(request) { response, error in
             if let error = error {
@@ -110,7 +108,6 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
     }
 
     fileprivate func implicitResourcesRequest(_ details: NSDictionary, _ completion: @escaping (String?, Error?) -> Void) {
-        let encoding = getEncodingByValue(details["encoding"] as? String);
         guard let path = details["path"] as? String else {
             let error = NSError(domain: ONGFetchImplicitResourceErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey : "'path' can not be empty"])
             completion(nil, error)
@@ -122,7 +119,7 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
             return
         }
         
-        let implicitRequest = ONGResourceRequest(path: path, method: method, parameters: details["parameters"] as? [String : Any], encoding: encoding, headers: details["headers"] as? [String : String]);
+        let implicitRequest = ONGResourceRequest(path: path, method: method, parameters: details["parameters"] as? [String : Any], encoding: ONGParametersEncoding.formURL, headers: details["headers"] as? [String : String]);
 
         ONGUserClient.sharedInstance().fetchImplicitResource(implicitRequest) { response, error in
             if let error = error {
@@ -135,17 +132,6 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
                     completion(nil, error)
                 }
             }
-        }
-    }
-
-    fileprivate func getEncodingByValue(_ value: String?) -> ONGParametersEncoding {
-        switch value {
-        case "application/json":
-            return ONGParametersEncoding.JSON;
-        case "application/x-www-form-urlencoded":
-            return ONGParametersEncoding.formURL;
-        default:
-            return ONGParametersEncoding.JSON;
         }
     }
 }
