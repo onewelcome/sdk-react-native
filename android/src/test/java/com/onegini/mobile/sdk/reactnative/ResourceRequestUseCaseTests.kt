@@ -14,6 +14,7 @@ import okhttp3.Request
 import okhttp3.Response
 import org.junit.Assert.assertEquals
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -57,9 +58,10 @@ class ResourceRequestUseCaseTests {
 
     @Before
     fun setup() {
+        // FIXME: RNP-138 Remove this, as this is to prevent 'null' being added before baseUrl
+        whenever(oneginiSdk.oneginiClient.configModel.resourceBaseUrl).thenReturn("")
         resourceRequestUseCase = ResourceRequestUseCase(oneginiSdk)
     }
-
     private val correctUrl = "https://example.url/resources/test"
     private val incorrectUrl = "example.url/resources/test"
     private val headerOne = Pair("header1", "headerValue1")
@@ -112,7 +114,7 @@ class ResourceRequestUseCaseTests {
         whenever(oneginiSdk.oneginiClient.userClient.resourceOkHttpClient).thenReturn(okHttpClientMock)
         argumentCaptor<Request> {
             whenever(
-                oneginiSdk.oneginiClient.userClient.resourceOkHttpClient.newCall(capture())).thenAnswer {
+                okHttpClientMock.newCall(capture())).thenAnswer {
                     assertEquals(firstValue.headers.size, 2)
                     assertEquals(firstValue.headers[headerOne.first], headerOne.second)
                     assertEquals(firstValue.headers[headerTwo.first], headerTwo.second)
@@ -120,8 +122,9 @@ class ResourceRequestUseCaseTests {
                     okhttp3CallMock
             }
         }
-
         resourceRequestUseCase("User", details, promiseMock)
+        verify(okHttpClientMock).newCall(any())
+
     }
 
     @Test
@@ -132,7 +135,7 @@ class ResourceRequestUseCaseTests {
         whenever(oneginiSdk.oneginiClient.userClient.resourceOkHttpClient).thenReturn(okHttpClientMock)
         argumentCaptor<Request> {
             whenever(
-                oneginiSdk.oneginiClient.userClient.resourceOkHttpClient.newCall(capture())).thenAnswer {
+                okHttpClientMock.newCall(capture())).thenAnswer {
                 assertEquals(firstValue.headers[headerOne.first], headerOne.second)
                 assertEquals(firstValue.headers[headerTwo.first], headerTwo.second)
                 assertEquals(firstValue.url.toString(), correctUrl)
@@ -141,6 +144,8 @@ class ResourceRequestUseCaseTests {
             }
         }
         resourceRequestUseCase("User", details, promiseMock)
+        verify(okHttpClientMock).newCall(any())
+
     }
 
     @Test
@@ -149,7 +154,7 @@ class ResourceRequestUseCaseTests {
         val details = requiredDetailsGET()
         details.putMap("headers", headers)
         whenever(oneginiSdk.oneginiClient.userClient.resourceOkHttpClient).thenReturn(okHttpClientMock)
-        whenever(oneginiSdk.oneginiClient.userClient.resourceOkHttpClient.newCall(any())).thenReturn(okhttp3CallMock)
+        whenever(okHttpClientMock.newCall(any())).thenReturn(okhttp3CallMock)
         argumentCaptor<Callback> {
             whenever(
                 okhttp3CallMock.enqueue(capture())).thenAnswer {
@@ -166,7 +171,7 @@ class ResourceRequestUseCaseTests {
         val details = requiredDetailsGET()
         details.putMap("headers", headers)
         whenever(oneginiSdk.oneginiClient.userClient.resourceOkHttpClient).thenReturn(okHttpClientMock)
-        whenever(oneginiSdk.oneginiClient.userClient.resourceOkHttpClient.newCall(any())).thenReturn(okhttp3CallMock)
+        whenever(okHttpClientMock.newCall(any())).thenReturn(okhttp3CallMock)
         argumentCaptor<Callback> {
             whenever(
                 okhttp3CallMock.enqueue(capture())).thenAnswer {

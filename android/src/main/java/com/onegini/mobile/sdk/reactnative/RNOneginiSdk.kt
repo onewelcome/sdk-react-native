@@ -10,7 +10,7 @@ import com.onegini.mobile.sdk.android.handlers.OneginiDeviceAuthenticationHandle
 import com.onegini.mobile.sdk.android.handlers.error.OneginiDeviceAuthenticationError
 import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.Details
-import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.IdOneginiAuthenticator
+import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.AuthenticatorId
 import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.IdentityProviderId
 import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.Message
 import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.OtpCode
