@@ -2,6 +2,9 @@ package com.onegini.mobile.sdk.reactnative.clean.use_cases
 
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReadableMap
+import com.onegini.mobile.sdk.reactnative.Constants.RESOURCE_REQUEST_ANONYMOUS
+import com.onegini.mobile.sdk.reactnative.Constants.RESOURCE_REQUEST_IMPLICIT_USER
+import com.onegini.mobile.sdk.reactnative.Constants.RESOURCE_REQUEST_USER
 import com.onegini.mobile.sdk.reactnative.OneginiSDK
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.PARAMETERS_NOT_CORRECT
@@ -59,9 +62,9 @@ class ResourceRequestUseCase @Inject constructor(
 
     private fun mapTypeToResourceClient(type: String): OkHttpClient {
         return when (type) {
-            "User" -> oneginiSDK.oneginiClient.userClient.resourceOkHttpClient
-            "ImplicitUser" -> oneginiSDK.oneginiClient.userClient.implicitResourceOkHttpClient
-            "Anonymous" -> oneginiSDK.oneginiClient.deviceClient.anonymousResourceOkHttpClient
+            RESOURCE_REQUEST_USER -> oneginiSDK.oneginiClient.userClient.resourceOkHttpClient
+            RESOURCE_REQUEST_IMPLICIT_USER -> oneginiSDK.oneginiClient.userClient.implicitResourceOkHttpClient
+            RESOURCE_REQUEST_ANONYMOUS -> oneginiSDK.oneginiClient.deviceClient.anonymousResourceOkHttpClient
             else -> throw OneginiReactNativeException(PARAMETERS_NOT_CORRECT.code, REQUEST_TYPE_NOT_SUPPORTED)
         }
     }
