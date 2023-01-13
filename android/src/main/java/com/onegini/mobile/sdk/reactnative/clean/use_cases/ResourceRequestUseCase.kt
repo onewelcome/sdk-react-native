@@ -41,23 +41,30 @@ class ResourceRequestUseCase @Inject constructor(
         // FIXME: RNP-140: Support adding a body for requests that are not GET requests
         // FIXME: RNP-128: Support Formdata requests
         try {
-            val request = Request.Builder()
-                .url(oneginiSDK.oneginiClient.configModel.resourceBaseUrl + requestDetails.path)
-                .headers(requestDetails.headers)
-                .build()
-
-            resourceClient.newCall(request).enqueue(object : Callback {
-                override fun onFailure(call: Call, e: IOException) {
-                    promise.reject(RESOURCE_CALL_ERROR.code.toString(), e.message)
-                }
-
-                override fun onResponse(call: Call, response: Response) {
-                    promise.resolve(response.body?.string())
-                }
-            })
+            val request = buildRequest(requestDetails)
+            performCall(request, resourceClient, promise)
         } catch (error: IllegalArgumentException) {
             promise.reject(PARAMETERS_NOT_CORRECT.code.toString(), error.message)
         }
+    }
+
+    private fun buildRequest(requestDetails: ResourceRequestDetails): Request {
+        return Request.Builder()
+            .url(oneginiSDK.oneginiClient.configModel.resourceBaseUrl + requestDetails.path)
+            .headers(requestDetails.headers)
+            .build()
+    }
+
+    private fun performCall(request: Request, resourceClient: OkHttpClient, promise: Promise) {
+        resourceClient.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                promise.reject(RESOURCE_CALL_ERROR.code.toString(), e.message)
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                promise.resolve(response.body?.string())
+            }
+        })
     }
 
     private fun mapTypeToResourceClient(type: String): OkHttpClient {
