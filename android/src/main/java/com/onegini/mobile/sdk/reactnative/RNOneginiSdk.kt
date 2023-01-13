@@ -6,11 +6,9 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
-import com.onegini.mobile.sdk.android.handlers.OneginiDeviceAuthenticationHandler
-import com.onegini.mobile.sdk.android.handlers.error.OneginiDeviceAuthenticationError
 import com.onegini.mobile.sdk.android.model.entity.CustomInfo
-import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.Details
 import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.AuthenticatorId
+import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.Details
 import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.IdentityProviderId
 import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.Message
 import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.OtpCode
@@ -32,7 +30,6 @@ import com.onegini.mobile.sdk.reactnative.managers.AuthenticatorManager.Deregist
 import com.onegini.mobile.sdk.reactnative.managers.AuthenticatorManager.RegistrationCallback
 import com.onegini.mobile.sdk.reactnative.managers.RegistrationManager
 import com.onegini.mobile.sdk.reactnative.mapers.CustomInfoMapper
-import com.onegini.mobile.sdk.reactnative.mapers.ScopesMapper
 import com.onegini.mobile.sdk.reactnative.module.RNOneginiSdkModule
 import javax.inject.Inject
 
