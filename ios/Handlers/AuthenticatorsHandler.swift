@@ -1,7 +1,7 @@
 protocol BridgeToAuthenticatorsHandlerProtocol: AnyObject {
     func registerAuthenticator(_ userProfile: ONGUserProfile,_ authenticatorType: ONGAuthenticatorType, _ completion: @escaping (Bool, Error?) -> Void)
     func deregisterAuthenticator(_ userProfile: ONGUserProfile, _ authenticatorId: ONGAuthenticatorType, _ completion: @escaping (Bool, Error?) -> Void)
-    func setPreferredAuthenticator(_ userProfile: ONGUserProfile, _ authenticatorId: String, _ completion: @escaping (Bool, Error?) -> Void)
+    func setPreferredAuthenticator(_ userProfile: ONGUserProfile, _ authenticatorId: String, _ completion: @escaping (Error?) -> Void)
     func getAuthenticatorsListForUserProfile(_ userProfile: ONGUserProfile) -> Array<ONGAuthenticator>
     func isAuthenticatorRegistered(_ authenticatorType: ONGAuthenticatorType, _ userProfile: ONGUserProfile) -> Bool
 }
@@ -76,21 +76,19 @@ extension AuthenticatorsHandler: BridgeToAuthenticatorsHandlerProtocol {
         ONGUserClient.sharedInstance().deregister(authenticator, delegate: self)
     }
 
-    func setPreferredAuthenticator(_ userProfile: ONGUserProfile, _ authenticatorId: String,_ completion: @escaping (Bool, Error?) -> Void) {
+    func setPreferredAuthenticator(_ userProfile: ONGUserProfile, _ authenticatorId: String,_ completion: @escaping (Error?) -> Void) {
         guard let authenticator = ONGUserClient.sharedInstance().allAuthenticators(forUser: userProfile).first(where: {$0.identifier == authenticatorId}) else {
             let error = NSError(domain: ONGAuthenticatorRegistrationErrorDomain, code: ONGAuthenticatorRegistrationError.authenticatorNotSupported.rawValue, userInfo: [NSLocalizedDescriptionKey : "This authenticator is not available."])
-            completion(false, error)
-            return;
+            return completion(error)
         }
 
         if(authenticator.isRegistered != true) {
             let error = NSError(domain: ONGAuthenticatorRegistrationErrorDomain, code: ONGAuthenticatorRegistrationError.authenticatorNotSupported.rawValue, userInfo: [NSLocalizedDescriptionKey : "This authenticator is not registered."])
-            completion(false, error)
-            return;
+            return completion(error)
         }
 
         ONGUserClient.sharedInstance().preferredAuthenticator = authenticator
-        completion(true, nil)
+        completion(nil)
     }
 
     func getAuthenticatorsListForUserProfile(_ userProfile: ONGUserProfile) -> Array<ONGAuthenticator> {
