@@ -482,19 +482,18 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
             }
         }
     }
-
-    // Biometric
-    // @todo rename methods
+    
     @objc
-    func registerFingerprintAuthenticator(_ profileId: String,
+    func registerAuthenticator(_ authenticatorId: String,
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        let profile = userClient.userProfiles().first(where: { $0.profileId == profileId})
+        let profile = userClient.authenticatedUserProfile()
         guard let profile = profile else {
-            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.localizedDescription, WrapperError.profileDoesNotExist)
+            reject(String(WrapperError.noProfileAuthenticated.code), WrapperError.noProfileAuthenticated.localizedDescription, WrapperError.noProfileAuthenticated)
             return
         }
-        bridgeConnector.toAuthenticatorsHandler.registerAuthenticator(profile, ONGAuthenticatorType.biometric) {
+
+        bridgeConnector.toAuthenticatorsHandler.registerAuthenticator(profile, authenticatorId) {
             (_ , error) -> Void in
 
             if let error = error {
