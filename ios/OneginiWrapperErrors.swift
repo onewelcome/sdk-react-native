@@ -1,6 +1,7 @@
 enum WrapperError: LocalizedError {
-    case profileDoesNotExist
     case identityProviderNotFound
+    case profileDoesNotExist
+    case authenticatorDoesNotExist
     case malformedUrl
     case parametersNotCorrect
     case noProfileAuthenticated
@@ -9,6 +10,7 @@ enum WrapperError: LocalizedError {
     case authenticationNotInProgress
     case pinCreationNotInProgress
     case actionNotAllowed(description: String)
+    case authenticatorNotRegistered
     
     var errorDescription: String {
         switch self {
@@ -16,6 +18,8 @@ enum WrapperError: LocalizedError {
             return "Identity provider not found"
         case .profileDoesNotExist:
             return "The profile does not exist"
+        case .authenticatorDoesNotExist:
+            return "The authenticator does not exist"
         case .malformedUrl:
             return "The supplied url is malformed"
         case .parametersNotCorrect:
@@ -32,6 +36,8 @@ enum WrapperError: LocalizedError {
             return "Pin creation is currently not in progress"
         case .actionNotAllowed(let description):
             return description
+        case .authenticatorNotRegistered:
+            return "The authenticator is not registered"
         }
     }
     var code: Int {
@@ -40,6 +46,8 @@ enum WrapperError: LocalizedError {
             return 8001
         case .profileDoesNotExist:
             return 8004
+        case .authenticatorDoesNotExist:
+            return 8006
         case .parametersNotCorrect:
             return 8009
         case .registrationNotInProgress:
@@ -56,6 +64,8 @@ enum WrapperError: LocalizedError {
             return 8016
         case .actionNotAllowed:
             return 8017
+        case .authenticatorNotRegistered:
+            return 8019
         }
     }
 }

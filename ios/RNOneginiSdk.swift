@@ -372,7 +372,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
             return rejectWithError(reject, WrapperError.profileDoesNotExist)
         }
         let completion = makeCompletionClosure(resolver: resolve, rejecter: reject)
-        bridgeConnector.toAuthenticatorsHandler.setPreferredAuthenticator(profile, authenticatorId, completion)
+        bridgeConnector.toAuthenticatorsHandler.setPreferredAuthenticator(profile, authenticatorId, completion: completion)
     }
 
     @objc
@@ -383,39 +383,29 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
         userClient.validatePin(withPolicy: pin, completion: completion)
     }
 
-    // Biometric
-    // @todo rename methods
     @objc
-    func registerFingerprintAuthenticator(_ profileId: String,
+    func registerAuthenticator(_ authenticatorId: String,
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        let profile = userClient.userProfiles().first(where: { $0.profileId == profileId})
+        let profile = userClient.authenticatedUserProfile()
         guard let profile = profile else {
             return rejectWithError(reject, WrapperError.profileDoesNotExist)
         }
-        let completion = makeCompletionClosure(resolver: resolve, rejecter: reject, resolveWithNil: true)
-        bridgeConnector.toAuthenticatorsHandler.registerAuthenticator(profile, ONGAuthenticatorType.biometric, completion)
+        let completion = makeCompletionClosure(resolver: resolve, rejecter: reject)
+        bridgeConnector.toAuthenticatorsHandler.registerAuthenticator(profile, authenticatorId, completion: completion)
     }
 
     @objc
-    func deregisterFingerprintAuthenticator(_ profileId: String,
+    func deregisterAuthenticator(_ authenticatorId: String,
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        let profile = userClient.userProfiles().first(where: { $0.profileId == profileId })
+        let profile = userClient.authenticatedUserProfile()
         guard let profile = profile else {
-            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.localizedDescription, WrapperError.profileDoesNotExist)
+            reject(String(WrapperError.noProfileAuthenticated.code), WrapperError.noProfileAuthenticated.localizedDescription, WrapperError.noProfileAuthenticated)
             return
         }
-
-        bridgeConnector.toAuthenticatorsHandler.deregisterAuthenticator(profile, ONGAuthenticatorType.biometric) {
-            (_ , error) -> Void in
-
-            if let error = error {
-                reject("\(error.code)", error.localizedDescription, error)
-              } else {
-                resolve(nil)
-              }
-        }
+        let completion = makeCompletionClosure(resolver: resolve, rejecter: reject)
+        bridgeConnector.toAuthenticatorsHandler.deregisterAuthenticator(profile, authenticatorId, completion: completion)
     }
 
     // Service methods
