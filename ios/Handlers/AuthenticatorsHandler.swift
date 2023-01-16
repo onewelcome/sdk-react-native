@@ -1,5 +1,5 @@
 protocol BridgeToAuthenticatorsHandlerProtocol: AnyObject {
-    func registerAuthenticator(_ userProfile: ONGUserProfile,_ authenticatorType: ONGAuthenticatorType, _ completion: @escaping (Bool, Error?) -> Void)
+    func registerAuthenticator(_ userProfile: ONGUserProfile,_ authenticatorId: String, _ completion: @escaping (Bool, Error?) -> Void)
     func deregisterAuthenticator(_ userProfile: ONGUserProfile, _ authenticatorId: String, _ completion: @escaping (Error?) -> Void)
     func setPreferredAuthenticator(_ userProfile: ONGUserProfile, _ authenticatorId: String, _ completion: @escaping (Bool, Error?) -> Void)
     func getAuthenticatorsListForUserProfile(_ userProfile: ONGUserProfile) -> Array<ONGAuthenticator>
@@ -42,19 +42,12 @@ class AuthenticatorsHandler: NSObject {
 }
 
 extension AuthenticatorsHandler: BridgeToAuthenticatorsHandlerProtocol {
-    func registerAuthenticator(_ userProfile: ONGUserProfile, _ authenticatorType: ONGAuthenticatorType,_ completion: @escaping (Bool, Error?) -> Void) {
-        guard let authenticator = ONGUserClient.sharedInstance().allAuthenticators(forUser: userProfile).first(where: {$0.type.rawValue == authenticatorType.rawValue}) else {
-            let error = NSError(domain: ONGAuthenticatorRegistrationErrorDomain, code: ONGAuthenticatorRegistrationError.authenticatorNotSupported.rawValue, userInfo: [NSLocalizedDescriptionKey : "This authenticator is not available."])
-            completion(false, error)
+    func registerAuthenticator(_ userProfile: ONGUserProfile, _ authenticatorId: String, _ completion: @escaping (Bool, Error?) -> Void) {
+        guard let authenticator = ONGUserClient.sharedInstance().allAuthenticators(forUser: userProfile).first(where: {$0.identifier == authenticatorId}) else {
+            completion(false, WrapperError.authenticatorDoesNotExist)
             return;
         }
-
-        if(authenticator.isRegistered == true) {
-            let error = NSError(domain: ONGAuthenticatorRegistrationErrorDomain, code: ONGAuthenticatorRegistrationError.authenticatorAlreadyRegistered.rawValue, userInfo: [NSLocalizedDescriptionKey : "This authenticator is already registered."])
-            completion(false, error)
-            return;
-        }
-
+        // We don't have to check if the authenticator is already registered as the sdk will do that for us.
         registrationCompletion = completion;
         ONGUserClient.sharedInstance().register(authenticator, delegate: self);
     }
@@ -131,7 +124,7 @@ extension AuthenticatorsHandler: ONGAuthenticatorRegistrationDelegate {
 
 extension AuthenticatorsHandler: ONGAuthenticatorDeregistrationDelegate {
     func userClient(_: ONGUserClient, didDeregister _: ONGAuthenticator, forUser _: ONGUserProfile) {
-        deregistrationCompletion?(true, nil)
+        deregistrationCompletion?(nil)
         deregistrationCompletion = nil
     }
 
@@ -140,7 +133,7 @@ extension AuthenticatorsHandler: ONGAuthenticatorDeregistrationDelegate {
     }
 
     func userClient(_: ONGUserClient, didFailToDeregister authenticator: ONGAuthenticator, forUser _: ONGUserProfile, error: Error) {
-        deregistrationCompletion?(false, error)
+        deregistrationCompletion?(error)
         deregistrationCompletion = nil
     }
 }
