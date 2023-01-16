@@ -506,17 +506,17 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     @objc
-    func deregisterFingerprintAuthenticator(_ profileId: String,
+    func deregisterAuthenticator(_ authenticatorId: String,
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        let profile = userClient.userProfiles().first(where: { $0.profileId == profileId })
+        let profile = userClient.authenticatedUserProfile()
         guard let profile = profile else {
-            reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.localizedDescription, WrapperError.profileDoesNotExist)
+            reject(String(WrapperError.noProfileAuthenticated.code), WrapperError.noProfileAuthenticated.localizedDescription, WrapperError.noProfileAuthenticated)
             return
         }
 
-        bridgeConnector.toAuthenticatorsHandler.deregisterAuthenticator(profile, ONGAuthenticatorType.biometric) {
-            (_ , error) -> Void in
+        bridgeConnector.toAuthenticatorsHandler.deregisterAuthenticator(profile, authenticatorId) {
+            (error) -> Void in
 
             if let error = error {
                 reject("\(error.code)", error.localizedDescription, error)
