@@ -7,20 +7,11 @@ protocol BridgeToAuthenticatorsHandlerProtocol: AnyObject {
 }
 
 class AuthenticatorsHandler: NSObject {
-    private var pinChallenge: ONGPinChallenge?
     private var registrationCompletion: ((Bool, Error?) -> Void)?
     private var deregistrationCompletion: ((Error?) -> Void)?
     private let pinAuthenticationEventEmitter = PinAuthenticationEventEmitter()
     private let createPinEventEmitter = CreatePinEventEmitter()
 
-    func handlePin(_ pin: String?) {
-        guard let pinChallenge = self.pinChallenge else { return }
-        guard let pin = pin else {
-            pinChallenge.sender.cancel(pinChallenge)
-            return
-        }
-        pinChallenge.sender.respond(withPin: pin, challenge: pinChallenge)
-    }
 
     fileprivate func mapErrorFromPinChallenge(_ challenge: ONGPinChallenge) -> Error? {
         if let error = challenge.error {
@@ -96,13 +87,12 @@ extension AuthenticatorsHandler: BridgeToAuthenticatorsHandlerProtocol {
 
 extension AuthenticatorsHandler: ONGAuthenticatorRegistrationDelegate {
     func userClient(_: ONGUserClient, didReceive challenge: ONGPinChallenge) {
-        pinChallenge = challenge
+        BridgeConnector.shared?.toLoginHandler.setAuthPinChallenge(challenge)
         if let pinError = mapErrorFromPinChallenge(challenge) {
             pinAuthenticationEventEmitter.onIncorrectPin(error: pinError, remainingFailureCount: challenge.remainingFailureCount)
         } else {
             pinAuthenticationEventEmitter.onPinOpen(profileId: challenge.userProfile.profileId)
         }
-
     }
 
     func userClient(_: ONGUserClient, didReceive challenge: ONGCustomAuthFinishRegistrationChallenge) {

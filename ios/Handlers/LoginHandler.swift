@@ -73,7 +73,7 @@ extension LoginHandler: ONGAuthenticationDelegate {
     }
 
     func userClient(_: ONGUserClient, didReceive challenge: ONGBiometricChallenge) {
-        challenge.sender.respondWithPinFallback(for: challenge)
+        challenge.sender.respond(withPrompt: "", challenge: challenge)
     }
     
     func userClient(_ userClient: ONGUserClient, didAuthenticateUser userProfile: ONGUserProfile, authenticator: ONGAuthenticator, info customAuthInfo: ONGCustomInfo?) {
