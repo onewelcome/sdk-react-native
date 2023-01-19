@@ -28,7 +28,7 @@ PODS:
   - glog (0.3.5)
   - hermes-engine (0.70.5)
   - libevent (2.1.12)
-  - OneginiSDKiOS (11.0.2):
+  - OneginiSDKiOS (12.0.0):
     - AFNetworking (~> 4.0.1)
     - Typhoon (~> 4.0.8)
   - RCT-Folly (2021.07.22.00):
@@ -341,7 +341,7 @@ DEPENDENCIES:
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - hermes-engine (from `../node_modules/react-native/sdks/hermes/hermes-engine.podspec`)
   - libevent (~> 2.1.12)
-  - OneginiSDKiOS (~> 11.0.0)
+  - OneginiSDKiOS (~> 12.0.0)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
@@ -461,7 +461,7 @@ SPEC CHECKSUMS:
   glog: 04b94705f318337d7ead9e6d17c019bd9b1f6b1b
   hermes-engine: 7fe5fc6ef707b7fdcb161b63898ec500e285653d
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
-  OneginiSDKiOS: 11c47c9b19b86e6ee6c2758d532b31e6220f0431
+  OneginiSDKiOS: 9bce403a6ec7295e984da82a7164820fd211a190
   RCT-Folly: 0080d0a6ebf2577475bda044aa59e2ca1f909cda
   RCTRequired: 21229f84411088e5d8538f21212de49e46cc83e2
   RCTTypeSafety: 62eed57a32924b09edaaf170a548d1fc96223086
@@ -492,6 +492,6 @@ SPEC CHECKSUMS:
   Typhoon: 1973c93ecfb3edb963d78b10e715bc2911475bd2
   Yoga: eca980a5771bf114c41a754098cd85e6e0d90ed7
 
-PODFILE CHECKSUM: e69772799046cfb32dbd9a14707d3c3e995f4e44
+PODFILE CHECKSUM: 0d9680a342382ccb6bf406c003bc6ac71a01efc8
 
 COCOAPODS: 1.11.3
