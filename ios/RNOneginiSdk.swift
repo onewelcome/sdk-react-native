@@ -318,14 +318,12 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
             reject(String(WrapperError.profileDoesNotExist.code), WrapperError.profileDoesNotExist.localizedDescription, WrapperError.profileDoesNotExist)
             return
         }
-
-        bridgeConnector.toResourceHandler.authenticateImplicitly(profile, scopes: scopes) {
-            (success, error) -> Void in
+        ONGUserClient.sharedInstance().implicitlyAuthenticateUser(profile, scopes: scopes) { _, error in
             if let error = error {
                 reject("\(error.code)", error.localizedDescription, error)
-              } else {
+            } else {
                 resolve(nil)
-              }
+            }
         }
     }
 
@@ -333,13 +331,12 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func authenticateDeviceForResource(_ scopes: [String],
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        bridgeConnector.toResourceHandler.authenticateDevice(scopes) {
-            (success, error) -> Void in
+        ONGDeviceClient.sharedInstance().authenticateDevice(scopes) { success, error in
             if let error = error {
                 reject("\(error.code)", error.localizedDescription, error)
-              } else {
+            } else {
                 resolve(nil)
-              }
+            }
         }
     }
 

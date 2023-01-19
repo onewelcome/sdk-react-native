@@ -1,6 +1,4 @@
 protocol BridgeToResourceHandlerProtocol: AnyObject {
-    func authenticateDevice(_ scopes:[String], _ completion: @escaping (Bool, Error?) -> Void)
-    func authenticateImplicitly(_ profile: ONGUserProfile, scopes: [String], _ completion: @escaping (Bool, Error?) -> Void)
     func resourceRequest(_ type: ResourceRequestType, _ details: NSDictionary, _ completion: @escaping (String?, Error?) -> Void)
 }
 
@@ -11,26 +9,6 @@ enum ResourceRequestType: String {
 }
 
 class ResourceHandler: BridgeToResourceHandlerProtocol {
-    func authenticateDevice(_ scopes:[String], _ completion: @escaping (Bool, Error?) -> Void) {
-        ONGDeviceClient.sharedInstance().authenticateDevice(scopes) { success, error in
-            if let error = error {
-                completion(success, error)
-            } else {
-                completion(success, nil)
-            }
-        }
-    }
-
-    func authenticateImplicitly(_ profile: ONGUserProfile, scopes:[String], _ completion: @escaping (Bool, Error?) -> Void) {
-        ONGUserClient.sharedInstance().implicitlyAuthenticateUser(profile, scopes: scopes) { _, error in
-            if let error = error {
-                completion(false, error)
-            } else {
-                completion(true, nil)
-            }
-        }
-    }
-
     func resourceRequest(_ type: ResourceRequestType, _ details: NSDictionary, _ completion: @escaping (String?, Error?) -> Void) {
         guard let path = details["path"] as? String else {
             let error = NSError(domain: ONGFetchImplicitResourceErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey : "'path' can not be empty"])
