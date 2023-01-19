@@ -29,10 +29,6 @@ class LoginHandler: NSObject {
     }
     
     func handleDidReceiveChallenge(_ challenge: ONGPinChallenge) {
-        // We need to cancel the active pinChallenge if we somehow received a new one from a different api.
-        if let pinChallenge = self.pinChallenge {
-            pinChallenge.sender.cancel(pinChallenge)
-        }
         pinChallenge = challenge
         if let pinError = mapErrorFromPinChallenge(challenge) {
             pinAuthenticationEventEmitter.onIncorrectPin(error: pinError, remainingFailureCount: challenge.remainingFailureCount)
@@ -77,8 +73,7 @@ extension LoginHandler: ONGAuthenticationDelegate {
     }
 
     func userClient(_: ONGUserClient, didReceive challenge: ONGBiometricChallenge) {
-        let prompt = ""
-        challenge.sender.respond(withPrompt: prompt, challenge: challenge)
+        challenge.sender.respond(withPrompt: "", challenge: challenge)
     }
     
     func userClient(_ userClient: ONGUserClient, didAuthenticateUser userProfile: ONGUserProfile, authenticator: ONGAuthenticator, info customAuthInfo: ONGCustomInfo?) {
