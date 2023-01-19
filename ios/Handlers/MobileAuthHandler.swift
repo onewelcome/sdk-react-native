@@ -28,11 +28,7 @@ extension MobileAuthHandler : MobileAuthConnectorToHandlerProtocol {
     
     func enrollForMobileAuth(_ completion: @escaping (Error?) -> Void) {
         ONGClient.sharedInstance().userClient.enroll { enrolled, error in
-            if let error = error {
-                completion(error);
-              } else {
-                completion(nil)
-              }
+            completion(error)
         }
     }
 
@@ -45,18 +41,14 @@ extension MobileAuthHandler : MobileAuthConnectorToHandlerProtocol {
     }
 
     func handleMobileAuthConfirmation(accepted: Bool, completion: @escaping (Error?) -> Void) {
-        if authenticatorType == .fingerprint {
-            //@todo RN-94
-        } else if authenticatorType == .confirmation {
-            guard let confirmation = confirmation else {
-                return completion(WrapperError.mobileAuthNotInProgress)
-            }
-            confirmation(accepted)
-            return completion(nil)
-        } else if authenticatorType == .pin {
-            //@todo RN-94
+        //FIXME: RNP-94 Check if this method is implemented correctly
+        guard let confirmation = confirmation else {
+            completion(WrapperError.mobileAuthNotInProgress)
+            return
         }
-        return completion(WrapperError.mobileAuthNotInProgress)
+        confirmation(accepted)
+        completion(nil)
+        return
     }
 
     func handleOTPMobileAuth(_ otp: String, _ completion: @escaping (Error?) -> Void) {

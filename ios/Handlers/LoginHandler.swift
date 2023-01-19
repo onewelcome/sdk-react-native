@@ -13,11 +13,13 @@ class LoginHandler: NSObject {
 
     func handlePin(_ pin: String?, completion: @escaping (Error?) -> Void) {
         guard let pinChallenge = self.pinChallenge else {
-            return completion(WrapperError.authenticationNotInProgress)
+            completion(WrapperError.authenticationNotInProgress)
+            return
         }
         guard let pin = pin else {
             pinChallenge.sender.cancel(pinChallenge)
-            return completion(nil)
+            completion(nil)
+            return
         }
         pinChallenge.sender.respond(withPin: pin, challenge: pinChallenge)
         completion(nil)
@@ -62,7 +64,8 @@ extension LoginHandler : BridgeToLoginHandlerProtocol {
     }
     func cancelPinAuthentication(completion: @escaping (Error?) -> Void) {
         guard let pinChallenge = self.pinChallenge else {
-            return completion(WrapperError.authenticationNotInProgress)
+            completion(WrapperError.authenticationNotInProgress)
+            return
         }
         pinChallenge.sender.cancel(pinChallenge)
         completion(nil)

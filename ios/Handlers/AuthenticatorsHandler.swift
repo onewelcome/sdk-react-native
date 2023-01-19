@@ -59,12 +59,14 @@ extension AuthenticatorsHandler: BridgeToAuthenticatorsHandlerProtocol {
     func setPreferredAuthenticator(_ userProfile: ONGUserProfile, _ authenticatorId: String, completion: @escaping (Error?) -> Void) {
         guard let authenticator = ONGUserClient.sharedInstance().allAuthenticators(forUser: userProfile).first(where: {$0.identifier == authenticatorId}) else {
             let error = NSError(domain: ONGAuthenticatorRegistrationErrorDomain, code: ONGAuthenticatorRegistrationError.authenticatorNotSupported.rawValue, userInfo: [NSLocalizedDescriptionKey : "This authenticator is not available."])
-            return completion(error)
+            completion(error)
+            return
         }
 
         if(authenticator.isRegistered != true) {
             let error = NSError(domain: ONGAuthenticatorRegistrationErrorDomain, code: ONGAuthenticatorRegistrationError.authenticatorNotSupported.rawValue, userInfo: [NSLocalizedDescriptionKey : "This authenticator is not registered."])
-            return completion(error)
+            completion(error)
+            return
         }
 
         ONGUserClient.sharedInstance().preferredAuthenticator = authenticator
