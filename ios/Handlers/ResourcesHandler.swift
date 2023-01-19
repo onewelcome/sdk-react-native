@@ -32,14 +32,6 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
     }
 
     func resourceRequest(_ type: ResourceRequestType, _ details: NSDictionary, _ completion: @escaping (String?, Error?) -> Void) {
-        switch(type) {
-        case .Anonymous: anonymousResourcesRequest(details, completion);
-        case .ImplicitUser: implicitResourcesRequest(details, completion);
-        case .User: userResourcesRequest(details, completion);
-        }
-    }
-
-    fileprivate func userResourcesRequest(_ details: NSDictionary, _ completion: @escaping (String?, Error?) -> Void) {
         guard let path = details["path"] as? String else {
             let error = NSError(domain: ONGFetchImplicitResourceErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey : "'path' can not be empty"])
             completion(nil, error)
@@ -51,7 +43,16 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
             return
         }
         let request = ONGResourceRequest(path: path, method: method, parameters: details["parameters"] as? [String : Any], encoding: ONGParametersEncoding.formURL, headers: details["headers"] as? [String : String]);
+        switch(type) {
+        case .Anonymous: anonymousResourcesRequest(request, completion);
+        case .ImplicitUser: implicitResourcesRequest(request, completion);
+        case .User: userResourcesRequest(request, completion);
+        }
+    }
 
+
+
+    fileprivate func userResourcesRequest(_ request: ONGResourceRequest, _ completion: @escaping (String?, Error?) -> Void) {
         ONGUserClient.sharedInstance().fetchResource(request) { response, error in
             if let error = error {
                 completion(nil, error)
@@ -66,19 +67,7 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
         }
     }
     
-    fileprivate func anonymousResourcesRequest(_ details: NSDictionary, _ completion: @escaping (String?, Error?) -> Void) {
-        guard let path = details["path"] as? String else {
-            let error = NSError(domain: ONGFetchImplicitResourceErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey : "'path' can not be empty"])
-            completion(nil, error)
-            return
-        }
-        guard let method = details["method"] as? String else {
-            let error = NSError(domain: ONGFetchImplicitResourceErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey : "'method' can not be empty"])
-            completion(nil, error)
-            return
-        }
-        let request = ONGResourceRequest(path: path, method: method, parameters: details["parameters"] as? [String : Any], encoding: ONGParametersEncoding.formURL, headers: details["headers"] as? [String : String]);
-
+    fileprivate func anonymousResourcesRequest(_ request: ONGResourceRequest, _ completion: @escaping (String?, Error?) -> Void) {
         ONGDeviceClient.sharedInstance().fetchResource(request) { response, error in
             if let error = error {
                 completion(nil, error)
@@ -93,21 +82,8 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
         }
     }
 
-    fileprivate func implicitResourcesRequest(_ details: NSDictionary, _ completion: @escaping (String?, Error?) -> Void) {
-        guard let path = details["path"] as? String else {
-            let error = NSError(domain: ONGFetchImplicitResourceErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey : "'path' can not be empty"])
-            completion(nil, error)
-            return
-        }
-        guard let method = details["method"] as? String else {
-            let error = NSError(domain: ONGFetchImplicitResourceErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey : "'method' can not be empty"])
-            completion(nil, error)
-            return
-        }
-        
-        let implicitRequest = ONGResourceRequest(path: path, method: method, parameters: details["parameters"] as? [String : Any], encoding: ONGParametersEncoding.formURL, headers: details["headers"] as? [String : String]);
-
-        ONGUserClient.sharedInstance().fetchImplicitResource(implicitRequest) { response, error in
+    fileprivate func implicitResourcesRequest(_ request: ONGResourceRequest, _ completion: @escaping (String?, Error?) -> Void) {
+        ONGUserClient.sharedInstance().fetchImplicitResource(request) { response, error in
             if let error = error {
                 completion(nil, error)
             } else {
