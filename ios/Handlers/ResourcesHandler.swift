@@ -22,7 +22,7 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
     }
 
     func authenticateImplicitly(_ profile: ONGUserProfile, scopes:[String], _ completion: @escaping (Bool, Error?) -> Void) {
-        authenticateProfileImplicitly(profile, scopes: scopes) { success, error in
+        ONGUserClient.sharedInstance().implicitlyAuthenticateUser(profile, scopes: scopes) { _, error in
             if let error = error {
                 completion(false, error)
             } else {
@@ -36,20 +36,6 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
         case .Anonymous: anonymousResourcesRequest(details, completion);
         case .ImplicitUser: implicitResourcesRequest(details, completion);
         case .User: userResourcesRequest(details, completion);
-        }
-    }
-
-    fileprivate func isProfileImplicitlyAuthenticated(_ profile: ONGUserProfile) -> Bool {
-        let implicitlyAuthenticatedProfile = ONGUserClient.sharedInstance().implicitlyAuthenticatedUserProfile()
-        return implicitlyAuthenticatedProfile != nil && implicitlyAuthenticatedProfile == profile
-    }
-
-    fileprivate func authenticateProfileImplicitly(_ profile: ONGUserProfile, scopes: [String], completion: @escaping (Bool, Error?) -> Void) {
-        ONGUserClient.sharedInstance().implicitlyAuthenticateUser(profile, scopes: scopes) { success, error in
-            if !success {
-                completion(success, error)
-            }
-            completion(success, nil)
         }
     }
 
