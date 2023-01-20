@@ -59,8 +59,24 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
             throw WrapperError.parametersNotCorrect(
                 description: "'method' must be either 'GET', 'POST', 'PUT', 'DELETE', 'PATCH' or 'HEAD'")
         }
+        
+        let headers = try getHeaders(details)
         return ResourceRequestFactory.makeResourceRequest(
-            path: path, method: method, parameters: details["parameters"] as? [String: Any], body: nil,
-            headers: details["headers"] as? [String: String], parametersEncoding: .formURL)
+            path: path, method: method, parameters: nil, body: nil,
+            headers: headers, parametersEncoding: .formURL)
+    }
+    
+    private func getHeaders(_ details: NSDictionary) throws -> [String: String] {
+        guard let headers = details["headers"] as? [String: Any] else {
+            throw WrapperError.parametersNotCorrect(
+                description: "'headers' must be an object of String: String")
+        }
+        var result: [String: String] = [:]
+        for (key, value) in headers {
+            if let value = value as? String {
+                result[key] = value
+            }
+        }
+        return result
     }
 }
