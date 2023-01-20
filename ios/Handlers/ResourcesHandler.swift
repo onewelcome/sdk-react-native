@@ -8,10 +8,10 @@ enum ResourceRequestType: String {
     case anonymous
     
     init(rawValue: String) {
-        switch rawValue.lowercased() {
-        case "user": self = .user
-        case "implicitUser": self = .implicitUser
-        case "anonymous": self = .anonymous
+        switch rawValue {
+        case "User": self = .user
+        case "ImplicitUser": self = .implicitUser
+        case "Anonymous": self = .anonymous
         default: self = .anonymous
         }
     }

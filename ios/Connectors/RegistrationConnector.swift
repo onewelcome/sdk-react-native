@@ -1,12 +1,12 @@
 protocol BridgeToRegistrationConnectorProtocol: AnyObject {
     var bridgeConnector: BridgeConnectorProtocol? { get set }
-    var registrationHandler: RegistrationConnectorToHandlerProtocol { get }
+    var registrationHandler: RegistrationHandler { get }
 
     func sendCustomRegistrationNotification(_ event: CustomRegistrationNotification,_ data: NSMutableDictionary) -> Void
 }
 
 class RegistrationConnector : BridgeToRegistrationConnectorProtocol {
-    var registrationHandler: RegistrationConnectorToHandlerProtocol
+    var registrationHandler: RegistrationHandler
     unowned var bridgeConnector: BridgeConnectorProtocol?
 
     init() {
