@@ -1,8 +1,8 @@
 protocol BridgeToLoginHandlerProtocol: AnyObject {
     func authenticateUser(_ profile: ONGUserProfile, authenticator: ONGAuthenticator?, completion: @escaping (ONGUserProfile, Error?) -> Void)
     func setAuthPinChallenge(_ challenge: ONGPinChallenge?)
-    func handlePin(_ pin: String?) throws
-    func cancelPinAuthentication() throws
+    func handlePin(_ pin: String?, completion: @escaping (Error?) -> Void)
+    func cancelPinAuthentication(completion: @escaping (Error?) -> Void)
 }
 
 
@@ -11,13 +11,18 @@ class LoginHandler: NSObject {
     private var loginCompletion: ((ONGUserProfile, Error?) -> Void)?
     private let pinAuthenticationEventEmitter = PinAuthenticationEventEmitter()
 
-    func handlePin(_ pin: String?) throws {
-        guard let pinChallenge = self.pinChallenge else { throw WrapperError.authenticationNotInProgress }
+    func handlePin(_ pin: String?, completion: @escaping (Error?) -> Void) {
+        guard let pinChallenge = self.pinChallenge else {
+            completion(WrapperError.authenticationNotInProgress)
+            return
+        }
         guard let pin = pin else {
             pinChallenge.sender.cancel(pinChallenge)
+            completion(nil)
             return
         }
         pinChallenge.sender.respond(withPin: pin, challenge: pinChallenge)
+        completion(nil)
     }
 
     fileprivate func mapErrorFromPinChallenge(_ challenge: ONGPinChallenge) -> Error? {
@@ -57,9 +62,13 @@ extension LoginHandler : BridgeToLoginHandlerProtocol {
     func setAuthPinChallenge(_ challenge: ONGPinChallenge?) {
         pinChallenge = challenge
     }
-    func cancelPinAuthentication() throws {
-        guard let pinChallenge = self.pinChallenge else { throw WrapperError.authenticationNotInProgress }
+    func cancelPinAuthentication(completion: @escaping (Error?) -> Void) {
+        guard let pinChallenge = self.pinChallenge else {
+            completion(WrapperError.authenticationNotInProgress)
+            return
+        }
         pinChallenge.sender.cancel(pinChallenge)
+        completion(nil)
     }
 }
 

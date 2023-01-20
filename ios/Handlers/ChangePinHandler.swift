@@ -1,5 +1,5 @@
 protocol PinConnectorToPinHandler: AnyObject {
-    func onChangePinCalled(completion: @escaping (Bool, Error?) -> Void)
+    func onChangePinCalled(completion: @escaping (Error?) -> Void)
 }
 
 enum PINEntryMode {
@@ -10,13 +10,13 @@ enum PINEntryMode {
 
 class ChangePinHandler: NSObject {
     private var flow: PinFlow?
-    private var changePinCompletion: ((Bool, Error?) -> Void)?
+    private var changePinCompletion: ((Error?) -> Void)?
     private let pinAuthenticationEventEmitter = PinAuthenticationEventEmitter()
     private let createPinEventEmitter = CreatePinEventEmitter()
     private let loginHandler: LoginHandler
-    private let registrationHandler: RegistrationConnectorToHandlerProtocol
+    private let registrationHandler: RegistrationHandler
     
-    init(loginHandler: LoginHandler, registrationHandler: RegistrationConnectorToHandlerProtocol) {
+    init(loginHandler: LoginHandler, registrationHandler: RegistrationHandler) {
         self.loginHandler = loginHandler
         self.registrationHandler = registrationHandler
     }
@@ -24,7 +24,7 @@ class ChangePinHandler: NSObject {
 }
 
 extension ChangePinHandler: PinConnectorToPinHandler {
-    func onChangePinCalled(completion: @escaping (Bool, Error?) -> Void) {
+    func onChangePinCalled(completion: @escaping (Error?) -> Void) {
         ONGUserClient.sharedInstance().changePin(self)
         changePinCompletion = completion
     }
@@ -43,13 +43,13 @@ extension ChangePinHandler: ONGChangePinDelegate {
     func userClient(_: ONGUserClient, didFailToChangePinForUser profile: ONGUserProfile, error: Error) {
         loginHandler.handleDidFailToAuthenticateUser()
         registrationHandler.handleDidFailToRegister()
-        changePinCompletion?(false, error)
+        changePinCompletion?(error)
         changePinCompletion = nil
     }
 
     func userClient(_ : ONGUserClient, didChangePinForUser _: ONGUserProfile) {
         registrationHandler.handleDidRegisterUser()
-        changePinCompletion?(true, nil)
+        changePinCompletion?(nil)
         changePinCompletion = nil
     }
 }
