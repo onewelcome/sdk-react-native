@@ -24,6 +24,9 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     private var userClient: ONGUserClient {
         return ONGClient.sharedInstance().userClient
     }
+    private var deviceClient: DeviceClient {
+        return SharedDeviceClient.instance
+    }
 
     override init() {
         self.bridgeConnector = BridgeConnector()
@@ -287,8 +290,8 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func authenticateDeviceForResource(_ scopes: [String],
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        let completion = makeCompletionHandler(resolver: resolve, rejecter: reject, resolveWithNil: true)
-        ONGDeviceClient.sharedInstance().authenticateDevice(scopes, completion: completion)
+        let completion = makeCompletionHandler(resolver: resolve, rejecter: reject)
+        deviceClient.authenticateDevice(with: scopes, completion: completion)
     }
 
     @objc
