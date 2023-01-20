@@ -12,7 +12,7 @@ enum WrapperError: LocalizedError {
     case actionNotAllowed(description: String)
     case authenticatorNotRegistered
     
-    var errorDescription: String {
+    var errorDescription: String? {
         switch self {
         case .identityProviderNotFound:
             return "Identity provider not found"
