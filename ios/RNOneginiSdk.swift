@@ -345,9 +345,9 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
 
-        let type = ResourceRequestType(rawValue: type) ?? .Anonymous
+        let resourceType = ResourceRequestType(rawValue: type)
 
-        bridgeConnector.toResourceHandler.resourceRequest(type, details) {
+        bridgeConnector.toResourceHandler.resourceRequest(resourceType, details) {
             (data: String?, error) -> Void in
 
             if let error = error {

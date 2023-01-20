@@ -3,9 +3,18 @@ protocol BridgeToResourceHandlerProtocol: AnyObject {
 }
 
 enum ResourceRequestType: String {
-    case User
-    case ImplicitUser
-    case Anonymous
+    case user
+    case implicitUser
+    case anonymous
+    
+    init(rawValue: String) {
+        switch rawValue.lowercased() {
+        case "user": self = .user
+        case "implicitUser": self = .implicitUser
+        case "anonymous": self = .anonymous
+        default: self = .anonymous
+        }
+    }
 }
 
 class ResourceHandler: BridgeToResourceHandlerProtocol {
@@ -22,9 +31,9 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
         }
         let request = ONGResourceRequest(path: path, method: method, parameters: details["parameters"] as? [String : Any], encoding: ONGParametersEncoding.formURL, headers: details["headers"] as? [String : String]);
         switch(type) {
-        case .Anonymous: anonymousResourcesRequest(request, completion);
-        case .ImplicitUser: implicitResourcesRequest(request, completion);
-        case .User: userResourcesRequest(request, completion);
+        case .anonymous: anonymousResourcesRequest(request, completion);
+        case .implicitUser: implicitResourcesRequest(request, completion);
+        case .user: userResourcesRequest(request, completion);
         }
     }
 
