@@ -45,11 +45,13 @@ extension AuthenticatorsHandler: BridgeToAuthenticatorsHandlerProtocol {
 
     func deregisterAuthenticator(_ userProfile: ONGUserProfile, _ authenticatorId: String, completion: @escaping (Error?) -> Void) {
         guard let authenticator = ONGUserClient.sharedInstance().allAuthenticators(forUser: userProfile).first(where: {$0.identifier == authenticatorId}) else {
-            return completion(WrapperError.authenticatorDoesNotExist)
+            completion(WrapperError.authenticatorDoesNotExist)
+            return
         }
 
         if(authenticator.isRegistered != true) {
-            return completion(WrapperError.authenticatorNotRegistered)
+            completion(WrapperError.authenticatorNotRegistered)
+            return
         }
 
         deregistrationCompletion = completion;

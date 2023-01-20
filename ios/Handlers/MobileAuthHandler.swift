@@ -27,7 +27,7 @@ class MobileAuthHandler: NSObject {
 extension MobileAuthHandler : MobileAuthConnectorToHandlerProtocol {
     
     func enrollForMobileAuth(_ completion: @escaping (Error?) -> Void) {
-        ONGClient.sharedInstance().userClient.enroll { enrolled, error in
+        ONGClient.sharedInstance().userClient.enroll { _, error in
             completion(error)
         }
     }
