@@ -24,9 +24,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     private var userClient: ONGUserClient {
         return ONGClient.sharedInstance().userClient
     }
-    private var deviceClient: DeviceClient {
-        return SharedDeviceClient.instance
-    }
+    private let deviceClient = SharedDeviceClient.instance
 
     override init() {
         self.bridgeConnector = BridgeConnector()
@@ -301,6 +299,15 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                          rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         
         let resourceType = ResourceRequestType(rawValue: type)
+        guard let resourceType = resourceType else {
+            rejectWithError(reject, WrapperError.parametersNotCorrect(description: "Supplied request type is not supported"))
+            return
+        }
+        guard let details = details as? [String: Any?] else {
+            rejectWithError(reject, WrapperError.parametersNotCorrect(description: "Details must be an object only containing keys that are Strings"))
+            return
+        }
+
         let completion = makeCompletionHandler(resolver: resolve, rejecter: reject, resolveWithNil: false)
         bridgeConnector.toResourceHandler.resourceRequest(resourceType, details, completion)
     }
