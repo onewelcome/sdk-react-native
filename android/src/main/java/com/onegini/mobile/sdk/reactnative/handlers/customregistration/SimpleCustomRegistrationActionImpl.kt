@@ -42,10 +42,6 @@ class SimpleCustomRegistrationActionImpl(
         return callback != null
     }
 
-    override fun getOneginiCustomRegistrationAction(): OneginiCustomRegistrationAction {
-        return this
-    }
-
     override fun getIdProvider(): String {
         return idProvider
     }

@@ -10,6 +10,6 @@ class SimpleCustomRegistrationProvider(val action: SimpleCustomRegistrationActio
     }
 
     override fun getRegistrationAction(): OneginiCustomRegistrationAction {
-        return action.getOneginiCustomRegistrationAction()
+        return action
     }
 }

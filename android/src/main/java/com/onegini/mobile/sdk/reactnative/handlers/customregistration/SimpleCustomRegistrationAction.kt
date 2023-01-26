@@ -4,8 +4,6 @@ import com.onegini.mobile.sdk.android.handlers.action.OneginiCustomRegistrationA
 
 interface SimpleCustomRegistrationAction: OneginiCustomRegistrationAction {
 
-    fun getOneginiCustomRegistrationAction(): OneginiCustomRegistrationAction
-
     fun getIdProvider(): String
 
     fun returnSuccess(result: String?)
