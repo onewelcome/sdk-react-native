@@ -17,7 +17,7 @@ export enum WrapperErrors {
   PinCreationNotInProgress = '8016',
   ActionNotAllowed = '8017',
   IncorrectPinFlow = '8018',
-  AuthenticatorNotRegistered = '8019',
+  AuthenticatorNotRegisteredWrapper = '8019',
 }
 
 export enum AndroidErrors {
