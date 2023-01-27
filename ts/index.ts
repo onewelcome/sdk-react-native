@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import * as Types from './data-types';
 import * as Events from './events';
+import SDKError from './errors';
 
 //
 
@@ -244,6 +245,6 @@ const OneginiSdk = {
   ...nativeMethods,
 };
 
-export {Events, Types, DefaultConfig};
+export {Events, Types, DefaultConfig, SDKError};
 
 export default OneginiSdk;
