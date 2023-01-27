@@ -44,10 +44,10 @@ enum WrapperError: LocalizedError {
         switch self {
         case .identityProviderNotFound:
             return 8001
-        case .profileDoesNotExist:
-            return 8004
         case .authenticatorDoesNotExist:
             return 8006
+        case .profileDoesNotExist:
+            return 8007
         case .parametersNotCorrect:
             return 8009
         case .registrationNotInProgress:
