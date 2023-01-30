@@ -24,10 +24,6 @@ class SimpleCustomTwoStepRegistrationActionImpl(
         eventEmitter.finishRegistration(idProvider, info)
     }
 
-    override fun getOneginiCustomRegistrationAction(): OneginiCustomRegistrationAction {
-        return this
-    }
-
     override fun getIdProvider(): String {
         return idProvider
     }
