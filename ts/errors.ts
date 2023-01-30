@@ -1,5 +1,4 @@
 export enum WrapperErrors {
-  // Wrapper
   IdentityProviderNotFound = '8001',
   WrongConfigModel = '8002',
   MobileAuthOtpIsDisabled = '8003',
@@ -70,7 +69,7 @@ export enum AndroidErrors {
   AppIntegrityFailure = '10024',
 }
 
-// We use the Android names for iOS aswell as they are move readable.
+// We use the Android names for iOS aswell as they are more readable.
 export enum iOSErrors {
   NetworkConnectivityProblem = '9000',
   ServerNotReachable = '9001',
@@ -116,7 +115,6 @@ export enum iOSErrors {
   NotHandleable = '10018',
   FetchInvalidHeaders = '10019',
   CustomAuthenticationDisabled = '10020',
-  // AuthenticatorRegistrationErrorCustomAuthenticationDisabled = '10020',
   CustomRegistrationExpired = '10021',
   CustomRegistrationFailure = '10022',
   SingleSignOnDisabled = '10023',
