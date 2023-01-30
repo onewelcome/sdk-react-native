@@ -1,137 +1,228 @@
 protocol BridgeToResourceHandlerProtocol: AnyObject {
-    func authenticateDevice(_ scopes:[String], _ completion: @escaping (Bool, Error?) -> Void)
-    func authenticateImplicitly(_ profile: ONGUserProfile, scopes: [String], _ completion: @escaping (Bool, Error?) -> Void)
-    func resourceRequest(_ type: ResourceRequestType, _ details: NSDictionary, _ completion: @escaping (String?, Error?) -> Void)
+    func resourceRequest(_ type: ResourceRequestType, _ details: Dictionary<String, Any?>, _ completion: @escaping (String?, Error?) -> Void)
 }
 
 enum ResourceRequestType: String {
-    case User
-    case ImplicitUser
-    case Anonymous
+    case user
+    case implicitUser
+    case anonymous
+    
+    init?(rawValue: String) {
+        switch rawValue {
+        case "User": self = .user
+        case "ImplicitUser": self = .implicitUser
+        case "Anonymous": self = .anonymous
+        default: return nil
+        }
+    }
 }
 
 class ResourceHandler: BridgeToResourceHandlerProtocol {
-    func authenticateDevice(_ scopes:[String], _ completion: @escaping (Bool, Error?) -> Void) {
-        ONGDeviceClient.sharedInstance().authenticateDevice(scopes) { success, error in
-            if let error = error {
-                completion(success, error)
-            } else {
-                completion(success, nil)
-            }
-        }
-    }
+    
+    private let deviceClient = SharedDeviceClient.instance
+    private let userClient = SharedUserClient.instance
+    
+    func resourceRequest(_ type: ResourceRequestType, _ details: Dictionary<String, Any?>, _ completion: @escaping (String?, Error?) -> Void) {
 
-    func authenticateImplicitly(_ profile: ONGUserProfile, scopes:[String], _ completion: @escaping (Bool, Error?) -> Void) {
-        authenticateProfileImplicitly(profile, scopes: scopes) { success, error in
-            if let error = error {
-                completion(false, error)
-            } else {
-                completion(true, nil)
-            }
-        }
-    }
-
-    func resourceRequest(_ type: ResourceRequestType, _ details: NSDictionary, _ completion: @escaping (String?, Error?) -> Void) {
-        switch(type) {
-        case .Anonymous: anonymousResourcesRequest(details, completion);
-        case .ImplicitUser: implicitResourcesRequest(details, completion);
-        case .User: userResourcesRequest(details, completion);
-        }
-    }
-
-    fileprivate func isProfileImplicitlyAuthenticated(_ profile: ONGUserProfile) -> Bool {
-        let implicitlyAuthenticatedProfile = ONGUserClient.sharedInstance().implicitlyAuthenticatedUserProfile()
-        return implicitlyAuthenticatedProfile != nil && implicitlyAuthenticatedProfile == profile
-    }
-
-    fileprivate func authenticateProfileImplicitly(_ profile: ONGUserProfile, scopes: [String], completion: @escaping (Bool, Error?) -> Void) {
-        ONGUserClient.sharedInstance().implicitlyAuthenticateUser(profile, scopes: scopes) { success, error in
-            if !success {
-                completion(success, error)
-            }
-            completion(success, nil)
-        }
-    }
-
-    fileprivate func userResourcesRequest(_ details: NSDictionary, _ completion: @escaping (String?, Error?) -> Void) {
-        guard let path = details["path"] as? String else {
-            let error = NSError(domain: ONGFetchImplicitResourceErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey : "'path' can not be empty"])
-            completion(nil, error)
-            return
-        }
-        guard let method = details["method"] as? String else {
-            let error = NSError(domain: ONGFetchImplicitResourceErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey : "'method' can not be empty"])
-            completion(nil, error)
-            return
-        }
-        let request = ONGResourceRequest(path: path, method: method, parameters: details["parameters"] as? [String : Any], encoding: ONGParametersEncoding.formURL, headers: details["headers"] as? [String : String]);
-
-        ONGUserClient.sharedInstance().fetchResource(request) { response, error in
+        let completionHandler = { (_ response: ResourceResponse?,_ error: Error?) in
             if let error = error {
                 completion(nil, error)
             } else {
-                if let data = response?.data {
-                    completion(String(data: data, encoding: .utf8), nil)
-                } else {
-                    let error = NSError(domain: ONGFetchResourceErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey : "Response doesn't contain data."])
-                    completion(nil, error)
-                }
+                completion(String(data: response?.data ?? Data(), encoding: .utf8), nil)
             }
+        }
+        
+        do {
+            let request = try buildRequest(details)
+            switch type {
+            case .anonymous: sendRequest(request, completion: completionHandler)
+            case .implicitUser: userClient.sendImplicitRequest(request, completion: completionHandler)
+            case .user: userClient.sendAuthenticatedRequest(request, completion: completionHandler)
+            }
+        } catch {
+            completion(nil, error)
+            return
         }
     }
     
-    fileprivate func anonymousResourcesRequest(_ details: NSDictionary, _ completion: @escaping (String?, Error?) -> Void) {
+    private func buildRequest(_ details: Dictionary<String, Any?>) throws -> ResourceRequest {
         guard let path = details["path"] as? String else {
-            let error = NSError(domain: ONGFetchImplicitResourceErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey : "'path' can not be empty"])
-            completion(nil, error)
-            return
+            throw WrapperError.parametersNotCorrect(description: "'path' can not be empty")
         }
-        guard let method = details["method"] as? String else {
-            let error = NSError(domain: ONGFetchImplicitResourceErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey : "'method' can not be empty"])
-            completion(nil, error)
-            return
-        }
-        let request = ONGResourceRequest(path: path, method: method, parameters: details["parameters"] as? [String : Any], encoding: ONGParametersEncoding.formURL, headers: details["headers"] as? [String : String]);
-
-        ONGDeviceClient.sharedInstance().fetchResource(request) { response, error in
-            if let error = error {
-                completion(nil, error)
-            } else {
-                if let data = response?.data {
-                    completion(String(data: data, encoding: .utf8), nil)
-                } else {
-                    let error = NSError(domain: ONGFetchResourceErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey : "Response doesn't contain data."])
-                    completion(nil, error)
-                }
-            }
-        }
-    }
-
-    fileprivate func implicitResourcesRequest(_ details: NSDictionary, _ completion: @escaping (String?, Error?) -> Void) {
-        guard let path = details["path"] as? String else {
-            let error = NSError(domain: ONGFetchImplicitResourceErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey : "'path' can not be empty"])
-            completion(nil, error)
-            return
-        }
-        guard let method = details["method"] as? String else {
-            let error = NSError(domain: ONGFetchImplicitResourceErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey : "'method' can not be empty"])
-            completion(nil, error)
-            return
+        guard let methodName = details["method"] as? String,
+              let method = HTTPMethod(rawValue: methodName.uppercased())
+        else {
+            throw WrapperError.parametersNotCorrect(
+                description: "'method' must be either 'GET', 'POST', 'PUT', 'DELETE', 'PATCH' or 'HEAD'")
         }
         
-        let implicitRequest = ONGResourceRequest(path: path, method: method, parameters: details["parameters"] as? [String : Any], encoding: ONGParametersEncoding.formURL, headers: details["headers"] as? [String : String]);
-
-        ONGUserClient.sharedInstance().fetchImplicitResource(implicitRequest) { response, error in
-            if let error = error {
-                completion(nil, error)
-            } else {
-                if let data = response?.data {
-                    completion(String(data: data, encoding: .utf8), nil)
-                } else {
-                    let error = NSError(domain: ONGFetchImplicitResourceErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey : "Response doesn't contain data."])
-                    completion(nil, error)
-                }
-            }
+        let headers = try getHeaders(details)
+        return ResourceRequestFactory.makeResourceRequest(
+            path: path, method: method, parameters: nil, body: nil,
+            headers: headers, parametersEncoding: .formURL)
+    }
+    
+    private func getHeaders(_ details: Dictionary<String, Any?>) throws -> [String: String] {
+        guard let headers = details["headers"] as? [String: Any] else {
+            throw WrapperError.parametersNotCorrect(
+                description: "'headers' must be an object of containing String: String")
         }
+        return headers.compactMapValues { $0 as? String }
+    }
+    
+    // We copy over the swift api from the iOS SDK due to a bug in the sdk, because not all classes it uses are public we need to copy those over aswell. All below code can be removed once that fix is in the iOS SDK.
+    // FIXME: Remove when using native sdk swift api for Anonymous resource requests
+    @discardableResult
+    func sendRequest(_ resourceRequest: ResourceRequest, completion: @escaping ((_ response: ResourceResponse?, _ error: Error?) -> Void)) -> NetworkTask? {
+        let ongNetworkTask = ONGDeviceClient.sharedInstance().fetchResource(resourceRequest.ongRequest) { response, error in
+            completion(response != nil ? ResourceResponseImplementation(response!) : nil, error)
+        }
+        guard let ongNetworkTask = ongNetworkTask else { return nil }
+        return NetworkTaskImplementation(ongNetworkTask)
+    }
+}
+
+// FIXME: Remove when using native sdk swift api for Anonymous resource requests
+private extension ResourceRequest {
+    var ongRequest: ONGResourceRequest {
+        let ongParametersEncoding: ONGParametersEncoding = parametersEncoding == .formURL ? .formURL : .JSON
+        let multipartData = multipartData?.map({ data -> ONGMultipartData in
+            let multipartData = ONGMultipartData()
+            multipartData.data = data.data
+            multipartData.fileName = data.fileName
+            multipartData.name = data.name
+            multipartData.mimeType = data.mimeType
+            return multipartData
+        })
+        if let multipartData = multipartData, multipartData.count > 0 {
+            return ONGResourceRequest(path: path,
+                                      method: method.rawValue,
+                                      parameters: parameters,
+                                      multipartData: multipartData)
+        } else {
+            let requestBuilder = ONGRequestBuilder()
+            if let body = body { requestBuilder.setBody(body) }
+            requestBuilder.setPath(path)
+            requestBuilder.setMethod(method.rawValue)
+            if let headers = headers { requestBuilder.setHeaders(headers) }
+            requestBuilder.setParametersEncoding(ongParametersEncoding)
+            if let parameters = parameters { requestBuilder.setParameters(parameters) }
+            return requestBuilder.build()
+        }
+    }
+}
+// FIXME: Remove when using native sdk swift api for Anonymous resource requests
+private class ResourceResponseImplementation: ResourceResponse {
+    var response: HTTPURLResponse
+    var allHeaderFields: [AnyHashable : Any]
+    var statusCode: Int
+    var data: Data?
+    
+    init(_ resourceResponse: ONGResourceResponse) {
+        self.response = resourceResponse.rawResponse
+        self.allHeaderFields = resourceResponse.allHeaderFields
+        self.statusCode = resourceResponse.statusCode
+        self.data = resourceResponse.data
+    }
+    
+    required init(response: HTTPURLResponse, data: Data?) {
+        self.response = response
+        self.allHeaderFields = response.allHeaderFields
+        self.statusCode = response.statusCode
+        self.data = data
+    }
+}
+
+// FIXME: Remove when using native sdk swift api for Anonymous resource requests
+private class NetworkTaskImplementation: NetworkTask {
+    
+    var identifier: String
+    var state: NetworkTaskState
+    var request: ResourceRequest
+    var response: ResourceResponse?
+    var error: Error?
+    
+    init(_ networkTask: ONGNetworkTask) {
+        self.identifier = networkTask.identifier
+        self.state = NetworkTaskState(rawValue: networkTask.state.rawValue)!
+        self.request = ResourceRequestImplementation(networkTask.request)
+        if let response = networkTask.response {
+            self.response = ResourceResponseImplementation(response)
+        } else {
+            self.response = nil
+        }
+        self.error = networkTask.error
+    }
+}
+
+// FIXME: Remove when using native sdk swift api for Anonymous resource requests
+private class ResourceRequestImplementation: ResourceRequest {
+    
+    let path: String
+    let method: HTTPMethod
+    var headers: [String: String]?
+    var parameters: [String: Any]?
+    let parametersEncoding: ParametersEncoding?
+    var body: Data?
+    var multipartData: [MultipartData]?
+    
+    init(_ resourceRequest: ONGResourceRequest) {
+        self.path = resourceRequest.path
+        self.method = HTTPMethod(rawValue: resourceRequest.method)!
+        self.headers = resourceRequest.headers
+        self.parameters = resourceRequest.parameters
+        var parametersEncoding: ParametersEncoding
+        if resourceRequest.parametersEncoding == .formURL {
+            parametersEncoding = .formURL
+        } else {
+            parametersEncoding = .JSON
+        }
+        self.parametersEncoding = parametersEncoding
+        self.body = resourceRequest.body
+        self.multipartData = resourceRequest.multipartData?.map({ data -> MultipartData in
+            return MultipartDataImplementation(data)
+        })
+    }
+    
+    init(path: String,
+         method: HTTPMethod = .get,
+         parameters: [String: Any]? = nil,
+         body: Data? = nil,
+         headers: [String: String]? = nil,
+         parametersEncoding: ParametersEncoding = .JSON) {
+        
+        self.path = path
+        self.method = method
+        self.parameters = parameters
+        self.body = body
+        self.headers = headers
+        self.parametersEncoding = parametersEncoding
+    }
+    
+    init(path: String,
+         method: HTTPMethod,
+         parameters: [String: Any]?,
+         multipartData: [MultipartData]) {
+        
+        self.path = path
+        self.method = method
+        self.parameters = parameters
+        self.multipartData = multipartData
+        self.parametersEncoding = .JSON
+    }
+}
+
+// FIXME: Remove when using native sdk swift api for Anonymous resource requests
+private class MultipartDataImplementation: MultipartData {
+    var data: Data
+    var name: String
+    var fileName: String
+    var mimeType: String
+    
+    init(_ multipartData: ONGMultipartData) {
+        self.data = multipartData.data
+        self.name = multipartData.name
+        self.fileName = multipartData.fileName
+        self.mimeType = multipartData.mimeType
     }
 }

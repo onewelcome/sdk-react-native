@@ -24,6 +24,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     private var userClient: ONGUserClient {
         return ONGClient.sharedInstance().userClient
     }
+    private let deviceClient = SharedDeviceClient.instance
 
     override init() {
         self.bridgeConnector = BridgeConnector()
@@ -227,7 +228,8 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
         case PinFlow.authentication.rawValue:
             bridgeConnector.toLoginHandler.handlePin(pin, completion: completion)
         default:
-            reject(String(WrapperError.parametersNotCorrect.code), "Incorrect pinflow supplied: \(flow)", WrapperError.parametersNotCorrect)
+            let error = WrapperError.parametersNotCorrect(description: "Incorrect pinflow supplied: \(flow)")
+            reject(String(error.code), error.localizedDescription, error)
         }
     }
 
@@ -280,26 +282,37 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
             return
         }
         let completion = makeCompletionHandler(resolver: resolve, rejecter: reject, resolveWithNil: true)
-        bridgeConnector.toResourceHandler.authenticateImplicitly(profile, scopes: scopes, completion)
+        ONGUserClient.sharedInstance().implicitlyAuthenticateUser(profile, scopes: scopes, completion: completion)
     }
 
     @objc
     func authenticateDeviceForResource(_ scopes: [String],
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+        // Due to a bug in the swift api we need to use the obj-c api, after that is fixed, we can use commented code below.
+//        let completion = makeCompletionHandler(resolver: resolve, rejecter: reject)
+//        deviceClient.authenticateDevice(with: scopes, completion: completion)
         let completion = makeCompletionHandler(resolver: resolve, rejecter: reject, resolveWithNil: true)
-        bridgeConnector.toResourceHandler.authenticateDevice(scopes, completion)
+        ONGDeviceClient.sharedInstance().authenticateDevice(scopes, completion: completion)
     }
 
     @objc
     func resourceRequest(_ type: (String), details: (NSDictionary),
-                        resolver resolve: @escaping RCTPromiseResolveBlock,
-                        rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-
-        let type = ResourceRequestType(rawValue: type) ?? .Anonymous
+                         resolver resolve: @escaping RCTPromiseResolveBlock,
+                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         
+        let resourceType = ResourceRequestType(rawValue: type)
+        guard let resourceType = resourceType else {
+            rejectWithError(reject, WrapperError.parametersNotCorrect(description: "Supplied request type is not supported"))
+            return
+        }
+        guard let details = details as? [String: Any?] else {
+            rejectWithError(reject, WrapperError.parametersNotCorrect(description: "Details must be an object only containing keys that are Strings"))
+            return
+        }
+
         let completion = makeCompletionHandler(resolver: resolve, rejecter: reject, resolveWithNil: false)
-        bridgeConnector.toResourceHandler.resourceRequest(type, details, completion)
+        bridgeConnector.toResourceHandler.resourceRequest(resourceType, details, completion)
     }
 
     @objc
