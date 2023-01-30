@@ -67,12 +67,11 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
             throw WrapperError.parametersNotCorrect(
                 description: "'headers' must be an object of containing String: String")
         }
-        return headers.compactMapValues {$0 as? String}
+        return headers.compactMapValues { $0 as? String }
     }
     
-    
     // We copy over the swift api from the iOS SDK due to a bug in the sdk, because not all classes it uses are public we need to copy those over aswell. All below code can be removed once that fix is in the iOS SDK.
-    
+    // FIXME: Remove when using native sdk swift api for Anonymous resource requests
     @discardableResult
     func sendRequest(_ resourceRequest: ResourceRequest, completion: @escaping ((_ response: ResourceResponse?, _ error: Error?) -> Void)) -> NetworkTask? {
         let ongNetworkTask = ONGDeviceClient.sharedInstance().fetchResource(resourceRequest.ongRequest) { response, error in
@@ -81,53 +80,10 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
         guard let ongNetworkTask = ongNetworkTask else { return nil }
         return NetworkTaskImplementation(ongNetworkTask)
     }
-    
-    
-    
-    class ResourceResponseImplementation: ResourceResponse {
-        var response: HTTPURLResponse
-        var allHeaderFields: [AnyHashable : Any]
-        var statusCode: Int
-        var data: Data?
-        
-        init(_ resourceResponse: ONGResourceResponse) {
-            self.response = resourceResponse.rawResponse
-            self.allHeaderFields = resourceResponse.allHeaderFields
-            self.statusCode = resourceResponse.statusCode
-            self.data = resourceResponse.data
-        }
-        
-        required init(response: HTTPURLResponse, data: Data?) {
-            self.response = response
-            self.allHeaderFields = response.allHeaderFields
-            self.statusCode = response.statusCode
-            self.data = data
-        }
-    }
-    
-    class NetworkTaskImplementation: NetworkTask {
-        
-        var identifier: String
-        var state: NetworkTaskState
-        var request: ResourceRequest
-        var response: ResourceResponse?
-        var error: Error?
-        
-        init(_ networkTask: ONGNetworkTask) {
-            self.identifier = networkTask.identifier
-            self.state = NetworkTaskState(rawValue: networkTask.state.rawValue)!
-            self.request = ResourceRequestImplementation(networkTask.request)
-            if let response = networkTask.response {
-                self.response = ResourceResponseImplementation(response)
-            } else {
-                self.response = nil
-            }
-            self.error = networkTask.error
-        }
-    }
 }
 
-extension ResourceRequest {
+// FIXME: Remove when using native sdk swift api for Anonymous resource requests
+private extension ResourceRequest {
     var ongRequest: ONGResourceRequest {
         let ongParametersEncoding: ONGParametersEncoding = parametersEncoding == .formURL ? .formURL : .JSON
         let multipartData = multipartData?.map({ data -> ONGMultipartData in
@@ -155,8 +111,52 @@ extension ResourceRequest {
         }
     }
 }
+// FIXME: Remove when using native sdk swift api for Anonymous resource requests
+private class ResourceResponseImplementation: ResourceResponse {
+    var response: HTTPURLResponse
+    var allHeaderFields: [AnyHashable : Any]
+    var statusCode: Int
+    var data: Data?
+    
+    init(_ resourceResponse: ONGResourceResponse) {
+        self.response = resourceResponse.rawResponse
+        self.allHeaderFields = resourceResponse.allHeaderFields
+        self.statusCode = resourceResponse.statusCode
+        self.data = resourceResponse.data
+    }
+    
+    required init(response: HTTPURLResponse, data: Data?) {
+        self.response = response
+        self.allHeaderFields = response.allHeaderFields
+        self.statusCode = response.statusCode
+        self.data = data
+    }
+}
 
-class ResourceRequestImplementation: ResourceRequest {
+// FIXME: Remove when using native sdk swift api for Anonymous resource requests
+private class NetworkTaskImplementation: NetworkTask {
+    
+    var identifier: String
+    var state: NetworkTaskState
+    var request: ResourceRequest
+    var response: ResourceResponse?
+    var error: Error?
+    
+    init(_ networkTask: ONGNetworkTask) {
+        self.identifier = networkTask.identifier
+        self.state = NetworkTaskState(rawValue: networkTask.state.rawValue)!
+        self.request = ResourceRequestImplementation(networkTask.request)
+        if let response = networkTask.response {
+            self.response = ResourceResponseImplementation(response)
+        } else {
+            self.response = nil
+        }
+        self.error = networkTask.error
+    }
+}
+
+// FIXME: Remove when using native sdk swift api for Anonymous resource requests
+private class ResourceRequestImplementation: ResourceRequest {
     
     let path: String
     let method: HTTPMethod
@@ -212,8 +212,8 @@ class ResourceRequestImplementation: ResourceRequest {
     }
 }
 
-
-class MultipartDataImplementation: MultipartData {
+// FIXME: Remove when using native sdk swift api for Anonymous resource requests
+private class MultipartDataImplementation: MultipartData {
     var data: Data
     var name: String
     var fileName: String
