@@ -35,7 +35,7 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
         do {
             let request = try buildRequest(details)
             switch type {
-            case .anonymous: deviceClient.sendRequest(request, completion: completionHandler)
+            case .anonymous: sendRequest(request, completion: completionHandler)
             case .implicitUser: userClient.sendImplicitRequest(request, completion: completionHandler)
             case .user: userClient.sendAuthenticatedRequest(request, completion: completionHandler)
             }

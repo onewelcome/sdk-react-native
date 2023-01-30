@@ -289,8 +289,11 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func authenticateDeviceForResource(_ scopes: [String],
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        let completion = makeCompletionHandler(resolver: resolve, rejecter: reject)
-        deviceClient.authenticateDevice(with: scopes, completion: completion)
+        // Due to a bug in the swift api we need to use the obj-c api, after that is fixed, we can use commented code below.
+//        let completion = makeCompletionHandler(resolver: resolve, rejecter: reject)
+//        deviceClient.authenticateDevice(with: scopes, completion: completion)
+        let completion = makeCompletionHandler(resolver: resolve, rejecter: reject, resolveWithNil: true)
+        ONGDeviceClient.sharedInstance().authenticateDevice(scopes, completion: completion)
     }
 
     @objc
