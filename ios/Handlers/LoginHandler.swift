@@ -91,13 +91,8 @@ class loginDelegate: AuthenticationDelegate {
     func userClient(_ userClient: OneginiSDKiOS.UserClient, didFailToAuthenticateUser profile: OneginiSDKiOS.UserProfile, authenticator: OneginiSDKiOS.Authenticator, error: Error) {
         loginCompletion?(profile, error)
         loginCompletion = nil
-        switch error.code {
-            // We don't want to send a close pin event when we encounter an action already in progress
-        case ONGGenericError.actionAlreadyInProgress.rawValue:
-            return
-        default:
-            break
-        }
+        // We don't want to send a close pin event when we encounter an action already in progress
+        guard case ONGGenericError.actionAlreadyInProgress.rawValue = error.code else { return }
         BridgeConnector.shared?.toLoginHandler.handleDidFailToAuthenticateUser()
     }
 }

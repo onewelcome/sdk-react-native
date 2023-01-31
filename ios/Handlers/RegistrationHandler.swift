@@ -98,9 +98,7 @@ extension RegistrationHandler {
         if let pinError = mapErrorFromPinChallenge(challenge) {
             createPinEventEmitter.onPinNotAllowed(error: pinError)
         } else {
-            guard let userProfile = challenge.userProfile else {
-                return
-            }
+            guard let userProfile = challenge.userProfile else { return }
             createPinEventEmitter.onPinOpen(profileId: userProfile.profileId, pinLength: challenge.pinLength)
         }
     }
