@@ -28,10 +28,6 @@ export interface ImplicitUserDetails {
   decoratedUserId: string;
 }
 
-export interface RedirectUri {
-  redirectUri: string;
-}
-
 export interface AppDetailsResources {
   applicationIdentifier: string;
   applicationPlatform: string;
