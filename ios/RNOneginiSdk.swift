@@ -88,9 +88,8 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
     @objc
     func getRedirectUri(_ resolve: RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
-        let redirectUri = ONGClient.sharedInstance().configModel.redirectURL
-
-        resolve(["redirectUri": redirectUri])
+        let redirectUri = SharedClient.instance.configModel.redirectURL
+        resolve(redirectUri)
     }
 
     @objc
