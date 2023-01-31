@@ -68,7 +68,7 @@ interface NativeMethods {
   getAccessToken(): Promise<string>;
   getAuthenticatedUserProfile(): Promise<Types.Profile>;
   getUserProfiles(): Promise<Types.Profile[]>;
-  getRedirectUri(): Promise<string>; // TODO: I think it should be moved "behind" SDK - dev should not know about it
+  getRedirectUri(): Promise<string>;
 
   // Resource getters
   //@todo extend types for details and responses
