@@ -25,31 +25,35 @@ class ChangePinHandler: NSObject {
 
 extension ChangePinHandler: PinConnectorToPinHandler {
     func onChangePinCalled(completion: @escaping (Error?) -> Void) {
-        ONGUserClient.sharedInstance().changePin(self)
+        SharedUserClient.instance.changePin(delegate: self)
         changePinCompletion = completion
     }
  }
 
-extension ChangePinHandler: ONGChangePinDelegate {
-    func userClient(_ userClient: ONGUserClient, didReceive challenge: ONGPinChallenge) {
+extension ChangePinHandler: ChangePinDelegate {
+    func userClient(_ userClient: UserClient, didReceivePinChallenge challenge: PinChallenge) {
         loginHandler.handleDidReceiveChallenge(challenge)
     }
 
-    func userClient(_: ONGUserClient, didReceive challenge: ONGCreatePinChallenge) {
+    func userClient(_ userClient: UserClient, didReceiveCreatePinChallenge challenge: CreatePinChallenge) {
         loginHandler.handleDidAuthenticateUser()
         registrationHandler.handleDidReceivePinRegistrationChallenge(challenge)
     }
-    
-    func userClient(_: ONGUserClient, didFailToChangePinForUser profile: ONGUserProfile, error: Error) {
-        loginHandler.handleDidFailToAuthenticateUser()
-        registrationHandler.handleDidFailToRegister()
-        changePinCompletion?(error)
+
+    func userClient(_ userClient: UserClient, didStartPinChangeForUser profile: UserProfile) {
+        // Not used
+    }
+
+    func userClient(_ userClient: UserClient, didChangePinForUser profile: UserProfile) {
+        registrationHandler.handleDidRegisterUser()
+        changePinCompletion?(nil)
         changePinCompletion = nil
     }
 
-    func userClient(_ : ONGUserClient, didChangePinForUser _: ONGUserProfile) {
-        registrationHandler.handleDidRegisterUser()
-        changePinCompletion?(nil)
+    func userClient(_ userClient: UserClient, didFailToChangePinForUser profile: UserProfile, error: Error) {
+        loginHandler.handleDidFailToAuthenticateUser()
+        registrationHandler.handleDidFailToRegister()
+        changePinCompletion?(error)
         changePinCompletion = nil
     }
 }
