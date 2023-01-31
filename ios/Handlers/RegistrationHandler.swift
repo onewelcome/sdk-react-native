@@ -1,8 +1,8 @@
 class RegistrationHandler: NSObject {
-    private var createPinChallenge: ONGCreatePinChallenge?
-    private var browserRegistrationChallenge: ONGBrowserRegistrationChallenge?
-    private var customRegistrationChallenge: ONGCustomRegistrationChallenge?
-    private var signUpCompletion: ((Bool, ONGUserProfile?, Error?) -> Void)?
+    private var createPinChallenge: CreatePinChallenge?
+    private var browserRegistrationChallenge: BrowserRegistrationChallenge?
+    private var customRegistrationChallenge: CustomRegistrationChallenge?
+    private var signUpCompletion: ((Bool, UserProfile?, Error?) -> Void)?
     private let createPinEventEmitter = CreatePinEventEmitter()
     private let registrationEventEmitter = RegistrationEventEmitter()
     static let cancelCustomRegistrationNotAllowed = "Canceling the custom registration right now is not allowed. Registration is not in progress or pin creation has already started."
@@ -13,7 +13,7 @@ class RegistrationHandler: NSObject {
             completion(WrapperError.registrationNotInProgress)
             return
         }
-        browserRegistrationChallenge.sender.respond(with: url, challenge: browserRegistrationChallenge)
+        browserRegistrationChallenge.sender.respond(with: url, to: browserRegistrationChallenge)
         self.browserRegistrationChallenge = nil
         completion(nil)
     }
@@ -28,7 +28,7 @@ class RegistrationHandler: NSObject {
             completion(nil)
             return
         }
-        createPinChallenge.sender.respond(withCreatedPin: pin, challenge: createPinChallenge)
+        createPinChallenge.sender.respond(with: pin, to: createPinChallenge)
         completion(nil)
     }
 
@@ -37,12 +37,12 @@ class RegistrationHandler: NSObject {
             completion(WrapperError.registrationNotInProgress)
             return
         }
-        customRegistrationChallenge.sender.respond(withData: code, challenge: customRegistrationChallenge)
+        customRegistrationChallenge.sender.respond(with: code, to: customRegistrationChallenge)
         self.customRegistrationChallenge = nil
         completion(nil)
     }
 
-    fileprivate func mapErrorFromPinChallenge(_ challenge: ONGCreatePinChallenge) -> Error? {
+    fileprivate func mapErrorFromPinChallenge(_ challenge: CreatePinChallenge) -> Error? {
         if let error = challenge.error {
             return error
         } else {
@@ -56,13 +56,13 @@ class RegistrationHandler: NSObject {
 }
 
 extension RegistrationHandler {
-    func setCreatePinChallenge(_ challenge: ONGCreatePinChallenge?) {
+    func setCreatePinChallenge(_ challenge: CreatePinChallenge?) {
         createPinChallenge = challenge
     }
     
-    func signUp(identityProvider: ONGIdentityProvider? = nil, scopes: [String], completion: @escaping (Bool, ONGUserProfile?, Error?) -> Void) {
+    func signUp(identityProvider: IdentityProvider? = nil, scopes: [String], completion: @escaping (Bool, UserProfile?, Error?) -> Void) {
         signUpCompletion = completion
-        ONGUserClient.sharedInstance().registerUser(with: identityProvider, scopes: scopes, delegate: self)
+        SharedUserClient.instance.registerUserWith(identityProvider: identityProvider, scopes: scopes, delegate: self)
     }
 
     func cancelCustomRegistration(completion: @escaping (Error?) -> Void) {
@@ -93,12 +93,13 @@ extension RegistrationHandler {
         completion(nil)
     }
     
-    func handleDidReceivePinRegistrationChallenge(_ challenge: ONGCreatePinChallenge) {
+    func handleDidReceivePinRegistrationChallenge(_ challenge: CreatePinChallenge) {
         createPinChallenge = challenge
         if let pinError = mapErrorFromPinChallenge(challenge) {
             createPinEventEmitter.onPinNotAllowed(error: pinError)
         } else {
-            createPinEventEmitter.onPinOpen(profileId: challenge.userProfile.profileId, pinLength: challenge.pinLength)
+            guard let userProfile = challenge.userProfile else { return }
+            createPinEventEmitter.onPinOpen(profileId: userProfile.profileId, pinLength: challenge.pinLength)
         }
     }
     
@@ -118,17 +119,18 @@ extension RegistrationHandler {
     }
 }
 
-extension RegistrationHandler: ONGRegistrationDelegate {
-    func userClient(_: ONGUserClient, didReceive challenge: ONGBrowserRegistrationChallenge) {
+extension RegistrationHandler: RegistrationDelegate {
+    
+    func userClient(_ userClient: UserClient, didReceiveCreatePinChallenge challenge: CreatePinChallenge) {
+        handleDidReceivePinRegistrationChallenge(challenge)
+    }
+    
+    func userClient(_ userClient: UserClient, didReceiveBrowserRegistrationChallenge challenge: BrowserRegistrationChallenge) {
         browserRegistrationChallenge = challenge
         registrationEventEmitter.onSendUrl(challenge.url)
     }
-
-    func userClient(_: ONGUserClient, didReceivePinRegistrationChallenge challenge: ONGCreatePinChallenge) {
-        handleDidReceivePinRegistrationChallenge(challenge)
-    }
-
-    func userClient(_: ONGUserClient, didReceiveCustomRegistrationInitChallenge challenge: ONGCustomRegistrationChallenge) {
+    
+    func userClient(_ userClient: UserClient, didReceiveCustomRegistrationInitChallenge challenge: CustomRegistrationChallenge) {
         customRegistrationChallenge = challenge
 
         let result = NSMutableDictionary()
@@ -136,8 +138,8 @@ extension RegistrationHandler: ONGRegistrationDelegate {
 
         sendCustomRegistrationNotification(CustomRegistrationNotification.initRegistration, result)
     }
-
-    func userClient(_: ONGUserClient, didReceiveCustomRegistrationFinish challenge: ONGCustomRegistrationChallenge) {
+    
+    func userClient(_ userClient: UserClient, didReceiveCustomRegistrationFinishChallenge challenge: CustomRegistrationChallenge) {
         customRegistrationChallenge = challenge
 
         let result = NSMutableDictionary()
@@ -154,16 +156,15 @@ extension RegistrationHandler: ONGRegistrationDelegate {
         sendCustomRegistrationNotification(CustomRegistrationNotification.finishRegistration, result)
     }
     
-    func userClient(_ userClient: ONGUserClient, didRegisterUser userProfile: ONGUserProfile, identityProvider: ONGIdentityProvider, info: ONGCustomInfo?) {
+    func userClient(_ userClient: UserClient, didRegisterUser profile: UserProfile, with identityProvider: IdentityProvider, info: CustomInfo?) {
         handleDidRegisterUser()
-        signUpCompletion?(true, userProfile, nil)
+        signUpCompletion?(true, profile, nil)
         signUpCompletion = nil
     }
     
-    func userClient(_ userClient: ONGUserClient, didFailToRegisterWith identityProvider: ONGIdentityProvider, error: Error) {
+    func userClient(_ userClient: UserClient, didFailToRegisterUserWith identityProvider: IdentityProvider, error: Error) {
         handleDidFailToRegister()
         signUpCompletion?(false, nil, error)
         signUpCompletion = nil
     }
-
 }

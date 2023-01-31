@@ -141,12 +141,10 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                       scopes: [String],
                       resolver resolve: @escaping RCTPromiseResolveBlock,
                       rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        var provider: ONGIdentityProvider? = nil
-
+        var provider: IdentityProvider? = nil
         if identityProviderId != nil {
-            provider = userClient.identityProviders().first(where: { $0.value(forKey: "identifier") as? String == identityProviderId })
+            provider = SharedUserClient.instance.identityProviders.first(where: { $0.identifier == identityProviderId })
         }
-
         bridgeConnector.toRegistrationConnector.registrationHandler.signUp(identityProvider: provider, scopes: scopes) {
           (_, userProfile, error) -> Void in
             self.resolveResultOrRejectError(resolve, reject, ["id": userProfile?.profileId], error)
@@ -242,13 +240,13 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func authenticateUser(_ profileId: String, authenticatorId: String,
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        let profile = userClient.userProfiles().first(where: { $0.profileId == profileId })
+        let profile = SharedUserClient.instance.userProfiles.first(where: { $0.profileId == profileId })
         guard let profile = profile else {
             rejectWithError(reject, WrapperError.profileDoesNotExist)
             return
         }
-        let authenticators = userClient.allAuthenticators(forUser: profile)
-        let authenticator = authenticators.first(where: {$0.identifier == authenticatorId}) ?? userClient.preferredAuthenticator
+        let authenticators = SharedUserClient.instance.authenticators(.all, for: profile)
+        let authenticator = authenticators.first(where: {$0.identifier == authenticatorId}) ?? SharedUserClient.instance.preferredAuthenticator
         bridgeConnector.toLoginHandler.authenticateUser(profile, authenticator: authenticator) {
             (userProfile, error) -> Void in
             self.resolveResultOrRejectError(resolve, reject, ["userProfile": ["id": userProfile.profileId]], error)
@@ -345,13 +343,14 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func getAllAuthenticators(_ profileId: String,
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        let profile = userClient.userProfiles().first(where: { $0.profileId == profileId })
+        
+        let profile = SharedUserClient.instance.userProfiles.first(where: { $0.profileId == profileId })
         guard let profile = profile else {
             rejectWithError(reject, WrapperError.profileDoesNotExist)
             return
         }
         
-        let allAuthenticators: Array<ONGAuthenticator> = bridgeConnector.toAuthenticatorsHandler.getAuthenticatorsListForUserProfile(profile)
+        let allAuthenticators: Array<Authenticator> = bridgeConnector.toAuthenticatorsHandler.getAuthenticatorsListForUserProfile(profile)
 
         let result: NSMutableArray = []
 
@@ -366,13 +365,13 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func getRegisteredAuthenticators(_ profileId: String,
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        let profile = userClient.userProfiles().first(where: { $0.profileId == profileId })
+        let profile = SharedUserClient.instance.userProfiles.first(where: { $0.profileId == profileId })
         guard let profile = profile else {
             rejectWithError(reject, WrapperError.profileDoesNotExist)
             return
         }
 
-        let registeredAuthenticators: Array<ONGAuthenticator> = bridgeConnector.toAuthenticatorsHandler.getAuthenticatorsListForUserProfile(profile).filter {$0.isRegistered == true}
+        let registeredAuthenticators: Array<Authenticator> = bridgeConnector.toAuthenticatorsHandler.getAuthenticatorsListForUserProfile(profile).filter {$0.isRegistered == true}
 
         let result: NSMutableArray = []
 
@@ -387,7 +386,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func setPreferredAuthenticator(_ profileId: String, authenticatorId: String,
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        let profile = userClient.userProfiles().first(where: { $0.profileId == profileId })
+        let profile = SharedUserClient.instance.userProfiles.first(where: { $0.profileId == profileId })
         guard let profile = profile else {
             rejectWithError(reject, WrapperError.profileDoesNotExist)
             return
@@ -408,7 +407,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func registerAuthenticator(_ authenticatorId: String,
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        let profile = userClient.authenticatedUserProfile()
+        let profile = SharedUserClient.instance.authenticatedUserProfile
         guard let profile = profile else {
             rejectWithError(reject, WrapperError.profileDoesNotExist)
             return
@@ -421,7 +420,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func deregisterAuthenticator(_ authenticatorId: String,
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        let profile = userClient.authenticatedUserProfile()
+        let profile = SharedUserClient.instance.authenticatedUserProfile
         guard let profile = profile else {
             reject(String(WrapperError.noProfileAuthenticated.code), WrapperError.noProfileAuthenticated.localizedDescription, WrapperError.noProfileAuthenticated)
             return
