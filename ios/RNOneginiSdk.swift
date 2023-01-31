@@ -371,12 +371,11 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     @objc
-    func setPreferredAuthenticator(_ profileId: String, authenticatorId: String,
+    func setPreferredAuthenticator(_ authenticatorId: String,
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        let profile = SharedUserClient.instance.userProfiles.first(where: { $0.profileId == profileId })
-        guard let profile = profile else {
-            rejectWithError(reject, WrapperError.profileDoesNotExist)
+        guard let profile = SharedUserClient.instance.authenticatedUserProfile else {
+            rejectWithError(reject, WrapperError.noProfileAuthenticated)
             return
         }
         let completion = makeCompletionHandler(resolver: resolve, rejecter: reject)
