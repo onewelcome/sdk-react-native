@@ -3,8 +3,7 @@ package com.onegini.mobile.sdk.reactnative
 import com.facebook.react.bridge.Promise
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.SetPreferredAuthenticatorUseCase
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.AUTHENTICATOR_DOES_NOT_EXIST
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.*
 import com.onegini.mobile.sdk.reactnative.managers.AuthenticatorManager
 import org.junit.Before
 import org.junit.Test
@@ -39,34 +38,34 @@ class SetPreferredAuthenticatorUseCaseTests {
     }
 
     @Test
-    fun `When userProfile does not exist, Then should reject with PROFILE_DOES_NOT_EXIST error`() {
-        whenProfileDoesNotExist()
-        setPreferredAuthenticatorUseCase(profileId, TestData.authenticator1.id, promiseMock)
-        verify(promiseMock).reject(PROFILE_DOES_NOT_EXIST.code.toString(), PROFILE_DOES_NOT_EXIST.message)
+    fun `When no profile is authenticated, Then should reject with NO_PROFILE_AUTHENTICATED error`() {
+        whenProfileNotAuthenticated()
+        setPreferredAuthenticatorUseCase(TestData.authenticator1.id, promiseMock)
+        verify(promiseMock).reject(NO_PROFILE_AUTHENTICATED.code.toString(), NO_PROFILE_AUTHENTICATED.message)
     }
 
     @Test
-    fun `When userProfile exists but authenticator does not, Then should reject with AUTHENTICATOR_DOES_NOT_EXIST error`() {
-        whenProfileExists()
+    fun `When profile authenticated but authenticator does not exist, Then should reject with AUTHENTICATOR_DOES_NOT_EXIST error`() {
+        whenProfileAuthenticated()
         whenAuthenticatorDoesNotExist()
-        setPreferredAuthenticatorUseCase(profileId, TestData.authenticator1.id, promiseMock)
+        setPreferredAuthenticatorUseCase(TestData.authenticator1.id, promiseMock)
         verify(promiseMock).reject(AUTHENTICATOR_DOES_NOT_EXIST.code.toString(), AUTHENTICATOR_DOES_NOT_EXIST.message)
     }
 
     @Test
-    fun `When profile and authenticator exist, Then should resolve with null`() {
-        whenProfileExists()
+    fun `When profile authenticated and authenticator exist, Then should resolve with null`() {
+        whenProfileAuthenticated()
         whenAuthenticatorExists()
-        setPreferredAuthenticatorUseCase(profileId, TestData.authenticator1.id, promiseMock)
+        setPreferredAuthenticatorUseCase(TestData.authenticator1.id, promiseMock)
         verify(promiseMock).resolve(null)
     }
 
-    private fun whenProfileExists() {
-        `when`(oneginiSdk.oneginiClient.userClient.userProfiles).thenReturn(setOf(UserProfile(profileId)))
+    private fun whenProfileAuthenticated() {
+        `when`(oneginiSdk.oneginiClient.userClient.authenticatedUserProfile).thenReturn(UserProfile(profileId))
     }
 
-    private fun whenProfileDoesNotExist() {
-        `when`(oneginiSdk.oneginiClient.userClient.userProfiles).thenReturn(setOf())
+    private fun whenProfileNotAuthenticated() {
+        `when`(oneginiSdk.oneginiClient.userClient.authenticatedUserProfile).thenReturn(null)
     }
 
     private fun whenAuthenticatorDoesNotExist() {

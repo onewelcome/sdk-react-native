@@ -105,10 +105,7 @@ interface NativeMethods {
     profileId: string,
   ): Promise<Types.Authenticator[]>;
   getAllAuthenticators(profileId: string): Promise<Types.Authenticator[]>;
-  setPreferredAuthenticator(
-    profileId: string,
-    authenticatorId: string,
-  ): Promise<void>;
+  setPreferredAuthenticator(authenticatorId: string): Promise<void>;
   validatePinWithPolicy(pin: string): Promise<void>;
   registerAuthenticator(authenticatorId: string): Promise<void>;
 

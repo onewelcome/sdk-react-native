@@ -112,8 +112,8 @@ class OneginiSdkWrapper @Inject constructor(
         getRegisteredAuthenticatorsUseCase(profileId, promise)
     }
 
-    fun setPreferredAuthenticator(profileId: String, authenticatorId: String, promise: Promise) {
-        setPreferredAuthenticatorUseCase(profileId, authenticatorId, promise)
+    fun setPreferredAuthenticator(authenticatorId: String, promise: Promise) {
+        setPreferredAuthenticatorUseCase(authenticatorId, promise)
     }
 
     fun validatePinWithPolicy(pin: String?, promise: Promise) {

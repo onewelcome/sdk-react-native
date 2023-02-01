@@ -211,11 +211,10 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
     }
 
     @ReactMethod
-    fun setPreferredAuthenticator(profileId: String?, authenticatorId: String?, promise: Promise) {
+    fun setPreferredAuthenticator(authenticatorId: String?, promise: Promise) {
         when {
-            profileId == null -> promise.rejectWithNullError(ProfileId.paramName, ProfileId.type)
             authenticatorId == null -> promise.rejectWithNullError(AuthenticatorId.paramName, AuthenticatorId.type)
-            else -> sdkWrapper.setPreferredAuthenticator(profileId, authenticatorId, promise)
+            else -> sdkWrapper.setPreferredAuthenticator(authenticatorId, promise)
         }
     }
 
