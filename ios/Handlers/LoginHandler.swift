@@ -92,7 +92,7 @@ class loginDelegate: AuthenticationDelegate {
         loginCompletion?(profile, error)
         loginCompletion = nil
         // We don't want to send a close pin event when we encounter an action already in progress
-        guard case ONGGenericError.actionAlreadyInProgress.rawValue = error.code else { return }
+        if (error.code == ONGGenericError.actionAlreadyInProgress.rawValue) { return }
         BridgeConnector.shared?.toLoginHandler.handleDidFailToAuthenticateUser()
     }
 }
