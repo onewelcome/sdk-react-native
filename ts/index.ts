@@ -81,7 +81,7 @@ interface NativeMethods {
   resourceRequest(
     type: Types.ResourceRequestType,
     details: Types.ResourcesDetails,
-  ): Promise<any>;
+  ): Promise<Types.ResourceResponse>;
 
   // User register/deregister
   registerUser(
@@ -224,7 +224,7 @@ const nativeMethods: NativeMethods = {
   resourceRequest: (
     type: Types.ResourceRequestType,
     details: Types.ResourcesDetails,
-  ): Promise<any> => {
+  ): Promise<Types.ResourceResponse> => {
     return new Promise((resolve, reject) => {
       RNOneginiSdk.resourceRequest(type, details)
         .then(
