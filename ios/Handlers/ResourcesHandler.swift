@@ -22,14 +22,16 @@ struct WrapperResourceResponse {
     var headers: [AnyHashable: String]
     var ok: Bool
     var status: Int
-    init (_ response: ResourceResponse) {
+    
+    init(_ response: ResourceResponse) {
         body = String(data: response.data ?? Data(), encoding: .utf8) ?? ""
         headers = response.allHeaderFields.compactMapValues { $0 as? String }
         ok = response.statusCode <= 299 && response.statusCode >= 200
         status = response.statusCode
     }
+    
     var asDictionary: [String: Any] {
-        return ["body": body, "headers": headers, "ok": ok, "status": status]
+        ["body": body, "headers": headers, "ok": ok, "status": status]
     }
 }
 
@@ -89,7 +91,7 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
     private func getHeaders(_ details: Dictionary<String, Any?>) throws -> [String: String] {
         guard let headers = details["headers"] as? [String: Any] else {
             throw WrapperError.parametersNotCorrect(
-                description: "'headers' must be an object of String: String")
+                description: "'headers' must be an object with only Strings as keys")
         }
         return headers.compactMapValues { $0 as? String }
     }
