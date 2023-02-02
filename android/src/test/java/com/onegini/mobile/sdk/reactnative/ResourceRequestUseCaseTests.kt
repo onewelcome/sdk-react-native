@@ -2,6 +2,7 @@ package com.onegini.mobile.sdk.reactnative
 
 import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.Promise
+import com.facebook.react.bridge.ReadableMap
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.ResourceRequestUseCase
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.PARAMETERS_NOT_CORRECT
@@ -9,10 +10,12 @@ import com.onegini.mobile.sdk.reactnative.exception.REQUEST_METHOD_NOT_SUPPORTED
 import com.onegini.mobile.sdk.reactnative.exception.REQUEST_MISSING_PATH_PARAMETER
 import com.onegini.mobile.sdk.reactnative.exception.REQUEST_TYPE_NOT_SUPPORTED
 import okhttp3.Callback
+import okhttp3.Headers
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Rule
@@ -51,8 +54,8 @@ class ResourceRequestUseCaseTests {
     @Mock
     lateinit var ioExceptionMock: IOException
 
-    @Mock
-    lateinit var response: Response
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    lateinit var responseMock: Response
 
     lateinit var resourceRequestUseCase: ResourceRequestUseCase
 
@@ -149,20 +152,28 @@ class ResourceRequestUseCaseTests {
     }
 
     @Test
-    fun `When the resourceCall calls onResponse, Then it should resolve the promise with the response body`() {
+    fun `When the resourceCall calls onResponse, Then it should resolve with a map containing the response body,headers,status,ok`() {
         val headers = correctHeaders()
         val details = requiredDetailsGET()
+        setupResponseMock()
         details.putMap("headers", headers)
         whenever(oneginiSdk.oneginiClient.userClient.resourceOkHttpClient).thenReturn(okHttpClientMock)
         whenever(okHttpClientMock.newCall(any())).thenReturn(okhttp3CallMock)
         argumentCaptor<Callback> {
             whenever(
                 okhttp3CallMock.enqueue(capture())).thenAnswer {
-                firstValue.onResponse(okhttp3CallMock, response)
+                firstValue.onResponse(okhttp3CallMock, responseMock)
             }
         }
         resourceRequestUseCase("User", details, promiseMock)
-        verify(promiseMock).resolve(response.body?.string())
+        argumentCaptor<ReadableMap> {
+            verify(promiseMock).resolve(capture())
+            assertEquals(firstValue.getString("body"), responseMock.body?.string())
+            assertEquals(firstValue.getInt("status"), responseMock.code)
+            assertEquals(firstValue.getBoolean("ok"), responseMock.isSuccessful)
+            val responseHeaders = firstValue.getMap("headers")
+            assertEquals(responseHeaders!!.getString(headerOne.first), headerOne.second)
+        }
     }
 
     @Test
@@ -196,6 +207,9 @@ class ResourceRequestUseCaseTests {
         return headers
     }
 
-
-
+    private fun setupResponseMock() {
+        whenever(responseMock.body?.string()).thenReturn("responseBody")
+        val headers = Headers.Builder().add(headerOne.first, headerOne.second).build()
+        whenever(responseMock.headers).thenReturn(headers)
+    }
 }
