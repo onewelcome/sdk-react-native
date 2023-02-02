@@ -1,6 +1,7 @@
 enum WrapperError: LocalizedError {
     case identityProviderNotFound
     case profileDoesNotExist
+    case resourceCallError
     case authenticatorDoesNotExist
     case malformedUrl
     case parametersNotCorrect(description: String)
@@ -18,6 +19,8 @@ enum WrapperError: LocalizedError {
             return "Identity provider not found"
         case .profileDoesNotExist:
             return "The profile does not exist"
+        case .resourceCallError:
+            return "Resource call finished with unknown error"
         case .authenticatorDoesNotExist:
             return "The authenticator does not exist"
         case .malformedUrl:
@@ -44,6 +47,8 @@ enum WrapperError: LocalizedError {
         switch self {
         case .identityProviderNotFound:
             return 8001
+        case .resourceCallError:
+            return 8005
         case .authenticatorDoesNotExist:
             return 8006
         case .profileDoesNotExist:
