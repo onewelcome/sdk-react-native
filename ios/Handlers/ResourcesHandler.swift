@@ -1,5 +1,5 @@
 protocol BridgeToResourceHandlerProtocol: AnyObject {
-    func resourceRequest(_ type: ResourceRequestType, _ details: Dictionary<String, Any?>, _ completion: @escaping (String?, Error?) -> Void)
+    func resourceRequest(_ type: ResourceRequestType, _ details: Dictionary<String, Any?>, _ completion: @escaping (Result<WrapperResourceResponse, Error>) -> Void)
 }
 
 enum ResourceRequestType: String {
@@ -17,18 +17,42 @@ enum ResourceRequestType: String {
     }
 }
 
+struct WrapperResourceResponse {
+    var body: String
+    var headers: [AnyHashable: String]
+    var ok: Bool
+    var status: Int
+    init (_ response: ResourceResponse) {
+        body = String(data: response.data ?? Data(), encoding: .utf8) ?? ""
+        headers = response.allHeaderFields.compactMapValues { $0 as? String }
+        ok = response.statusCode <= 299 && response.statusCode >= 200
+        status = response.statusCode
+    }
+    var asDictionary: [String: Any] {
+        return ["body": body, "headers": headers, "ok": ok, "status": status]
+    }
+}
+
 class ResourceHandler: BridgeToResourceHandlerProtocol {
     
     private let deviceClient = SharedDeviceClient.instance
     private let userClient = SharedUserClient.instance
     
-    func resourceRequest(_ type: ResourceRequestType, _ details: Dictionary<String, Any?>, _ completion: @escaping (String?, Error?) -> Void) {
+    func resourceRequest(_ type: ResourceRequestType, _ details: Dictionary<String, Any?>, _ completion: @escaping (Result<WrapperResourceResponse, Error>) -> Void) {
 
         let completionHandler = { (_ response: ResourceResponse?,_ error: Error?) in
             if let error = error {
-                completion(nil, error)
+                guard let response = response else {
+                    completion(.failure(error))
+                    return
+                }
+                completion(.success(WrapperResourceResponse(response)))
             } else {
-                completion(String(data: response?.data ?? Data(), encoding: .utf8), nil)
+                guard let response = response else {
+                    completion(.failure(WrapperError.resourceCallError))
+                    return
+                }
+                completion(.success(WrapperResourceResponse(response)))
             }
         }
         
@@ -40,7 +64,7 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
             case .user: userClient.sendAuthenticatedRequest(request, completion: completionHandler)
             }
         } catch {
-            completion(nil, error)
+            completion(.failure(error))
             return
         }
     }
@@ -65,7 +89,7 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
     private func getHeaders(_ details: Dictionary<String, Any?>) throws -> [String: String] {
         guard let headers = details["headers"] as? [String: Any] else {
             throw WrapperError.parametersNotCorrect(
-                description: "'headers' must be an object of containing String: String")
+                description: "'headers' must be an object of String: String")
         }
         return headers.compactMapValues { $0 as? String }
     }
