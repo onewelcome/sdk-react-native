@@ -9,8 +9,6 @@ import * as Types from './data-types';
 import * as Events from './events';
 import SDKError from './errors';
 
-//
-
 const {RNOneginiSdk} = NativeModules;
 
 const OneWelcomeEventEmitter =
@@ -20,9 +18,6 @@ const OneWelcomeEventEmitter =
 
 // helpers
 const isIOS = () => Platform.OS === 'ios';
-const isAndroid = () => Platform.OS === 'android';
-
-//
 
 interface NativeMethods {
   // listeners
@@ -62,7 +57,7 @@ interface NativeMethods {
   ): EmitterSubscription;
 
   // Setup
-  startClient(sdkConfig?: Types.Config): Promise<string | null>;
+  startClient(): Promise<string | null>;
 
   // Data getters
   getIdentityProviders(): Promise<Types.IdentityProvider[]>;
@@ -81,7 +76,7 @@ interface NativeMethods {
   resourceRequest(
     type: Types.ResourceRequestType,
     details: Types.ResourcesDetails,
-  ): Promise<any>;
+  ): Promise<Types.ResourceResponse>;
 
   // User register/deregister
   registerUser(
@@ -136,7 +131,6 @@ interface NativeMethods {
   startSingleSignOn(uri: string): Promise<Types.SingleSignOnData>;
 }
 
-//
 const DefaultConfig: Types.Config = {
   enableFingerprint: true,
   securityControllerClassName:
@@ -145,8 +139,6 @@ const DefaultConfig: Types.Config = {
   customProviders: [{id: '2-way-otp-api', isTwoStep: true}],
   configModelClassName: null,
 };
-
-//
 
 const nativeMethods: NativeMethods = {
   ...(RNOneginiSdk as NativeMethods),
@@ -165,16 +157,6 @@ const nativeMethods: NativeMethods = {
   //
   // override methods if needed
   //
-
-  startClient: (
-    sdkConfig: Types.Config = DefaultConfig,
-  ): Promise<string | null> => {
-    if (isIOS()) {
-      return RNOneginiSdk.startClient();
-    }
-
-    return RNOneginiSdk.startClient(sdkConfig);
-  },
 
   authenticateUserImplicitly: (
     profileId: string,
@@ -220,23 +202,7 @@ const nativeMethods: NativeMethods = {
     }
     return RNOneginiSdk.submitFingerprintFallbackToPin();
   },
-  //
-  resourceRequest: (
-    type: Types.ResourceRequestType,
-    details: Types.ResourcesDetails,
-  ): Promise<any> => {
-    return new Promise((resolve, reject) => {
-      RNOneginiSdk.resourceRequest(type, details)
-        .then(
-          (results: string) =>
-            isAndroid() ? resolve(JSON.parse(results)) : resolve(results), // on Android we send string - we need to parse it
-        )
-        .catch(reject);
-    });
-  },
 };
-
-//
 
 const OneginiSdk = {
   ...nativeMethods,
