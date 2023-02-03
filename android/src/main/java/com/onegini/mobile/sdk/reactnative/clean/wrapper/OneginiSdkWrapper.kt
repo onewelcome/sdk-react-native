@@ -72,8 +72,8 @@ class OneginiSdkWrapper @Inject constructor(
     private val validatePinWithPolicyUseCase: ValidatePinWithPolicyUseCase,
 )  {
 
-    fun startClient(rnConfig: ReadableMap, promise: Promise) {
-        startClientUseCase(rnConfig, promise)
+    fun startClient(promise: Promise) {
+        startClientUseCase(promise)
     }
 
     fun authenticateUser(profileId: String, authenticatorId: String?, promise: Promise) {

@@ -1,17 +1,20 @@
 package com.onegini.mobile.sdk.reactnative
 
 import android.content.Context
+import android.util.Log
 import com.onegini.mobile.sdk.android.client.OneginiClient
 import com.onegini.mobile.sdk.android.client.OneginiClientBuilder
-import com.onegini.mobile.sdk.android.model.OneginiClientConfigModel
-import com.onegini.mobile.sdk.reactnative.handlers.registration.RegistrationRequestHandler
 import com.onegini.mobile.sdk.reactnative.handlers.customregistration.SimpleCustomRegistrationAction
 import com.onegini.mobile.sdk.reactnative.handlers.customregistration.SimpleCustomRegistrationFactory
 import com.onegini.mobile.sdk.reactnative.handlers.fingerprint.FingerprintAuthenticationRequestHandler
 import com.onegini.mobile.sdk.reactnative.handlers.mobileauthotp.MobileAuthOtpRequestHandler
 import com.onegini.mobile.sdk.reactnative.handlers.pins.CreatePinRequestHandler
 import com.onegini.mobile.sdk.reactnative.handlers.pins.PinAuthenticationRequestHandler
+import com.onegini.mobile.sdk.reactnative.handlers.registration.RegistrationRequestHandler
 import com.onegini.mobile.sdk.reactnative.model.rn.OneginiReactNativeConfig
+import com.onegini.mobile.sdk.reactnative.model.rn.ReactNativeIdentityProvider
+import com.onegini.mobile.sdk.reactnative.utils.ClassLoader
+
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -28,18 +31,9 @@ class OneginiSDK @Inject constructor(
 
     val simpleCustomRegistrationActions = ArrayList<SimpleCustomRegistrationAction>()
 
-    lateinit var config: OneginiReactNativeConfig
-        private set
-
-    fun init(oneginiReactNativeConfig: OneginiReactNativeConfig) {
-        this.config = oneginiReactNativeConfig
-
-        buildSDK(applicationContext)
-    }
-
     val oneginiClient: OneginiClient
         get() {
-            return OneginiClient.getInstance()!!
+            return OneginiClient.getInstance() ?: buildSDK(applicationContext)
         }
 
     private fun buildSDK(context: Context): OneginiClient {
@@ -48,54 +42,34 @@ class OneginiSDK @Inject constructor(
         val clientBuilder = OneginiClientBuilder(applicationContext, createPinRequestHandler, pinAuthenticationRequestHandler)
 
         clientBuilder.setBrowserRegistrationRequestHandler(registrationRequestHandler)
-                .setHttpConnectTimeout(Constants.httpConnectTimeoutBrowserRegistrationMiliseconds)
-                .setHttpReadTimeout(Constants.httpReadTimeoutBrowserRegistrationMiliseconds)
+            .setMobileAuthWithOtpRequestHandler(mobileAuthOtpRequestHandler)
+            .setFingerprintAuthenticationRequestHandler(fingerprintAuthenticationRequestHandler)
+            .setHttpConnectTimeout(Constants.httpConnectTimeoutBrowserRegistrationMiliseconds)
+            .setHttpReadTimeout(Constants.httpReadTimeoutBrowserRegistrationMiliseconds)
 
-        setProviders(clientBuilder)
-        setConfigModel(clientBuilder)
-        setSecurityController(clientBuilder)
-
-        if (config.enableMobileAuthenticationOtp) {
-            clientBuilder.setMobileAuthWithOtpRequestHandler(mobileAuthOtpRequestHandler)
-        }
-
-        if (config.enableFingerprint) {
-            clientBuilder.setFingerprintAuthenticationRequestHandler(fingerprintAuthenticationRequestHandler)
-        }
-
+        val identityProvider = loadIdentityProvidersFromConfig(context)
+        addIdentityProviders(identityProvider, clientBuilder)
         return clientBuilder.build()
     }
 
-    private fun setProviders(clientBuilder: OneginiClientBuilder) {
-        config.identityProviders.forEach {
+    private fun loadIdentityProvidersFromConfig(context: Context): List<ReactNativeIdentityProvider> {
+        return try {
+            val configClass = ClassLoader(context).getClassByName("ReactNativeConfig").newInstance() as OneginiReactNativeConfig
+            configClass.getIdentityProviders()
+        } catch (e: ClassNotFoundException) {
+            Log.e("Loading of ReactNativeConfig failed.", e.toString())
+            emptyList()
+        } catch (e: InstantiationException) {
+            Log.e("onegini", "Loading of ReactNativeConfig failed. $e")
+            emptyList()
+        }
+    }
+
+    private fun addIdentityProviders(identityProviders: List<ReactNativeIdentityProvider>, clientBuilder: OneginiClientBuilder) {
+        identityProviders.forEach {
             val provider = simpleCustomRegistrationFactory.getSimpleCustomRegistrationProvider(it)
             simpleCustomRegistrationActions.add(provider.action)
             clientBuilder.addCustomIdentityProvider(provider)
-        }
-    }
-
-    private fun setConfigModel(clientBuilder: OneginiClientBuilder) {
-        if (config.configModelClassName == null) {
-            return
-        }
-
-        val clazz = Class.forName(config.configModelClassName!!)
-        val ctor = clazz.getConstructor()
-        val `object` = ctor.newInstance()
-        if (`object` is OneginiClientConfigModel) {
-            clientBuilder.setConfigModel(`object`)
-        }
-    }
-
-    private fun setSecurityController(clientBuilder: OneginiClientBuilder) {
-        if (config.securityControllerClassName == null) {
-            return
-        }
-        try {
-            val securityController = Class.forName(config.securityControllerClassName!!)
-            clientBuilder.setSecurityController(securityController)
-        } catch (e: ClassNotFoundException) {
-            e.printStackTrace()
         }
     }
 }
