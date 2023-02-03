@@ -18,4 +18,5 @@ enum class OneginiWrapperErrors(val code: Int, val message: String) {
     ACTION_NOT_ALLOWED(8017, "This action is currently not allowed"),
     INCORRECT_PIN_FLOW(8018, "Incorrect pinFlow supplied"),
     AUTHENTICATOR_NOT_REGISTERED(8019, "The authenticator is not registered"),
+    USER_NOT_AUTHENTICATED(9010, "No user is currently authenticated, possibly due to the fact that the access token has expired. A user must be authenticated in order to fetch resources.")
 }
