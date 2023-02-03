@@ -4,8 +4,7 @@ import com.facebook.react.bridge.JavaOnlyMap
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReadableMap
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.ResourceRequestUseCase
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.PARAMETERS_NOT_CORRECT
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.*
 import com.onegini.mobile.sdk.reactnative.exception.REQUEST_METHOD_NOT_SUPPORTED
 import com.onegini.mobile.sdk.reactnative.exception.REQUEST_MISSING_PATH_PARAMETER
 import com.onegini.mobile.sdk.reactnative.exception.REQUEST_TYPE_NOT_SUPPORTED
@@ -62,6 +61,7 @@ class ResourceRequestUseCaseTests {
         // FIXME: RNP-138 Remove this, as this is to prevent 'null' being added before baseUrl
         whenever(oneginiSdk.oneginiClient.configModel.resourceBaseUrl).thenReturn("")
         resourceRequestUseCase = ResourceRequestUseCase(oneginiSdk)
+        whenAccessTokenExists()
     }
     private val correctUrl = "https://example.url/resources/test"
     private val incorrectUrl = "example.url/resources/test"
@@ -188,7 +188,17 @@ class ResourceRequestUseCaseTests {
             }
         }
         resourceRequestUseCase("User", details, promiseMock)
-        verify(promiseMock).reject(OneginiWrapperErrors.RESOURCE_CALL_ERROR.code.toString(), ioExceptionMock.message)
+        verify(promiseMock).reject(RESOURCE_CALL_ERROR.code.toString(), ioExceptionMock.message)
+    }
+
+    @Test
+    fun `When performing authenticated resourceCall with correct data but no acccessToken, Then should reject with USER_NOT_AUTHENTICATED`() {
+        whenAccessTokenDoesNotExist()
+        val headers = correctHeaders()
+        val details = requiredDetailsGET()
+        details.putMap("headers", headers)
+        resourceRequestUseCase("User", details, promiseMock)
+        verify(promiseMock).reject(USER_NOT_AUTHENTICATED.code.toString(), USER_NOT_AUTHENTICATED.message)
     }
 
     private fun requiredDetailsGET(): JavaOnlyMap {
@@ -209,5 +219,13 @@ class ResourceRequestUseCaseTests {
         whenever(responseMock.body?.string()).thenReturn("responseBody")
         val headers = Headers.Builder().add(headerOne.first, headerOne.second).build()
         whenever(responseMock.headers).thenReturn(headers)
+    }
+
+    private fun whenAccessTokenExists() {
+        whenever(oneginiSdk.oneginiClient.accessToken).thenReturn("nonNullAccessToken")
+    }
+
+    private fun whenAccessTokenDoesNotExist() {
+        whenever(oneginiSdk.oneginiClient.accessToken).thenReturn(null)
     }
 }

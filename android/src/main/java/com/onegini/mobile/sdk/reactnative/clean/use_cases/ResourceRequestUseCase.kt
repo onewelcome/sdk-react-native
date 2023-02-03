@@ -8,8 +8,7 @@ import com.onegini.mobile.sdk.reactnative.Constants.RESOURCE_REQUEST_IMPLICIT_US
 import com.onegini.mobile.sdk.reactnative.Constants.RESOURCE_REQUEST_USER
 import com.onegini.mobile.sdk.reactnative.OneginiSDK
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.PARAMETERS_NOT_CORRECT
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.RESOURCE_CALL_ERROR
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.*
 import com.onegini.mobile.sdk.reactnative.exception.REQUEST_TYPE_NOT_SUPPORTED
 import com.onegini.mobile.sdk.reactnative.mapers.ResourceRequestDetailsMapper
 import com.onegini.mobile.sdk.reactnative.model.ResourceRequestDetails
@@ -32,6 +31,7 @@ class ResourceRequestUseCase @Inject constructor(
         try {
             val resourceClient = mapTypeToResourceClient(type)
             val requestDetails = ResourceRequestDetailsMapper.toResourceRequestDetails(details)
+            checkRequireAccessToken(type)
             performResourceRequest(resourceClient, requestDetails, promise)
         } catch (error: OneginiReactNativeException) {
             return promise.reject(error.errorType.toString(), error.message)
@@ -91,5 +91,12 @@ class ResourceRequestUseCase @Inject constructor(
             result.putString(header.first, header.second)
         }
         return result
+    }
+
+    // We do this check because iOS requires an accessToken to make an authenticated resource Call
+    private fun checkRequireAccessToken(type: String) {
+        if (oneginiSDK.oneginiClient.accessToken == null && type == RESOURCE_REQUEST_USER) {
+            throw OneginiReactNativeException(USER_NOT_AUTHENTICATED.code, USER_NOT_AUTHENTICATED.message)
+        }
     }
 }
