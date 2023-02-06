@@ -22,15 +22,7 @@ enum OneWelcomeBridgeEvents: String {
 class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     var bridgeConnector: BridgeConnector
     
-    private var sdkClient: Client? = nil
-    private var sharedClient: Client {
-        guard let sdkClient = sdkClient else {
-            let builtClient = ClientBuilder().build()
-            self.sdkClient = builtClient
-            return builtClient
-        }
-        return sdkClient
-    }
+    private lazy var sharedClient = ClientBuilder().build()
     
     private var userClientONG: ONGUserClient {
         // We use this computer property to make sure the SDK is built before we use it. This can be removed once we fully switch to the swift api.
