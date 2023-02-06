@@ -30,6 +30,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
         self.bridgeConnector = BridgeConnector()
         super.init()
         self.bridgeConnector.bridge = self
+        ONGClientBuilder().build()
     }
 
     override func supportedEvents() -> [String] {
@@ -430,7 +431,6 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
     // Service methods
     private func oneginiSDKStartup(completion: @escaping (Bool, Error?) -> Void) {
-        ONGClientBuilder().build()
         ONGClient.sharedInstance().start { result, error in
             if let error = error {
                 completion(result, error)
