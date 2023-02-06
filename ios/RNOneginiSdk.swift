@@ -25,14 +25,14 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     private lazy var sharedClient = ClientBuilder().build()
     
     private var userClientONG: ONGUserClient {
-        // We use this computer property to make sure the SDK is built before we use it. This can be removed once we fully switch to the swift api.
-        let client = sharedClient
+        // We use this computed property to make sure the SDK is built before we use it. This can be removed once we fully switch to the swift api.
+        _ = sharedClient
         return ONGUserClient.sharedInstance()
     }
     
     private var deviceClientONG: ONGDeviceClient {
-        // We use this computer property to make sure the SDK is built before we use it. This can be removed once we fully switch to the swift api.
-        let client = sharedClient
+        // We use this computed property to make sure the SDK is built before we use it. This can be removed once we fully switch to the swift api.
+        _ = sharedClient
         return ONGDeviceClient.sharedInstance()
     }
     
