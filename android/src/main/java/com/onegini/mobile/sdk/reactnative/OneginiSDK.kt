@@ -28,13 +28,10 @@ class OneginiSDK @Inject constructor(
     private val fingerprintAuthenticationRequestHandler: FingerprintAuthenticationRequestHandler,
     private val simpleCustomRegistrationFactory: SimpleCustomRegistrationFactory,
 ) {
-
+    var isInitialized = false
     val simpleCustomRegistrationActions = ArrayList<SimpleCustomRegistrationAction>()
 
-    val oneginiClient: OneginiClient
-        get() {
-            return OneginiClient.getInstance() ?: buildSDK(applicationContext)
-        }
+    val oneginiClient: OneginiClient get() = OneginiClient.getInstance() ?: buildSDK(applicationContext)
 
     private fun buildSDK(context: Context): OneginiClient {
         val applicationContext = context.applicationContext
@@ -47,8 +44,8 @@ class OneginiSDK @Inject constructor(
             .setHttpConnectTimeout(Constants.httpConnectTimeoutBrowserRegistrationMiliseconds)
             .setHttpReadTimeout(Constants.httpReadTimeoutBrowserRegistrationMiliseconds)
 
-        val identityProvider = loadIdentityProvidersFromConfig(context)
-        addIdentityProviders(identityProvider, clientBuilder)
+        val identityProviders = loadIdentityProvidersFromConfig(context)
+        addIdentityProviders(identityProviders, clientBuilder)
         return clientBuilder.build()
     }
 
@@ -56,10 +53,7 @@ class OneginiSDK @Inject constructor(
         return try {
             val configClass = ClassLoader(context).getClassByName("ReactNativeConfig").newInstance() as OneginiReactNativeConfig
             configClass.getIdentityProviders()
-        } catch (e: ClassNotFoundException) {
-            Log.e("Loading of ReactNativeConfig failed.", e.toString())
-            emptyList()
-        } catch (e: InstantiationException) {
+        } catch (e: Exception) {
             Log.e("onegini", "Loading of ReactNativeConfig failed. $e")
             emptyList()
         }

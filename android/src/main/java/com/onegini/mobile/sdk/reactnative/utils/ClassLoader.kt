@@ -3,7 +3,7 @@ package com.onegini.mobile.sdk.reactnative.utils
 import android.content.Context
 
 class ClassLoader(context: Context) {
-    private val packageName: String
+    private val packageName = context.packageName
 
     @Throws(ClassNotFoundException::class)
     fun getClassByName(className: String): Class<*> {
@@ -22,9 +22,5 @@ class ClassLoader(context: Context) {
         val lastDotIndex = packageName.lastIndexOf('.')
         val shortenPackageName = packageName.substring(0, lastDotIndex)
         return "$shortenPackageName.$className"
-    }
-
-    init {
-        packageName = context.packageName
     }
 }
