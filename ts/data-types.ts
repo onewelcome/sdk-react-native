@@ -66,7 +66,7 @@ export interface StringMap {
 export interface ResourcesDetails {
   path: string;
   method: 'GET' | 'POST' | 'PUT' | 'DELETE';
-  parameters?: StringMap;
+  body?: string;
   headers?: StringMap;
 }
 
