@@ -8,15 +8,19 @@ import com.onegini.mobile.sdk.reactnative.Constants.RESOURCE_REQUEST_IMPLICIT_US
 import com.onegini.mobile.sdk.reactnative.Constants.RESOURCE_REQUEST_USER
 import com.onegini.mobile.sdk.reactnative.OneginiSDK
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.*
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.PARAMETERS_NOT_CORRECT
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.RESOURCE_CALL_ERROR
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.USER_NOT_AUTHENTICATED
 import com.onegini.mobile.sdk.reactnative.exception.REQUEST_TYPE_NOT_SUPPORTED
 import com.onegini.mobile.sdk.reactnative.mapers.ResourceRequestDetailsMapper
 import com.onegini.mobile.sdk.reactnative.model.ResourceRequestDetails
+import com.onegini.mobile.sdk.reactnative.network.ApiCall
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Headers
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import java.io.IOException
 import javax.inject.Inject
@@ -39,8 +43,6 @@ class ResourceRequestUseCase @Inject constructor(
     }
 
     private fun performResourceRequest(resourceClient: OkHttpClient, requestDetails: ResourceRequestDetails, promise: Promise) {
-        // FIXME: RNP-138 We will need to expose a method to get the resourceBaseUrl in the RN side and then allow passing a full url here.
-        // FIXME: RNP-140: Support adding a body for requests that are not GET requests
         // FIXME: RNP-128: Support Formdata requests
         try {
             val request = buildRequest(requestDetails)
@@ -51,10 +53,30 @@ class ResourceRequestUseCase @Inject constructor(
     }
 
     private fun buildRequest(requestDetails: ResourceRequestDetails): Request {
-        return Request.Builder()
+        val request =  Request.Builder()
             .url(requestDetails.path)
             .headers(requestDetails.headers)
-            .build()
+        when (requestDetails.method) {
+            ApiCall.GET -> {
+                requestDetails.body?.let {
+                    throw OneginiReactNativeException(PARAMETERS_NOT_CORRECT.code, "Body is not allowed in GET request")
+                } ?: request.get()
+            }
+            ApiCall.POST -> {
+                requestDetails.body?.let { body ->
+                    request.post(body.toRequestBody(null))
+                } ?: throw OneginiReactNativeException(PARAMETERS_NOT_CORRECT.code, "Non-empty body is required in POST request")
+            }
+            ApiCall.PUT -> {
+                requestDetails.body?.let { body ->
+                    request.post(body.toRequestBody(null))
+                } ?: throw OneginiReactNativeException(PARAMETERS_NOT_CORRECT.code, "Non-empty body is required in PUT request")
+            }
+            ApiCall.DELETE -> {
+                request.delete(requestDetails.body?.toRequestBody())
+            }
+        }
+        return request.build()
     }
 
     private fun performCall(request: Request, resourceClient: OkHttpClient, promise: Promise) {

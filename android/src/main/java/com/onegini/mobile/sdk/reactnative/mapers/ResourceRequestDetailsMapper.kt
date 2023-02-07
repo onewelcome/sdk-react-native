@@ -12,8 +12,6 @@ import okhttp3.Headers
 object ResourceRequestDetailsMapper {
 
     fun toResourceRequestDetails(map: ReadableMap): ResourceRequestDetails {
-
-        val parameters: MutableMap<String, String> = mutableMapOf()
         val headerBuilder = Headers.Builder()
 
         // TODO: RNP-140: Check if we need to set content-type to a default value with POST
@@ -24,22 +22,19 @@ object ResourceRequestDetailsMapper {
             }
         }
 
-        // FIXME: RNP-140: Remove this as part of supporting body
-        map.getMap("parameters")?.entryIterator?.forEach {
-            parameters[it.key] = it.value.toString()
-        }
-
         val method = try {
-            ApiCall.valueOf(map.getString("method") ?: "GET")
+            ApiCall.valueOf(map.getString("method") ?: "")
         } catch (e: IllegalArgumentException) {
             throw OneginiReactNativeException(PARAMETERS_NOT_CORRECT.code, REQUEST_METHOD_NOT_SUPPORTED)
         }
+
+        val body = map.getString("body")
 
         return ResourceRequestDetails(
             path = map.getString("path") ?: throw OneginiReactNativeException(PARAMETERS_NOT_CORRECT.code, REQUEST_MISSING_PATH_PARAMETER),
             method = method,
             headers = headerBuilder.build(),
-            parameters = parameters
+            body = body
         )
     }
 }

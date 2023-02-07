@@ -7,5 +7,5 @@ data class ResourceRequestDetails(
         val path: String,
         val method: ApiCall,
         val headers: Headers,
-        val parameters: Map<String, String>
+        val body: String?
 )
