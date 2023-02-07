@@ -308,8 +308,14 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
             return
         }
 
-        let completion = makeCompletionHandler(resolver: resolve, rejecter: reject, resolveWithNil: false)
-        bridgeConnector.toResourceHandler.resourceRequest(resourceType, details, completion)
+        bridgeConnector.toResourceHandler.resourceRequest(resourceType, details) { result in
+            switch result {
+            case .success(let response):
+                resolve(response.asDictionary)
+            case .failure(let error):
+                self.rejectWithError(reject, error)
+            }
+        }
     }
 
     @objc
