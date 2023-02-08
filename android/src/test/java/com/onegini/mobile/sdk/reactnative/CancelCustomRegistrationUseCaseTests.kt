@@ -7,7 +7,7 @@ import com.onegini.mobile.sdk.reactnative.exception.CANCEL_CUSTOM_REGISTRATION_N
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.ACTION_NOT_ALLOWED
 import com.onegini.mobile.sdk.reactnative.handlers.customregistration.CustomRegistrationEventEmitter
 import com.onegini.mobile.sdk.reactnative.handlers.customregistration.SimpleCustomRegistrationAction
-import com.onegini.mobile.sdk.reactnative.handlers.customregistration.SimpleCustomRegistrationFactory
+import com.onegini.mobile.sdk.reactnative.handlers.customregistration.SimpleTwoStepCustomRegistrationAction
 import com.onegini.mobile.sdk.reactnative.handlers.registration.RegistrationEventEmitter
 import com.onegini.mobile.sdk.reactnative.handlers.registration.RegistrationRequestHandler
 import com.onegini.mobile.sdk.reactnative.model.rn.ReactNativeIdentityProvider
@@ -44,14 +44,12 @@ class CancelCustomRegistrationUseCaseTests {
 
     lateinit var registrationRequestHandler: RegistrationRequestHandler
 
-    lateinit var simpleCustomRegistrationFactory: SimpleCustomRegistrationFactory
 
     private val cancelMessage = "cancel message"
     private val successMessage = "success message"
 
     @Before
     fun setup() {
-        simpleCustomRegistrationFactory = SimpleCustomRegistrationFactory(customRegistrationEventEmitter)
         registrationRequestHandler = RegistrationRequestHandler(registrationEventEmitter)
         cancelCustomRegistrationUseCase = CancelCustomRegistrationUseCase(oneginiSdk)
     }
@@ -120,7 +118,7 @@ class CancelCustomRegistrationUseCaseTests {
 
     private fun whenIdentityProviderExists(isTwoStep: Boolean) {
         val identityProvider = ReactNativeIdentityProvider(TestData.identityProvider1.id, isTwoStep)
-        val customRegistrationAction = spy(simpleCustomRegistrationFactory.getSimpleCustomRegistrationProvider(identityProvider).action)
+        val customRegistrationAction = spy(SimpleTwoStepCustomRegistrationAction(identityProvider.id, customRegistrationEventEmitter))
         val list = ArrayList<SimpleCustomRegistrationAction>()
         list.add(customRegistrationAction)
         `when`(oneginiSdk.simpleCustomRegistrationActions).thenReturn(list)

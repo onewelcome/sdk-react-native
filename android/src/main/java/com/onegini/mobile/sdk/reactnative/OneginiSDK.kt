@@ -4,8 +4,9 @@ import android.content.Context
 import android.util.Log
 import com.onegini.mobile.sdk.android.client.OneginiClient
 import com.onegini.mobile.sdk.android.client.OneginiClientBuilder
+import com.onegini.mobile.sdk.reactnative.handlers.customregistration.CustomRegistrationEventEmitter
 import com.onegini.mobile.sdk.reactnative.handlers.customregistration.SimpleCustomRegistrationAction
-import com.onegini.mobile.sdk.reactnative.handlers.customregistration.SimpleCustomRegistrationFactory
+import com.onegini.mobile.sdk.reactnative.handlers.customregistration.SimpleTwoStepCustomRegistrationAction
 import com.onegini.mobile.sdk.reactnative.handlers.fingerprint.FingerprintAuthenticationRequestHandler
 import com.onegini.mobile.sdk.reactnative.handlers.mobileauthotp.MobileAuthOtpRequestHandler
 import com.onegini.mobile.sdk.reactnative.handlers.pins.CreatePinRequestHandler
@@ -26,7 +27,7 @@ class OneginiSDK @Inject constructor(
     private val createPinRequestHandler: CreatePinRequestHandler,
     private val mobileAuthOtpRequestHandler: MobileAuthOtpRequestHandler,
     private val fingerprintAuthenticationRequestHandler: FingerprintAuthenticationRequestHandler,
-    private val simpleCustomRegistrationFactory: SimpleCustomRegistrationFactory,
+    private val customRegistrationEventEmitter: CustomRegistrationEventEmitter,
 ) {
     var isInitialized = false
         private set
@@ -67,9 +68,13 @@ class OneginiSDK @Inject constructor(
     }
 
     private fun addIdentityProviders(identityProviders: List<ReactNativeIdentityProvider>, clientBuilder: OneginiClientBuilder) {
-        identityProviders.forEach {
-            val provider = simpleCustomRegistrationFactory.getSimpleCustomRegistrationProvider(it)
-            simpleCustomRegistrationActions.add(provider.action)
+        identityProviders.forEach { identityProvider ->
+            val provider = when (identityProvider.isTwoStep) {
+                true -> SimpleTwoStepCustomRegistrationAction(identityProvider.id, customRegistrationEventEmitter)
+                false -> SimpleCustomRegistrationAction(identityProvider.id, customRegistrationEventEmitter)
+            }
+
+            simpleCustomRegistrationActions.add(provider)
             clientBuilder.addCustomIdentityProvider(provider)
         }
     }

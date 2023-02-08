@@ -8,8 +8,7 @@ import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.IDENTIT
 import com.onegini.mobile.sdk.reactnative.exception.SUBMIT_CUSTOM_REGISTRATION_ACTION_NOT_ALLOWED
 import com.onegini.mobile.sdk.reactnative.handlers.customregistration.CustomRegistrationEventEmitter
 import com.onegini.mobile.sdk.reactnative.handlers.customregistration.SimpleCustomRegistrationAction
-import com.onegini.mobile.sdk.reactnative.handlers.customregistration.SimpleCustomRegistrationFactory
-import com.onegini.mobile.sdk.reactnative.handlers.registration.RegistrationRequestHandler
+import com.onegini.mobile.sdk.reactnative.handlers.customregistration.SimpleTwoStepCustomRegistrationAction
 import com.onegini.mobile.sdk.reactnative.managers.RegistrationManager
 import com.onegini.mobile.sdk.reactnative.model.rn.ReactNativeIdentityProvider
 import org.junit.Before
@@ -36,9 +35,6 @@ class SubmitCustomRegistrationActionUseCaseTests {
     lateinit var promiseMock: Promise
 
     @Mock
-    lateinit var registrationRequestHandler: RegistrationRequestHandler
-
-    @Mock
     lateinit var customRegistrationEventEmitter: CustomRegistrationEventEmitter
 
     @Mock
@@ -46,14 +42,12 @@ class SubmitCustomRegistrationActionUseCaseTests {
 
     lateinit var submitCustomRegistrationActionUseCase: SubmitCustomRegistrationActionUseCase
     lateinit var registrationManager: RegistrationManager
-    lateinit var simpleCustomRegistrationFactory: SimpleCustomRegistrationFactory
 
     private val token = "testToken"
 
     @Before
     fun setup() {
-        simpleCustomRegistrationFactory = SimpleCustomRegistrationFactory(customRegistrationEventEmitter)
-        registrationManager = RegistrationManager(oneginiSdk, registrationRequestHandler)
+        registrationManager = RegistrationManager(oneginiSdk)
         submitCustomRegistrationActionUseCase = SubmitCustomRegistrationActionUseCase(registrationManager)
     }
 
@@ -104,7 +98,7 @@ class SubmitCustomRegistrationActionUseCaseTests {
 
     private fun whenIdentityProviderExists(isTwoStep: Boolean) {
         val identityProvider = ReactNativeIdentityProvider(TestData.identityProvider1.id, isTwoStep)
-        val customRegistrationAction = spy(simpleCustomRegistrationFactory.getSimpleCustomRegistrationProvider(identityProvider).action)
+        val customRegistrationAction = spy(SimpleTwoStepCustomRegistrationAction(identityProvider.id, customRegistrationEventEmitter))
         val list = ArrayList<SimpleCustomRegistrationAction>()
         list.add(customRegistrationAction)
         `when`(oneginiSdk.simpleCustomRegistrationActions).thenReturn(list)
