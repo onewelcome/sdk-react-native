@@ -15,7 +15,7 @@ class StartClientUseCase @Inject constructor(private val oneginiSDK: OneginiSDK)
         oneginiSDK.oneginiClient.start(object : OneginiInitializationHandler {
             override fun onSuccess(removedUserProfiles: Set<UserProfile>) {
                 promise.resolve(null)
-                oneginiSDK.isInitialized = true
+                oneginiSDK.setSDKInitialized()
             }
 
             override fun onError(error: OneginiInitializationError) {

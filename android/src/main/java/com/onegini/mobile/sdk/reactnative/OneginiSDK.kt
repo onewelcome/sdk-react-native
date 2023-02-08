@@ -29,9 +29,16 @@ class OneginiSDK @Inject constructor(
     private val simpleCustomRegistrationFactory: SimpleCustomRegistrationFactory,
 ) {
     var isInitialized = false
+        private set
+
     val simpleCustomRegistrationActions = ArrayList<SimpleCustomRegistrationAction>()
 
-    val oneginiClient: OneginiClient get() = OneginiClient.getInstance() ?: buildSDK(applicationContext)
+    val oneginiClient: OneginiClient
+        get() = OneginiClient.getInstance() ?: buildSDK(applicationContext)
+
+    fun setSDKInitialized() {
+        isInitialized = true
+    }
 
     private fun buildSDK(context: Context): OneginiClient {
         val applicationContext = context.applicationContext
