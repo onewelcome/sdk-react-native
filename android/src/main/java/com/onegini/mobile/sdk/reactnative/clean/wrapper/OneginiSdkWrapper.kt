@@ -22,6 +22,7 @@ import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAuthenticatedUserPr
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetIdentityProvidersUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetRedirectUriUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetRegisteredAuthenticatorsUseCase
+import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetResourceBaseUrlUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetUserProfilesUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.HandleMobileAuthWithOtpUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.HandleRegistrationCallbackUseCase
@@ -57,6 +58,7 @@ class OneginiSdkWrapper @Inject constructor(
     private val getIdentityProvidersUseCase: GetIdentityProvidersUseCase,
     private val getRedirectUriUseCase: GetRedirectUriUseCase,
     private val getRegisteredAuthenticatorsUseCase: GetRegisteredAuthenticatorsUseCase,
+    private val getResourceBaseUrlUseCase: GetResourceBaseUrlUseCase,
     private val getUserProfilesUseCase: GetUserProfilesUseCase,
     private val handleMobileAuthWithOtpUseCase: HandleMobileAuthWithOtpUseCase,
     private val handleRegistrationCallbackUseCase: HandleRegistrationCallbackUseCase,
@@ -218,5 +220,9 @@ class OneginiSdkWrapper @Inject constructor(
 
     fun registerAuthenticator(authenticatorId: String, promise: Promise) {
         registerAuthenticatorUseCase(authenticatorId, promise)
+    }
+
+    fun getResourceBaseUrl(promise: Promise) {
+        getResourceBaseUrlUseCase(promise)
     }
 }

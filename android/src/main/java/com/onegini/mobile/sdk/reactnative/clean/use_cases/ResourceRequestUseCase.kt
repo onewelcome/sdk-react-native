@@ -52,7 +52,7 @@ class ResourceRequestUseCase @Inject constructor(
 
     private fun buildRequest(requestDetails: ResourceRequestDetails): Request {
         return Request.Builder()
-            .url(oneginiSDK.oneginiClient.configModel.resourceBaseUrl + requestDetails.path)
+            .url(requestDetails.path)
             .headers(requestDetails.headers)
             .build()
     }

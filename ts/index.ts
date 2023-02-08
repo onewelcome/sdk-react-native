@@ -67,7 +67,6 @@ interface NativeMethods {
   getRedirectUri(): Promise<string>;
 
   // Resource getters
-  //@todo extend types for details and responses
   authenticateUserImplicitly(
     profileId: string,
     scopes?: string[],
@@ -77,6 +76,7 @@ interface NativeMethods {
     type: Types.ResourceRequestType,
     details: Types.ResourcesDetails,
   ): Promise<Types.ResourceResponse>;
+  getResourceBaseUrl(): Promise<string>;
 
   // User register/deregister
   registerUser(

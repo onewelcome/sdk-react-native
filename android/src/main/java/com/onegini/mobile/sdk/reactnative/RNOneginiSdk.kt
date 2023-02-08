@@ -436,4 +436,9 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
             else -> sdkWrapper.resourceRequest(type, details, promise)
         }
     }
+
+    @ReactMethod
+    fun getResourceBaseUrl(promise: Promise) {
+        sdkWrapper.getResourceBaseUrl(promise)
+    }
 }
