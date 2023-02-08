@@ -82,13 +82,23 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
                 description: "'method' must be either 'GET', 'POST', 'PUT', 'DELETE', 'PATCH' or 'HEAD'")
         }
         
+        guard let body = details["body"] as? String? else {
+            throw WrapperError.parametersNotCorrect(description: "Body must be of type String?")
+        }
+        
         let headers = try getHeaders(details)
         return ResourceRequestFactory.makeResourceRequest(
-            path: path, method: method, parameters: nil, body: nil,
-            headers: headers, parametersEncoding: .formURL)
+            path: path,
+            method: method,
+            body: body?.data(using: .utf8),
+            headers: headers
+        )
     }
     
     private func getHeaders(_ details: Dictionary<String, Any?>) throws -> [String: String] {
+        if details["headers"] == nil {
+            return [:]
+        }
         guard let headers = details["headers"] as? [String: Any] else {
             throw WrapperError.parametersNotCorrect(
                 description: "'headers' must be an object with only Strings as keys")
