@@ -21,15 +21,34 @@ enum OneWelcomeBridgeEvents: String {
 @objc(RNOneginiSdk)
 class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     var bridgeConnector: BridgeConnector
-    private var userClient: ONGUserClient {
-        return ONGClient.sharedInstance().userClient
+    
+    private lazy var sharedClient = ClientBuilder().build()
+    
+    private var userClientONG: ONGUserClient {
+        // We use this computed property to make sure the SDK is built before we use it. This can be removed once we fully switch to the swift api.
+        _ = sharedClient
+        return ONGUserClient.sharedInstance()
     }
-    private let deviceClient = SharedDeviceClient.instance
+    
+    private var deviceClientONG: ONGDeviceClient {
+        // We use this computed property to make sure the SDK is built before we use it. This can be removed once we fully switch to the swift api.
+        _ = sharedClient
+        return ONGDeviceClient.sharedInstance()
+    }
+    
+    private var deviceClient: DeviceClient {
+        return sharedClient.deviceClient
+    }
+    
+    private var userClient: UserClient {
+        return sharedClient.userClient
+    }
 
     override init() {
         self.bridgeConnector = BridgeConnector()
         super.init()
         self.bridgeConnector.bridge = self
+      
     }
 
     override func supportedEvents() -> [String] {
@@ -83,19 +102,19 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
     @objc
     func startClient(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        let completion = makeCompletionHandler(resolver: resolve, rejecter: reject, resolveWithNil: false)
-        oneginiSDKStartup(completion: completion)
+        let completion = makeCompletionHandler(resolver: resolve, rejecter: reject)
+        sharedClient.start(completion: completion)
     }
 
     @objc
     func getRedirectUri(_ resolve: RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
-        let redirectUri = SharedClient.instance.configModel.redirectURL
+        let redirectUri = sharedClient.configModel.redirectURL
         resolve(redirectUri)
     }
 
     @objc
     func getAccessToken(_ resolve: RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
-        let accessToken = userClient.accessToken
+        let accessToken = userClientONG.accessToken
         guard let accessToken = accessToken else {
             rejectWithError(reject, WrapperError.noProfileAuthenticated)
             return
@@ -105,7 +124,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
     @objc
     func getUserProfiles(_ resolve: RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
-        let profiles = userClient.userProfiles()
+        let profiles = userClientONG.userProfiles()
         let result: NSMutableArray = []
 
         for profile in profiles {
@@ -117,7 +136,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
     @objc
     func getAuthenticatedUserProfile(_ resolve: RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
-        guard let authenticatedProfile = userClient.authenticatedUserProfile() else {
+        guard let authenticatedProfile = userClientONG.authenticatedUserProfile() else {
             rejectWithError(reject, WrapperError.noProfileAuthenticated)
             return
         }
@@ -126,7 +145,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
     @objc
     func getIdentityProviders(_ resolve: RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
-        let profiles = userClient.identityProviders()
+        let profiles = userClientONG.identityProviders()
         let result: NSMutableArray  = []
 
         for profile in profiles {
@@ -143,7 +162,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                       rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         var provider: IdentityProvider? = nil
         if identityProviderId != nil {
-            provider = SharedUserClient.instance.identityProviders.first(where: { $0.identifier == identityProviderId })
+            provider = userClient.identityProviders.first(where: { $0.identifier == identityProviderId })
         }
         bridgeConnector.toRegistrationConnector.registrationHandler.signUp(identityProvider: provider, scopes: scopes) {
           (_, userProfile, error) -> Void in
@@ -164,13 +183,13 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func deregisterUser(_ profileId: String,
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        let profile = userClient.userProfiles().first(where: { $0.profileId == profileId })
+        let profile = userClientONG.userProfiles().first(where: { $0.profileId == profileId })
         guard let profile = profile else {
             rejectWithError(reject, WrapperError.profileDoesNotExist)
             return
         }
         let completion = makeCompletionHandler(resolver: resolve, rejecter: reject, resolveWithNil: true)
-        userClient.deregisterUser(profile, completion: completion)
+        userClientONG.deregisterUser(profile, completion: completion)
     }
 
     @objc
@@ -240,13 +259,13 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func authenticateUser(_ profileId: String, authenticatorId: String,
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        let profile = SharedUserClient.instance.userProfiles.first(where: { $0.profileId == profileId })
+        let profile = userClient.userProfiles.first(where: { $0.profileId == profileId })
         guard let profile = profile else {
             rejectWithError(reject, WrapperError.profileDoesNotExist)
             return
         }
-        let authenticators = SharedUserClient.instance.authenticators(.all, for: profile)
-        let authenticator = authenticators.first(where: {$0.identifier == authenticatorId}) ?? SharedUserClient.instance.preferredAuthenticator
+        let authenticators = userClient.authenticators(.all, for: profile)
+        let authenticator = authenticators.first(where: {$0.identifier == authenticatorId}) ?? userClient.preferredAuthenticator
         bridgeConnector.toLoginHandler.authenticateUser(profile, authenticator: authenticator) {
             (userProfile, error) -> Void in
             self.resolveResultOrRejectError(resolve, reject, ["userProfile": ["id": userProfile.profileId]], error)
@@ -256,7 +275,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     @objc
     func logout(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         let completion = makeCompletionHandler(resolver: resolve, rejecter: reject, resolveWithNil: true)
-        userClient.logoutUser(completion)
+        userClientONG.logoutUser(completion)
     }
 
     @objc
@@ -273,13 +292,13 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                                     scopes: [String],
                                     resolver resolve: @escaping RCTPromiseResolveBlock,
                                     rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        let profile = userClient.userProfiles().first(where: { $0.profileId == profileId })
+        let profile = userClientONG.userProfiles().first(where: { $0.profileId == profileId })
         guard let profile = profile else {
             rejectWithError(reject, WrapperError.profileDoesNotExist)
             return
         }
         let completion = makeCompletionHandler(resolver: resolve, rejecter: reject, resolveWithNil: true)
-        ONGUserClient.sharedInstance().implicitlyAuthenticateUser(profile, scopes: scopes, completion: completion)
+        userClientONG.implicitlyAuthenticateUser(profile, scopes: scopes, completion: completion)
     }
 
     @objc
@@ -290,7 +309,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 //        let completion = makeCompletionHandler(resolver: resolve, rejecter: reject)
 //        deviceClient.authenticateDevice(with: scopes, completion: completion)
         let completion = makeCompletionHandler(resolver: resolve, rejecter: reject, resolveWithNil: true)
-        ONGDeviceClient.sharedInstance().authenticateDevice(scopes, completion: completion)
+        deviceClientONG.authenticateDevice(scopes, completion: completion)
     }
 
     @objc
@@ -350,7 +369,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         
-        let profile = SharedUserClient.instance.userProfiles.first(where: { $0.profileId == profileId })
+        let profile = userClient.userProfiles.first(where: { $0.profileId == profileId })
         guard let profile = profile else {
             rejectWithError(reject, WrapperError.profileDoesNotExist)
             return
@@ -371,7 +390,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func getRegisteredAuthenticators(_ profileId: String,
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        let profile = SharedUserClient.instance.userProfiles.first(where: { $0.profileId == profileId })
+        let profile = userClient.userProfiles.first(where: { $0.profileId == profileId })
         guard let profile = profile else {
             rejectWithError(reject, WrapperError.profileDoesNotExist)
             return
@@ -392,7 +411,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func setPreferredAuthenticator(_ authenticatorId: String,
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        guard let profile = SharedUserClient.instance.authenticatedUserProfile else {
+        guard let profile = userClient.authenticatedUserProfile else {
             rejectWithError(reject, WrapperError.noProfileAuthenticated)
             return
         }
@@ -405,14 +424,14 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
         let completion = makeCompletionHandler(resolver: resolve, rejecter: reject, resolveWithNil: true)
-        userClient.validatePin(withPolicy: pin, completion: completion)
+        userClientONG.validatePin(withPolicy: pin, completion: completion)
     }
 
     @objc
     func registerAuthenticator(_ authenticatorId: String,
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        let profile = SharedUserClient.instance.authenticatedUserProfile
+        let profile = userClient.authenticatedUserProfile
         guard let profile = profile else {
             rejectWithError(reject, WrapperError.profileDoesNotExist)
             return
@@ -425,24 +444,12 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func deregisterAuthenticator(_ authenticatorId: String,
                         resolver resolve: @escaping RCTPromiseResolveBlock,
                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        let profile = SharedUserClient.instance.authenticatedUserProfile
+        let profile = userClient.authenticatedUserProfile
         guard let profile = profile else {
             reject(String(WrapperError.noProfileAuthenticated.code), WrapperError.noProfileAuthenticated.localizedDescription, WrapperError.noProfileAuthenticated)
             return
         }
         let completion = makeCompletionHandler(resolver: resolve, rejecter: reject)
         bridgeConnector.toAuthenticatorsHandler.deregisterAuthenticator(profile, authenticatorId, completion: completion)
-    }
-
-    // Service methods
-    private func oneginiSDKStartup(completion: @escaping (Bool, Error?) -> Void) {
-        ONGClientBuilder().build()
-        ONGClient.sharedInstance().start { result, error in
-            if let error = error {
-                completion(result, error)
-            } else {
-                completion(result, nil)
-            }
-        }
     }
 }
