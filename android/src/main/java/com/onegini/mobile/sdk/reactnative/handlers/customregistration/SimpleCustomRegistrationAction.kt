@@ -5,7 +5,7 @@ import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiCustomReg
 import com.onegini.mobile.sdk.android.model.OneginiCustomIdentityProvider
 import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.*
 
 open class SimpleCustomRegistrationAction(
     private val idProvider: String,
@@ -32,20 +32,14 @@ open class SimpleCustomRegistrationAction(
         callback?.let { customRegistrationCallback ->
             customRegistrationCallback.returnSuccess(result)
             callback = null
-        } ?: throw OneginiReactNativeException(
-            OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code.toInt(),
-            OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message
-        )
+        } ?: throw OneginiReactNativeException(REGISTRATION_NOT_IN_PROGRESS)
     }
 
     fun returnError(exception: Exception?) {
         callback?.let { customRegistrationCallback ->
             customRegistrationCallback.returnError(exception)
             callback = null
-        } ?: throw OneginiReactNativeException(
-            OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.code,
-            OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS.message
-        )
+        } ?: throw OneginiReactNativeException(REGISTRATION_NOT_IN_PROGRESS)
     }
 
     fun isInProgress(): Boolean {
