@@ -14,11 +14,10 @@ import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.Message
 import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.OtpCode
 import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.Pin
 import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.ProfileId
-import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.RnConfig
 import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.Type
 import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.Uri
 import com.onegini.mobile.sdk.reactnative.clean.wrapper.OneginiSdkWrapper
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.*
 import com.onegini.mobile.sdk.reactnative.exception.PARAM_CAN_NOT_BE_NULL
 import com.onegini.mobile.sdk.reactnative.handlers.fingerprint.FingerprintAuthenticationRequestHandler
 import com.onegini.mobile.sdk.reactnative.handlers.mobileauthotp.MobileAuthOtpRequestHandler
@@ -65,7 +64,6 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
     }
 
     enum class FunctionParams(val paramName: String, val type: String ) {
-        RnConfig("rnConfig", "ReadableMap"),
         ProfileId("profileId", "string"),
         AuthenticatorId("authenticatorId", "string"),
         Pin("pin", "string"),
@@ -86,61 +84,75 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
         return "RNOneginiSdk"
     }
 
-    private fun Promise.rejectWithNullError(paramName: String, paramType: String){
-        this.reject(OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.code.toString(), String.format(PARAM_CAN_NOT_BE_NULL, paramName, paramType))
+    private fun Promise.rejectWithNullError(paramName: String, paramType: String) {
+        this.reject(PARAMETERS_NOT_CORRECT.code.toString(), String.format(PARAM_CAN_NOT_BE_NULL, paramName, paramType))
+    }
+
+    private fun Promise.rejectNotInitialized() {
+        this.reject(SDK_NOT_STARTED.code.toString(), SDK_NOT_STARTED.message)
     }
 
     @ReactMethod
-    fun startClient(rnConfig: ReadableMap?, promise: Promise) {
-        when (rnConfig) {
-            null -> promise.rejectWithNullError(RnConfig.paramName, RnConfig.type)
-            else -> sdkWrapper.startClient(rnConfig, promise)
-        }
+    fun startClient(promise: Promise) {
+        sdkWrapper.startClient(promise)
     }
 
     @ReactMethod
     fun getIdentityProviders(promise: Promise) {
-        sdkWrapper.getIdentityProviders(promise)
+        when {
+            !oneginiSDK.isInitialized -> promise.rejectNotInitialized()
+            else -> sdkWrapper.getIdentityProviders(promise)
+        }
     }
 
     @ReactMethod
     fun getAccessToken(promise: Promise) {
-        sdkWrapper.getAccessToken(promise)
+        when {
+            !oneginiSDK.isInitialized -> promise.rejectNotInitialized()
+            else -> sdkWrapper.getAccessToken(promise)
+        }
     }
 
     @ReactMethod
     fun getAuthenticatedUserProfile(promise: Promise) {
-        sdkWrapper.getAuthenticatedUserProfile(promise)
+        when {
+            !oneginiSDK.isInitialized -> promise.rejectNotInitialized()
+            else -> sdkWrapper.getAuthenticatedUserProfile(promise)
+        }
     }
 
     @ReactMethod
     fun getAllAuthenticators(profileId: String?, promise: Promise) {
-        when (profileId) {
-            null -> promise.rejectWithNullError(ProfileId.paramName, ProfileId.type)
+        when {
+            !oneginiSDK.isInitialized -> promise.rejectNotInitialized()
+            profileId == null -> promise.rejectWithNullError(ProfileId.paramName, ProfileId.type)
             else -> sdkWrapper.getAllAuthenticators(profileId, promise)
         }
     }
 
     @ReactMethod
     fun getRegisteredAuthenticators(profileId: String?, promise: Promise) {
-        when (profileId) {
-            null -> promise.rejectWithNullError(ProfileId.paramName, ProfileId.type)
+        when {
+            !oneginiSDK.isInitialized -> promise.rejectNotInitialized()
+            profileId == null -> promise.rejectWithNullError(ProfileId.paramName, ProfileId.type)
             else -> sdkWrapper.getRegisteredAuthenticators(profileId, promise)
         }
     }
 
     @ReactMethod
     fun registerAuthenticator(authenticatorId: String?, promise: Promise) {
-        when (authenticatorId) {
-            null -> promise.rejectWithNullError(AuthenticatorId.paramName, AuthenticatorId.type)
+        when {
+            !oneginiSDK.isInitialized -> promise.rejectNotInitialized()
+            authenticatorId == null -> promise.rejectWithNullError(AuthenticatorId.paramName, AuthenticatorId.type)
             else -> sdkWrapper.registerAuthenticator(authenticatorId, promise)
         }
     }
 
     @ReactMethod
     fun registerFingerprintAuthenticator(profileId: String?, promise: Promise) {
-        when (profileId) {
-            null -> promise.rejectWithNullError(ProfileId.paramName, ProfileId.type)
+        when {
+            !oneginiSDK.isInitialized -> promise.rejectNotInitialized()
+            profileId == null -> promise.rejectWithNullError(ProfileId.paramName, ProfileId.type)
             else -> {
                 authenticatorManager.registerFingerprintAuthenticator(
                     profileId,
@@ -159,8 +171,9 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
 
     @ReactMethod
     fun deregisterFingerprintAuthenticator(profileId: String?, promise: Promise) {
-        when (profileId) {
-            null -> promise.rejectWithNullError(ProfileId.paramName, ProfileId.type)
+        when {
+            !oneginiSDK.isInitialized -> promise.rejectNotInitialized()
+            profileId == null -> promise.rejectWithNullError(ProfileId.paramName, ProfileId.type)
             else -> {
                 authenticatorManager.deregisterFingerprintAuthenticator(
                     profileId,
@@ -179,9 +192,9 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
 
     @ReactMethod
     fun submitFingerprintAcceptAuthenticationRequest(promise: Promise) {
-        when (oneginiSDK.config.enableFingerprint) {
-            false -> promise.reject(OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.code.toString(), OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.message)
-            true -> {
+        when {
+            !oneginiSDK.isInitialized -> promise.rejectNotInitialized()
+            else -> {
                 fingerprintAuthenticationRequestHandler.acceptAuthenticationRequest()
                 promise.resolve(null)
             }
@@ -190,9 +203,9 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
 
     @ReactMethod
     fun submitFingerprintDenyAuthenticationRequest(promise: Promise) {
-        when (oneginiSDK.config.enableFingerprint) {
-            false -> promise.reject(OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.code.toString(), OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.message)
-            true -> {
+        when {
+            !oneginiSDK.isInitialized -> promise.rejectNotInitialized()
+            else -> {
                 fingerprintAuthenticationRequestHandler.denyAuthenticationRequest()
                 promise.resolve(null)
             }
@@ -201,9 +214,9 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
 
     @ReactMethod
     fun submitFingerprintFallbackToPin(promise: Promise) {
-        when (oneginiSDK.config.enableFingerprint) {
-            false -> promise.reject(OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.code.toString(), OneginiWrapperErrors.FINGERPRINT_IS_NOT_ENABLED.message)
-            true -> {
+        when {
+            !oneginiSDK.isInitialized -> promise.rejectNotInitialized()
+            else -> {
                 fingerprintAuthenticationRequestHandler.fallbackToPin()
                 promise.resolve(null)
             }
@@ -213,6 +226,7 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
     @ReactMethod
     fun setPreferredAuthenticator(authenticatorId: String?, promise: Promise) {
         when {
+            !oneginiSDK.isInitialized -> promise.rejectNotInitialized()
             authenticatorId == null -> promise.rejectWithNullError(AuthenticatorId.paramName, AuthenticatorId.type)
             else -> sdkWrapper.setPreferredAuthenticator(authenticatorId, promise)
         }
@@ -220,21 +234,26 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
 
     @ReactMethod
     fun validatePinWithPolicy(pin: String?, promise: Promise) {
-        when (pin) {
-            null -> promise.rejectWithNullError(Pin.paramName, Pin.type)
+        when {
+            !oneginiSDK.isInitialized -> promise.rejectNotInitialized()
+            pin == null -> promise.rejectWithNullError(Pin.paramName, Pin.type)
             else -> sdkWrapper.validatePinWithPolicy(pin, promise)
         }
     }
 
     @ReactMethod
     fun registerUser(identityProviderId: String?, scopes: ReadableArray?, promise: Promise) {
-        sdkWrapper.registerUser(identityProviderId, scopes, promise)
+        when {
+            !oneginiSDK.isInitialized -> promise.rejectNotInitialized()
+            else -> sdkWrapper.registerUser(identityProviderId, scopes, promise)
+        }
     }
 
     @ReactMethod
     fun deregisterUser(profileId: String?, promise: Promise) {
-        when (profileId) {
-            null -> promise.rejectWithNullError(ProfileId.paramName, ProfileId.type)
+        when {
+            !oneginiSDK.isInitialized -> promise.rejectNotInitialized()
+            profileId == null -> promise.rejectWithNullError(ProfileId.paramName, ProfileId.type)
             else -> sdkWrapper.deregisterUser(profileId, promise)
         }
     }
@@ -242,6 +261,7 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
     @ReactMethod
     fun deregisterAuthenticator(authenticatorId: String?, promise: Promise) {
         when {
+            !oneginiSDK.isInitialized -> promise.rejectNotInitialized()
             authenticatorId == null -> promise.rejectWithNullError(AuthenticatorId.paramName, AuthenticatorId.type)
             else -> sdkWrapper.deregisterAuthenticator(authenticatorId, promise)
         }
@@ -249,61 +269,83 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
 
     @ReactMethod
     fun startSingleSignOn(uri: String?, promise: Promise) {
-        uri?.let { sdkWrapper.startSingleSignOn(uri, promise) } ?: promise.rejectWithNullError(Uri.paramName, Uri.type)
+        when {
+            !oneginiSDK.isInitialized -> promise.rejectNotInitialized()
+            else -> uri?.let { sdkWrapper.startSingleSignOn(uri, promise) } ?: promise.rejectWithNullError(Uri.paramName, Uri.type)
+        }
     }
 
     @ReactMethod
     fun cancelBrowserRegistration(promise: Promise) {
-        sdkWrapper.cancelBrowserRegistration(promise)
+        when {
+            !oneginiSDK.isInitialized -> promise.rejectNotInitialized()
+            else -> sdkWrapper.cancelBrowserRegistration(promise)
+        }
     }
 
     @ReactMethod
     fun cancelCustomRegistration(message: String?, promise: Promise) {
-        when (message) {
-            null -> promise.rejectWithNullError(Message.paramName, Message.type)
+        when {
+            !oneginiSDK.isInitialized -> promise.rejectNotInitialized()
+            message == null -> promise.rejectWithNullError(Message.paramName, Message.type)
             else -> sdkWrapper.cancelCustomRegistration(message, promise)
         }
     }
 
     @ReactMethod
     fun submitCustomRegistrationAction(identityProviderId: String?, token: String?, promise: Promise) {
-        when (identityProviderId) {
-            null -> promise.rejectWithNullError(IdentityProviderId.paramName, IdentityProviderId.type)
+        when {
+            !oneginiSDK.isInitialized -> promise.rejectNotInitialized()
+            identityProviderId == null -> promise.rejectWithNullError(IdentityProviderId.paramName, IdentityProviderId.type)
             else -> sdkWrapper.submitCustomRegistrationAction(identityProviderId, token, promise)
         }
     }
 
     @ReactMethod
     fun getRedirectUri(promise: Promise) {
-        sdkWrapper.getRedirectUri(promise)
+        when {
+            !oneginiSDK.isInitialized -> promise.rejectNotInitialized()
+            else -> sdkWrapper.getRedirectUri(promise)
+        }
     }
 
     @ReactMethod
     fun handleRegistrationCallback(uri: String?, promise: Promise) {
-        when (uri) {
-            null -> promise.rejectWithNullError(FunctionParams.Uri.paramName, FunctionParams.Uri.type)
+        when {
+            !oneginiSDK.isInitialized -> promise.rejectNotInitialized()
+            uri == null -> promise.rejectWithNullError(FunctionParams.Uri.paramName, FunctionParams.Uri.type)
             else -> sdkWrapper.handleRegistrationCallback(uri, promise)
         }
     }
 
     @ReactMethod
     fun cancelPinCreation(promise: Promise) {
-        sdkWrapper.cancelPinCreation(promise)
+        when {
+            !oneginiSDK.isInitialized -> promise.rejectNotInitialized()
+            else -> sdkWrapper.cancelPinCreation(promise)
+        }
     }
 
     @ReactMethod
     fun cancelPinAuthentication(promise: Promise) {
-        sdkWrapper.cancelPinAuthentication(promise)
+        when {
+            !oneginiSDK.isInitialized -> promise.rejectNotInitialized()
+            else -> sdkWrapper.cancelPinAuthentication(promise)
+        }
     }
 
     @ReactMethod
     fun changePin(promise: Promise) {
-        sdkWrapper.changePin(promise)
+        when {
+            !oneginiSDK.isInitialized -> promise.rejectNotInitialized()
+            else -> sdkWrapper.changePin(promise)
+        }
     }
 
     @ReactMethod
     fun submitPin(pinFlow: String?, pin: String?, promise: Promise) {
         when {
+            !oneginiSDK.isInitialized -> promise.rejectNotInitialized()
             pin == null -> promise.rejectWithNullError(Pin.paramName, Pin.type)
             pinFlow == null -> promise.rejectWithNullError(FunctionParams.PinFlow.paramName, FunctionParams.PinFlow.type)
             else -> sdkWrapper.submitPin(pinFlow, pin, promise)
@@ -312,61 +354,83 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
 
     @ReactMethod
     fun enrollMobileAuthentication(promise: Promise) {
-        sdkWrapper.enrollMobileAuthentication(promise)
+        when {
+            !oneginiSDK.isInitialized -> promise.rejectNotInitialized()
+            else -> sdkWrapper.enrollMobileAuthentication(promise)
+        }
     }
 
     @ReactMethod
     fun acceptMobileAuthConfirmation(promise: Promise) {
-        sdkWrapper.acceptMobileAuthConfirmation(promise)
+        when {
+            !oneginiSDK.isInitialized -> promise.rejectNotInitialized()
+            else -> sdkWrapper.acceptMobileAuthConfirmation(promise)
+        }
     }
 
     @ReactMethod
     fun denyMobileAuthConfirmation(promise: Promise) {
-        sdkWrapper.denyMobileAuthConfirmation(promise)
+        when {
+            !oneginiSDK.isInitialized -> promise.rejectNotInitialized()
+            else -> sdkWrapper.denyMobileAuthConfirmation(promise)
+        }
     }
 
     @ReactMethod
     fun handleMobileAuthWithOtp(otpCode: String?, promise: Promise) {
-        when (otpCode) {
-            null -> promise.rejectWithNullError(OtpCode.paramName, OtpCode.type)
+        when {
+            !oneginiSDK.isInitialized -> promise.rejectNotInitialized()
+            otpCode == null -> promise.rejectWithNullError(OtpCode.paramName, OtpCode.type)
             else -> sdkWrapper.handleMobileAuthWithOtp(otpCode, promise)
         }
     }
 
     @ReactMethod
     fun getUserProfiles(promise: Promise) {
-        sdkWrapper.getUserProfiles(promise)
+        when {
+            !oneginiSDK.isInitialized -> promise.rejectNotInitialized()
+            else -> sdkWrapper.getUserProfiles(promise)
+        }
     }
 
     @ReactMethod
     fun logout(promise: Promise) {
-        sdkWrapper.logout(promise)
+        when {
+            !oneginiSDK.isInitialized -> promise.rejectNotInitialized()
+            else -> sdkWrapper.logout(promise)
+        }
     }
 
     @ReactMethod
     fun authenticateUser(profileId: String?, authenticatorId: String?, promise: Promise) {
-        when (profileId) {
-            null -> promise.rejectWithNullError(ProfileId.paramName, ProfileId.type)
+        when {
+            !oneginiSDK.isInitialized -> promise.rejectNotInitialized()
+            profileId == null -> promise.rejectWithNullError(ProfileId.paramName, ProfileId.type)
             else -> sdkWrapper.authenticateUser(profileId, authenticatorId, promise)
         }
     }
 
     @ReactMethod
     fun authenticateUserImplicitly(profileId: String?, scopes: ReadableArray?, promise: Promise) {
-        when (profileId) {
-            null -> promise.rejectWithNullError(ProfileId.paramName, ProfileId.type)
+        when {
+            !oneginiSDK.isInitialized -> promise.rejectNotInitialized()
+            profileId == null -> promise.rejectWithNullError(ProfileId.paramName, ProfileId.type)
             else -> sdkWrapper.authenticateUserImplicitly(profileId, scopes, promise)
         }
     }
 
     @ReactMethod
     fun authenticateDeviceForResource(scopes: ReadableArray?, promise: Promise) {
-        sdkWrapper.authenticateDeviceForResource(scopes, promise)
+        when {
+            !oneginiSDK.isInitialized -> promise.rejectNotInitialized()
+            else -> sdkWrapper.authenticateDeviceForResource(scopes, promise)
+        }
     }
 
     @ReactMethod
     fun resourceRequest(type: String?, details: ReadableMap?, promise: Promise) {
         when {
+            !oneginiSDK.isInitialized -> promise.rejectNotInitialized()
             type == null -> promise.rejectWithNullError(Type.paramName, Type.type)
             details == null -> promise.rejectWithNullError(Details.paramName, Details.type)
             else -> sdkWrapper.resourceRequest(type, details, promise)

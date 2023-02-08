@@ -57,7 +57,7 @@ interface NativeMethods {
   ): EmitterSubscription;
 
   // Setup
-  startClient(sdkConfig?: Types.Config): Promise<string | null>;
+  startClient(): Promise<string | null>;
 
   // Data getters
   getIdentityProviders(): Promise<Types.IdentityProvider[]>;
@@ -157,16 +157,6 @@ const nativeMethods: NativeMethods = {
   //
   // override methods if needed
   //
-
-  startClient: (
-    sdkConfig: Types.Config = DefaultConfig,
-  ): Promise<string | null> => {
-    if (isIOS()) {
-      return RNOneginiSdk.startClient();
-    }
-
-    return RNOneginiSdk.startClient(sdkConfig);
-  },
 
   authenticateUserImplicitly: (
     profileId: string,

@@ -3,14 +3,6 @@ export interface CustomProvider {
   isTwoStep: boolean;
 }
 
-export interface Config {
-  enableFingerprint: boolean;
-  securityControllerClassName: string;
-  enableMobileAuthenticationOtp: boolean;
-  configModelClassName: string | null;
-  customProviders: CustomProvider[];
-}
-
 export interface userInfo {
   remainingFailureCount: string;
 }
