@@ -56,7 +56,7 @@ class ResourceRequestUseCase @Inject constructor(
         val request =  Request.Builder()
             .url(requestDetails.path)
             .headers(requestDetails.headers)
-        when (requestDetails.method) {
+        return when (requestDetails.method) {
             ApiCall.GET -> {
                 request.get()
             }
@@ -71,8 +71,7 @@ class ResourceRequestUseCase @Inject constructor(
             ApiCall.DELETE -> {
                 request.delete(requestDetails.body?.toRequestBody())
             }
-        }
-        return request.build()
+        }.build()
     }
 
     private fun performCall(request: Request, resourceClient: OkHttpClient, promise: Promise) {
