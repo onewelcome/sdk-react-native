@@ -58,19 +58,15 @@ class ResourceRequestUseCase @Inject constructor(
             .headers(requestDetails.headers)
         when (requestDetails.method) {
             ApiCall.GET -> {
-                requestDetails.body?.let {
-                    throw OneginiReactNativeException(PARAMETERS_NOT_CORRECT.code, "Body is not allowed in GET request")
-                } ?: request.get()
+                request.get()
             }
             ApiCall.POST -> {
-                requestDetails.body?.let { body ->
-                    request.post(body.toRequestBody(null))
-                } ?: throw OneginiReactNativeException(PARAMETERS_NOT_CORRECT.code, "Non-empty body is required in POST request")
+                val body = requestDetails.body ?: ""
+                request.post(body.toRequestBody(null))
             }
             ApiCall.PUT -> {
-                requestDetails.body?.let { body ->
-                    request.post(body.toRequestBody(null))
-                } ?: throw OneginiReactNativeException(PARAMETERS_NOT_CORRECT.code, "Non-empty body is required in PUT request")
+                val body = requestDetails.body ?: ""
+                request.put(body.toRequestBody(null))
             }
             ApiCall.DELETE -> {
                 request.delete(requestDetails.body?.toRequestBody())
