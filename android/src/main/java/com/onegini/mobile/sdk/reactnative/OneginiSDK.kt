@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.onegini.mobile.sdk.android.client.OneginiClient
 import com.onegini.mobile.sdk.android.client.OneginiClientBuilder
-import com.onegini.mobile.sdk.reactnative.handlers.customregistration.CustomRegistrationFactory
+import com.onegini.mobile.sdk.reactnative.handlers.customregistration.CustomRegistrationActionFactory
 import com.onegini.mobile.sdk.reactnative.handlers.fingerprint.FingerprintAuthenticationRequestHandler
 import com.onegini.mobile.sdk.reactnative.handlers.mobileauthotp.MobileAuthOtpRequestHandler
 import com.onegini.mobile.sdk.reactnative.handlers.pins.CreatePinRequestHandler
@@ -25,7 +25,7 @@ class OneginiSDK @Inject constructor(
     private val createPinRequestHandler: CreatePinRequestHandler,
     private val mobileAuthOtpRequestHandler: MobileAuthOtpRequestHandler,
     private val fingerprintAuthenticationRequestHandler: FingerprintAuthenticationRequestHandler,
-    private val customRegistrationFactory: CustomRegistrationFactory,
+    private val customRegistrationFactory: CustomRegistrationActionFactory,
     private val registrationActionManager: RegistrationActionManager,
 ) {
     var isInitialized = false
