@@ -1,8 +1,3 @@
-export interface CustomProvider {
-  id: string;
-  isTwoStep: boolean;
-}
-
 export interface userInfo {
   remainingFailureCount: string;
 }
