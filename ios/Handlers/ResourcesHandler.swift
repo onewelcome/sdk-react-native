@@ -84,8 +84,6 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
         
         let body = details["body"] as? String
         
-        try verifyBodyAllowedWithHttpMethod(body, method)
-        
         let headers = try getHeaders(details)
         return ResourceRequestFactory.makeResourceRequest(
             path: path,
@@ -93,25 +91,6 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
             body: body?.data(using: .utf8),
             headers: headers
         )
-    }
-    
-    private func verifyBodyAllowedWithHttpMethod(_ body: String?, _ method: HTTPMethod) throws {
-        switch (method) {
-        case .get:
-            if (body != nil && body != "") {
-                throw WrapperError.parametersNotCorrect(description: "Body is not allowed in GET request")
-            }
-        case .put:
-            if (body == nil || body == "") {
-                throw WrapperError.parametersNotCorrect(description: "Non-empty body is required in PUT request")
-            }
-        case .post:
-            if (body == nil || body == "") {
-                throw WrapperError.parametersNotCorrect(description: "Non-empty body is required in POST request")
-            }
-        default:
-            break;
-        }
     }
     
     private func getHeaders(_ details: Dictionary<String, Any?>) throws -> [String: String] {
