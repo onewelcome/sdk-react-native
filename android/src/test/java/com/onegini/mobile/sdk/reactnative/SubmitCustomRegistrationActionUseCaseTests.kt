@@ -7,9 +7,8 @@ import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.ACTION_
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.IDENTITY_PROVIDER_NOT_FOUND
 import com.onegini.mobile.sdk.reactnative.exception.SUBMIT_CUSTOM_REGISTRATION_ACTION_NOT_ALLOWED
 import com.onegini.mobile.sdk.reactnative.handlers.customregistration.CustomRegistrationEventEmitter
-import com.onegini.mobile.sdk.reactnative.handlers.customregistration.SimpleCustomRegistrationAction
-import com.onegini.mobile.sdk.reactnative.handlers.customregistration.SimpleTwoStepCustomRegistrationAction
-import com.onegini.mobile.sdk.reactnative.managers.RegistrationManager
+import com.onegini.mobile.sdk.reactnative.handlers.customregistration.TwoStepCustomRegistrationAction
+import com.onegini.mobile.sdk.reactnative.managers.RegistrationActionManager
 import com.onegini.mobile.sdk.reactnative.model.rn.ReactNativeIdentityProvider
 import org.junit.Before
 import org.junit.Rule
@@ -17,7 +16,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Answers
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.spy
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.verify
@@ -41,14 +39,15 @@ class SubmitCustomRegistrationActionUseCaseTests {
     lateinit var oneginiCustomRegistrationCallback: OneginiCustomRegistrationCallback
 
     lateinit var submitCustomRegistrationActionUseCase: SubmitCustomRegistrationActionUseCase
-    lateinit var registrationManager: RegistrationManager
+
+    lateinit var registrationActionManager: RegistrationActionManager
 
     private val token = "testToken"
 
     @Before
     fun setup() {
-        registrationManager = RegistrationManager(oneginiSdk)
-        submitCustomRegistrationActionUseCase = SubmitCustomRegistrationActionUseCase(registrationManager)
+        registrationActionManager = spy(RegistrationActionManager())
+        submitCustomRegistrationActionUseCase = SubmitCustomRegistrationActionUseCase(registrationActionManager)
     }
 
     @Test
@@ -85,7 +84,7 @@ class SubmitCustomRegistrationActionUseCaseTests {
         whenIdentityProviderExists(false)
         whenRegistrationIsInProgress()
         submitCustomRegistrationActionUseCase(TestData.identityProvider1.id, token, promiseMock)
-        verify(oneginiSdk.simpleCustomRegistrationActions.first()).returnSuccess(token)
+        verify(registrationActionManager.getCustomRegistrationActions().first()).returnSuccess(token)
     }
 
     @Test
@@ -93,20 +92,18 @@ class SubmitCustomRegistrationActionUseCaseTests {
         whenIdentityProviderExists(true)
         whenRegistrationIsInProgress()
         submitCustomRegistrationActionUseCase(TestData.identityProvider1.id, token, promiseMock)
-        verify(oneginiSdk.simpleCustomRegistrationActions.first()).returnSuccess(token)
+        verify(registrationActionManager.getCustomRegistrationActions().first()).returnSuccess(token)
     }
 
     private fun whenIdentityProviderExists(isTwoStep: Boolean) {
         val identityProvider = ReactNativeIdentityProvider(TestData.identityProvider1.id, isTwoStep)
-        val customRegistrationAction = spy(SimpleTwoStepCustomRegistrationAction(identityProvider.id, customRegistrationEventEmitter))
-        val list = ArrayList<SimpleCustomRegistrationAction>()
-        list.add(customRegistrationAction)
-        `when`(oneginiSdk.simpleCustomRegistrationActions).thenReturn(list)
+        val customRegistrationAction = spy(TwoStepCustomRegistrationAction(identityProvider.id, customRegistrationEventEmitter))
+        registrationActionManager.addCustomRegistrationAction(customRegistrationAction)
     }
 
     private fun whenRegistrationIsInProgress() {
         // finishRegistration is what is called by the SDK when it starts registration
-        oneginiSdk.simpleCustomRegistrationActions.first().finishRegistration(oneginiCustomRegistrationCallback, null)
+        registrationActionManager.getCustomRegistrationActions().first().finishRegistration(oneginiCustomRegistrationCallback, null)
     }
 
 }

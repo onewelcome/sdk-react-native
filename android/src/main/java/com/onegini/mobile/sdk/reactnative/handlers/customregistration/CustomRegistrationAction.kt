@@ -7,7 +7,7 @@ import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.*
 
-open class SimpleCustomRegistrationAction(
+open class CustomRegistrationAction(
     private val idProvider: String,
     private val eventEmitter: CustomRegistrationEventEmitter
 ) : OneginiCustomIdentityProvider,

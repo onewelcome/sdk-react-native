@@ -27,7 +27,6 @@ import com.onegini.mobile.sdk.reactnative.handlers.registration.RegistrationRequ
 import com.onegini.mobile.sdk.reactnative.managers.AuthenticatorManager
 import com.onegini.mobile.sdk.reactnative.managers.AuthenticatorManager.DeregistrationCallback
 import com.onegini.mobile.sdk.reactnative.managers.AuthenticatorManager.RegistrationCallback
-import com.onegini.mobile.sdk.reactnative.managers.RegistrationManager
 import com.onegini.mobile.sdk.reactnative.mapers.CustomInfoMapper
 import com.onegini.mobile.sdk.reactnative.module.RNOneginiSdkModule
 import javax.inject.Inject
@@ -36,8 +35,6 @@ import javax.inject.Inject
 class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
     @Inject
     lateinit var oneginiSDK: OneginiSDK
-    @Inject
-    lateinit var registrationManager: RegistrationManager
     @Inject
     lateinit var authenticatorManager: AuthenticatorManager
     @Inject

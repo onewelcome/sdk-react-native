@@ -5,21 +5,21 @@ import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.ACTION_NOT_ALLOWED
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.IDENTITY_PROVIDER_NOT_FOUND
 import com.onegini.mobile.sdk.reactnative.exception.SUBMIT_CUSTOM_REGISTRATION_ACTION_NOT_ALLOWED
-import com.onegini.mobile.sdk.reactnative.handlers.customregistration.SimpleCustomRegistrationAction
-import com.onegini.mobile.sdk.reactnative.managers.RegistrationManager
+import com.onegini.mobile.sdk.reactnative.handlers.customregistration.CustomRegistrationAction
+import com.onegini.mobile.sdk.reactnative.managers.RegistrationActionManager
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class SubmitCustomRegistrationActionUseCase @Inject constructor(private val registrationManager: RegistrationManager) {
+class SubmitCustomRegistrationActionUseCase @Inject constructor(private val registrationActionManager: RegistrationActionManager) {
     operator fun invoke(identityProviderId: String, token: String?, promise: Promise) {
-        registrationManager.getSimpleCustomRegistrationAction(identityProviderId)?.let { action ->
+        registrationActionManager.getCustomRegistrationAction(identityProviderId)?.let { action ->
             tryReturnSuccess(action, token, promise)
         } ?: promise.reject(IDENTITY_PROVIDER_NOT_FOUND.code.toString(), IDENTITY_PROVIDER_NOT_FOUND.message)
     }
 
     private fun tryReturnSuccess(
-        action: SimpleCustomRegistrationAction,
+        action: CustomRegistrationAction,
         token: String?,
         promise: Promise
     ) {
