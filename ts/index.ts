@@ -131,15 +131,6 @@ interface NativeMethods {
   startSingleSignOn(uri: string): Promise<Types.SingleSignOnData>;
 }
 
-const DefaultConfig: Types.Config = {
-  enableFingerprint: true,
-  securityControllerClassName:
-    'com.onegini.mobile.rnexampleapp.SecurityController',
-  enableMobileAuthenticationOtp: true,
-  customProviders: [{id: '2-way-otp-api', isTwoStep: true}],
-  configModelClassName: null,
-};
-
 const nativeMethods: NativeMethods = {
   ...(RNOneginiSdk as NativeMethods),
 
@@ -208,6 +199,6 @@ const OneginiSdk = {
   ...nativeMethods,
 };
 
-export {Events, Types, DefaultConfig, SDKError};
+export {Events, Types, SDKError};
 
 export default OneginiSdk;
