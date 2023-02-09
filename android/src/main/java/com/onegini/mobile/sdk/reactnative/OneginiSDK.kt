@@ -10,7 +10,7 @@ import com.onegini.mobile.sdk.reactnative.handlers.mobileauthotp.MobileAuthOtpRe
 import com.onegini.mobile.sdk.reactnative.handlers.pins.CreatePinRequestHandler
 import com.onegini.mobile.sdk.reactnative.handlers.pins.PinAuthenticationRequestHandler
 import com.onegini.mobile.sdk.reactnative.handlers.registration.RegistrationRequestHandler
-import com.onegini.mobile.sdk.reactnative.managers.RegistrationActionManager
+import com.onegini.mobile.sdk.reactnative.managers.CustomRegistrationActionManager
 import com.onegini.mobile.sdk.reactnative.model.rn.OneginiReactNativeConfig
 import com.onegini.mobile.sdk.reactnative.model.rn.ReactNativeIdentityProvider
 import com.onegini.mobile.sdk.reactnative.utils.ClassLoader
@@ -26,7 +26,7 @@ class OneginiSDK @Inject constructor(
     private val mobileAuthOtpRequestHandler: MobileAuthOtpRequestHandler,
     private val fingerprintAuthenticationRequestHandler: FingerprintAuthenticationRequestHandler,
     private val customRegistrationFactory: CustomRegistrationActionFactory,
-    private val registrationActionManager: RegistrationActionManager,
+    private val customRegistrationActionManager: CustomRegistrationActionManager,
 ) {
     var isInitialized = false
         private set
@@ -67,7 +67,7 @@ class OneginiSDK @Inject constructor(
     private fun addIdentityProviders(identityProviders: List<ReactNativeIdentityProvider>, clientBuilder: OneginiClientBuilder) {
         identityProviders.forEach { identityProvider ->
             val provider = customRegistrationFactory.createCustomRegistrationAction(identityProvider)
-            registrationActionManager.addCustomRegistrationAction(provider)
+            customRegistrationActionManager.addCustomRegistrationAction(provider)
             clientBuilder.addCustomIdentityProvider(provider)
         }
     }

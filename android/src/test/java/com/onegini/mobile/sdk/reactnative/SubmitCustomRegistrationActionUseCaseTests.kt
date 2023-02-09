@@ -8,7 +8,7 @@ import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.IDENTIT
 import com.onegini.mobile.sdk.reactnative.exception.SUBMIT_CUSTOM_REGISTRATION_ACTION_NOT_ALLOWED
 import com.onegini.mobile.sdk.reactnative.handlers.customregistration.CustomRegistrationEventEmitter
 import com.onegini.mobile.sdk.reactnative.handlers.customregistration.TwoStepCustomRegistrationAction
-import com.onegini.mobile.sdk.reactnative.managers.RegistrationActionManager
+import com.onegini.mobile.sdk.reactnative.managers.CustomRegistrationActionManager
 import com.onegini.mobile.sdk.reactnative.model.rn.ReactNativeIdentityProvider
 import org.junit.Before
 import org.junit.Rule
@@ -40,14 +40,14 @@ class SubmitCustomRegistrationActionUseCaseTests {
 
     lateinit var submitCustomRegistrationActionUseCase: SubmitCustomRegistrationActionUseCase
 
-    lateinit var registrationActionManager: RegistrationActionManager
+    lateinit var customRegistrationActionManager: CustomRegistrationActionManager
 
     private val token = "testToken"
 
     @Before
     fun setup() {
-        registrationActionManager = spy(RegistrationActionManager())
-        submitCustomRegistrationActionUseCase = SubmitCustomRegistrationActionUseCase(registrationActionManager)
+        customRegistrationActionManager = spy(CustomRegistrationActionManager())
+        submitCustomRegistrationActionUseCase = SubmitCustomRegistrationActionUseCase(customRegistrationActionManager)
     }
 
     @Test
@@ -84,7 +84,7 @@ class SubmitCustomRegistrationActionUseCaseTests {
         whenIdentityProviderExists(false)
         whenRegistrationIsInProgress()
         submitCustomRegistrationActionUseCase(TestData.identityProvider1.id, token, promiseMock)
-        verify(registrationActionManager.getCustomRegistrationActions().first()).returnSuccess(token)
+        verify(customRegistrationActionManager.getCustomRegistrationActions().first()).returnSuccess(token)
     }
 
     @Test
@@ -92,18 +92,18 @@ class SubmitCustomRegistrationActionUseCaseTests {
         whenIdentityProviderExists(true)
         whenRegistrationIsInProgress()
         submitCustomRegistrationActionUseCase(TestData.identityProvider1.id, token, promiseMock)
-        verify(registrationActionManager.getCustomRegistrationActions().first()).returnSuccess(token)
+        verify(customRegistrationActionManager.getCustomRegistrationActions().first()).returnSuccess(token)
     }
 
     private fun whenIdentityProviderExists(isTwoStep: Boolean) {
         val identityProvider = ReactNativeIdentityProvider(TestData.identityProvider1.id, isTwoStep)
         val customRegistrationAction = spy(TwoStepCustomRegistrationAction(identityProvider.id, customRegistrationEventEmitter))
-        registrationActionManager.addCustomRegistrationAction(customRegistrationAction)
+        customRegistrationActionManager.addCustomRegistrationAction(customRegistrationAction)
     }
 
     private fun whenRegistrationIsInProgress() {
         // finishRegistration is what is called by the SDK when it starts registration
-        registrationActionManager.getCustomRegistrationActions().first().finishRegistration(oneginiCustomRegistrationCallback, null)
+        customRegistrationActionManager.getCustomRegistrationActions().first().finishRegistration(oneginiCustomRegistrationCallback, null)
     }
 
 }

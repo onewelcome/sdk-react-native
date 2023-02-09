@@ -5,7 +5,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class RegistrationActionManager @Inject constructor() {
+class CustomRegistrationActionManager @Inject constructor() {
 
     private val customRegistrationActions = ArrayList<CustomRegistrationAction>()
 

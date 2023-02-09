@@ -5,15 +5,15 @@ import com.onegini.mobile.sdk.reactnative.exception.CANCEL_CUSTOM_REGISTRATION_N
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.reactnative.handlers.customregistration.CustomRegistrationAction
-import com.onegini.mobile.sdk.reactnative.managers.RegistrationActionManager
+import com.onegini.mobile.sdk.reactnative.managers.CustomRegistrationActionManager
 import java.lang.Exception
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class CancelCustomRegistrationUseCase @Inject constructor(private val registrationActionManager: RegistrationActionManager) {
+class CancelCustomRegistrationUseCase @Inject constructor(private val customRegistrationActionManager: CustomRegistrationActionManager) {
     operator fun invoke(message: String, promise: Promise) {
-        registrationActionManager.getActiveCustomRegistrationAction()?.let { action ->
+        customRegistrationActionManager.getActiveCustomRegistrationAction()?.let { action ->
             tryCancelCustomRegistrationAction(action, message, promise)
         } ?: promise.reject(OneginiWrapperErrors.ACTION_NOT_ALLOWED.code.toString(), CANCEL_CUSTOM_REGISTRATION_NOT_ALLOWED)
     }

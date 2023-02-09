@@ -6,18 +6,16 @@ import com.onegini.mobile.sdk.reactnative.clean.use_cases.CancelCustomRegistrati
 import com.onegini.mobile.sdk.reactnative.exception.CANCEL_CUSTOM_REGISTRATION_NOT_ALLOWED
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.ACTION_NOT_ALLOWED
 import com.onegini.mobile.sdk.reactnative.handlers.customregistration.CustomRegistrationEventEmitter
-import com.onegini.mobile.sdk.reactnative.handlers.customregistration.CustomRegistrationAction
 import com.onegini.mobile.sdk.reactnative.handlers.customregistration.TwoStepCustomRegistrationAction
 import com.onegini.mobile.sdk.reactnative.handlers.registration.RegistrationEventEmitter
 import com.onegini.mobile.sdk.reactnative.handlers.registration.RegistrationRequestHandler
-import com.onegini.mobile.sdk.reactnative.managers.RegistrationActionManager
+import com.onegini.mobile.sdk.reactnative.managers.CustomRegistrationActionManager
 import com.onegini.mobile.sdk.reactnative.model.rn.ReactNativeIdentityProvider
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Answers
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.any
 import org.mockito.kotlin.spy
@@ -45,7 +43,7 @@ class CancelCustomRegistrationUseCaseTests {
 
     lateinit var registrationRequestHandler: RegistrationRequestHandler
 
-    lateinit var registrationActionManager: RegistrationActionManager
+    lateinit var customRegistrationActionManager: CustomRegistrationActionManager
 
 
     private val cancelMessage = "cancel message"
@@ -53,9 +51,9 @@ class CancelCustomRegistrationUseCaseTests {
 
     @Before
     fun setup() {
-        registrationActionManager = spy(RegistrationActionManager())
+        customRegistrationActionManager = spy(CustomRegistrationActionManager())
         registrationRequestHandler = RegistrationRequestHandler(registrationEventEmitter)
-        cancelCustomRegistrationUseCase = CancelCustomRegistrationUseCase(registrationActionManager)
+        cancelCustomRegistrationUseCase = CancelCustomRegistrationUseCase(customRegistrationActionManager)
     }
 
     @Test
@@ -84,7 +82,7 @@ class CancelCustomRegistrationUseCaseTests {
     fun `One Step - When registration has started and pin creation has not started, Then should call returnError on the action`() {
         whenRegistrationStarted(false)
         cancelCustomRegistrationUseCase(cancelMessage, promiseMock)
-        verify(registrationActionManager.getCustomRegistrationActions().first()).returnError(any())
+        verify(customRegistrationActionManager.getCustomRegistrationActions().first()).returnError(any())
     }
 
     // TWO STEP
@@ -107,22 +105,22 @@ class CancelCustomRegistrationUseCaseTests {
     fun `Two Step - When registration has started and pin creation has not started, Then should call returnError on the action`() {
         whenRegistrationStarted(true)
         cancelCustomRegistrationUseCase(cancelMessage, promiseMock)
-        verify(registrationActionManager.getCustomRegistrationActions().first()).returnError(any())
+        verify(customRegistrationActionManager.getCustomRegistrationActions().first()).returnError(any())
     }
 
     private fun whenRegistrationStarted(isTwoStep: Boolean) {
         // finishRegistration is what is called by the SDK when it starts registration
         whenIdentityProviderExists(isTwoStep)
-        registrationActionManager.getCustomRegistrationActions().first().finishRegistration(oneginiCustomRegistrationCallback, null)
+        customRegistrationActionManager.getCustomRegistrationActions().first().finishRegistration(oneginiCustomRegistrationCallback, null)
     }
 
     private fun whenPinCreationStarted() {
-        registrationActionManager.getCustomRegistrationActions().first().returnSuccess(successMessage)
+        customRegistrationActionManager.getCustomRegistrationActions().first().returnSuccess(successMessage)
     }
 
     private fun whenIdentityProviderExists(isTwoStep: Boolean) {
         val identityProvider = ReactNativeIdentityProvider(TestData.identityProvider1.id, isTwoStep)
         val customRegistrationAction = spy(TwoStepCustomRegistrationAction(identityProvider.id, customRegistrationEventEmitter))
-        registrationActionManager.addCustomRegistrationAction(customRegistrationAction)
+        customRegistrationActionManager.addCustomRegistrationAction(customRegistrationAction)
     }
 }
