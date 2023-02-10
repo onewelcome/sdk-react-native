@@ -10,12 +10,7 @@ class CustomRegistrationActionManager @Inject constructor() {
     private val customRegistrationActions = ArrayList<CustomRegistrationAction>()
 
     fun getCustomRegistrationAction(id: String?): CustomRegistrationAction? {
-        for (action in customRegistrationActions) {
-            if (action.id == id) {
-                return action
-            }
-        }
-        return null
+        return customRegistrationActions.firstOrNull { it.id == id}
     }
 
     fun getCustomRegistrationActions(): ArrayList<CustomRegistrationAction> {
@@ -23,15 +18,10 @@ class CustomRegistrationActionManager @Inject constructor() {
     }
 
     fun addCustomRegistrationAction(action: CustomRegistrationAction) {
-        customRegistrationActions.add((action))
+        customRegistrationActions.add(action)
     }
 
     fun getActiveCustomRegistrationAction(): CustomRegistrationAction? {
-        customRegistrationActions.forEach { action ->
-            if (action.isInProgress()){
-                return action
-            }
-        }
-        return null
+        return customRegistrationActions.firstOrNull { it.isInProgress() }
     }
 }
