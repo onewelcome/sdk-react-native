@@ -13,7 +13,6 @@ object ResourceRequestDetailsMapper {
 
     fun toResourceRequestDetails(map: ReadableMap): ResourceRequestDetails {
         val headerBuilder = Headers.Builder()
-
         map.getMap("headers")?.entryIterator?.forEach {
             val headerValue = it.value
             if (headerValue is String) {
@@ -27,13 +26,11 @@ object ResourceRequestDetailsMapper {
             throw OneginiReactNativeException(PARAMETERS_NOT_CORRECT.code, REQUEST_METHOD_NOT_SUPPORTED)
         }
 
-        val body = map.getString("body")
-
         return ResourceRequestDetails(
             path = map.getString("path") ?: throw OneginiReactNativeException(PARAMETERS_NOT_CORRECT.code, REQUEST_MISSING_PATH_PARAMETER),
             method = method,
             headers = headerBuilder.build(),
-            body = body
+            body = map.getString("body")
         )
     }
 }
