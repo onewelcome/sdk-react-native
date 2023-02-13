@@ -14,7 +14,6 @@ object ResourceRequestDetailsMapper {
     fun toResourceRequestDetails(map: ReadableMap): ResourceRequestDetails {
         val headerBuilder = Headers.Builder()
 
-        // TODO: RNP-140: Check if we need to set content-type to a default value with POST
         map.getMap("headers")?.entryIterator?.forEach {
             val headerValue = it.value
             if (headerValue is String) {
