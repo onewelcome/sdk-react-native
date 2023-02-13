@@ -94,9 +94,7 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
     }
     
     private func getHeaders(_ details: Dictionary<String, Any?>) throws -> [String: String] {
-        if details["headers"] == nil {
-            return [:]
-        }
+        guard details["headers"] != nil else { return [:] }
         guard let headers = details["headers"] as? [String: Any] else {
             throw WrapperError.parametersNotCorrect(
                 description: "'headers' must be an object with only Strings as keys")
