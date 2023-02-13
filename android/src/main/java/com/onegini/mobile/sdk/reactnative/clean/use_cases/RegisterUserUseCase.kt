@@ -1,5 +1,6 @@
 package com.onegini.mobile.sdk.reactnative.clean.use_cases
 
+import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReadableArray
 import com.onegini.mobile.sdk.android.handlers.OneginiRegistrationHandler
@@ -9,6 +10,7 @@ import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.OneginiSDK
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
+import com.onegini.mobile.sdk.reactnative.mapers.CustomInfoMapper
 import com.onegini.mobile.sdk.reactnative.mapers.ScopesMapper
 import com.onegini.mobile.sdk.reactnative.mapers.UserProfileMapper
 import javax.inject.Inject
@@ -31,7 +33,10 @@ class RegisterUserUseCase @Inject constructor(private val oneginiSDK: OneginiSDK
             identityProvider, scopesArray,
             object : OneginiRegistrationHandler {
                 override fun onSuccess(userProfile: UserProfile, customInfo: CustomInfo?) {
-                    promise.resolve(UserProfileMapper.toWritableMap(userProfile))
+                    val result = Arguments.createMap()
+                    UserProfileMapper.add(result, userProfile)
+                    CustomInfoMapper.add(result, customInfo)
+                    promise.resolve(result)
                 }
 
                 override fun onError(error: OneginiRegistrationError) {
