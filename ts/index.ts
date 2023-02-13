@@ -82,7 +82,7 @@ interface NativeMethods {
   registerUser(
     identityProviderId: string | null,
     scopes?: String[],
-  ): Promise<Types.Profile>;
+  ): Promise<Types.AuthData>;
   deregisterUser(profileId: string): Promise<void>;
   deregisterAuthenticator(authenticatorId: string): Promise<void>;
   handleRegistrationCallback(uri: string): Promise<void>;
@@ -167,7 +167,7 @@ const nativeMethods: NativeMethods = {
   registerUser: (
     identityProviderId: string | null,
     scopes?: String[],
-  ): Promise<Types.Profile> => {
+  ): Promise<Types.AuthData> => {
     return scopes
       ? RNOneginiSdk.registerUser(identityProviderId, scopes)
       : RNOneginiSdk.registerUser(identityProviderId, []);

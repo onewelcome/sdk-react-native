@@ -31,7 +31,12 @@ export interface Device {
 
 export interface AuthData {
   userProfile: Profile;
-  customInfo?: string;
+  customInfo?: CustomInfo;
+}
+
+export interface CustomInfo {
+  status: number;
+  data: string;
 }
 
 export interface Authenticator {
