@@ -1,3 +1,5 @@
 package com.onegini.mobile.sdk.reactnative.exception
 
-class OneginiReactNativeException(var errorType: Int, message: String): Exception(message)
+class OneginiReactNativeException constructor(var errorType: Int, message: String): Exception(message) {
+    constructor(error: OneginiWrapperErrors) : this(error.code, error.message)
+}
