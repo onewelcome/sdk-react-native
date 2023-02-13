@@ -1,5 +1,5 @@
 protocol BridgeToLoginHandlerProtocol: AnyObject {
-    func authenticateUser(_ profile: UserProfile, authenticator: Authenticator?, completion: @escaping (UserProfile, Error?) -> Void)
+    func authenticateUser(_ profile: UserProfile, authenticator: Authenticator?, completion: @escaping (UserProfile, CustomInfo?, Error?) -> Void)
     func setAuthPinChallenge(_ challenge: PinChallenge?)
     func handlePin(_ pin: String?, completion: @escaping (Error?) -> Void)
     func cancelPinAuthentication(completion: @escaping (Error?) -> Void)
@@ -46,7 +46,7 @@ class LoginHandler: NSObject {
 }
 
 extension LoginHandler : BridgeToLoginHandlerProtocol {
-    func authenticateUser(_ profile: UserProfile, authenticator: Authenticator? = nil, completion: @escaping (UserProfile, Error?) -> Void) {
+    func authenticateUser(_ profile: UserProfile, authenticator: Authenticator? = nil, completion: @escaping (UserProfile, CustomInfo?, Error?) -> Void) {
         let delegate = loginDelegate(loginCompletion: completion)
         SharedUserClient.instance.authenticateUserWith(profile: profile, authenticator: authenticator, delegate: delegate)
     }
@@ -68,9 +68,9 @@ extension LoginHandler : BridgeToLoginHandlerProtocol {
 class loginDelegate: AuthenticationDelegate {
 
     
-    private var loginCompletion: ((UserProfile, Error?) -> Void)?
+    private var loginCompletion: ((UserProfile, CustomInfo?, Error?) -> Void)?
     
-    init(loginCompletion: ((UserProfile, Error?) -> Void)?) {
+    init(loginCompletion: ((UserProfile, CustomInfo?, Error?) -> Void)?) {
         self.loginCompletion = loginCompletion
     }
     
@@ -84,12 +84,12 @@ class loginDelegate: AuthenticationDelegate {
 
     func userClient(_ userClient: OneginiSDKiOS.UserClient, didAuthenticateUser profile: OneginiSDKiOS.UserProfile, authenticator: OneginiSDKiOS.Authenticator, info customAuthInfo: OneginiSDKiOS.CustomInfo?) {
             BridgeConnector.shared?.toLoginHandler.handleDidAuthenticateUser()
-            loginCompletion?(profile, nil)
+            loginCompletion?(profile, customAuthInfo, nil)
             loginCompletion = nil
     }
     
     func userClient(_ userClient: OneginiSDKiOS.UserClient, didFailToAuthenticateUser profile: OneginiSDKiOS.UserProfile, authenticator: OneginiSDKiOS.Authenticator, error: Error) {
-        loginCompletion?(profile, error)
+        loginCompletion?(profile, nil, error)
         loginCompletion = nil
         // We don't want to send a close pin event when we encounter an action already in progress
         if (error.code == ONGGenericError.actionAlreadyInProgress.rawValue) { return }

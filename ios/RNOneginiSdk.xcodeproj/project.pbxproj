@@ -13,6 +13,7 @@
 		496788F928C8CFBD00EB65A8 /* CreatePinEventEmitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496788F728C8CFBD00EB65A8 /* CreatePinEventEmitter.swift */; };
 		496788FA28C8CFBD00EB65A8 /* PinAuthenticationEventEmitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496788F828C8CFBD00EB65A8 /* PinAuthenticationEventEmitter.swift */; };
 		496788FC28CB793B00EB65A8 /* RegistrationEventEmitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496788FB28CB793B00EB65A8 /* RegistrationEventEmitter.swift */; };
+		49958F80299A760600530008 /* Mappers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49958F7F299A760600530008 /* Mappers.swift */; };
 		C78992E525816243002CA5AF /* LoginHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78992E425816243002CA5AF /* LoginHandler.swift */; };
 		C7AA005E2558E4B80001AB19 /* RNOneginiSdk.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AA005D2558E4B80001AB19 /* RNOneginiSdk.swift */; };
 		C7AA00652558E55B0001AB19 /* BridgeConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7AA00642558E55B0001AB19 /* BridgeConnector.swift */; };
@@ -50,6 +51,7 @@
 		496788F728C8CFBD00EB65A8 /* CreatePinEventEmitter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreatePinEventEmitter.swift; sourceTree = "<group>"; };
 		496788F828C8CFBD00EB65A8 /* PinAuthenticationEventEmitter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PinAuthenticationEventEmitter.swift; sourceTree = "<group>"; };
 		496788FB28CB793B00EB65A8 /* RegistrationEventEmitter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationEventEmitter.swift; sourceTree = "<group>"; };
+		49958F7F299A760600530008 /* Mappers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mappers.swift; sourceTree = "<group>"; };
 		AF266B258813C02324551B00 /* Pods_RNOneginiSdk.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RNOneginiSdk.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C78992E425816243002CA5AF /* LoginHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginHandler.swift; sourceTree = "<group>"; };
 		C7AA005C2558E4B70001AB19 /* RNOneginiSdk-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RNOneginiSdk-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -104,9 +106,18 @@
 			path = EventEmitters;
 			sourceTree = "<group>";
 		};
+		49958F7E299A75EB00530008 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				49958F7F299A760600530008 /* Mappers.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
+				49958F7E299A75EB00530008 /* Helpers */,
 				C7AA00962558E6C10001AB19 /* Extensions */,
 				C7AA006A2558E5730001AB19 /* Handlers */,
 				C7AA00632558E54D0001AB19 /* Connectors */,
@@ -265,6 +276,7 @@
 				496788F928C8CFBD00EB65A8 /* CreatePinEventEmitter.swift in Sources */,
 				C78992E525816243002CA5AF /* LoginHandler.swift in Sources */,
 				C7AA006C2558E5920001AB19 /* RegistrationHandler.swift in Sources */,
+				49958F80299A760600530008 /* Mappers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

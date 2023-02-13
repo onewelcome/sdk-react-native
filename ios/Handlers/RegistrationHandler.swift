@@ -2,7 +2,7 @@ class RegistrationHandler: NSObject {
     private var createPinChallenge: CreatePinChallenge?
     private var browserRegistrationChallenge: BrowserRegistrationChallenge?
     private var customRegistrationChallenge: CustomRegistrationChallenge?
-    private var signUpCompletion: ((Bool, UserProfile?, Error?) -> Void)?
+    private var signUpCompletion: ((UserProfile?, CustomInfo?, Error?) -> Void)?
     private let createPinEventEmitter = CreatePinEventEmitter()
     private let registrationEventEmitter = RegistrationEventEmitter()
     static let cancelCustomRegistrationNotAllowed = "Canceling the custom registration right now is not allowed. Registration is not in progress or pin creation has already started."
@@ -60,7 +60,7 @@ extension RegistrationHandler {
         createPinChallenge = challenge
     }
     
-    func signUp(identityProvider: IdentityProvider? = nil, scopes: [String], completion: @escaping (Bool, UserProfile?, Error?) -> Void) {
+    func signUp(identityProvider: IdentityProvider? = nil, scopes: [String], completion: @escaping (UserProfile?, CustomInfo?, Error?) -> Void) {
         signUpCompletion = completion
         SharedUserClient.instance.registerUserWith(identityProvider: identityProvider, scopes: scopes, delegate: self)
     }
@@ -158,13 +158,13 @@ extension RegistrationHandler: RegistrationDelegate {
     
     func userClient(_ userClient: UserClient, didRegisterUser profile: UserProfile, with identityProvider: IdentityProvider, info: CustomInfo?) {
         handleDidRegisterUser()
-        signUpCompletion?(true, profile, nil)
+        signUpCompletion?(profile, info, nil)
         signUpCompletion = nil
     }
     
     func userClient(_ userClient: UserClient, didFailToRegisterUserWith identityProvider: IdentityProvider, error: Error) {
         handleDidFailToRegister()
-        signUpCompletion?(false, nil, error)
+        signUpCompletion?(nil, nil, error)
         signUpCompletion = nil
     }
 }
