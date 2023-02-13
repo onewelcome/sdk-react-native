@@ -43,7 +43,6 @@ class ResourceRequestUseCase @Inject constructor(
     }
 
     private fun performResourceRequest(resourceClient: OkHttpClient, requestDetails: ResourceRequestDetails, promise: Promise) {
-        // FIXME: RNP-128: Support Formdata requests
         try {
             val request = buildRequest(requestDetails)
             performCall(request, resourceClient, promise)
@@ -53,25 +52,30 @@ class ResourceRequestUseCase @Inject constructor(
     }
 
     private fun buildRequest(requestDetails: ResourceRequestDetails): Request {
-        val request =  Request.Builder()
+        return Request.Builder()
             .url(requestDetails.path)
             .headers(requestDetails.headers)
-        return when (requestDetails.method) {
+            .setMethod(requestDetails)
+            .build()
+    }
+
+    private fun Request.Builder.setMethod(requestDetails: ResourceRequestDetails): Request.Builder {
+        return when(requestDetails.method){
             ApiCall.GET -> {
-                request.get()
+                this.get()
             }
             ApiCall.POST -> {
                 val body = requestDetails.body ?: ""
-                request.post(body.toRequestBody(null))
+                this.post(body.toRequestBody(null))
             }
             ApiCall.PUT -> {
                 val body = requestDetails.body ?: ""
-                request.put(body.toRequestBody(null))
+                this.put(body.toRequestBody(null))
             }
             ApiCall.DELETE -> {
-                request.delete(requestDetails.body?.toRequestBody())
+                this.delete(requestDetails.body?.toRequestBody())
             }
-        }.build()
+        }
     }
 
     private fun performCall(request: Request, resourceClient: OkHttpClient, promise: Promise) {
