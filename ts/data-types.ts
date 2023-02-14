@@ -58,13 +58,45 @@ export interface StringMap {
   [key: string]: string;
 }
 
-export interface ResourcesDetails {
+export type ResourcesDetails =
+  | ResourcesDetailsGet
+  | ResourceDetailsPost
+  | ResourceDetailsDelete
+  | ResourceDetailsPut;
+
+export interface ResourcesDetailsGet {
   path: string;
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
-  parameters?: StringMap;
+  method: ResourceMethod.GET;
   headers?: StringMap;
 }
 
+export interface ResourceDetailsDelete {
+  path: string;
+  method: ResourceMethod.DELETE;
+  headers?: StringMap;
+  body?: string;
+}
+
+export interface ResourceDetailsPost {
+  path: string;
+  method: ResourceMethod.POST;
+  headers?: StringMap;
+  body: string;
+}
+
+export interface ResourceDetailsPut {
+  path: string;
+  method: ResourceMethod.PUT;
+  headers?: StringMap;
+  body: string;
+}
+
+export enum ResourceMethod {
+  GET = 'GET',
+  POST = 'POST',
+  DELETE = 'DELETE',
+  PUT = 'PUT',
+}
 export interface ResourceResponse {
   body: string;
   headers: StringMap;
