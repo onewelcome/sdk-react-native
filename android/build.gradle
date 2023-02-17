@@ -23,7 +23,7 @@ def safeExtGet(prop, fallback) {
 }
 
 android {
-    compileSdkVersion safeExtGet('compileSdkVersion', 31)
+    compileSdkVersion safeExtGet('compileSdkVersion', 33)
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -32,7 +32,7 @@ android {
 
     defaultConfig {
         minSdkVersion safeExtGet('minSdkVersion', 23)
-        targetSdkVersion safeExtGet('targetSdkVersion', 31)
+        targetSdkVersion safeExtGet('targetSdkVersion', 33)
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -75,7 +75,7 @@ dependencies {
     testImplementation "io.mockk:mockk:1.10.6"
 
     // Onegini SDK
-    api('com.onegini.mobile.sdk.android:onegini-sdk:11.7.0@aar') {
+    api('com.onegini.mobile.sdk.android:onegini-sdk:11.9.0@aar') {
         transitive = true
     }
 }
