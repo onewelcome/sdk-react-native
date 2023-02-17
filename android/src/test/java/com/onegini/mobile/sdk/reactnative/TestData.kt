@@ -13,7 +13,7 @@ object TestData {
     val identityProvider1: OneginiIdentityProvider = object : OneginiIdentityProvider {
         override fun describeContents(): Int { return 0 }
 
-        override fun writeToParcel(dest: Parcel?, flags: Int) {}
+        override fun writeToParcel(dest: Parcel, flags: Int) {}
 
         override fun getId(): String { return "100" }
 
@@ -23,7 +23,7 @@ object TestData {
     val identityProvider2: OneginiIdentityProvider = object : OneginiIdentityProvider {
         override fun describeContents(): Int { return 0 }
 
-        override fun writeToParcel(dest: Parcel?, flags: Int) {}
+        override fun writeToParcel(dest: Parcel, flags: Int) {}
 
         override fun getId(): String { return "200" }
 
