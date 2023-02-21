@@ -268,9 +268,13 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
         let authenticators = userClient.authenticators(.all, for: profile)
         let authenticator = authenticators.first(where: {$0.identifier == authenticatorId}) ?? userClient.preferredAuthenticator
         bridgeConnector.toLoginHandler.authenticateUser(profile, authenticator: authenticator) {
-            (userProfile, customInfo, error) -> Void in
-            let result = mapToAuthData(profile: userProfile, info: customInfo)
-            self.resolveResultOrRejectError(resolve, reject, result, error)
+            (userProfile, result) -> Void in
+            switch result {
+            case .success(let response):
+                resolve(mapToAuthData(profile: userProfile, info: response))
+            case .failure(let error):
+                self.rejectWithError(reject, error)
+            }
         }
     }
 
