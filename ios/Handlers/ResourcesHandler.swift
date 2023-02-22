@@ -84,11 +84,15 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
         
         let headers = try getHeaders(details)
         return ResourceRequestFactory.makeResourceRequest(
-            path: path, method: method, parameters: nil, body: nil,
-            headers: headers, parametersEncoding: .formURL)
+            path: path,
+            method: method,
+            body: (details["body"] as? String)?.data(using: .utf8),
+            headers: headers
+        )
     }
     
     private func getHeaders(_ details: Dictionary<String, Any?>) throws -> [String: String] {
+        guard details["headers"] != nil else { return [:] }
         guard let headers = details["headers"] as? [String: Any] else {
             throw WrapperError.parametersNotCorrect(
                 description: "'headers' must be an object with only Strings as keys")
