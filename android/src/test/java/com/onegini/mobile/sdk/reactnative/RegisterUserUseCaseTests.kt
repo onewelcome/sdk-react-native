@@ -7,6 +7,7 @@ import com.facebook.react.bridge.ReadableArray
 import com.onegini.mobile.sdk.android.handlers.OneginiRegistrationHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiRegistrationError
 import com.onegini.mobile.sdk.android.model.OneginiIdentityProvider
+import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.RegisterUserUseCase
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
@@ -68,7 +69,7 @@ class RegisterUserUseCaseTests {
     //
 
     @Test
-    fun `when onSuccess should resolve with user profile with proper id`() {
+    fun `when onSuccess should resolve with user profile with proper userProfile`() {
         `when`(oneginiSdk.oneginiClient.userClient.registerUser(anyOrNull(), any(), any())).thenAnswer {
             it.getArgument<OneginiRegistrationHandler>(2).onSuccess(UserProfile("123456"), null)
         }
@@ -78,7 +79,23 @@ class RegisterUserUseCaseTests {
         argumentCaptor<JavaOnlyMap> {
             verify(promiseMock).resolve(capture())
 
-            Assert.assertEquals("123456", firstValue.getString("id"))
+            Assert.assertEquals("123456", firstValue.getMap("userProfile")?.getString("id"))
+        }
+    }
+
+    @Test
+    fun `when onSuccess is called, Then should resolve with proper customInfo`() {
+        `when`(oneginiSdk.oneginiClient.userClient.registerUser(anyOrNull(), any(), any())).thenAnswer {
+            it.getArgument<OneginiRegistrationHandler>(2).onSuccess(UserProfile("123456"), CustomInfo(200, "data"))
+        }
+
+        RegisterUserUseCase(oneginiSdk)("id1", scopes, promiseMock)
+
+        argumentCaptor<JavaOnlyMap> {
+            verify(promiseMock).resolve(capture())
+
+            Assert.assertEquals("data", firstValue.getMap("customInfo")?.getString("data"))
+            Assert.assertEquals(200, firstValue.getMap("customInfo")?.getInt("status"))
         }
     }
 
