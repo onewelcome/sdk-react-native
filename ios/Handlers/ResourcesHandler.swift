@@ -82,13 +82,11 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
                 description: "'method' must be either 'GET', 'POST', 'PUT', 'DELETE', 'PATCH' or 'HEAD'")
         }
         
-        let body = details["body"] as? String
-        
         let headers = try getHeaders(details)
         return ResourceRequestFactory.makeResourceRequest(
             path: path,
             method: method,
-            body: body?.data(using: .utf8),
+            body: (details["body"] as? String)?.data(using: .utf8),
             headers: headers
         )
     }
