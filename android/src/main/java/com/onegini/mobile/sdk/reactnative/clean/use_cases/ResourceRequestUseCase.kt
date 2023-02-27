@@ -117,7 +117,7 @@ class ResourceRequestUseCase @Inject constructor(
     // We do this check because iOS requires an accessToken to make an authenticated resource Call
     private fun checkRequireAccessToken(type: String) {
         if (oneginiSDK.oneginiClient.accessToken == null && type == RESOURCE_REQUEST_USER) {
-            throw OneginiReactNativeException(USER_NOT_AUTHENTICATED.code, USER_NOT_AUTHENTICATED.message)
+            throw OneginiReactNativeException(USER_NOT_AUTHENTICATED)
         }
     }
 }

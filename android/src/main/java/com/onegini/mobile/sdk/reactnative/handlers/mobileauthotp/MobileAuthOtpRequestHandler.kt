@@ -29,7 +29,7 @@ class MobileAuthOtpRequestHandler @Inject constructor(private val eventEmitter: 
         callback?.let { authCallback ->
             authCallback.acceptAuthenticationRequest()
             callback = null
-        } ?: throw OneginiReactNativeException(MOBILE_AUTH_OTP_NOT_IN_PROGRESS.code.toInt(), MOBILE_AUTH_OTP_NOT_IN_PROGRESS.message)
+        } ?: throw OneginiReactNativeException(MOBILE_AUTH_OTP_NOT_IN_PROGRESS)
     }
 
     fun denyAuthenticationRequest(): Boolean {

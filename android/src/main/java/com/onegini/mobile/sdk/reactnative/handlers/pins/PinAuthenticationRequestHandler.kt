@@ -34,17 +34,11 @@ class PinAuthenticationRequestHandler @Inject constructor(private val eventEmitt
     }
 
     fun acceptAuthenticationRequest(pin: CharArray) {
-        callback?.acceptAuthenticationRequest(pin) ?: throw OneginiReactNativeException(
-            AUTHENTICATION_NOT_IN_PROGRESS.code,
-            AUTHENTICATION_NOT_IN_PROGRESS.message
-        )
+        callback?.acceptAuthenticationRequest(pin) ?: throw OneginiReactNativeException(AUTHENTICATION_NOT_IN_PROGRESS)
     }
 
     fun denyAuthenticationRequest() {
-        callback?.denyAuthenticationRequest() ?: throw OneginiReactNativeException(
-            AUTHENTICATION_NOT_IN_PROGRESS.code,
-            AUTHENTICATION_NOT_IN_PROGRESS.message
-        )
+        callback?.denyAuthenticationRequest() ?: throw OneginiReactNativeException(AUTHENTICATION_NOT_IN_PROGRESS)
         callback = null
     }
 }

@@ -1,11 +1,11 @@
 package com.onegini.mobile.sdk.reactnative.handlers.registration
 
+import android.net.Uri
 import com.onegini.mobile.sdk.android.handlers.request.OneginiBrowserRegistrationRequestHandler
 import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiBrowserRegistrationCallback
-import android.net.Uri
 import com.onegini.mobile.sdk.reactnative.exception.CANCEL_BROWSER_REGISTRATION_NOT_ALLOWED
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.ACTION_NOT_ALLOWED
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -22,7 +22,7 @@ class RegistrationRequestHandler @Inject constructor(private val eventEmitter: R
     callback?.let { registrationCallback ->
       registrationCallback.handleRegistrationCallback(uri)
       callback = null
-    }  ?: throw OneginiReactNativeException(REGISTRATION_NOT_IN_PROGRESS.code.toInt(), REGISTRATION_NOT_IN_PROGRESS.message)
+    }  ?: throw OneginiReactNativeException(REGISTRATION_NOT_IN_PROGRESS)
   }
 
   /**
@@ -32,7 +32,7 @@ class RegistrationRequestHandler @Inject constructor(private val eventEmitter: R
     callback?.let { registrationCallback ->
       registrationCallback.denyRegistration()
       callback = null
-    } ?: throw OneginiReactNativeException(OneginiWrapperErrors.ACTION_NOT_ALLOWED.code, CANCEL_BROWSER_REGISTRATION_NOT_ALLOWED)
+    } ?: throw OneginiReactNativeException(ACTION_NOT_ALLOWED.code, CANCEL_BROWSER_REGISTRATION_NOT_ALLOWED)
   }
 
   override fun startRegistration(uri: Uri, oneginiBrowserRegistrationCallback: OneginiBrowserRegistrationCallback) {
