@@ -23,7 +23,9 @@ class AuthenticatorsHandler: NSObject {
 }
 
 extension AuthenticatorsHandler: BridgeToAuthenticatorsHandlerProtocol {
-    func registerAuthenticator(_ userProfile: UserProfile, _ authenticatorId: String, completion: @escaping (Error?) -> Void) {
+    func registerAuthenticator(_ userProfile: UserProfile,
+                               _ authenticatorId: String,
+                               completion: @escaping (Error?) -> Void) {
         guard let authenticator = SharedUserClient.instance.authenticators(.all, for: userProfile).first(where: {$0.identifier == authenticatorId}) else {
             completion(WrapperError.authenticatorDoesNotExist)
             return
@@ -33,7 +35,9 @@ extension AuthenticatorsHandler: BridgeToAuthenticatorsHandlerProtocol {
         SharedUserClient.instance.register(authenticator: authenticator, delegate: self)
     }
 
-    func deregisterAuthenticator(_ userProfile: UserProfile, _ authenticatorId: String, completion: @escaping (Error?) -> Void) {
+    func deregisterAuthenticator(_ userProfile: UserProfile,
+                                 _ authenticatorId: String,
+                                 completion: @escaping (Error?) -> Void) {
         guard let authenticator = SharedUserClient.instance.authenticators(.all, for: userProfile).first(where: {$0.identifier == authenticatorId}) else {
             completion(WrapperError.authenticatorDoesNotExist)
             return
@@ -50,13 +54,17 @@ extension AuthenticatorsHandler: BridgeToAuthenticatorsHandlerProtocol {
 
     func setPreferredAuthenticator(_ userProfile: UserProfile, _ authenticatorId: String, completion: @escaping (Error?) -> Void) {
         guard let authenticator = SharedUserClient.instance.authenticators(.all, for: userProfile).first(where: {$0.identifier == authenticatorId}) else {
-            let error = NSError(domain: ONGAuthenticatorRegistrationErrorDomain, code: ONGAuthenticatorRegistrationError.authenticatorNotSupported.rawValue, userInfo: [NSLocalizedDescriptionKey: "This authenticator is not available."])
+            let error = NSError(domain: ONGAuthenticatorRegistrationErrorDomain,
+                                code: ONGAuthenticatorRegistrationError.authenticatorNotSupported.rawValue,
+                                userInfo: [NSLocalizedDescriptionKey: "This authenticator is not available."])
             completion(error)
             return
         }
 
         if authenticator.isRegistered != true {
-            let error = NSError(domain: ONGAuthenticatorRegistrationErrorDomain, code: ONGAuthenticatorRegistrationError.authenticatorNotSupported.rawValue, userInfo: [NSLocalizedDescriptionKey: "This authenticator is not registered."])
+            let error = NSError(domain: ONGAuthenticatorRegistrationErrorDomain,
+                                code: ONGAuthenticatorRegistrationError.authenticatorNotSupported.rawValue,
+                                userInfo: [NSLocalizedDescriptionKey: "This authenticator is not registered."])
             completion(error)
             return
         }

@@ -1,3 +1,4 @@
+// swiftlint:disable identifier_name
 protocol BridgeToResourceHandlerProtocol: AnyObject {
     func resourceRequest(_ type: ResourceRequestType, _ details: [String: Any?], _ completion: @escaping (Result<WrapperResourceResponse, Error>) -> Void)
 }

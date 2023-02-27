@@ -15,12 +15,10 @@ class MobileAuthConnector: BridgeToMobileAuthConnectorProtocol {
 
     func sendNotification(event: MobileAuthNotification, requestMessage: String?, error: Error?) {
         switch event {
-            case .startAuthentication:
-                sendEvent(data: ["mobileAuthenticationRequest": ["message": requestMessage], "action": MobileAuthNotification.startAuthentication.rawValue])
-                break
-            case .finishAuthentication:
-                sendEvent(data: ["action": MobileAuthNotification.finishAuthentication.rawValue])
-                break
+        case .startAuthentication:
+            sendEvent(data: ["mobileAuthenticationRequest": ["message": requestMessage], "action": MobileAuthNotification.startAuthentication.rawValue])
+        case .finishAuthentication:
+            sendEvent(data: ["action": MobileAuthNotification.finishAuthentication.rawValue])
         }
     }
 

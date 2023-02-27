@@ -15,14 +15,12 @@ class RegistrationConnector: BridgeToRegistrationConnectorProtocol {
 
     func sendCustomRegistrationNotification(_ event: CustomRegistrationNotification, _ data: NSMutableDictionary) {
         switch event {
-            case .initRegistration:
-                data.setValue(CustomRegistrationNotification.initRegistration.rawValue, forKey: "action")
-                sendEvent(data: data)
-                break
-            case .finishRegistration:
-                data.setValue(CustomRegistrationNotification.finishRegistration.rawValue, forKey: "action")
-                sendEvent(data: data)
-                break
+        case .initRegistration:
+            data.setValue(CustomRegistrationNotification.initRegistration.rawValue, forKey: "action")
+            sendEvent(data: data)
+        case .finishRegistration:
+            data.setValue(CustomRegistrationNotification.finishRegistration.rawValue, forKey: "action")
+            sendEvent(data: data)
         }
     }
 
