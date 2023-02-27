@@ -5,7 +5,6 @@ protocol BridgeToLoginHandlerProtocol: AnyObject {
     func cancelPinAuthentication(completion: @escaping (Error?) -> Void)
 }
 
-
 class LoginHandler: NSObject {
     private var pinChallenge: PinChallenge?
     private let pinAuthenticationEventEmitter = PinAuthenticationEventEmitter()
@@ -32,12 +31,12 @@ class LoginHandler: NSObject {
             pinAuthenticationEventEmitter.onPinOpen(profileId: challenge.userProfile.profileId)
         }
     }
-    
+
     func handleDidFailToAuthenticateUser() {
         pinChallenge = nil
         pinAuthenticationEventEmitter.onPinClose()
     }
-    
+
     func handleDidAuthenticateUser() {
         pinChallenge = nil
         pinAuthenticationEventEmitter.onPinClose()
@@ -45,16 +44,16 @@ class LoginHandler: NSObject {
 
 }
 
-extension LoginHandler : BridgeToLoginHandlerProtocol {
+extension LoginHandler: BridgeToLoginHandlerProtocol {
     func authenticateUser(_ profile: UserProfile, authenticator: Authenticator? = nil, completion: @escaping (UserProfile, Result<CustomInfo?, Error>) -> Void) {
         let delegate = loginDelegate(loginCompletion: completion)
         SharedUserClient.instance.authenticateUserWith(profile: profile, authenticator: authenticator, delegate: delegate)
     }
-    
+
     func setAuthPinChallenge(_ challenge: PinChallenge?) {
         pinChallenge = challenge
     }
-    
+
     func cancelPinAuthentication(completion: @escaping (Error?) -> Void) {
         guard let pinChallenge = self.pinChallenge else {
             completion(WrapperError.authenticationNotInProgress)
@@ -67,17 +66,16 @@ extension LoginHandler : BridgeToLoginHandlerProtocol {
 
 class loginDelegate: AuthenticationDelegate {
 
-    
     private var loginCompletion: ((UserProfile, Result<CustomInfo?, Error>) -> Void)?
-    
+
     init(loginCompletion: ((UserProfile, Result<CustomInfo?, Error>) -> Void)?) {
         self.loginCompletion = loginCompletion
     }
-    
+
     func userClient(_ userClient: UserClient, didReceivePinChallenge challenge: PinChallenge) {
         BridgeConnector.shared?.toLoginHandler.handleDidReceiveChallenge(challenge)
     }
-    
+
     func userClient(_ userClient: UserClient, didReceiveBiometricChallenge challenge: BiometricChallenge) {
         challenge.sender.respond(with: "", to: challenge)
     }
@@ -87,18 +85,17 @@ class loginDelegate: AuthenticationDelegate {
             loginCompletion?(profile, .success(customAuthInfo))
             loginCompletion = nil
     }
-    
+
     func userClient(_ userClient: OneginiSDKiOS.UserClient, didFailToAuthenticateUser profile: OneginiSDKiOS.UserProfile, authenticator: OneginiSDKiOS.Authenticator, error: Error) {
         loginCompletion?(profile, .failure(error))
         loginCompletion = nil
         // We don't want to send a close pin event when we encounter an action already in progress
-        if (error.code == ONGGenericError.actionAlreadyInProgress.rawValue) { return }
+        if error.code == ONGGenericError.actionAlreadyInProgress.rawValue { return }
         BridgeConnector.shared?.toLoginHandler.handleDidFailToAuthenticateUser()
     }
 }
 
-
-fileprivate func mapErrorFromPinChallenge(_ challenge: PinChallenge) -> Error? {
+private func mapErrorFromPinChallenge(_ challenge: PinChallenge) -> Error? {
     if let error = challenge.error, error.code != ONGAuthenticationError.touchIDAuthenticatorFailure.rawValue {
         return error
     } else {

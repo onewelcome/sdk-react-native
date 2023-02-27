@@ -1,12 +1,12 @@
 protocol BridgeToResourceHandlerProtocol: AnyObject {
-    func resourceRequest(_ type: ResourceRequestType, _ details: Dictionary<String, Any?>, _ completion: @escaping (Result<WrapperResourceResponse, Error>) -> Void)
+    func resourceRequest(_ type: ResourceRequestType, _ details: [String: Any?], _ completion: @escaping (Result<WrapperResourceResponse, Error>) -> Void)
 }
 
 enum ResourceRequestType: String {
     case user
     case implicitUser
     case anonymous
-    
+
     init?(rawValue: String) {
         switch rawValue {
         case "User": self = .user
@@ -22,27 +22,27 @@ struct WrapperResourceResponse {
     var headers: [AnyHashable: String]
     var ok: Bool
     var status: Int
-    
+
     init(_ response: ResourceResponse) {
         body = String(data: response.data ?? Data(), encoding: .utf8) ?? ""
         headers = response.allHeaderFields.compactMapValues { $0 as? String }
         ok = response.statusCode <= 299 && response.statusCode >= 200
         status = response.statusCode
     }
-    
+
     var asDictionary: [String: Any] {
         ["body": body, "headers": headers, "ok": ok, "status": status]
     }
 }
 
 class ResourceHandler: BridgeToResourceHandlerProtocol {
-    
+
     private let deviceClient = SharedDeviceClient.instance
     private let userClient = SharedUserClient.instance
-    
-    func resourceRequest(_ type: ResourceRequestType, _ details: Dictionary<String, Any?>, _ completion: @escaping (Result<WrapperResourceResponse, Error>) -> Void) {
 
-        let completionHandler = { (_ response: ResourceResponse?,_ error: Error?) in
+    func resourceRequest(_ type: ResourceRequestType, _ details: [String: Any?], _ completion: @escaping (Result<WrapperResourceResponse, Error>) -> Void) {
+
+        let completionHandler = { (_ response: ResourceResponse?, _ error: Error?) in
             if let error = error {
                 guard let response = response else {
                     completion(.failure(error))
@@ -57,7 +57,7 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
                 completion(.success(WrapperResourceResponse(response)))
             }
         }
-        
+
         do {
             let request = try buildRequest(details)
             switch type {
@@ -70,8 +70,8 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
             return
         }
     }
-    
-    private func buildRequest(_ details: Dictionary<String, Any?>) throws -> ResourceRequest {
+
+    private func buildRequest(_ details: [String: Any?]) throws -> ResourceRequest {
         guard let path = details["path"] as? String else {
             throw WrapperError.parametersNotCorrect(description: "'path' can not be empty")
         }
@@ -81,7 +81,7 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
             throw WrapperError.parametersNotCorrect(
                 description: "'method' must be either 'GET', 'POST', 'PUT', 'DELETE', 'PATCH' or 'HEAD'")
         }
-        
+
         let headers = try getHeaders(details)
         return ResourceRequestFactory.makeResourceRequest(
             path: path,
@@ -90,8 +90,8 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
             headers: headers
         )
     }
-    
-    private func getHeaders(_ details: Dictionary<String, Any?>) throws -> [String: String] {
+
+    private func getHeaders(_ details: [String: Any?]) throws -> [String: String] {
         guard details["headers"] != nil else { return [:] }
         guard let headers = details["headers"] as? [String: Any] else {
             throw WrapperError.parametersNotCorrect(
@@ -99,7 +99,7 @@ class ResourceHandler: BridgeToResourceHandlerProtocol {
         }
         return headers.compactMapValues { $0 as? String }
     }
-    
+
     // We copy over the swift api from the iOS SDK due to a bug in the sdk, because not all classes it uses are public we need to copy those over aswell. All below code can be removed once that fix is in the iOS SDK.
     // FIXME: Remove when using native sdk swift api for Anonymous resource requests
     @discardableResult
@@ -144,17 +144,17 @@ private extension ResourceRequest {
 // FIXME: Remove when using native sdk swift api for Anonymous resource requests
 private class ResourceResponseImplementation: ResourceResponse {
     var response: HTTPURLResponse
-    var allHeaderFields: [AnyHashable : Any]
+    var allHeaderFields: [AnyHashable: Any]
     var statusCode: Int
     var data: Data?
-    
+
     init(_ resourceResponse: ONGResourceResponse) {
         self.response = resourceResponse.rawResponse
         self.allHeaderFields = resourceResponse.allHeaderFields
         self.statusCode = resourceResponse.statusCode
         self.data = resourceResponse.data
     }
-    
+
     required init(response: HTTPURLResponse, data: Data?) {
         self.response = response
         self.allHeaderFields = response.allHeaderFields
@@ -165,13 +165,13 @@ private class ResourceResponseImplementation: ResourceResponse {
 
 // FIXME: Remove when using native sdk swift api for Anonymous resource requests
 private class NetworkTaskImplementation: NetworkTask {
-    
+
     var identifier: String
     var state: NetworkTaskState
     var request: ResourceRequest
     var response: ResourceResponse?
     var error: Error?
-    
+
     init(_ networkTask: ONGNetworkTask) {
         self.identifier = networkTask.identifier
         self.state = NetworkTaskState(rawValue: networkTask.state.rawValue)!
@@ -187,7 +187,7 @@ private class NetworkTaskImplementation: NetworkTask {
 
 // FIXME: Remove when using native sdk swift api for Anonymous resource requests
 private class ResourceRequestImplementation: ResourceRequest {
-    
+
     let path: String
     let method: HTTPMethod
     var headers: [String: String]?
@@ -195,7 +195,7 @@ private class ResourceRequestImplementation: ResourceRequest {
     let parametersEncoding: ParametersEncoding?
     var body: Data?
     var multipartData: [MultipartData]?
-    
+
     init(_ resourceRequest: ONGResourceRequest) {
         self.path = resourceRequest.path
         self.method = HTTPMethod(rawValue: resourceRequest.method)!
@@ -213,14 +213,14 @@ private class ResourceRequestImplementation: ResourceRequest {
             return MultipartDataImplementation(data)
         })
     }
-    
+
     init(path: String,
          method: HTTPMethod = .get,
          parameters: [String: Any]? = nil,
          body: Data? = nil,
          headers: [String: String]? = nil,
          parametersEncoding: ParametersEncoding = .JSON) {
-        
+
         self.path = path
         self.method = method
         self.parameters = parameters
@@ -228,12 +228,12 @@ private class ResourceRequestImplementation: ResourceRequest {
         self.headers = headers
         self.parametersEncoding = parametersEncoding
     }
-    
+
     init(path: String,
          method: HTTPMethod,
          parameters: [String: Any]?,
          multipartData: [MultipartData]) {
-        
+
         self.path = path
         self.method = method
         self.parameters = parameters
@@ -248,7 +248,7 @@ private class MultipartDataImplementation: MultipartData {
     var name: String
     var fileName: String
     var mimeType: String
-    
+
     init(_ multipartData: ONGMultipartData) {
         self.data = multipartData.data
         self.name = multipartData.name

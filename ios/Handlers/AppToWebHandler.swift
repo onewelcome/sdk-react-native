@@ -9,7 +9,7 @@ class AppToWebHandler: AppToWebHandlerProtocol {
 
     func signInAppToWeb(targetURL: URL?, completion: @escaping (NSMutableDictionary?, Error?) -> Void) {
         guard let _targetURL = targetURL else {
-            let error = NSError(domain: ONGAppToWebSingleSignOnErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey : "Provided url is incorrect."])
+            let error = NSError(domain: ONGAppToWebSingleSignOnErrorDomain, code: 0, userInfo: [NSLocalizedDescriptionKey: "Provided url is incorrect."])
             completion(nil, error)
             return
         }
