@@ -3,8 +3,8 @@ package com.onegini.mobile.sdk.reactnative
 import com.facebook.react.bridge.Promise
 import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiCustomRegistrationCallback
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.SubmitCustomRegistrationActionUseCase
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.ACTION_NOT_ALLOWED
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.IDENTITY_PROVIDER_NOT_FOUND
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError.ACTION_NOT_ALLOWED
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError.IDENTITY_PROVIDER_NOT_FOUND
 import com.onegini.mobile.sdk.reactnative.exception.SUBMIT_CUSTOM_REGISTRATION_ACTION_NOT_ALLOWED
 import com.onegini.mobile.sdk.reactnative.handlers.customregistration.CustomRegistrationEventEmitter
 import com.onegini.mobile.sdk.reactnative.handlers.customregistration.TwoStepCustomRegistrationAction

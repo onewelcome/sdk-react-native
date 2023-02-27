@@ -2,7 +2,7 @@ package com.onegini.mobile.sdk.reactnative
 
 import com.facebook.react.bridge.Promise
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAccessTokenUseCase
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -39,6 +39,6 @@ class GetAccessTokenUseCaseTests {
         Mockito.`when`(oneginiSdk.oneginiClient.accessToken).thenReturn(null)
 
         GetAccessTokenUseCase(oneginiSdk)(promiseMock)
-        verify(promiseMock).reject(OneginiWrapperErrors.NO_PROFILE_AUTHENTICATED.code.toString(), OneginiWrapperErrors.NO_PROFILE_AUTHENTICATED.message)
+        verify(promiseMock).reject(OneginiWrapperError.NO_PROFILE_AUTHENTICATED.code.toString(), OneginiWrapperError.NO_PROFILE_AUTHENTICATED.message)
     }
 }

@@ -4,7 +4,7 @@ import com.facebook.react.bridge.Arguments
 import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.onegini.mobile.sdk.reactnative.Constants
 import com.onegini.mobile.sdk.reactnative.Constants.PinFlow
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -35,8 +35,8 @@ class PinAuthenticationEventEmitter @Inject constructor(private val deviceEventE
       putString("action", Constants.PIN_NOTIFICATION_INCORRECT_PIN)
       putString("flow", PinFlow.Authentication.toString())
       putString("remainingFailureCount", remainingAttempts.toString())
-      putInt("errorType", OneginiWrapperErrors.WRONG_PIN_ERROR.code)
-      putString("errorMsg", OneginiWrapperErrors.WRONG_PIN_ERROR.message)
+      putInt("errorType", OneginiWrapperError.WRONG_PIN_ERROR.code)
+      putString("errorMsg", OneginiWrapperError.WRONG_PIN_ERROR.message)
     }.also { dataMap ->
       deviceEventEmitter.emit(Constants.ONEWELCOME_PIN_AUTHENTICATION_NOTIFICATION, dataMap)
     }

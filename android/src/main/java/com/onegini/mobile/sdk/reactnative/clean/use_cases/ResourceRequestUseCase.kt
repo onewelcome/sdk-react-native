@@ -8,9 +8,9 @@ import com.onegini.mobile.sdk.reactnative.Constants.RESOURCE_REQUEST_IMPLICIT_US
 import com.onegini.mobile.sdk.reactnative.Constants.RESOURCE_REQUEST_USER
 import com.onegini.mobile.sdk.reactnative.OneginiSDK
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.PARAMETERS_NOT_CORRECT
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.RESOURCE_CALL_ERROR
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.USER_NOT_AUTHENTICATED
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError.PARAMETERS_NOT_CORRECT
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError.RESOURCE_CALL_ERROR
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError.USER_NOT_AUTHENTICATED
 import com.onegini.mobile.sdk.reactnative.exception.REQUEST_TYPE_NOT_SUPPORTED
 import com.onegini.mobile.sdk.reactnative.mapers.ResourceRequestDetailsMapper
 import com.onegini.mobile.sdk.reactnative.model.ResourceRequestDetails

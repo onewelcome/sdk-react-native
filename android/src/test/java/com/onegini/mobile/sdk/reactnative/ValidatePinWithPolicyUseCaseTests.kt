@@ -5,7 +5,7 @@ import com.onegini.mobile.sdk.android.handlers.OneginiPinValidationHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiPinValidationError
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.ValidatePinWithPolicyUseCase
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -40,7 +40,7 @@ class ValidatePinWithPolicyUseCaseTests {
         whenever(oneginiSdk.oneginiClient.userClient.authenticatedUserProfile).thenReturn(UserProfile("testId"))
         ValidatePinWithPolicyUseCase(oneginiSdk)(pin, promiseMock)
         verify(promiseMock, never()).resolve(anyOrNull())
-        verify(promiseMock).reject(OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.code.toString(), "Expected parameter 'pin' to be String but was NULL")
+        verify(promiseMock).reject(OneginiWrapperError.PARAMETERS_NOT_CORRECT.code.toString(), "Expected parameter 'pin' to be String but was NULL")
     }
 
     @Test

@@ -9,7 +9,7 @@ import com.onegini.mobile.sdk.android.model.OneginiIdentityProvider
 import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.OneginiSDK
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError
 import com.onegini.mobile.sdk.reactnative.mapers.CustomInfoMapper
 import com.onegini.mobile.sdk.reactnative.mapers.ScopesMapper
 import com.onegini.mobile.sdk.reactnative.mapers.UserProfileMapper
@@ -23,7 +23,7 @@ class RegisterUserUseCase @Inject constructor(private val oneginiSDK: OneginiSDK
         val identityProvider = getIdentityProvider(identityProviderId)
 
         if (identityProvider == null && identityProviderId != null) {
-            promise.reject(OneginiWrapperErrors.IDENTITY_PROVIDER_NOT_FOUND.code.toString(), OneginiWrapperErrors.IDENTITY_PROVIDER_NOT_FOUND.message)
+            promise.reject(OneginiWrapperError.IDENTITY_PROVIDER_NOT_FOUND.code.toString(), OneginiWrapperError.IDENTITY_PROVIDER_NOT_FOUND.message)
             return
         }
 

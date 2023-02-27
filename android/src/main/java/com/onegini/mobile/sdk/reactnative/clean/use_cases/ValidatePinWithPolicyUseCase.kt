@@ -4,7 +4,7 @@ import com.facebook.react.bridge.Promise
 import com.onegini.mobile.sdk.reactnative.OneginiSDK
 import com.onegini.mobile.sdk.android.handlers.OneginiPinValidationHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiPinValidationError
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -12,7 +12,7 @@ import javax.inject.Singleton
 class ValidatePinWithPolicyUseCase @Inject constructor(private val oneginiSDK: OneginiSDK) {
   operator fun invoke(pin: String?, promise: Promise) {
     if (pin == null) {
-      promise.reject(OneginiWrapperErrors.PARAMETERS_NOT_CORRECT.code.toString(), "Expected parameter 'pin' to be String but was NULL")
+      promise.reject(OneginiWrapperError.PARAMETERS_NOT_CORRECT.code.toString(), "Expected parameter 'pin' to be String but was NULL")
       return
     }
     oneginiSDK.oneginiClient.userClient.validatePinWithPolicy(pin.toCharArray(), object: OneginiPinValidationHandler {

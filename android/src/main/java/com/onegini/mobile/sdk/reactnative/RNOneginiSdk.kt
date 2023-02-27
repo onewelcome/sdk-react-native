@@ -17,7 +17,7 @@ import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.ProfileId
 import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.Type
 import com.onegini.mobile.sdk.reactnative.RNOneginiSdk.FunctionParams.Uri
 import com.onegini.mobile.sdk.reactnative.clean.wrapper.OneginiSdkWrapper
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.*
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError.*
 import com.onegini.mobile.sdk.reactnative.exception.PARAM_CAN_NOT_BE_NULL
 import com.onegini.mobile.sdk.reactnative.handlers.fingerprint.FingerprintAuthenticationRequestHandler
 import com.onegini.mobile.sdk.reactnative.handlers.mobileauthotp.MobileAuthOtpRequestHandler

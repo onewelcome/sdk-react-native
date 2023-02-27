@@ -5,7 +5,7 @@ import com.onegini.mobile.sdk.android.handlers.request.OneginiCreatePinRequestHa
 import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiPinCallback
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.PIN_CREATION_NOT_IN_PROGRESS
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError.PIN_CREATION_NOT_IN_PROGRESS
 import javax.inject.Inject
 import javax.inject.Singleton
 

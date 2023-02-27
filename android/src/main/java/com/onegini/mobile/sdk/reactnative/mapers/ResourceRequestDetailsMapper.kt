@@ -2,7 +2,7 @@ package com.onegini.mobile.sdk.reactnative.mapers
 
 import com.facebook.react.bridge.ReadableMap
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.PARAMETERS_NOT_CORRECT
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError.PARAMETERS_NOT_CORRECT
 import com.onegini.mobile.sdk.reactnative.exception.REQUEST_METHOD_NOT_SUPPORTED
 import com.onegini.mobile.sdk.reactnative.exception.REQUEST_MISSING_PATH_PARAMETER
 import com.onegini.mobile.sdk.reactnative.model.ResourceRequestDetails
