@@ -2,7 +2,9 @@ package com.onegini.mobile.sdk.reactnative.clean.use_cases
 
 import com.facebook.react.bridge.Promise
 import com.onegini.mobile.sdk.reactnative.OneginiSDK
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError.*
+import com.onegini.mobile.sdk.reactnative.exception.rejectWrapperError
 import com.onegini.mobile.sdk.reactnative.mapers.OneginiAuthenticatorMapper
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -16,7 +18,7 @@ class GetAllAuthenticatorsUseCase @Inject constructor(
         val userProfile = getUserProfileUseCase(profileId)
 
         if (userProfile == null) {
-            promise.reject(OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.code.toString(), OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.message)
+            promise.rejectWrapperError(PROFILE_DOES_NOT_EXIST)
             return
         }
 

@@ -1,6 +1,6 @@
 package com.onegini.mobile.sdk.reactnative.exception
 
-enum class OneginiWrapperErrors(val code: Int, val message: String) {
+enum class OneginiWrapperError(val code: Int, val message: String) {
     IDENTITY_PROVIDER_NOT_FOUND(8001, "Identity provider not found"),
     WRONG_PIN_ERROR(8004, "Wrong pin provided"),
     RESOURCE_CALL_ERROR(8005, "Resource call finished with error"),

@@ -3,7 +3,7 @@ package com.onegini.mobile.sdk.reactnative
 import com.facebook.react.bridge.Promise
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.DeregisterUserUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetUserProfileUseCase
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError
 import com.onegini.mobile.sdk.android.handlers.OneginiDeregisterUserProfileHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiDeregistrationError
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
@@ -52,7 +52,7 @@ class DeregisterUserUseCaseTests {
 
         deregisterUserUseCase("123", promiseMock)
 
-        verify(promiseMock).reject(OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.code.toString(), OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.message)
+        verify(promiseMock).reject(OneginiWrapperError.PROFILE_DOES_NOT_EXIST.code.toString(), OneginiWrapperError.PROFILE_DOES_NOT_EXIST.message)
     }
 
     @Test

@@ -6,7 +6,7 @@ import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiBrowserRe
 import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiPinCallback
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.CancelPinCreationUseCase
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.PIN_CREATION_NOT_IN_PROGRESS
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError.PIN_CREATION_NOT_IN_PROGRESS
 import com.onegini.mobile.sdk.reactnative.handlers.pins.CreatePinEventEmitter
 import com.onegini.mobile.sdk.reactnative.handlers.pins.CreatePinRequestHandler
 import com.onegini.mobile.sdk.reactnative.handlers.registration.RegistrationEventEmitter

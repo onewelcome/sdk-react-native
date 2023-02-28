@@ -33,7 +33,7 @@ export type PinCreateOpenEvent = {
 export type PinNotAllowedEvent = {
   flow: PinFlow.Create;
   action: PinCreate.PinNotAllowed;
-  errorType: number;
+  errorCode: number;
   errorMsg: string;
 };
 
@@ -53,7 +53,7 @@ export type PinAuthenticationOpenEvent = {
 export type IncorrectPinEvent = {
   flow: PinFlow.Authentication;
   action: PinAuthentication.IncorrectPin;
-  errorType: number;
+  errorCode: number;
   errorMsg: string;
   remainingFailureCount: number;
 };
@@ -181,9 +181,4 @@ export enum FingerprintStage {
 export enum MobileAuthOtp {
   StartAuthentication = 'startAuthentication',
   FinishAuthentication = 'finishAuthentication',
-}
-
-//TOOD: Add more error codes here.
-export enum PinErrorCode {
-  WrongPinErrorCode = 8004,
 }

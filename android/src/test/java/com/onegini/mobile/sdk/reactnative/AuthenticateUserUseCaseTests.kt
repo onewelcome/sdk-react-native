@@ -5,7 +5,7 @@ import com.facebook.react.bridge.Promise
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.AuthenticateUserUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetRegisteredAuthenticatorsUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetUserProfileUseCase
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError
 import com.onegini.mobile.sdk.android.handlers.OneginiAuthenticationHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiAuthenticationError
 import com.onegini.mobile.sdk.android.model.OneginiAuthenticator
@@ -64,7 +64,7 @@ class AuthenticateUserUseCaseTests {
 
         authenticateUserUseCase("123", "1", promiseMock)
 
-        verify(promiseMock).reject(OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.code.toString(), OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.message)
+        verify(promiseMock).reject(OneginiWrapperError.PROFILE_DOES_NOT_EXIST.code.toString(), OneginiWrapperError.PROFILE_DOES_NOT_EXIST.message)
     }
 
     @Test

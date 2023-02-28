@@ -4,7 +4,7 @@ import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.Promise
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetRegisteredAuthenticatorsUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetUserProfileUseCase
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import org.junit.Assert.*
 import org.junit.Before
@@ -46,7 +46,7 @@ class GetRegisteredAuthenticatorsUseCaseTests {
         `when`(oneginiSdk.oneginiClient.userClient.getRegisteredAuthenticators(any())).thenReturn(setOf(TestData.authenticator1, TestData.authenticator2))
 
         getRegisteredAuthenticatorsUseCase("123456", promiseMock)
-        verify(promiseMock).reject(OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.code.toString(), OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.message)
+        verify(promiseMock).reject(OneginiWrapperError.PROFILE_DOES_NOT_EXIST.code.toString(), OneginiWrapperError.PROFILE_DOES_NOT_EXIST.message)
     }
 
     @Test

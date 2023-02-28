@@ -8,10 +8,11 @@ import com.onegini.mobile.sdk.reactnative.Constants.RESOURCE_REQUEST_IMPLICIT_US
 import com.onegini.mobile.sdk.reactnative.Constants.RESOURCE_REQUEST_USER
 import com.onegini.mobile.sdk.reactnative.OneginiSDK
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.PARAMETERS_NOT_CORRECT
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.RESOURCE_CALL_ERROR
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.USER_NOT_AUTHENTICATED
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError.PARAMETERS_NOT_CORRECT
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError.RESOURCE_CALL_ERROR
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError.USER_NOT_AUTHENTICATED
 import com.onegini.mobile.sdk.reactnative.exception.REQUEST_TYPE_NOT_SUPPORTED
+import com.onegini.mobile.sdk.reactnative.exception.rejectRNException
 import com.onegini.mobile.sdk.reactnative.mapers.ResourceRequestDetailsMapper
 import com.onegini.mobile.sdk.reactnative.model.ResourceRequestDetails
 import com.onegini.mobile.sdk.reactnative.network.ApiCall
@@ -38,7 +39,7 @@ class ResourceRequestUseCase @Inject constructor(
             checkRequireAccessToken(type)
             performResourceRequest(resourceClient, requestDetails, promise)
         } catch (error: OneginiReactNativeException) {
-            return promise.reject(error.errorType.toString(), error.message)
+            return promise.rejectRNException(error)
         }
     }
 
@@ -117,7 +118,7 @@ class ResourceRequestUseCase @Inject constructor(
     // We do this check because iOS requires an accessToken to make an authenticated resource Call
     private fun checkRequireAccessToken(type: String) {
         if (oneginiSDK.oneginiClient.accessToken == null && type == RESOURCE_REQUEST_USER) {
-            throw OneginiReactNativeException(USER_NOT_AUTHENTICATED.code, USER_NOT_AUTHENTICATED.message)
+            throw OneginiReactNativeException(USER_NOT_AUTHENTICATED)
         }
     }
 }

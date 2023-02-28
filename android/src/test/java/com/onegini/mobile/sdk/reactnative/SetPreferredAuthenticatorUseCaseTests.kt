@@ -3,7 +3,7 @@ package com.onegini.mobile.sdk.reactnative
 import com.facebook.react.bridge.Promise
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.SetPreferredAuthenticatorUseCase
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.*
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError.*
 import com.onegini.mobile.sdk.reactnative.managers.AuthenticatorManager
 import org.junit.Before
 import org.junit.Test

@@ -5,7 +5,7 @@ import com.onegini.mobile.sdk.android.handlers.OneginiAuthenticatorRegistrationH
 import com.onegini.mobile.sdk.android.handlers.error.OneginiAuthenticatorRegistrationError
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.RegisterAuthenticatorUseCase
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError
 import com.onegini.mobile.sdk.reactnative.managers.AuthenticatorManager
 import org.junit.Before
 import org.junit.Rule
@@ -51,14 +51,14 @@ class RegisterAuthenticatorUseCaseTests {
     fun `When no profile is authenticated, Then it should reject with a NO_PROFILE_AUTHENTICATED error`() {
         whenNoProfileAuthenticated()
         registerAuthenticatorUseCase(TestData.authenticator1.id, promiseMock)
-        verify(promiseMock).reject(OneginiWrapperErrors.NO_PROFILE_AUTHENTICATED.code.toString(), OneginiWrapperErrors.NO_PROFILE_AUTHENTICATED.message)
+        verify(promiseMock).reject(OneginiWrapperError.NO_PROFILE_AUTHENTICATED.code.toString(), OneginiWrapperError.NO_PROFILE_AUTHENTICATED.message)
     }
 
     @Test
     fun `When profile is authenticated but authenticator does not exist, Then it should reject with a AUTHENTICATOR_DOES_NOT_EXIST error`() {
         whenProfileAuthenticated()
         registerAuthenticatorUseCase(nonExistingAuthenticator, promiseMock)
-        verify(promiseMock).reject(OneginiWrapperErrors.AUTHENTICATOR_DOES_NOT_EXIST.code.toString(), OneginiWrapperErrors.AUTHENTICATOR_DOES_NOT_EXIST.message)
+        verify(promiseMock).reject(OneginiWrapperError.AUTHENTICATOR_DOES_NOT_EXIST.code.toString(), OneginiWrapperError.AUTHENTICATOR_DOES_NOT_EXIST.message)
     }
 
     @Test

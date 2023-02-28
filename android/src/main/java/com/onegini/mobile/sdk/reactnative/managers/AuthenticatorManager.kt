@@ -4,13 +4,14 @@ import com.onegini.mobile.sdk.android.handlers.OneginiAuthenticatorDeregistratio
 import com.onegini.mobile.sdk.android.handlers.OneginiAuthenticatorRegistrationHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiAuthenticatorDeregistrationError
 import com.onegini.mobile.sdk.android.handlers.error.OneginiAuthenticatorRegistrationError
-import com.onegini.mobile.sdk.android.handlers.error.OneginiError
 import com.onegini.mobile.sdk.android.model.OneginiAuthenticator
 import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.OneginiSDK
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError.AUTHENTICATOR_DOES_NOT_EXIST
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError.NO_PROFILE_AUTHENTICATED
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError.PROFILE_DOES_NOT_EXIST
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -20,13 +21,13 @@ class AuthenticatorManager @Inject constructor(private val oneginiSDK: OneginiSD
     fun registerFingerprintAuthenticator(profileId: String, callback: RegistrationCallback) {
         val userProfile = getUserProfile(profileId)
         if (userProfile == null) {
-            callback.onError(OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.code.toString(), OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.message)
+            callback.onError(PROFILE_DOES_NOT_EXIST.code.toString(), PROFILE_DOES_NOT_EXIST.message)
             return
         }
 
         val authenticator = getNotRegisteredAuthenticators(userProfile, OneginiAuthenticator.FINGERPRINT)
         if (authenticator == null) {
-            callback.onError(OneginiWrapperErrors.AUTHENTICATOR_DOES_NOT_EXIST.code.toString(), OneginiWrapperErrors.AUTHENTICATOR_DOES_NOT_EXIST.message)
+            callback.onError(AUTHENTICATOR_DOES_NOT_EXIST.code.toString(), AUTHENTICATOR_DOES_NOT_EXIST.message)
             return
         }
 
@@ -47,13 +48,13 @@ class AuthenticatorManager @Inject constructor(private val oneginiSDK: OneginiSD
     fun deregisterFingerprintAuthenticator(profileId: String, callback: DeregistrationCallback) {
         val userProfile = getUserProfile(profileId)
         if (userProfile == null) {
-            callback.onError(OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.code.toString(), OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.message)
+            callback.onError(PROFILE_DOES_NOT_EXIST.code.toString(), PROFILE_DOES_NOT_EXIST.message)
             return
         }
 
         val authenticator = getRegisteredAuthenticators(userProfile, OneginiAuthenticator.FINGERPRINT)
         if (authenticator == null) {
-            callback.onError(OneginiWrapperErrors.AUTHENTICATOR_DOES_NOT_EXIST.code.toString(), OneginiWrapperErrors.AUTHENTICATOR_DOES_NOT_EXIST.message)
+            callback.onError(AUTHENTICATOR_DOES_NOT_EXIST.code.toString(), AUTHENTICATOR_DOES_NOT_EXIST.message)
             return
         }
 
@@ -116,16 +117,10 @@ class AuthenticatorManager @Inject constructor(private val oneginiSDK: OneginiSD
 
     fun setPreferredAuthenticator(authenticatorId: String) {
         val userProfile = oneginiSDK.oneginiClient.userClient.authenticatedUserProfile
-            ?: throw OneginiReactNativeException(
-                OneginiWrapperErrors.NO_PROFILE_AUTHENTICATED.code,
-                OneginiWrapperErrors.NO_PROFILE_AUTHENTICATED.message
-            )
+            ?: throw OneginiReactNativeException(NO_PROFILE_AUTHENTICATED)
 
         val authenticator = getRegisteredAuthenticator(userProfile, authenticatorId)
-            ?: throw OneginiReactNativeException(
-                OneginiWrapperErrors.AUTHENTICATOR_DOES_NOT_EXIST.code,
-                OneginiWrapperErrors.AUTHENTICATOR_DOES_NOT_EXIST.message
-            )
+            ?: throw OneginiReactNativeException(AUTHENTICATOR_DOES_NOT_EXIST)
 
         oneginiSDK.oneginiClient.userClient.setPreferredAuthenticator(authenticator)
     }

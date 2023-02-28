@@ -4,6 +4,7 @@ import com.facebook.react.bridge.Promise
 import com.onegini.mobile.sdk.android.handlers.OneginiLogoutHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiLogoutError
 import com.onegini.mobile.sdk.reactnative.OneginiSDK
+import com.onegini.mobile.sdk.reactnative.exception.rejectOneginiException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -18,7 +19,7 @@ class LogoutUseCase @Inject constructor(private val oneginiSDK: OneginiSDK) {
                 }
 
                 override fun onError(error: OneginiLogoutError) {
-                    promise.reject(error.errorType.toString(), error.message)
+                    promise.rejectOneginiException(error)
                 }
             }
         )

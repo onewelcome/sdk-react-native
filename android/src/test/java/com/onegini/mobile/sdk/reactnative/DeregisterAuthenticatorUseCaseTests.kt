@@ -5,9 +5,9 @@ import com.onegini.mobile.sdk.android.handlers.OneginiAuthenticatorDeregistratio
 import com.onegini.mobile.sdk.android.handlers.error.OneginiAuthenticatorDeregistrationError
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.DeregisterAuthenticatorUseCase
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.AUTHENTICATOR_DOES_NOT_EXIST
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.AUTHENTICATOR_NOT_REGISTERED
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.NO_PROFILE_AUTHENTICATED
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError.AUTHENTICATOR_DOES_NOT_EXIST
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError.AUTHENTICATOR_NOT_REGISTERED
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError.NO_PROFILE_AUTHENTICATED
 import com.onegini.mobile.sdk.reactnative.managers.AuthenticatorManager
 import org.junit.Before
 import org.junit.Rule
