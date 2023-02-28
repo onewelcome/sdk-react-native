@@ -76,15 +76,15 @@ extension MobileAuthHandler: ONGMobileAuthRequestDelegate {
     }
 
     func userClient(_: ONGUserClient, didReceive challenge: ONGPinChallenge, for request: ONGMobileAuthRequest) {
-       // @todo will need this for PUSH PIN?
+       // FIXME: RNP-94 use for PUSH with Pin
     }
 
     func userClient(_: ONGUserClient, didReceive challenge: ONGBiometricChallenge, for request: ONGMobileAuthRequest) {
-        // @todo will need this for PUSH Fingerprint?
+        // FIXME: RNP-94 use for PUSH with Fingerprint
     }
 
     func userClient(_: ONGUserClient, didReceive challenge: ONGCustomAuthFinishAuthenticationChallenge, for request: ONGMobileAuthRequest) {
-        // @todo will need this for PUSH Custom?
+        // We don't support custom authenticators
     }
 
 }
