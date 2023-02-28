@@ -5,7 +5,7 @@ import com.facebook.react.bridge.Promise
 import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiBrowserRegistrationCallback
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.CancelBrowserRegistrationUseCase
 import com.onegini.mobile.sdk.reactnative.exception.CANCEL_BROWSER_REGISTRATION_NOT_ALLOWED
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.ACTION_NOT_ALLOWED
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError.ACTION_NOT_ALLOWED
 import com.onegini.mobile.sdk.reactnative.handlers.registration.RegistrationEventEmitter
 import com.onegini.mobile.sdk.reactnative.handlers.registration.RegistrationRequestHandler
 import org.junit.Before

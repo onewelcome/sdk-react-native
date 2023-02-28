@@ -5,6 +5,7 @@ import com.facebook.react.bridge.ReadableArray
 import com.onegini.mobile.sdk.android.handlers.OneginiDeviceAuthenticationHandler
 import com.onegini.mobile.sdk.reactnative.OneginiSDK
 import com.onegini.mobile.sdk.android.handlers.error.OneginiDeviceAuthenticationError
+import com.onegini.mobile.sdk.reactnative.exception.rejectOneginiException
 import com.onegini.mobile.sdk.reactnative.mapers.ScopesMapper
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -21,7 +22,7 @@ class AuthenticateDeviceForResourceUseCase @Inject constructor(private val onegi
                 }
 
                 override fun onError(error: OneginiDeviceAuthenticationError) {
-                    promise.reject(error.errorType.toString(), error.message)
+                    promise.rejectOneginiException(error)
                 }
             }
         )

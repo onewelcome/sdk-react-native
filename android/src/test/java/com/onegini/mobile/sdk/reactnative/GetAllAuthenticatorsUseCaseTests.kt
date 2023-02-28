@@ -4,7 +4,7 @@ import com.facebook.react.bridge.JavaOnlyArray
 import com.facebook.react.bridge.Promise
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetAllAuthenticatorsUseCase
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.GetUserProfileUseCase
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import org.junit.Assert.*
 import org.junit.Before
@@ -44,7 +44,7 @@ class GetAllAuthenticatorsUseCaseTests {
     @Test
     fun `when no profile is found should reject with error`() {
         getAllAuthenticatorsUseCase("profileId1", promiseMock)
-        verify(promiseMock).reject(OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.code.toString(), OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.message)
+        verify(promiseMock).reject(OneginiWrapperError.PROFILE_DOES_NOT_EXIST.code.toString(), OneginiWrapperError.PROFILE_DOES_NOT_EXIST.message)
     }
 
     @Test

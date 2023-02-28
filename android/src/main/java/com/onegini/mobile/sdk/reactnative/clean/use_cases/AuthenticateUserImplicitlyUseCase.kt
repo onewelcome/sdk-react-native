@@ -6,7 +6,9 @@ import com.onegini.mobile.sdk.android.handlers.OneginiImplicitAuthenticationHand
 import com.onegini.mobile.sdk.android.handlers.error.OneginiImplicitTokenRequestError
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.OneginiSDK
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError.PROFILE_DOES_NOT_EXIST
+import com.onegini.mobile.sdk.reactnative.exception.rejectOneginiException
+import com.onegini.mobile.sdk.reactnative.exception.rejectWrapperError
 import com.onegini.mobile.sdk.reactnative.managers.AuthenticatorManager
 import com.onegini.mobile.sdk.reactnative.mapers.ScopesMapper
 import javax.inject.Inject
@@ -29,10 +31,10 @@ class AuthenticateUserImplicitlyUseCase @Inject constructor(
                         }
 
                         override fun onError(error: OneginiImplicitTokenRequestError) {
-                            promise.reject(error.errorType.toString(), error.message)
+                            promise.rejectOneginiException(error)
                         }
                     }
                 )
-        } ?: promise.reject(PROFILE_DOES_NOT_EXIST.code.toString(), PROFILE_DOES_NOT_EXIST.message)
+        } ?: promise.rejectWrapperError(PROFILE_DOES_NOT_EXIST)
     }
 }

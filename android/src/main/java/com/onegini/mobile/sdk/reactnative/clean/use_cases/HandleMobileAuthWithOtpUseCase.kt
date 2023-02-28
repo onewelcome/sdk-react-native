@@ -4,6 +4,7 @@ import com.facebook.react.bridge.Promise
 import com.onegini.mobile.sdk.android.handlers.OneginiMobileAuthWithOtpHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiMobileAuthWithOtpError
 import com.onegini.mobile.sdk.reactnative.OneginiSDK
+import com.onegini.mobile.sdk.reactnative.exception.rejectOneginiException
 import javax.inject.Inject
 
 class HandleMobileAuthWithOtpUseCase @Inject constructor(private val oneginiSDK: OneginiSDK) {
@@ -16,7 +17,7 @@ class HandleMobileAuthWithOtpUseCase @Inject constructor(private val oneginiSDK:
                 }
 
                 override fun onError(error: OneginiMobileAuthWithOtpError) {
-                    promise.reject(error.errorType.toString(), error.message)
+                    promise.rejectOneginiException(error)
                 }
             }
         )

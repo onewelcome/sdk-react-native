@@ -5,6 +5,7 @@ import com.onegini.mobile.sdk.android.handlers.OneginiInitializationHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiInitializationError
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.OneginiSDK
+import com.onegini.mobile.sdk.reactnative.exception.rejectOneginiException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -19,7 +20,7 @@ class StartClientUseCase @Inject constructor(private val oneginiSDK: OneginiSDK)
             }
 
             override fun onError(error: OneginiInitializationError) {
-                promise.reject(error.errorType.toString(), error.message)
+                promise.rejectOneginiException(error)
             }
         })
     }

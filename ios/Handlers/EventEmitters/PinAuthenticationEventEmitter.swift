@@ -20,7 +20,7 @@ class PinAuthenticationEventEmitter {
         let data = [
             "flow": PinFlow.authentication.rawValue,
             "action": PinAuthNotification.incorrectPin.rawValue,
-            "errorType": error.code,
+            "errorCode": error.code,
             "errorMsg": error.localizedDescription,
             "remainingFailureCount": remainingFailureCount
         ] as [String: Any]

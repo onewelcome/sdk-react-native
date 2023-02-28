@@ -5,7 +5,7 @@ import com.onegini.mobile.sdk.android.handlers.request.OneginiCreatePinRequestHa
 import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiPinCallback
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.PIN_CREATION_NOT_IN_PROGRESS
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError.PIN_CREATION_NOT_IN_PROGRESS
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -34,16 +34,10 @@ class CreatePinRequestHandler @Inject constructor(private val eventEmitter: Crea
     }
 
     fun onPinProvided(pin: CharArray) {
-        pinCallback?.acceptAuthenticationRequest(pin) ?: throw OneginiReactNativeException(
-            PIN_CREATION_NOT_IN_PROGRESS.code,
-            PIN_CREATION_NOT_IN_PROGRESS.message
-        )
+        pinCallback?.acceptAuthenticationRequest(pin) ?: throw OneginiReactNativeException(PIN_CREATION_NOT_IN_PROGRESS)
     }
 
     fun cancelPin() {
-        pinCallback?.denyAuthenticationRequest() ?: throw OneginiReactNativeException(
-            PIN_CREATION_NOT_IN_PROGRESS.code,
-            PIN_CREATION_NOT_IN_PROGRESS.message
-        )
+        pinCallback?.denyAuthenticationRequest() ?: throw OneginiReactNativeException(PIN_CREATION_NOT_IN_PROGRESS)
     }
 }

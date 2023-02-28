@@ -2,6 +2,7 @@ package com.onegini.mobile.sdk.reactnative.clean.use_cases
 
 import com.facebook.react.bridge.Promise
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
+import com.onegini.mobile.sdk.reactnative.exception.rejectRNException
 import com.onegini.mobile.sdk.reactnative.handlers.pins.PinAuthenticationRequestHandler
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -13,7 +14,7 @@ class CancelPinAuthenticationUseCase @Inject constructor(private val pinAuthenti
             pinAuthenticationRequestHandler.denyAuthenticationRequest()
             promise.resolve(null)
         } catch (exception: OneginiReactNativeException) {
-            promise.reject(exception.errorType.toString(), exception.message)
+            promise.rejectRNException(exception)
         }
     }
 }

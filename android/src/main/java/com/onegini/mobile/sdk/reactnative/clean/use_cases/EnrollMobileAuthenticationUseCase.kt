@@ -4,6 +4,7 @@ import com.facebook.react.bridge.Promise
 import com.onegini.mobile.sdk.android.handlers.OneginiMobileAuthEnrollmentHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiMobileAuthEnrollmentError
 import com.onegini.mobile.sdk.reactnative.OneginiSDK
+import com.onegini.mobile.sdk.reactnative.exception.rejectOneginiException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -17,7 +18,7 @@ class EnrollMobileAuthenticationUseCase @Inject constructor(private val oneginiS
             }
 
             override fun onError(error: OneginiMobileAuthEnrollmentError) {
-                promise.reject(error.errorType.toString(), error.message)
+                promise.rejectOneginiException(error)
             }
         })
     }

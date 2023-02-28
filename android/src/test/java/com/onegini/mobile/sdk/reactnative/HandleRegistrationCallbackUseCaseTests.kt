@@ -4,7 +4,7 @@ import android.net.Uri
 import com.facebook.react.bridge.Promise
 import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiBrowserRegistrationCallback
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.HandleRegistrationCallbackUseCase
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors.REGISTRATION_NOT_IN_PROGRESS
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError.REGISTRATION_NOT_IN_PROGRESS
 import com.onegini.mobile.sdk.reactnative.facade.UriFacade
 import com.onegini.mobile.sdk.reactnative.handlers.registration.RegistrationEventEmitter
 import com.onegini.mobile.sdk.reactnative.handlers.registration.RegistrationRequestHandler

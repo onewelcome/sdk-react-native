@@ -2,9 +2,11 @@ package com.onegini.mobile.sdk.reactnative.clean.use_cases
 
 import com.facebook.react.bridge.Promise
 import com.onegini.mobile.sdk.reactnative.OneginiSDK
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
 import com.onegini.mobile.sdk.android.handlers.OneginiDeregisterUserProfileHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiDeregistrationError
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError.*
+import com.onegini.mobile.sdk.reactnative.exception.rejectOneginiException
+import com.onegini.mobile.sdk.reactnative.exception.rejectWrapperError
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -17,7 +19,7 @@ class DeregisterUserUseCase @Inject constructor(
         val userProfile = getUserProfileUseCase(profileId)
 
         if (userProfile == null) {
-            promise.reject(OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.code.toString(), OneginiWrapperErrors.PROFILE_DOES_NOT_EXIST.message)
+            promise.rejectWrapperError(PROFILE_DOES_NOT_EXIST)
             return
         }
 
@@ -29,7 +31,7 @@ class DeregisterUserUseCase @Inject constructor(
                 }
 
                 override fun onError(error: OneginiDeregistrationError) {
-                    promise.reject(error?.errorType.toString(), error?.message)
+                    promise.rejectOneginiException(error)
                 }
             }
         )

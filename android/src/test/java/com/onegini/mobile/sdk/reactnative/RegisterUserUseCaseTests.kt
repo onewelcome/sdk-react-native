@@ -10,7 +10,7 @@ import com.onegini.mobile.sdk.android.model.OneginiIdentityProvider
 import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 import com.onegini.mobile.sdk.android.model.entity.UserProfile
 import com.onegini.mobile.sdk.reactnative.clean.use_cases.RegisterUserUseCase
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperErrors
+import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -108,7 +108,7 @@ class RegisterUserUseCaseTests {
     @Test
     fun `when provider with provided id is not found should reject with proper errors`() {
         RegisterUserUseCase(oneginiSdk)("someId", scopes, promiseMock)
-        verify(promiseMock).reject(OneginiWrapperErrors.IDENTITY_PROVIDER_NOT_FOUND.code.toString(), OneginiWrapperErrors.IDENTITY_PROVIDER_NOT_FOUND.message)
+        verify(promiseMock).reject(OneginiWrapperError.IDENTITY_PROVIDER_NOT_FOUND.code.toString(), OneginiWrapperError.IDENTITY_PROVIDER_NOT_FOUND.message)
     }
 
     @Test
