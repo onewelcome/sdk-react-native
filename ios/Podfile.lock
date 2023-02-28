@@ -371,7 +371,7 @@ DEPENDENCIES:
   - React-RCTVibration (from `../node_modules/react-native/Libraries/Vibration`)
   - React-runtimeexecutor (from `../node_modules/react-native/ReactCommon/runtimeexecutor`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
-  - SwiftLint
+  - SwiftLint (~> 0.50)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -496,6 +496,6 @@ SPEC CHECKSUMS:
   Typhoon: 1973c93ecfb3edb963d78b10e715bc2911475bd2
   Yoga: eca980a5771bf114c41a754098cd85e6e0d90ed7
 
-PODFILE CHECKSUM: 17cc8ed8cdaea46377102b3dbb409ffbcbcc3dae
+PODFILE CHECKSUM: 421eea56d6974a20eff4535f7fbb153d5c81305f
 
 COCOAPODS: 1.11.3
