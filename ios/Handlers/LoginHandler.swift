@@ -1,10 +1,11 @@
 protocol BridgeToLoginHandlerProtocol: AnyObject {
-    func authenticateUser(_ profile: UserProfile, authenticator: Authenticator?, completion: @escaping (UserProfile, Result<CustomInfo?, Error>) -> Void)
+    func authenticateUser(_ profile: UserProfile,
+                          authenticator: Authenticator?,
+                          completion: @escaping (UserProfile, Result<CustomInfo?, Error>) -> Void)
     func setAuthPinChallenge(_ challenge: PinChallenge?)
     func handlePin(_ pin: String?, completion: @escaping (Error?) -> Void)
     func cancelPinAuthentication(completion: @escaping (Error?) -> Void)
 }
-
 
 class LoginHandler: NSObject {
     private var pinChallenge: PinChallenge?
@@ -32,12 +33,12 @@ class LoginHandler: NSObject {
             pinAuthenticationEventEmitter.onPinOpen(profileId: challenge.userProfile.profileId)
         }
     }
-    
+
     func handleDidFailToAuthenticateUser() {
         pinChallenge = nil
         pinAuthenticationEventEmitter.onPinClose()
     }
-    
+
     func handleDidAuthenticateUser() {
         pinChallenge = nil
         pinAuthenticationEventEmitter.onPinClose()
@@ -45,16 +46,19 @@ class LoginHandler: NSObject {
 
 }
 
-extension LoginHandler : BridgeToLoginHandlerProtocol {
-    func authenticateUser(_ profile: UserProfile, authenticator: Authenticator? = nil, completion: @escaping (UserProfile, Result<CustomInfo?, Error>) -> Void) {
-        let delegate = loginDelegate(loginCompletion: completion)
+extension LoginHandler: BridgeToLoginHandlerProtocol {
+    func authenticateUser(_ profile: UserProfile,
+                          authenticator: Authenticator? = nil,
+                          completion: @escaping (UserProfile, Result<CustomInfo?, Error>) -> Void
+    ) {
+        let delegate = LoginDelegate(loginCompletion: completion)
         SharedUserClient.instance.authenticateUserWith(profile: profile, authenticator: authenticator, delegate: delegate)
     }
-    
+
     func setAuthPinChallenge(_ challenge: PinChallenge?) {
         pinChallenge = challenge
     }
-    
+
     func cancelPinAuthentication(completion: @escaping (Error?) -> Void) {
         guard let pinChallenge = self.pinChallenge else {
             completion(WrapperError.authenticationNotInProgress)
@@ -65,40 +69,46 @@ extension LoginHandler : BridgeToLoginHandlerProtocol {
     }
 }
 
-class loginDelegate: AuthenticationDelegate {
+class LoginDelegate: AuthenticationDelegate {
 
-    
     private var loginCompletion: ((UserProfile, Result<CustomInfo?, Error>) -> Void)?
-    
+
     init(loginCompletion: ((UserProfile, Result<CustomInfo?, Error>) -> Void)?) {
         self.loginCompletion = loginCompletion
     }
-    
+
     func userClient(_ userClient: UserClient, didReceivePinChallenge challenge: PinChallenge) {
         BridgeConnector.shared?.toLoginHandler.handleDidReceiveChallenge(challenge)
     }
-    
+
     func userClient(_ userClient: UserClient, didReceiveBiometricChallenge challenge: BiometricChallenge) {
         challenge.sender.respond(with: "", to: challenge)
     }
 
-    func userClient(_ userClient: OneginiSDKiOS.UserClient, didAuthenticateUser profile: OneginiSDKiOS.UserProfile, authenticator: OneginiSDKiOS.Authenticator, info customAuthInfo: OneginiSDKiOS.CustomInfo?) {
+    func userClient(_ userClient: OneginiSDKiOS.UserClient,
+                    didAuthenticateUser profile: OneginiSDKiOS.UserProfile,
+                    authenticator: OneginiSDKiOS.Authenticator,
+                    info customAuthInfo: OneginiSDKiOS.CustomInfo?
+    ) {
             BridgeConnector.shared?.toLoginHandler.handleDidAuthenticateUser()
             loginCompletion?(profile, .success(customAuthInfo))
             loginCompletion = nil
     }
-    
-    func userClient(_ userClient: OneginiSDKiOS.UserClient, didFailToAuthenticateUser profile: OneginiSDKiOS.UserProfile, authenticator: OneginiSDKiOS.Authenticator, error: Error) {
+
+    func userClient(_ userClient: OneginiSDKiOS.UserClient,
+                    didFailToAuthenticateUser profile: OneginiSDKiOS.UserProfile,
+                    authenticator: OneginiSDKiOS.Authenticator,
+                    error: Error
+    ) {
         loginCompletion?(profile, .failure(error))
         loginCompletion = nil
         // We don't want to send a close pin event when we encounter an action already in progress
-        if (error.code == ONGGenericError.actionAlreadyInProgress.rawValue) { return }
+        if error.code == ONGGenericError.actionAlreadyInProgress.rawValue { return }
         BridgeConnector.shared?.toLoginHandler.handleDidFailToAuthenticateUser()
     }
 }
 
-
-fileprivate func mapErrorFromPinChallenge(_ challenge: PinChallenge) -> Error? {
+private func mapErrorFromPinChallenge(_ challenge: PinChallenge) -> Error? {
     if let error = challenge.error, error.code != ONGAuthenticationError.touchIDAuthenticatorFailure.rawValue {
         return error
     } else {

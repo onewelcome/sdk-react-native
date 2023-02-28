@@ -5,7 +5,7 @@ protocol PinConnectorToPinHandler: AnyObject {
 enum PINEntryMode {
     case login
     case registration
-    
+
 }
 
 class ChangePinHandler: NSObject {
@@ -15,12 +15,12 @@ class ChangePinHandler: NSObject {
     private let createPinEventEmitter = CreatePinEventEmitter()
     private let loginHandler: LoginHandler
     private let registrationHandler: RegistrationHandler
-    
+
     init(loginHandler: LoginHandler, registrationHandler: RegistrationHandler) {
         self.loginHandler = loginHandler
         self.registrationHandler = registrationHandler
     }
-    
+
 }
 
 extension ChangePinHandler: PinConnectorToPinHandler {

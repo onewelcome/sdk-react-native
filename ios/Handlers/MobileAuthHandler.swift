@@ -18,14 +18,13 @@ class MobileAuthHandler: NSObject {
     private var confirmation: ((Bool) -> Void)?
     private var mobileAuthCompletion: ((Error?) -> Void)?
 
-
     private func sendConnectorNotification(_ event: MobileAuthNotification, _ requestMessage: String?, _ error: Error?) {
         BridgeConnector.shared?.toMobileAuthConnector.sendNotification(event: event, requestMessage: requestMessage, error: error)
     }
 }
 
-extension MobileAuthHandler : MobileAuthConnectorToHandlerProtocol {
-    
+extension MobileAuthHandler: MobileAuthConnectorToHandlerProtocol {
+
     func enrollForMobileAuth(_ completion: @escaping (Error?) -> Void) {
         ONGClient.sharedInstance().userClient.enroll { _, error in
             completion(error)
@@ -41,7 +40,7 @@ extension MobileAuthHandler : MobileAuthConnectorToHandlerProtocol {
     }
 
     func handleMobileAuthConfirmation(accepted: Bool, completion: @escaping (Error?) -> Void) {
-        //FIXME: RNP-94 Check if this method is implemented correctly
+        // FIXME: RNP-94 Check if this method is implemented correctly
         guard let confirmation = confirmation else {
             completion(WrapperError.mobileAuthNotInProgress)
             return
@@ -62,12 +61,12 @@ extension MobileAuthHandler: ONGMobileAuthRequestDelegate {
         mobileAuthCompletion?(error)
         mobileAuthCompletion = nil
     }
-    
+
     func userClient(_ userClient: ONGUserClient, didHandle request: ONGMobileAuthRequest, authenticator: ONGAuthenticator?, info customAuthenticatorInfo: ONGCustomInfo?) {
         mobileAuthCompletion?(nil)
         mobileAuthCompletion = nil
     }
-    
+
     func userClient(_: ONGUserClient, didReceiveConfirmationChallenge confirmation: @escaping (Bool) -> Void, for request: ONGMobileAuthRequest) {
         message = request.message
         userProfile = request.userProfile
@@ -77,15 +76,15 @@ extension MobileAuthHandler: ONGMobileAuthRequestDelegate {
     }
 
     func userClient(_: ONGUserClient, didReceive challenge: ONGPinChallenge, for request: ONGMobileAuthRequest) {
-       //@todo will need this for PUSH PIN?
+       // FIXME: RNP-94 use for PUSH with Pin
     }
 
     func userClient(_: ONGUserClient, didReceive challenge: ONGBiometricChallenge, for request: ONGMobileAuthRequest) {
-        //@todo will need this for PUSH Fingerprint?
+        // FIXME: RNP-94 use for PUSH with Fingerprint
     }
 
     func userClient(_: ONGUserClient, didReceive challenge: ONGCustomAuthFinishAuthenticationChallenge, for request: ONGMobileAuthRequest) {
-        //@todo will need this for PUSH Custom?
+        // We don't support custom authenticators
     }
 
 }

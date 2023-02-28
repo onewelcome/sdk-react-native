@@ -23,7 +23,7 @@ class RegistrationHandler: NSObject {
             completion(WrapperError.registrationNotInProgress)
             return
         }
-        guard let pin = pin else{
+        guard let pin = pin else {
             createPinChallenge.sender.cancel(createPinChallenge)
             completion(nil)
             return
@@ -50,7 +50,7 @@ class RegistrationHandler: NSObject {
         }
     }
 
-    private func sendCustomRegistrationNotification(_ event: CustomRegistrationNotification,_ data: NSMutableDictionary) {
+    private func sendCustomRegistrationNotification(_ event: CustomRegistrationNotification, _ data: NSMutableDictionary) {
         BridgeConnector.shared?.toRegistrationConnector.sendCustomRegistrationNotification(event, data)
     }
 }
@@ -59,7 +59,7 @@ extension RegistrationHandler {
     func setCreatePinChallenge(_ challenge: CreatePinChallenge?) {
         createPinChallenge = challenge
     }
-    
+
     func signUp(identityProvider: IdentityProvider? = nil, scopes: [String], completion: @escaping (UserProfile?, CustomInfo?, Error?) -> Void) {
         signUpCompletion = completion
         SharedUserClient.instance.registerUserWith(identityProvider: identityProvider, scopes: scopes, delegate: self)
@@ -92,7 +92,7 @@ extension RegistrationHandler {
         createPinChallenge.sender.cancel(createPinChallenge)
         completion(nil)
     }
-    
+
     func handleDidReceivePinRegistrationChallenge(_ challenge: CreatePinChallenge) {
         createPinChallenge = challenge
         if let pinError = mapErrorFromPinChallenge(challenge) {
@@ -102,15 +102,14 @@ extension RegistrationHandler {
             createPinEventEmitter.onPinOpen(profileId: userProfile.profileId, pinLength: challenge.pinLength)
         }
     }
-    
+
     func handleDidFailToRegister() {
         createPinChallenge = nil
         customRegistrationChallenge = nil
         browserRegistrationChallenge = nil
         createPinEventEmitter.onPinClose()
     }
-    
-    
+
     func handleDidRegisterUser() {
         createPinChallenge = nil
         customRegistrationChallenge = nil
@@ -120,16 +119,16 @@ extension RegistrationHandler {
 }
 
 extension RegistrationHandler: RegistrationDelegate {
-    
+
     func userClient(_ userClient: UserClient, didReceiveCreatePinChallenge challenge: CreatePinChallenge) {
         handleDidReceivePinRegistrationChallenge(challenge)
     }
-    
+
     func userClient(_ userClient: UserClient, didReceiveBrowserRegistrationChallenge challenge: BrowserRegistrationChallenge) {
         browserRegistrationChallenge = challenge
         registrationEventEmitter.onSendUrl(challenge.url)
     }
-    
+
     func userClient(_ userClient: UserClient, didReceiveCustomRegistrationInitChallenge challenge: CustomRegistrationChallenge) {
         customRegistrationChallenge = challenge
 
@@ -138,7 +137,7 @@ extension RegistrationHandler: RegistrationDelegate {
 
         sendCustomRegistrationNotification(CustomRegistrationNotification.initRegistration, result)
     }
-    
+
     func userClient(_ userClient: UserClient, didReceiveCustomRegistrationFinishChallenge challenge: CustomRegistrationChallenge) {
         customRegistrationChallenge = challenge
 
@@ -155,13 +154,13 @@ extension RegistrationHandler: RegistrationDelegate {
 
         sendCustomRegistrationNotification(CustomRegistrationNotification.finishRegistration, result)
     }
-    
+
     func userClient(_ userClient: UserClient, didRegisterUser profile: UserProfile, with identityProvider: IdentityProvider, info: CustomInfo?) {
         handleDidRegisterUser()
         signUpCompletion?(profile, info, nil)
         signUpCompletion = nil
     }
-    
+
     func userClient(_ userClient: UserClient, didFailToRegisterUserWith identityProvider: IdentityProvider, error: Error) {
         handleDidFailToRegister()
         signUpCompletion?(nil, nil, error)

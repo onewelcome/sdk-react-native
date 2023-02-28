@@ -1,11 +1,11 @@
+// swiftlint:disable type_body_length file_length
 import Foundation
 import React
 import OneginiSDKiOS
 import LocalAuthentication
 
-
 protocol ConnectorToRNBridgeProtocol: NSObject {
-  func sendBridgeEvent(eventName: OneWelcomeBridgeEvents, data: Any) -> Void
+  func sendBridgeEvent(eventName: OneWelcomeBridgeEvents, data: Any)
 }
 
 // Pin notification actions for RN Bridge
@@ -21,25 +21,25 @@ enum OneWelcomeBridgeEvents: String {
 @objc(RNOneginiSdk)
 class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     var bridgeConnector: BridgeConnector
-    
+
     private lazy var sharedClient = ClientBuilder().build()
-    
+
     private var userClientONG: ONGUserClient {
         // We use this computed property to make sure the SDK is built before we use it. This can be removed once we fully switch to the swift api.
         _ = sharedClient
         return ONGUserClient.sharedInstance()
     }
-    
+
     private var deviceClientONG: ONGDeviceClient {
         // We use this computed property to make sure the SDK is built before we use it. This can be removed once we fully switch to the swift api.
         _ = sharedClient
         return ONGDeviceClient.sharedInstance()
     }
-    
+
     private var deviceClient: DeviceClient {
         return sharedClient.deviceClient
     }
-    
+
     private var userClient: UserClient {
         return sharedClient.userClient
     }
@@ -48,14 +48,19 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
         self.bridgeConnector = BridgeConnector()
         super.init()
         self.bridgeConnector.bridge = self
-      
+
     }
 
     override func supportedEvents() -> [String] {
-        return [OneWelcomeBridgeEvents.pinAuthNotification.rawValue,OneWelcomeBridgeEvents.pinCreateNotification.rawValue, OneWelcomeBridgeEvents.fingerprintNotification.rawValue, OneWelcomeBridgeEvents.customRegistrationNotification.rawValue, OneWelcomeBridgeEvents.authWithOtpNotification.rawValue, OneWelcomeBridgeEvents.registrationNotification.rawValue]
+        return [OneWelcomeBridgeEvents.pinAuthNotification.rawValue,
+                OneWelcomeBridgeEvents.pinCreateNotification.rawValue,
+                OneWelcomeBridgeEvents.fingerprintNotification.rawValue,
+                OneWelcomeBridgeEvents.customRegistrationNotification.rawValue,
+                OneWelcomeBridgeEvents.authWithOtpNotification.rawValue,
+                OneWelcomeBridgeEvents.registrationNotification.rawValue]
     }
 
-    func sendBridgeEvent(eventName: OneWelcomeBridgeEvents, data: Any) -> Void {
+    func sendBridgeEvent(eventName: OneWelcomeBridgeEvents, data: Any) {
       self.sendEvent(withName: eventName.rawValue, body: data)
     }
 
@@ -63,7 +68,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     override static func requiresMainQueueSetup() -> Bool {
         return true
     }
-    
+
     func rejectWithError(_ reject: RCTPromiseRejectBlock, _ error: Error) {
         reject(String(error.code), error.localizedDescription, error)
     }
@@ -75,13 +80,16 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
             resolve(result)
         }
     }
-    
-    func makeCompletionHandler(resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock, resolveWithNil: Bool) -> (_ result: Any?, _ error: Error?) -> Void {
+
+    func makeCompletionHandler(resolver resolve: @escaping RCTPromiseResolveBlock,
+                               rejecter reject: @escaping RCTPromiseRejectBlock,
+                               resolveWithNil: Bool
+    ) -> (_ result: Any?, _ error: Error?) -> Void {
         return { (_ result: Any?, _ error: Error?) in
             if let error = error {
                 self.rejectWithError(reject, error)
             } else {
-                if (resolveWithNil) {
+                if resolveWithNil {
                     resolve(nil)
                 } else {
                     resolve(result)
@@ -89,8 +97,10 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
             }
         }
     }
-    
-    func makeCompletionHandler(resolver resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> (_ error: Error?) -> Void {
+
+    func makeCompletionHandler(resolver resolve: @escaping RCTPromiseResolveBlock,
+                               rejecter reject: @escaping RCTPromiseRejectBlock
+    ) -> (_ error: Error?) -> Void {
         return { (_ error: Error?) in
             if let error = error {
                 self.rejectWithError(reject, error)
@@ -101,19 +111,19 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     @objc
-    func startClient(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+    func startClient(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
         let completion = makeCompletionHandler(resolver: resolve, rejecter: reject)
         sharedClient.start(completion: completion)
     }
 
     @objc
-    func getRedirectUri(_ resolve: RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
+    func getRedirectUri(_ resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) {
         let redirectUri = sharedClient.configModel.redirectURL
         resolve(redirectUri)
     }
 
     @objc
-    func getAccessToken(_ resolve: RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
+    func getAccessToken(_ resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) {
         let accessToken = userClientONG.accessToken
         guard let accessToken = accessToken else {
             rejectWithError(reject, WrapperError.noProfileAuthenticated)
@@ -123,7 +133,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     @objc
-    func getUserProfiles(_ resolve: RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
+    func getUserProfiles(_ resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) {
         let profiles = userClientONG.userProfiles()
         let result: NSMutableArray = []
 
@@ -135,7 +145,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     @objc
-    func getAuthenticatedUserProfile(_ resolve: RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
+    func getAuthenticatedUserProfile(_ resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) {
         guard let authenticatedProfile = userClientONG.authenticatedUserProfile() else {
             rejectWithError(reject, WrapperError.noProfileAuthenticated)
             return
@@ -144,7 +154,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     @objc
-    func getIdentityProviders(_ resolve: RCTPromiseResolveBlock, rejecter reject:RCTPromiseRejectBlock) -> Void {
+    func getIdentityProviders(_ resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) {
         let profiles = userClientONG.identityProviders()
         let result: NSMutableArray  = []
 
@@ -159,13 +169,13 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func registerUser(_ identityProviderId: String?,
                       scopes: [String],
                       resolver resolve: @escaping RCTPromiseResolveBlock,
-                      rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        var provider: IdentityProvider? = nil
+                      rejecter reject: @escaping RCTPromiseRejectBlock) {
+        var provider: IdentityProvider?
         if identityProviderId != nil {
             provider = userClient.identityProviders.first(where: { $0.identifier == identityProviderId })
         }
-        bridgeConnector.toRegistrationConnector.registrationHandler.signUp(identityProvider: provider, scopes: scopes) {
-          (userProfile, customInfo, error) -> Void in
+        bridgeConnector.toRegistrationConnector.registrationHandler.signUp(identityProvider: provider,
+                                                                           scopes: scopes) { (userProfile, customInfo, error) -> Void in
             let result = mapToAuthData(profile: userProfile, info: customInfo)
             self.resolveResultOrRejectError(resolve, reject, result, error)
         }
@@ -174,16 +184,15 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     @objc
     func submitCustomRegistrationAction(_ identityProviderId: String, token: String?,
                                         resolver resolve: @escaping RCTPromiseResolveBlock,
-                                        rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+                                        rejecter reject: @escaping RCTPromiseRejectBlock) {
         let completion = makeCompletionHandler(resolver: resolve, rejecter: reject)
         bridgeConnector.toRegistrationConnector.registrationHandler.handleOTPCode(token, completion: completion)
     }
 
-    
     @objc
     func deregisterUser(_ profileId: String,
                         resolver resolve: @escaping RCTPromiseResolveBlock,
-                        rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+                        rejecter reject: @escaping RCTPromiseRejectBlock) {
         let profile = userClientONG.userProfiles().first(where: { $0.profileId == profileId })
         guard let profile = profile else {
             rejectWithError(reject, WrapperError.profileDoesNotExist)
@@ -196,7 +205,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     @objc
     func handleRegistrationCallback(_ url: String,
                                     resolver resolve: @escaping RCTPromiseResolveBlock,
-                                    rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+                                    rejecter reject: @escaping RCTPromiseRejectBlock) {
         let urlOBject = URL(string: url)
         guard let urlOBject = urlOBject else {
             rejectWithError(reject, WrapperError.malformedUrl)
@@ -208,36 +217,36 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
     @objc
     func cancelBrowserRegistration(_ resolve: @escaping RCTPromiseResolveBlock,
-                            rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+                                   rejecter reject: @escaping RCTPromiseRejectBlock) {
         let completion = makeCompletionHandler(resolver: resolve, rejecter: reject)
         bridgeConnector.toRegistrationConnector.registrationHandler.cancelBrowserRegistration(completion: completion)
     }
-    
+
     @objc
     func cancelCustomRegistration(_ message: String, resolver resolve: @escaping RCTPromiseResolveBlock,
-                            rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+                                  rejecter reject: @escaping RCTPromiseRejectBlock) {
         let completion = makeCompletionHandler(resolver: resolve, rejecter: reject)
         bridgeConnector.toRegistrationConnector.registrationHandler.cancelCustomRegistration(completion: completion)
     }
 
     @objc
     func cancelPinAuthentication(_ resolve: @escaping RCTPromiseResolveBlock,
-                            rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+                                 rejecter reject: @escaping RCTPromiseRejectBlock) {
         let completion = makeCompletionHandler(resolver: resolve, rejecter: reject)
         bridgeConnector.toLoginHandler.cancelPinAuthentication(completion: completion)
     }
 
     @objc
     func cancelPinCreation(_ resolve: @escaping RCTPromiseResolveBlock,
-                            rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+                           rejecter reject: @escaping RCTPromiseRejectBlock) {
         let completion = makeCompletionHandler(resolver: resolve, rejecter: reject)
         bridgeConnector.toRegistrationConnector.registrationHandler.cancelPinCreation(completion: completion)
     }
-    
+
     @objc
     func submitPin(_ flow: String, pin: String,
-                         resolver resolve: @escaping RCTPromiseResolveBlock,
-                         rejecter reject: @escaping RCTPromiseRejectBlock) {
+                   resolver resolve: @escaping RCTPromiseResolveBlock,
+                   rejecter reject: @escaping RCTPromiseRejectBlock) {
         let completion = makeCompletionHandler(resolver: resolve, rejecter: reject)
         switch flow {
         case PinFlow.create.rawValue:
@@ -251,15 +260,15 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     @objc
-    func changePin(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+    func changePin(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
         let completion = makeCompletionHandler(resolver: resolve, rejecter: reject)
         bridgeConnector.toChangePinHandler.onChangePinCalled(completion: completion)
     }
 
     @objc
     func authenticateUser(_ profileId: String, authenticatorId: String,
-                        resolver resolve: @escaping RCTPromiseResolveBlock,
-                        rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+                          resolver resolve: @escaping RCTPromiseResolveBlock,
+                          rejecter reject: @escaping RCTPromiseRejectBlock) {
         let profile = userClient.userProfiles.first(where: { $0.profileId == profileId })
         guard let profile = profile else {
             rejectWithError(reject, WrapperError.profileDoesNotExist)
@@ -267,8 +276,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
         }
         let authenticators = userClient.authenticators(.all, for: profile)
         let authenticator = authenticators.first(where: {$0.identifier == authenticatorId}) ?? userClient.preferredAuthenticator
-        bridgeConnector.toLoginHandler.authenticateUser(profile, authenticator: authenticator) {
-            (userProfile, result) -> Void in
+        bridgeConnector.toLoginHandler.authenticateUser(profile, authenticator: authenticator) { (userProfile, result) -> Void in
             switch result {
             case .success(let response):
                 resolve(mapToAuthData(profile: userProfile, info: response))
@@ -279,25 +287,24 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     }
 
     @objc
-    func logout(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+    func logout(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
         let completion = makeCompletionHandler(resolver: resolve, rejecter: reject, resolveWithNil: true)
         userClientONG.logoutUser(completion)
     }
 
     @objc
     func startSingleSignOn(_ url: String,
-                        resolver resolve: @escaping RCTPromiseResolveBlock,
-                        rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        let _url = URL(string: url)
+                           resolver resolve: @escaping RCTPromiseResolveBlock,
+                           rejecter reject: @escaping RCTPromiseRejectBlock) {
         let completion = makeCompletionHandler(resolver: resolve, rejecter: reject, resolveWithNil: true)
-        bridgeConnector.toAppToWebHandler.signInAppToWeb(targetURL: _url, completion: completion)
+        bridgeConnector.toAppToWebHandler.signInAppToWeb(targetURL: URL(string: url), completion: completion)
     }
 
     @objc
     func authenticateUserImplicitly(_ profileId: String,
                                     scopes: [String],
                                     resolver resolve: @escaping RCTPromiseResolveBlock,
-                                    rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+                                    rejecter reject: @escaping RCTPromiseRejectBlock) {
         let profile = userClientONG.userProfiles().first(where: { $0.profileId == profileId })
         guard let profile = profile else {
             rejectWithError(reject, WrapperError.profileDoesNotExist)
@@ -309,8 +316,8 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
     @objc
     func authenticateDeviceForResource(_ scopes: [String],
-                        resolver resolve: @escaping RCTPromiseResolveBlock,
-                        rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+                                       resolver resolve: @escaping RCTPromiseResolveBlock,
+                                       rejecter reject: @escaping RCTPromiseRejectBlock) {
         // Due to a bug in the swift api we need to use the obj-c api, after that is fixed, we can use commented code below.
 //        let completion = makeCompletionHandler(resolver: resolve, rejecter: reject)
 //        deviceClient.authenticateDevice(with: scopes, completion: completion)
@@ -321,8 +328,8 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     @objc
     func resourceRequest(_ type: (String), details: (NSDictionary),
                          resolver resolve: @escaping RCTPromiseResolveBlock,
-                         rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        
+                         rejecter reject: @escaping RCTPromiseRejectBlock) {
+
         let resourceType = ResourceRequestType(rawValue: type)
         guard let resourceType = resourceType else {
             rejectWithError(reject, WrapperError.parametersNotCorrect(description: "Supplied request type is not supported"))
@@ -342,34 +349,34 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
             }
         }
     }
-    
+
     @objc
-    func getResourceBaseUrl(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+    func getResourceBaseUrl(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
         resolve(SharedClient.instance.configModel.resourceBaseURL)
     }
 
     @objc
-    func enrollMobileAuthentication(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+    func enrollMobileAuthentication(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
         let completion = makeCompletionHandler(resolver: resolve, rejecter: reject)
         bridgeConnector.toMobileAuthConnector.mobileAuthHandler.enrollForMobileAuth(completion)
     }
 
     @objc
     func handleMobileAuthWithOtp(_ otpCode: String,
-                        resolver resolve: @escaping RCTPromiseResolveBlock,
-                        rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+                                 resolver resolve: @escaping RCTPromiseResolveBlock,
+                                 rejecter reject: @escaping RCTPromiseRejectBlock) {
         let completion = makeCompletionHandler(resolver: resolve, rejecter: reject)
         bridgeConnector.toMobileAuthConnector.mobileAuthHandler.handleOTPMobileAuth(otpCode, completion)
     }
 
     @objc
-    func acceptMobileAuthConfirmation(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+    func acceptMobileAuthConfirmation(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
         let completion = makeCompletionHandler(resolver: resolve, rejecter: reject)
         bridgeConnector.toMobileAuthConnector.mobileAuthHandler.handleMobileAuthConfirmation(accepted: true, completion: completion)
     }
 
     @objc
-    func denyMobileAuthConfirmation(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+    func denyMobileAuthConfirmation(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
         let completion = makeCompletionHandler(resolver: resolve, rejecter: reject)
         bridgeConnector.toMobileAuthConnector.mobileAuthHandler.handleMobileAuthConfirmation(accepted: false, completion: completion)
     }
@@ -377,16 +384,16 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     // Authenticators management
     @objc
     func getAllAuthenticators(_ profileId: String,
-                        resolver resolve: @escaping RCTPromiseResolveBlock,
-                        rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
-        
+                              resolver resolve: @escaping RCTPromiseResolveBlock,
+                              rejecter reject: @escaping RCTPromiseRejectBlock) {
+
         let profile = userClient.userProfiles.first(where: { $0.profileId == profileId })
         guard let profile = profile else {
             rejectWithError(reject, WrapperError.profileDoesNotExist)
             return
         }
-        
-        let allAuthenticators: Array<Authenticator> = bridgeConnector.toAuthenticatorsHandler.getAuthenticatorsListForUserProfile(profile)
+
+        let allAuthenticators: [Authenticator] = bridgeConnector.toAuthenticatorsHandler.getAuthenticatorsListForUserProfile(profile)
 
         let result: NSMutableArray = []
 
@@ -399,15 +406,15 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
     @objc
     func getRegisteredAuthenticators(_ profileId: String,
-                        resolver resolve: @escaping RCTPromiseResolveBlock,
-                        rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+                                     resolver resolve: @escaping RCTPromiseResolveBlock,
+                                     rejecter reject: @escaping RCTPromiseRejectBlock) {
         let profile = userClient.userProfiles.first(where: { $0.profileId == profileId })
         guard let profile = profile else {
             rejectWithError(reject, WrapperError.profileDoesNotExist)
             return
         }
 
-        let registeredAuthenticators: Array<Authenticator> = bridgeConnector.toAuthenticatorsHandler.getAuthenticatorsListForUserProfile(profile).filter {$0.isRegistered == true}
+        let registeredAuthenticators: [Authenticator] = bridgeConnector.toAuthenticatorsHandler.getAuthenticatorsListForUserProfile(profile).filter {$0.isRegistered == true}
 
         let result: NSMutableArray = []
 
@@ -420,8 +427,8 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
     @objc
     func setPreferredAuthenticator(_ authenticatorId: String,
-                        resolver resolve: @escaping RCTPromiseResolveBlock,
-                        rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+                                   resolver resolve: @escaping RCTPromiseResolveBlock,
+                                   rejecter reject: @escaping RCTPromiseRejectBlock) {
         guard let profile = userClient.authenticatedUserProfile else {
             rejectWithError(reject, WrapperError.noProfileAuthenticated)
             return
@@ -432,16 +439,16 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
     @objc
     func validatePinWithPolicy(_ pin: String,
-                        resolver resolve: @escaping RCTPromiseResolveBlock,
-                        rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+                               resolver resolve: @escaping RCTPromiseResolveBlock,
+                               rejecter reject: @escaping RCTPromiseRejectBlock) {
         let completion = makeCompletionHandler(resolver: resolve, rejecter: reject, resolveWithNil: true)
         userClientONG.validatePin(withPolicy: pin, completion: completion)
     }
 
     @objc
     func registerAuthenticator(_ authenticatorId: String,
-                        resolver resolve: @escaping RCTPromiseResolveBlock,
-                        rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+                               resolver resolve: @escaping RCTPromiseResolveBlock,
+                               rejecter reject: @escaping RCTPromiseRejectBlock) {
         let profile = userClient.authenticatedUserProfile
         guard let profile = profile else {
             rejectWithError(reject, WrapperError.profileDoesNotExist)
@@ -453,8 +460,8 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
     @objc
     func deregisterAuthenticator(_ authenticatorId: String,
-                        resolver resolve: @escaping RCTPromiseResolveBlock,
-                        rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
+                                 resolver resolve: @escaping RCTPromiseResolveBlock,
+                                 rejecter reject: @escaping RCTPromiseRejectBlock) {
         let profile = userClient.authenticatedUserProfile
         guard let profile = profile else {
             reject(String(WrapperError.noProfileAuthenticated.code), WrapperError.noProfileAuthenticated.localizedDescription, WrapperError.noProfileAuthenticated)
