@@ -34,7 +34,7 @@ class CreatePinEventEmitter @Inject constructor(private val deviceEventEmitter: 
     Arguments.createMap().apply {
       putString("action", Constants.PIN_NOTIFICATION_PIN_NOT_ALLOWED)
       putString("flow", PinFlow.Create.toString())
-      putInt("errorType", errorCode)
+      putInt("errorCode", errorCode)
       putString("errorMsg", errorMessage)
     }.also { dataMap ->
       deviceEventEmitter.emit(Constants.ONEWELCOME_PIN_CREATE_NOTIFICATION, dataMap)

@@ -35,7 +35,7 @@ class PinAuthenticationEventEmitter @Inject constructor(private val deviceEventE
       putString("action", Constants.PIN_NOTIFICATION_INCORRECT_PIN)
       putString("flow", PinFlow.Authentication.toString())
       putString("remainingFailureCount", remainingAttempts.toString())
-      putInt("errorType", OneginiWrapperError.WRONG_PIN_ERROR.code)
+      putInt("errorCode", OneginiWrapperError.WRONG_PIN_ERROR.code)
       putString("errorMsg", OneginiWrapperError.WRONG_PIN_ERROR.message)
     }.also { dataMap ->
       deviceEventEmitter.emit(Constants.ONEWELCOME_PIN_AUTHENTICATION_NOTIFICATION, dataMap)

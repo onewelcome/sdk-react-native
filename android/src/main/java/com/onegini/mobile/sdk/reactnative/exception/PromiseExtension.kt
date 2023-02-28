@@ -8,7 +8,7 @@ fun Promise.rejectWrapperError(error: OneginiWrapperError) {
 }
 
 fun Promise.rejectRNException(error: OneginiReactNativeException) {
-    this.reject(error.errorType.toString(), error.message)
+    this.reject(error.code.toString(), error.message)
 }
 
 fun Promise.rejectOneginiException(error: OneginiError) {
