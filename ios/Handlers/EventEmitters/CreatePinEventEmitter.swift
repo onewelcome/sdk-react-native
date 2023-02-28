@@ -22,7 +22,7 @@ class CreatePinEventEmitter {
             "flow": PinFlow.create.rawValue,
             "action": PinCreateNotification.pinNotAllowed.rawValue,
             "errorMsg": error.localizedDescription,
-            "errorType": error.code,
+            "errorCode": error.code,
         ] as [String: Any]
         BridgeConnector.shared?.sendBridgeEvent(eventName: .pinCreateNotification, data: data)
     }
