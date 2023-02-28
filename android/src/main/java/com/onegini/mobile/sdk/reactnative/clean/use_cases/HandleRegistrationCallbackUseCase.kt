@@ -2,7 +2,7 @@ package com.onegini.mobile.sdk.reactnative.clean.use_cases
 
 import com.facebook.react.bridge.Promise
 import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
-import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError.REGISTRATION_NOT_IN_PROGRESS
+import com.onegini.mobile.sdk.reactnative.exception.rejectRNException
 import com.onegini.mobile.sdk.reactnative.facade.UriFacade
 import com.onegini.mobile.sdk.reactnative.handlers.registration.RegistrationRequestHandler
 import javax.inject.Inject
@@ -20,7 +20,7 @@ class HandleRegistrationCallbackUseCase @Inject constructor(
             registrationRequestHandler.handleRegistrationCallback(uri)
             promise.resolve(null)
         } catch (exception: OneginiReactNativeException) {
-            promise.reject(REGISTRATION_NOT_IN_PROGRESS.code.toString(), REGISTRATION_NOT_IN_PROGRESS.message)
+            promise.rejectRNException(exception)
         }
     }
 }

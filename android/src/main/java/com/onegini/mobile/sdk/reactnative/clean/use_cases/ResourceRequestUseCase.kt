@@ -12,6 +12,7 @@ import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError.PARAMETE
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError.RESOURCE_CALL_ERROR
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError.USER_NOT_AUTHENTICATED
 import com.onegini.mobile.sdk.reactnative.exception.REQUEST_TYPE_NOT_SUPPORTED
+import com.onegini.mobile.sdk.reactnative.exception.rejectRNException
 import com.onegini.mobile.sdk.reactnative.mapers.ResourceRequestDetailsMapper
 import com.onegini.mobile.sdk.reactnative.model.ResourceRequestDetails
 import com.onegini.mobile.sdk.reactnative.network.ApiCall
@@ -38,7 +39,7 @@ class ResourceRequestUseCase @Inject constructor(
             checkRequireAccessToken(type)
             performResourceRequest(resourceClient, requestDetails, promise)
         } catch (error: OneginiReactNativeException) {
-            return promise.reject(error.errorType.toString(), error.message)
+            return promise.rejectRNException(error)
         }
     }
 

@@ -6,6 +6,7 @@ import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError.AUTHENTICATION_NOT_IN_PROGRESS
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError.INCORRECT_PIN_FLOW
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError.REGISTRATION_NOT_IN_PROGRESS
+import com.onegini.mobile.sdk.reactnative.exception.rejectWrapperError
 import com.onegini.mobile.sdk.reactnative.handlers.pins.CreatePinRequestHandler
 import com.onegini.mobile.sdk.reactnative.handlers.pins.PinAuthenticationRequestHandler
 import javax.inject.Inject
@@ -24,7 +25,7 @@ class SubmitPinUseCase @Inject constructor(
             Constants.PinFlow.Create.toString() -> {
                 return handleSubmitCreatePin(pin, promise)
             }
-            else -> promise.reject(INCORRECT_PIN_FLOW.code.toString(), INCORRECT_PIN_FLOW.message)
+            else -> promise.rejectWrapperError(INCORRECT_PIN_FLOW)
         }
     }
 
@@ -33,10 +34,7 @@ class SubmitPinUseCase @Inject constructor(
             createPinRequestHandler.onPinProvided(pin.toCharArray())
             promise.resolve(null)
         } catch (exception: OneginiReactNativeException) {
-            promise.reject(
-                REGISTRATION_NOT_IN_PROGRESS.code.toString(),
-                REGISTRATION_NOT_IN_PROGRESS.message
-            )
+            promise.rejectWrapperError(REGISTRATION_NOT_IN_PROGRESS)
         }
     }
 
@@ -45,10 +43,7 @@ class SubmitPinUseCase @Inject constructor(
             pinAuthenticationRequestHandler.acceptAuthenticationRequest(pin.toCharArray())
             promise.resolve(null)
         } catch (exception: OneginiReactNativeException) {
-            promise.reject(
-                AUTHENTICATION_NOT_IN_PROGRESS.code.toString(),
-                AUTHENTICATION_NOT_IN_PROGRESS.message
-            )
+            promise.rejectWrapperError(AUTHENTICATION_NOT_IN_PROGRESS)
         }
     }
 }

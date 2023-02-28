@@ -4,6 +4,7 @@ import com.facebook.react.bridge.Promise
 import com.onegini.mobile.sdk.android.handlers.OneginiChangePinHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiChangePinError
 import com.onegini.mobile.sdk.reactnative.OneginiSDK
+import com.onegini.mobile.sdk.reactnative.exception.rejectOneginiException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -17,7 +18,7 @@ class ChangePinUseCase @Inject constructor(private val oneginiSDK: OneginiSDK) {
             }
 
             override fun onError(error: OneginiChangePinError) {
-                promise.reject(error.errorType.toString(), error.message)
+                promise.rejectOneginiException(error)
             }
         })
     }

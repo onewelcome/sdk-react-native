@@ -7,6 +7,8 @@ import com.onegini.mobile.sdk.reactnative.OneginiSDK
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError.AUTHENTICATOR_DOES_NOT_EXIST
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError.AUTHENTICATOR_NOT_REGISTERED
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError.NO_PROFILE_AUTHENTICATED
+import com.onegini.mobile.sdk.reactnative.exception.rejectOneginiException
+import com.onegini.mobile.sdk.reactnative.exception.rejectWrapperError
 import com.onegini.mobile.sdk.reactnative.managers.AuthenticatorManager
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -18,13 +20,13 @@ class DeregisterAuthenticatorUseCase @Inject constructor(
 ) {
     operator fun invoke(authenticatorId: String, promise: Promise) {
         val userProfile = oneginiSDK.oneginiClient.userClient.authenticatedUserProfile ?:
-            return promise.reject(NO_PROFILE_AUTHENTICATED.code.toString(), NO_PROFILE_AUTHENTICATED.message)
+            return promise.rejectWrapperError(NO_PROFILE_AUTHENTICATED)
 
         val authenticator = authenticatorManager.getAuthenticator(userProfile, authenticatorId) ?:
-            return promise.reject(AUTHENTICATOR_DOES_NOT_EXIST.code.toString(), AUTHENTICATOR_DOES_NOT_EXIST.message)
+            return promise.rejectWrapperError(AUTHENTICATOR_DOES_NOT_EXIST)
 
         if (!authenticator.isRegistered) {
-            return promise.reject(AUTHENTICATOR_NOT_REGISTERED.code.toString(), AUTHENTICATOR_NOT_REGISTERED.message)
+            return promise.rejectWrapperError(AUTHENTICATOR_NOT_REGISTERED)
         }
         oneginiSDK.oneginiClient.userClient.deregisterAuthenticator(
             authenticator,
@@ -34,7 +36,7 @@ class DeregisterAuthenticatorUseCase @Inject constructor(
                 }
 
                 override fun onError(error: OneginiAuthenticatorDeregistrationError) {
-                    promise.reject(error.errorType.toString(), error.message)
+                    promise.rejectOneginiException(error)
                 }
             })
     }

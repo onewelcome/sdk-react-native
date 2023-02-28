@@ -5,6 +5,7 @@ import com.onegini.mobile.sdk.reactnative.OneginiSDK
 import com.onegini.mobile.sdk.android.handlers.OneginiPinValidationHandler
 import com.onegini.mobile.sdk.android.handlers.error.OneginiPinValidationError
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError
+import com.onegini.mobile.sdk.reactnative.exception.rejectOneginiException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -20,8 +21,8 @@ class ValidatePinWithPolicyUseCase @Inject constructor(private val oneginiSDK: O
         promise.resolve(null);
       }
 
-      override fun onError(err: OneginiPinValidationError) {
-        promise.reject(err.errorType.toString(), err.message)
+      override fun onError(error: OneginiPinValidationError) {
+        promise.rejectOneginiException(error)
       }
     })
   }

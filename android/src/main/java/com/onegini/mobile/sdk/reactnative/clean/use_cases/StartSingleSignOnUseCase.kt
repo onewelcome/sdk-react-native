@@ -5,6 +5,7 @@ import com.onegini.mobile.sdk.android.handlers.OneginiAppToWebSingleSignOnHandle
 import com.onegini.mobile.sdk.android.handlers.error.OneginiAppToWebSingleSignOnError
 import com.onegini.mobile.sdk.android.model.OneginiAppToWebSingleSignOn
 import com.onegini.mobile.sdk.reactnative.OneginiSDK
+import com.onegini.mobile.sdk.reactnative.exception.rejectOneginiException
 import com.onegini.mobile.sdk.reactnative.facade.UriFacade
 import com.onegini.mobile.sdk.reactnative.mapers.OneginiAppToWebSingleSignOnMapper
 import javax.inject.Inject
@@ -22,7 +23,7 @@ class StartSingleSignOnUseCase @Inject constructor(private val oneginiSDK: Onegi
                 }
 
                 override fun onError(error: OneginiAppToWebSingleSignOnError) {
-                    promise.reject(error.errorType.toString(), error.message)
+                    promise.rejectOneginiException(error)
                 }
             }
         )

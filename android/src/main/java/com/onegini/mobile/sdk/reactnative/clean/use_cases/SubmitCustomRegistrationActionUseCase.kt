@@ -5,6 +5,7 @@ import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError.ACTION_NOT_ALLOWED
 import com.onegini.mobile.sdk.reactnative.exception.OneginiWrapperError.IDENTITY_PROVIDER_NOT_FOUND
 import com.onegini.mobile.sdk.reactnative.exception.SUBMIT_CUSTOM_REGISTRATION_ACTION_NOT_ALLOWED
+import com.onegini.mobile.sdk.reactnative.exception.rejectWrapperError
 import com.onegini.mobile.sdk.reactnative.handlers.customregistration.CustomRegistrationAction
 import com.onegini.mobile.sdk.reactnative.managers.CustomRegistrationActionManager
 import javax.inject.Inject
@@ -15,7 +16,7 @@ class SubmitCustomRegistrationActionUseCase @Inject constructor(private val cust
     operator fun invoke(identityProviderId: String, token: String?, promise: Promise) {
         customRegistrationActionManager.getCustomRegistrationAction(identityProviderId)?.let { action ->
             tryReturnSuccess(action, token, promise)
-        } ?: promise.reject(IDENTITY_PROVIDER_NOT_FOUND.code.toString(), IDENTITY_PROVIDER_NOT_FOUND.message)
+        } ?: promise.rejectWrapperError(IDENTITY_PROVIDER_NOT_FOUND)
     }
 
     private fun tryReturnSuccess(

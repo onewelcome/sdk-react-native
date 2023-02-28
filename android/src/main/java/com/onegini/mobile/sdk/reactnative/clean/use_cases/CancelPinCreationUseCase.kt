@@ -5,6 +5,7 @@ import com.onegini.mobile.sdk.reactnative.exception.OneginiReactNativeException
 import com.onegini.mobile.sdk.reactnative.handlers.pins.CreatePinRequestHandler
 import javax.inject.Inject
 import javax.inject.Singleton
+import com.onegini.mobile.sdk.reactnative.exception.rejectRNException
 
 @Singleton
 class CancelPinCreationUseCase @Inject constructor(private val createPinRequestHandler: CreatePinRequestHandler) {
@@ -13,7 +14,7 @@ class CancelPinCreationUseCase @Inject constructor(private val createPinRequestH
             createPinRequestHandler.cancelPin()
             promise.resolve(null)
         } catch (exception: OneginiReactNativeException) {
-            promise.reject(exception.errorType.toString(), exception.message)
+            promise.rejectRNException(exception)
         }
     }
 }
