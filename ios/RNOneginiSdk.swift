@@ -296,7 +296,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
     func startSingleSignOn(_ url: String,
                            resolver resolve: @escaping RCTPromiseResolveBlock,
                            rejecter reject: @escaping RCTPromiseRejectBlock) {
-        let completion = makeCompletionHandler(resolver: resolve, rejecter: reject, resolveWithNil: true)
+        let completion = makeCompletionHandler(resolver: resolve, rejecter: reject, resolveWithNil: false)
         bridgeConnector.toAppToWebHandler.signInAppToWeb(targetURL: URL(string: url), completion: completion)
     }
 
