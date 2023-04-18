@@ -10,16 +10,12 @@ import javax.inject.Singleton
 
 @Singleton
 class AcceptMobileAuthConfirmationUseCase @Inject constructor(private val mobileAuthOtpRequestHandler: MobileAuthOtpRequestHandler) {
-    operator fun invoke(promise: Promise) {
-        tryAcceptAuthenticationRequest(promise)
+  operator fun invoke(promise: Promise) {
+    try {
+      mobileAuthOtpRequestHandler.acceptAuthenticationRequest()
+      promise.resolve(null)
+    } catch (exception: OneginiReactNativeException) {
+      promise.rejectRNException(exception)
     }
-
-    private fun tryAcceptAuthenticationRequest(promise: Promise) {
-        try {
-            mobileAuthOtpRequestHandler.acceptAuthenticationRequest()
-            promise.resolve(null)
-        } catch (exception: OneginiReactNativeException) {
-            promise.rejectRNException(exception)
-        }
-    }
+  }
 }

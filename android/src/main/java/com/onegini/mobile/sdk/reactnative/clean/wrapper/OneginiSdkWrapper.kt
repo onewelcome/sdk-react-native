@@ -167,23 +167,23 @@ class OneginiSdkWrapper @Inject constructor(
     }
 
     fun registerFingerprintAuthenticator(profileId: String, promise: Promise) {
-        TODO("Not yet implemented")
+        //TODO("Not yet implemented")
     }
 
     fun deregisterFingerprintAuthenticator(profileId: String, promise: Promise) {
-        TODO("Not yet implemented")
+        //TODO("Not yet implemented")
     }
 
     fun submitFingerprintAcceptAuthenticationRequest(promise: Promise) {
-        TODO("Not yet implemented")
+        //TODO("Not yet implemented")
     }
 
     fun submitFingerprintDenyAuthenticationRequest(promise: Promise) {
-        TODO("Not yet implemented")
+        //TODO("Not yet implemented")
     }
 
     fun submitFingerprintFallbackToPin(promise: Promise) {
-        TODO("Not yet implemented")
+        //TODO("Not yet implemented")
     }
 
     fun changePin(promise: Promise) {

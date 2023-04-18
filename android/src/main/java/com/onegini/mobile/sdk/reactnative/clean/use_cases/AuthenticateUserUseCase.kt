@@ -17,45 +17,38 @@ import javax.inject.Singleton
 
 @Singleton
 class AuthenticateUserUseCase @Inject constructor(
-    private val oneginiSDK: OneginiSDK,
-    private val getRegisteredAuthenticatorsUseCase: GetRegisteredAuthenticatorsUseCase,
-    private val getUserProfileUseCase: GetUserProfileUseCase
+  private val oneginiSDK: OneginiSDK,
+  private val getRegisteredAuthenticatorsUseCase: GetRegisteredAuthenticatorsUseCase,
+  private val getUserProfileUseCase: GetUserProfileUseCase
 ) {
-    operator fun invoke(profileId: String, authenticatorId: String?, promise: Promise) {
-        val userProfile = getUserProfileUseCase(profileId)
-
-        if (userProfile == null) {
-            promise.rejectWrapperError(PROFILE_DOES_NOT_EXIST)
-            return
-        }
-
-        val allAuthenticators = getRegisteredAuthenticatorsUseCase.getList(userProfile)
-        val authenticator = allAuthenticators.find { it.id == authenticatorId }
-
-        val handler = object : OneginiAuthenticationHandler {
-            override fun onSuccess(userProfile: UserProfile, customInfo: CustomInfo?) {
-                val result = Arguments.createMap()
-                UserProfileMapper.add(result, userProfile)
-                CustomInfoMapper.add(result, customInfo)
-                promise.resolve(result)
-            }
-
-            override fun onError(error: OneginiAuthenticationError) {
-                promise.rejectOneginiException(error)
-            }
-        }
-
-        if (authenticator != null) {
-            oneginiSDK.oneginiClient.userClient.authenticateUser(
-                userProfile,
-                authenticator,
-                handler
-            )
-        } else {
-            oneginiSDK.oneginiClient.userClient.authenticateUser(
-                userProfile,
-                handler
-            )
-        }
+  operator fun invoke(profileId: String, authenticatorId: String?, promise: Promise) {
+    val userProfile = getUserProfileUseCase(profileId) ?: run {
+      promise.rejectWrapperError(PROFILE_DOES_NOT_EXIST)
+      return
     }
+
+    val handler = object : OneginiAuthenticationHandler {
+      override fun onSuccess(userProfile: UserProfile, customInfo: CustomInfo?) {
+        val result = Arguments.createMap()
+        UserProfileMapper.add(result, userProfile)
+        CustomInfoMapper.add(result, customInfo)
+        promise.resolve(result)
+      }
+
+      override fun onError(error: OneginiAuthenticationError) {
+        promise.rejectOneginiException(error)
+      }
+    }
+
+    getRegisteredAuthenticatorsUseCase
+      .getList(userProfile)
+      .find { it.id == authenticatorId }
+      ?.let { authenticator ->
+        oneginiSDK.oneginiClient.userClient.authenticateUser(
+          userProfile,
+          authenticator,
+          handler
+        )
+      } ?: oneginiSDK.oneginiClient.userClient.authenticateUser(userProfile, handler)
+  }
 }
