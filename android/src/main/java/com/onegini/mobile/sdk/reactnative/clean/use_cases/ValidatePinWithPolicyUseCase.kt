@@ -13,8 +13,7 @@ import javax.inject.Singleton
 class ValidatePinWithPolicyUseCase @Inject constructor(private val oneginiSDK: OneginiSDK) {
   operator fun invoke(pin: String?, promise: Promise) {
     if (pin == null) {
-      promise.reject(OneginiWrapperError.PARAMETERS_NOT_CORRECT.code.toString(), "Expected parameter 'pin' to be String but was NULL")
-      return
+      return promise.reject(OneginiWrapperError.PARAMETERS_NOT_CORRECT.code.toString(), "Expected parameter 'pin' to be String but was NULL")
     }
     oneginiSDK.oneginiClient.userClient.validatePinWithPolicy(pin.toCharArray(), object: OneginiPinValidationHandler {
       override fun onSuccess() {

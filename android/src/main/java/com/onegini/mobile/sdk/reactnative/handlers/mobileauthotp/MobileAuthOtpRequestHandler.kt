@@ -32,10 +32,9 @@ class MobileAuthOtpRequestHandler @Inject constructor(private val eventEmitter: 
     }
 
     fun denyAuthenticationRequest(): Boolean {
-        callback?.let { authCallback ->
+        return callback?.let { authCallback ->
             authCallback.denyAuthenticationRequest()
-            return true
-        }
-        return false
+            true
+        } ?: false
     }
 }

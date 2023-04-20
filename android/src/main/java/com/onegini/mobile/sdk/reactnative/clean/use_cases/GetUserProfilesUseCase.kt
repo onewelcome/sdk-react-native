@@ -8,7 +8,6 @@ import javax.inject.Singleton
 
 @Singleton
 class GetUserProfilesUseCase @Inject constructor(private val oneginiSDK: OneginiSDK) {
-
     operator fun invoke(promise: Promise) {
         val profiles = oneginiSDK.oneginiClient.userClient.userProfiles
         promise.resolve(UserProfileMapper.toWritableMap(profiles))

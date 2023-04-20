@@ -16,12 +16,7 @@ class DeregisterUserUseCase @Inject constructor(
     private val getUserProfileUseCase: GetUserProfileUseCase
 ) {
     operator fun invoke(profileId: String, promise: Promise) {
-        val userProfile = getUserProfileUseCase(profileId)
-
-        if (userProfile == null) {
-            promise.rejectWrapperError(PROFILE_DOES_NOT_EXIST)
-            return
-        }
+        val userProfile = getUserProfileUseCase(profileId) ?: return promise.rejectWrapperError(PROFILE_DOES_NOT_EXIST)
 
         oneginiSDK.oneginiClient.userClient.deregisterUser(
             userProfile,

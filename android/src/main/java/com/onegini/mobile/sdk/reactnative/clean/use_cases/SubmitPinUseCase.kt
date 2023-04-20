@@ -18,13 +18,9 @@ class SubmitPinUseCase @Inject constructor(
     private val pinAuthenticationRequestHandler: PinAuthenticationRequestHandler
 ) {
     operator fun invoke(pinFlow: String, pin: String, promise: Promise) {
-        when (pinFlow) {
-            Constants.PinFlow.Authentication.toString() -> {
-                return handleSubmitAuthPin(pin, promise)
-            }
-            Constants.PinFlow.Create.toString() -> {
-                return handleSubmitCreatePin(pin, promise)
-            }
+        return when (pinFlow) {
+            Constants.PinFlow.Authentication.toString() -> handleSubmitAuthPin(pin, promise)
+            Constants.PinFlow.Create.toString() -> handleSubmitCreatePin(pin, promise)
             else -> promise.rejectWrapperError(INCORRECT_PIN_FLOW)
         }
     }

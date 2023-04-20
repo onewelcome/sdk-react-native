@@ -13,7 +13,7 @@ class FingerprintAuthenticationEventEmitter @Inject constructor(private val devi
     fun startAuthentication(user: UserProfile) {
         Arguments.createMap().apply {
             UserProfileMapper.add(this, user)
-            putString("action", Constants.FINGERPRINT_NOTIFICATION_START_AUTHENTICATION)
+            putString(ACTION, Constants.FINGERPRINT_NOTIFICATION_START_AUTHENTICATION)
         }.also { dataMap ->
             deviceEventEmitter.emit(Constants.ONEWELCOME_FINGERPRINT_NOTIFICATION, dataMap)
         }
@@ -21,7 +21,7 @@ class FingerprintAuthenticationEventEmitter @Inject constructor(private val devi
 
     fun onNextAuthenticationAttempt() {
         Arguments.createMap().apply {
-            putString("action", Constants.FINGERPRINT_NOTIFICATION_ON_NEXT_AUTHENTICATION_ATTEMPT)
+            putString(ACTION, Constants.FINGERPRINT_NOTIFICATION_ON_NEXT_AUTHENTICATION_ATTEMPT)
         }.also { dataMap ->
             deviceEventEmitter.emit(Constants.ONEWELCOME_FINGERPRINT_NOTIFICATION, dataMap)
         }
@@ -29,7 +29,7 @@ class FingerprintAuthenticationEventEmitter @Inject constructor(private val devi
 
     fun onFingerprintCaptured() {
         Arguments.createMap().apply {
-            putString("action", Constants.FINGERPRINT_NOTIFICATION_ON_FINGERPRINT_CAPTURED)
+            putString(ACTION, Constants.FINGERPRINT_NOTIFICATION_ON_FINGERPRINT_CAPTURED)
         }.also { dataMap ->
             deviceEventEmitter.emit(Constants.ONEWELCOME_FINGERPRINT_NOTIFICATION, dataMap)
         }
@@ -37,9 +37,13 @@ class FingerprintAuthenticationEventEmitter @Inject constructor(private val devi
 
     fun finishAuthentication() {
         Arguments.createMap().apply {
-            putString("action", Constants.FINGERPRINT_NOTIFICATION_FINISH_AUTHENTICATION)
+            putString(ACTION, Constants.FINGERPRINT_NOTIFICATION_FINISH_AUTHENTICATION)
         }.also { dataMap ->
             deviceEventEmitter.emit(Constants.ONEWELCOME_FINGERPRINT_NOTIFICATION, dataMap)
         }
+    }
+
+    companion object {
+        private const val ACTION = "action"
     }
 }

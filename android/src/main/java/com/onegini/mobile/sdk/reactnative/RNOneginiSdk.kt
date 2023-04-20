@@ -50,8 +50,6 @@ class RNOneginiSdk(private val reactContext: ReactApplicationContext) : ReactCon
     @Inject
     lateinit var pinAuthenticationRequestHandler: PinAuthenticationRequestHandler
 
-
-
     override fun initialize() {
         super.initialize()
         val component = DaggerRNOneginiSdkComponent.builder()

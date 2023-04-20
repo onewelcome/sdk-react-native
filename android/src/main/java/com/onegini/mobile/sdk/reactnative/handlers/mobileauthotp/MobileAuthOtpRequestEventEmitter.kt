@@ -12,6 +12,7 @@ import javax.inject.Singleton
 class MobileAuthOtpRequestEventEmitter @Inject constructor(private val deviceEventEmitter: DeviceEventManagerModule.RCTDeviceEventEmitter) {
     fun startAuthentication(request: OneginiMobileAuthenticationRequest) {
         Arguments.createMap().apply {
+            //As an improvement you can move strings into private const val in companion object of this class
             putString("action", Constants.MOBILE_AUTH_OTP_START_AUTHENTICATION)
             OneginiMobileAuthenticationRequestMapper.add(this, request)
         }.also { dataMap ->

@@ -17,19 +17,8 @@ class GetRegisteredAuthenticatorsUseCase @Inject constructor(
     private val getUserProfileUseCase: GetUserProfileUseCase
 ) {
     operator fun invoke(profileId: String, promise: Promise) {
-        val userProfile = getUserProfileUseCase(profileId)
-
-        if (userProfile == null) {
-            promise.rejectWrapperError(PROFILE_DOES_NOT_EXIST)
-            return
-        }
-
-        val authenticators = getList(userProfile)
-
+        val userProfile = getUserProfileUseCase(profileId) ?: return promise.rejectWrapperError(PROFILE_DOES_NOT_EXIST)
+        val authenticators = oneginiSDK.oneginiClient.userClient.getRegisteredAuthenticators(userProfile)
         promise.resolve(OneginiAuthenticatorMapper.toWritableMap(authenticators))
-    }
-
-    fun getList(userProfile: UserProfile): Set<OneginiAuthenticator> {
-        return oneginiSDK.oneginiClient.userClient.getRegisteredAuthenticators(userProfile)
     }
 }

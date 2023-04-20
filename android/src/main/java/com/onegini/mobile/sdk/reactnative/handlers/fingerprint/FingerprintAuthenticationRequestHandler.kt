@@ -30,14 +30,17 @@ class FingerprintAuthenticationRequestHandler @Inject constructor(private val ev
     }
 
     fun acceptAuthenticationRequest() {
+        //What if callback is null?
         callback?.acceptAuthenticationRequest()
     }
 
     fun denyAuthenticationRequest() {
+        //What if callback is null?
         callback?.denyAuthenticationRequest()
     }
 
     fun fallbackToPin() {
+        //What if callback is null?
         callback?.fallbackToPin()
     }
 }

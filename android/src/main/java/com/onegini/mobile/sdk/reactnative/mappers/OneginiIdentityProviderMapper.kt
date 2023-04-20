@@ -6,7 +6,8 @@ import com.facebook.react.bridge.WritableMap
 import com.onegini.mobile.sdk.android.model.OneginiIdentityProvider
 
 object OneginiIdentityProviderMapper {
-
+    // part of strings are const val, part are not.
+    // IMO there's no need to extract strings if they're only used just once in a class and are not used anywhere else
     const val IDENTITY_PROVIDER = "identityProvider"
 
     fun toWritableMap(provider: OneginiIdentityProvider): WritableMap {

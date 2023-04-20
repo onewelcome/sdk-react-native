@@ -10,7 +10,7 @@ import javax.inject.Singleton
 
 @Singleton
 class PinAuthenticationEventEmitter @Inject constructor(private val deviceEventEmitter: DeviceEventManagerModule.RCTDeviceEventEmitter) {
-
+  //As an improvement you can move those strings into private const val in companion object of this class
   fun onPinOpen(profileId: String) {
     Arguments.createMap().apply {
       putString("action", Constants.PIN_NOTIFICATION_OPEN_VIEW)

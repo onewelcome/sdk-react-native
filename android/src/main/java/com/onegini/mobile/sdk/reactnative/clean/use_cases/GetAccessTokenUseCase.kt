@@ -8,7 +8,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class GetAccessTokenUseCase @Inject constructor(val oneginiSDK: OneginiSDK) {
+class GetAccessTokenUseCase @Inject constructor(private val oneginiSDK: OneginiSDK) {
 
     operator fun invoke(promise: Promise) {
         oneginiSDK.oneginiClient.accessToken?.let { token ->

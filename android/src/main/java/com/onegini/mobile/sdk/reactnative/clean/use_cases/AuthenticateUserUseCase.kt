@@ -22,10 +22,7 @@ class AuthenticateUserUseCase @Inject constructor(
   private val getUserProfileUseCase: GetUserProfileUseCase
 ) {
   operator fun invoke(profileId: String, authenticatorId: String?, promise: Promise) {
-    val userProfile = getUserProfileUseCase(profileId) ?: run {
-      promise.rejectWrapperError(PROFILE_DOES_NOT_EXIST)
-      return
-    }
+    val userProfile = getUserProfileUseCase(profileId) ?: return promise.rejectWrapperError(PROFILE_DOES_NOT_EXIST)
 
     val handler = object : OneginiAuthenticationHandler {
       override fun onSuccess(userProfile: UserProfile, customInfo: CustomInfo?) {
