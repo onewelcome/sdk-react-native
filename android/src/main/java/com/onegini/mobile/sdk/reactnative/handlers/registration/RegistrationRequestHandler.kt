@@ -11,10 +11,11 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class RegistrationRequestHandler @Inject constructor(private val eventEmitter: RegistrationEventEmitter):
-    OneginiBrowserRegistrationRequestHandler {
-  
+class RegistrationRequestHandler @Inject constructor(private val eventEmitter: RegistrationEventEmitter) :
+  OneginiBrowserRegistrationRequestHandler {
+
   private var callback: OneginiBrowserRegistrationCallback? = null
+
   /**
    * Finish registration action with result from web browser
    */
@@ -22,7 +23,7 @@ class RegistrationRequestHandler @Inject constructor(private val eventEmitter: R
     callback?.let { registrationCallback ->
       registrationCallback.handleRegistrationCallback(uri)
       callback = null
-    }  ?: throw OneginiReactNativeException(REGISTRATION_NOT_IN_PROGRESS)
+    } ?: throw OneginiReactNativeException(REGISTRATION_NOT_IN_PROGRESS)
   }
 
   /**

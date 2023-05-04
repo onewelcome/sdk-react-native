@@ -16,25 +16,25 @@ import javax.inject.Singleton
 
 @Singleton
 class AuthenticateUserImplicitlyUseCase @Inject constructor(
-    private val oneginiSDK: OneginiSDK,
-    private val authenticatorManager: AuthenticatorManager
+  private val oneginiSDK: OneginiSDK,
+  private val authenticatorManager: AuthenticatorManager
 ) {
-    operator fun invoke(profileId: String, scopes: ReadableArray?, promise: Promise) {
-        authenticatorManager.getUserProfile(profileId)?.let { userProfile ->
-            val scopesArray = ScopesMapper.toStringArray(scopes)
-            oneginiSDK.oneginiClient.userClient
-                .authenticateUserImplicitly(
-                    userProfile, scopesArray,
-                    object : OneginiImplicitAuthenticationHandler {
-                        override fun onSuccess(profile: UserProfile) {
-                            promise.resolve(null)
-                        }
+  operator fun invoke(profileId: String, scopes: ReadableArray?, promise: Promise) {
+    authenticatorManager.getUserProfile(profileId)?.let { userProfile ->
+      val scopesArray = ScopesMapper.toStringArray(scopes)
+      oneginiSDK.oneginiClient.userClient
+        .authenticateUserImplicitly(
+          userProfile, scopesArray,
+          object : OneginiImplicitAuthenticationHandler {
+            override fun onSuccess(profile: UserProfile) {
+              promise.resolve(null)
+            }
 
-                        override fun onError(error: OneginiImplicitTokenRequestError) {
-                            promise.rejectOneginiException(error)
-                        }
-                    }
-                )
-        } ?: promise.rejectWrapperError(PROFILE_DOES_NOT_EXIST)
-    }
+            override fun onError(error: OneginiImplicitTokenRequestError) {
+              promise.rejectOneginiException(error)
+            }
+          }
+        )
+    } ?: promise.rejectWrapperError(PROFILE_DOES_NOT_EXIST)
+  }
 }

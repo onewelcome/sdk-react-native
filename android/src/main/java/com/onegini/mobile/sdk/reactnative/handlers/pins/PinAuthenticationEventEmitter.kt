@@ -26,7 +26,7 @@ class PinAuthenticationEventEmitter @Inject constructor(private val deviceEventE
       putString("action", Constants.PIN_NOTIFICATION_CLOSE_VIEW)
       putString("flow", PinFlow.Authentication.toString())
     }.also { dataMap ->
-    deviceEventEmitter.emit(Constants.ONEWELCOME_PIN_AUTHENTICATION_NOTIFICATION, dataMap)
+      deviceEventEmitter.emit(Constants.ONEWELCOME_PIN_AUTHENTICATION_NOTIFICATION, dataMap)
     }
   }
 

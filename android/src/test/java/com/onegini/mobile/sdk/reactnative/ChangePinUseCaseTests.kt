@@ -18,40 +18,41 @@ import org.mockito.kotlin.whenever
 @RunWith(MockitoJUnitRunner::class)
 class ChangePinUseCaseTests {
 
-    @get:Rule
-    val reactArgumentsTestRule = ReactArgumentsTestRule()
+  @get:Rule
+  val reactArgumentsTestRule = ReactArgumentsTestRule()
 
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    lateinit var oneginiSdk: OneginiSDK
+  @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+  lateinit var oneginiSdk: OneginiSDK
 
-    @Mock
-    lateinit var promiseMock: Promise
+  @Mock
+  lateinit var promiseMock: Promise
 
-    @Mock
-    lateinit var oneginiChangePinError: OneginiChangePinError
+  @Mock
+  lateinit var oneginiChangePinError: OneginiChangePinError
 
-    lateinit var changePinUseCase: ChangePinUseCase
+  lateinit var changePinUseCase: ChangePinUseCase
 
-    @Before
-    fun setup() {
-        changePinUseCase = ChangePinUseCase(oneginiSdk)
+  @Before
+  fun setup() {
+    changePinUseCase = ChangePinUseCase(oneginiSdk)
+  }
+
+  @Test
+  fun `When android sdk calls onSuccess on the handler of changePin, Then promise should resolve with null`() {
+    whenever(oneginiSdk.oneginiClient.userClient.changePin(any())).thenAnswer {
+      it.getArgument<OneginiChangePinHandler>(0).onSuccess()
     }
-    @Test
-    fun `When android sdk calls onSuccess on the handler of changePin, Then promise should resolve with null`() {
-        whenever(oneginiSdk.oneginiClient.userClient.changePin(any())).thenAnswer {
-            it.getArgument<OneginiChangePinHandler>(0).onSuccess()
-        }
-        changePinUseCase(promiseMock)
-        verify(promiseMock).resolve(null)
-    }
+    changePinUseCase(promiseMock)
+    verify(promiseMock).resolve(null)
+  }
 
-    @Test
-    fun `When android sdk calls onError on the handler of changePin, Then promise should reject with the given code and message`() {
-        whenever(oneginiSdk.oneginiClient.userClient.changePin(any())).thenAnswer {
-            it.getArgument<OneginiChangePinHandler>(0).onError(oneginiChangePinError)
-        }
-        changePinUseCase(promiseMock)
-        verify(promiseMock).reject(oneginiChangePinError.errorType.toString(), oneginiChangePinError.message)
+  @Test
+  fun `When android sdk calls onError on the handler of changePin, Then promise should reject with the given code and message`() {
+    whenever(oneginiSdk.oneginiClient.userClient.changePin(any())).thenAnswer {
+      it.getArgument<OneginiChangePinHandler>(0).onError(oneginiChangePinError)
     }
+    changePinUseCase(promiseMock)
+    verify(promiseMock).reject(oneginiChangePinError.errorType.toString(), oneginiChangePinError.message)
+  }
 
 }

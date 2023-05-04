@@ -9,8 +9,8 @@ import javax.inject.Singleton
 @Singleton
 class GetIdentityProvidersUseCase @Inject constructor(private val oneginiSDK: OneginiSDK) {
 
-    operator fun invoke(promise: Promise) {
-        val providers = oneginiSDK.oneginiClient.userClient.identityProviders
-        promise.resolve(OneginiIdentityProviderMapper.toWritableMap(providers))
-    }
+  operator fun invoke(promise: Promise) {
+    val providers = oneginiSDK.oneginiClient.userClient.identityProviders
+    promise.resolve(OneginiIdentityProviderMapper.toWritableMap(providers))
+  }
 }

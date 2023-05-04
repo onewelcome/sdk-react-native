@@ -17,36 +17,37 @@ import org.mockito.kotlin.whenever
 @RunWith(MockitoJUnitRunner::class)
 
 class HandleMobileAuthWithOtpUseCaseTests {
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private lateinit var oneginiSdk: OneginiSDK
+  @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+  private lateinit var oneginiSdk: OneginiSDK
 
-    @Mock
-    private lateinit var promiseMock: Promise
+  @Mock
+  private lateinit var promiseMock: Promise
 
-    @Mock
-    private lateinit var oneginiMobileAuthWithOtpError: OneginiMobileAuthWithOtpError
+  @Mock
+  private lateinit var oneginiMobileAuthWithOtpError: OneginiMobileAuthWithOtpError
 
-    private lateinit var handleMobileAuthWithOtpUseCase: HandleMobileAuthWithOtpUseCase
-    @Before
-    fun setup() {
-        handleMobileAuthWithOtpUseCase = HandleMobileAuthWithOtpUseCase(oneginiSdk)
+  private lateinit var handleMobileAuthWithOtpUseCase: HandleMobileAuthWithOtpUseCase
+
+  @Before
+  fun setup() {
+    handleMobileAuthWithOtpUseCase = HandleMobileAuthWithOtpUseCase(oneginiSdk)
+  }
+
+  @Test
+  fun `When oneginiSdk calls onSuccess on the handler then the promise should resolve`() {
+    whenever(oneginiSdk.oneginiClient.userClient.handleMobileAuthWithOtp(any(), any())).thenAnswer {
+      it.getArgument<OneginiMobileAuthWithOtpHandler>(1).onSuccess()
     }
+    handleMobileAuthWithOtpUseCase("1234", promiseMock)
+    verify(promiseMock).resolve(null)
+  }
 
-    @Test
-    fun `When oneginiSdk calls onSuccess on the handler then the promise should resolve`() {
-        whenever(oneginiSdk.oneginiClient.userClient.handleMobileAuthWithOtp(any(), any())).thenAnswer {
-            it.getArgument<OneginiMobileAuthWithOtpHandler>(1).onSuccess()
-        }
-        handleMobileAuthWithOtpUseCase("1234", promiseMock)
-        verify(promiseMock).resolve(null)
+  @Test
+  fun `When oneginiSdk calls onError on the handler then promise should reject with the error message and code`() {
+    whenever(oneginiSdk.oneginiClient.userClient.handleMobileAuthWithOtp(any(), any())).thenAnswer {
+      it.getArgument<OneginiMobileAuthWithOtpHandler>(1).onError(oneginiMobileAuthWithOtpError)
     }
-
-    @Test
-    fun `When oneginiSdk calls onError on the handler then promise should reject with the error message and code`() {
-        whenever(oneginiSdk.oneginiClient.userClient.handleMobileAuthWithOtp(any(), any())).thenAnswer {
-            it.getArgument<OneginiMobileAuthWithOtpHandler>(1).onError(oneginiMobileAuthWithOtpError)
-        }
-        handleMobileAuthWithOtpUseCase("1234", promiseMock)
-        verify(promiseMock).reject(oneginiMobileAuthWithOtpError.errorType.toString(), oneginiMobileAuthWithOtpError.message)
-    }
+    handleMobileAuthWithOtpUseCase("1234", promiseMock)
+    verify(promiseMock).reject(oneginiMobileAuthWithOtpError.errorType.toString(), oneginiMobileAuthWithOtpError.message)
+  }
 }

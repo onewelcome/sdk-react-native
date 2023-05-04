@@ -8,18 +8,18 @@ import com.onegini.mobile.sdk.reactnative.exception.rejectOneginiException
 import javax.inject.Inject
 
 class HandleMobileAuthWithOtpUseCase @Inject constructor(private val oneginiSDK: OneginiSDK) {
-    operator fun invoke(otpCode: String, promise: Promise) {
-        oneginiSDK.oneginiClient.userClient.handleMobileAuthWithOtp(
-            otpCode,
-            object : OneginiMobileAuthWithOtpHandler {
-                override fun onSuccess() {
-                    promise.resolve(null)
-                }
+  operator fun invoke(otpCode: String, promise: Promise) {
+    oneginiSDK.oneginiClient.userClient.handleMobileAuthWithOtp(
+      otpCode,
+      object : OneginiMobileAuthWithOtpHandler {
+        override fun onSuccess() {
+          promise.resolve(null)
+        }
 
-                override fun onError(error: OneginiMobileAuthWithOtpError) {
-                    promise.rejectOneginiException(error)
-                }
-            }
-        )
-    }
+        override fun onError(error: OneginiMobileAuthWithOtpError) {
+          promise.rejectOneginiException(error)
+        }
+      }
+    )
+  }
 }

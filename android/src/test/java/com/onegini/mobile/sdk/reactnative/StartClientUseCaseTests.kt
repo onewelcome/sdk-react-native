@@ -17,35 +17,35 @@ import org.mockito.kotlin.verify
 @RunWith(MockitoJUnitRunner::class)
 class StartClientUseCaseTests {
 
-    @get:Rule
-    val reactArgumentsTestRule = ReactArgumentsTestRule()
+  @get:Rule
+  val reactArgumentsTestRule = ReactArgumentsTestRule()
 
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    lateinit var oneginiSdk: OneginiSDK
+  @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+  lateinit var oneginiSdk: OneginiSDK
 
-    @Mock
-    lateinit var promiseMock: Promise
+  @Mock
+  lateinit var promiseMock: Promise
 
-    @Mock
-    lateinit var initalizationError: OneginiInitializationError
+  @Mock
+  lateinit var initalizationError: OneginiInitializationError
 
 
-    @Test
-    fun `When starting of the android native sdk is successfull, Then the promise should resolve with null`() {
-        `when`(oneginiSdk.oneginiClient.start(any())).thenAnswer {
-            it.getArgument<OneginiInitializationHandler>(0).onSuccess(emptySet())
-        }
-        StartClientUseCase(oneginiSdk)(promiseMock)
-        verify(promiseMock).resolve(null)
+  @Test
+  fun `When starting of the android native sdk is successfull, Then the promise should resolve with null`() {
+    `when`(oneginiSdk.oneginiClient.start(any())).thenAnswer {
+      it.getArgument<OneginiInitializationHandler>(0).onSuccess(emptySet())
     }
-    
-    @Test
-    fun `when oneginiClient_start fails should reject and pass proper errors`() {
-        `when`(oneginiSdk.oneginiClient.start(any())).thenAnswer {
-            it.getArgument<OneginiInitializationHandler>(0).onError(initalizationError)
-        }
+    StartClientUseCase(oneginiSdk)(promiseMock)
+    verify(promiseMock).resolve(null)
+  }
 
-        StartClientUseCase(oneginiSdk)(promiseMock)
-        verify(promiseMock).reject(initalizationError.errorType.toString(), initalizationError.message)
+  @Test
+  fun `when oneginiClient_start fails should reject and pass proper errors`() {
+    `when`(oneginiSdk.oneginiClient.start(any())).thenAnswer {
+      it.getArgument<OneginiInitializationHandler>(0).onError(initalizationError)
     }
+
+    StartClientUseCase(oneginiSdk)(promiseMock)
+    verify(promiseMock).reject(initalizationError.errorType.toString(), initalizationError.message)
+  }
 }

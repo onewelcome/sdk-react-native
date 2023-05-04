@@ -19,34 +19,37 @@ import org.mockito.kotlin.verify
 @RunWith(MockitoJUnitRunner::class)
 class GetAuthenticatedUserProfileUseCaseTests {
 
-    @get:Rule
-    val reactArgumentsTestRule = ReactArgumentsTestRule()
+  @get:Rule
+  val reactArgumentsTestRule = ReactArgumentsTestRule()
 
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    lateinit var oneginiSdk: OneginiSDK
+  @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+  lateinit var oneginiSdk: OneginiSDK
 
-    @Mock
-    lateinit var promiseMock: Promise
+  @Mock
+  lateinit var promiseMock: Promise
 
-    @Test
-    fun `when success should resolve with properly parsed profile data`() {
-        Mockito.`when`(oneginiSdk.oneginiClient.userClient.authenticatedUserProfile).thenReturn(UserProfile("testId"))
+  @Test
+  fun `when success should resolve with properly parsed profile data`() {
+    Mockito.`when`(oneginiSdk.oneginiClient.userClient.authenticatedUserProfile).thenReturn(UserProfile("testId"))
 
-        GetAuthenticatedUserProfileUseCase(oneginiSdk)(promiseMock)
+    GetAuthenticatedUserProfileUseCase(oneginiSdk)(promiseMock)
 
-        argumentCaptor<JavaOnlyMap> {
-            verify(promiseMock).resolve(this.capture())
+    argumentCaptor<JavaOnlyMap> {
+      verify(promiseMock).resolve(this.capture())
 
-            Assert.assertEquals("testId", this.firstValue.getString("id"))
-        }
+      Assert.assertEquals("testId", this.firstValue.getString("id"))
     }
+  }
 
-    @Test
-    fun `when authenticatedUserProfile is null should resolve with profileId as null`() {
-        Mockito.`when`(oneginiSdk.oneginiClient.userClient.authenticatedUserProfile).thenReturn(null)
+  @Test
+  fun `when authenticatedUserProfile is null should resolve with profileId as null`() {
+    Mockito.`when`(oneginiSdk.oneginiClient.userClient.authenticatedUserProfile).thenReturn(null)
 
-        GetAuthenticatedUserProfileUseCase(oneginiSdk)(promiseMock)
+    GetAuthenticatedUserProfileUseCase(oneginiSdk)(promiseMock)
 
-        verify(promiseMock).reject(OneginiWrapperError.NO_PROFILE_AUTHENTICATED.code.toString(), OneginiWrapperError.NO_PROFILE_AUTHENTICATED.message)
-    }
+    verify(promiseMock).reject(
+      OneginiWrapperError.NO_PROFILE_AUTHENTICATED.code.toString(),
+      OneginiWrapperError.NO_PROFILE_AUTHENTICATED.message
+    )
+  }
 }

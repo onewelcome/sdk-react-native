@@ -15,29 +15,29 @@ import javax.inject.Singleton
 
 @Singleton
 class DeregisterAuthenticatorUseCase @Inject constructor(
-    private val oneginiSDK: OneginiSDK,
-    private val authenticatorManager: AuthenticatorManager
+  private val oneginiSDK: OneginiSDK,
+  private val authenticatorManager: AuthenticatorManager
 ) {
-    operator fun invoke(authenticatorId: String, promise: Promise) {
-        val userProfile = oneginiSDK.oneginiClient.userClient.authenticatedUserProfile ?:
-            return promise.rejectWrapperError(NO_PROFILE_AUTHENTICATED)
+  operator fun invoke(authenticatorId: String, promise: Promise) {
+    val userProfile =
+      oneginiSDK.oneginiClient.userClient.authenticatedUserProfile ?: return promise.rejectWrapperError(NO_PROFILE_AUTHENTICATED)
 
-        val authenticator = authenticatorManager.getAuthenticator(userProfile, authenticatorId) ?:
-            return promise.rejectWrapperError(AUTHENTICATOR_DOES_NOT_EXIST)
+    val authenticator =
+      authenticatorManager.getAuthenticator(userProfile, authenticatorId) ?: return promise.rejectWrapperError(AUTHENTICATOR_DOES_NOT_EXIST)
 
-        if (!authenticator.isRegistered) {
-            return promise.rejectWrapperError(AUTHENTICATOR_NOT_REGISTERED)
-        }
-        oneginiSDK.oneginiClient.userClient.deregisterAuthenticator(
-            authenticator,
-            object : OneginiAuthenticatorDeregistrationHandler {
-                override fun onSuccess() {
-                    promise.resolve(null)
-                }
-
-                override fun onError(error: OneginiAuthenticatorDeregistrationError) {
-                    promise.rejectOneginiException(error)
-                }
-            })
+    if (!authenticator.isRegistered) {
+      return promise.rejectWrapperError(AUTHENTICATOR_NOT_REGISTERED)
     }
+    oneginiSDK.oneginiClient.userClient.deregisterAuthenticator(
+      authenticator,
+      object : OneginiAuthenticatorDeregistrationHandler {
+        override fun onSuccess() {
+          promise.resolve(null)
+        }
+
+        override fun onError(error: OneginiAuthenticatorDeregistrationError) {
+          promise.rejectOneginiException(error)
+        }
+      })
+  }
 }

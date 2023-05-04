@@ -18,61 +18,61 @@ import org.mockito.kotlin.verify
 @RunWith(MockitoJUnitRunner::class)
 class SetPreferredAuthenticatorUseCaseTests {
 
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    lateinit var oneginiSdk: OneginiSDK
+  @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+  lateinit var oneginiSdk: OneginiSDK
 
-    @Mock
-    lateinit var promiseMock: Promise
+  @Mock
+  lateinit var promiseMock: Promise
 
-    lateinit var setPreferredAuthenticatorUseCase: SetPreferredAuthenticatorUseCase
+  lateinit var setPreferredAuthenticatorUseCase: SetPreferredAuthenticatorUseCase
 
-    lateinit var authenticatorManager: AuthenticatorManager
+  lateinit var authenticatorManager: AuthenticatorManager
 
 
-    private val profileId = "123456"
+  private val profileId = "123456"
 
-    @Before
-    fun setup() {
-        authenticatorManager = AuthenticatorManager(oneginiSdk)
-        setPreferredAuthenticatorUseCase = SetPreferredAuthenticatorUseCase(authenticatorManager)
-    }
+  @Before
+  fun setup() {
+    authenticatorManager = AuthenticatorManager(oneginiSdk)
+    setPreferredAuthenticatorUseCase = SetPreferredAuthenticatorUseCase(authenticatorManager)
+  }
 
-    @Test
-    fun `When no profile is authenticated, Then should reject with NO_PROFILE_AUTHENTICATED error`() {
-        whenProfileNotAuthenticated()
-        setPreferredAuthenticatorUseCase(TestData.authenticator1.id, promiseMock)
-        verify(promiseMock).reject(NO_PROFILE_AUTHENTICATED.code.toString(), NO_PROFILE_AUTHENTICATED.message)
-    }
+  @Test
+  fun `When no profile is authenticated, Then should reject with NO_PROFILE_AUTHENTICATED error`() {
+    whenProfileNotAuthenticated()
+    setPreferredAuthenticatorUseCase(TestData.authenticator1.id, promiseMock)
+    verify(promiseMock).reject(NO_PROFILE_AUTHENTICATED.code.toString(), NO_PROFILE_AUTHENTICATED.message)
+  }
 
-    @Test
-    fun `When profile authenticated but authenticator does not exist, Then should reject with AUTHENTICATOR_DOES_NOT_EXIST error`() {
-        whenProfileAuthenticated()
-        whenAuthenticatorDoesNotExist()
-        setPreferredAuthenticatorUseCase(TestData.authenticator1.id, promiseMock)
-        verify(promiseMock).reject(AUTHENTICATOR_DOES_NOT_EXIST.code.toString(), AUTHENTICATOR_DOES_NOT_EXIST.message)
-    }
+  @Test
+  fun `When profile authenticated but authenticator does not exist, Then should reject with AUTHENTICATOR_DOES_NOT_EXIST error`() {
+    whenProfileAuthenticated()
+    whenAuthenticatorDoesNotExist()
+    setPreferredAuthenticatorUseCase(TestData.authenticator1.id, promiseMock)
+    verify(promiseMock).reject(AUTHENTICATOR_DOES_NOT_EXIST.code.toString(), AUTHENTICATOR_DOES_NOT_EXIST.message)
+  }
 
-    @Test
-    fun `When profile authenticated and authenticator exist, Then should resolve with null`() {
-        whenProfileAuthenticated()
-        whenAuthenticatorExists()
-        setPreferredAuthenticatorUseCase(TestData.authenticator1.id, promiseMock)
-        verify(promiseMock).resolve(null)
-    }
+  @Test
+  fun `When profile authenticated and authenticator exist, Then should resolve with null`() {
+    whenProfileAuthenticated()
+    whenAuthenticatorExists()
+    setPreferredAuthenticatorUseCase(TestData.authenticator1.id, promiseMock)
+    verify(promiseMock).resolve(null)
+  }
 
-    private fun whenProfileAuthenticated() {
-        `when`(oneginiSdk.oneginiClient.userClient.authenticatedUserProfile).thenReturn(UserProfile(profileId))
-    }
+  private fun whenProfileAuthenticated() {
+    `when`(oneginiSdk.oneginiClient.userClient.authenticatedUserProfile).thenReturn(UserProfile(profileId))
+  }
 
-    private fun whenProfileNotAuthenticated() {
-        `when`(oneginiSdk.oneginiClient.userClient.authenticatedUserProfile).thenReturn(null)
-    }
+  private fun whenProfileNotAuthenticated() {
+    `when`(oneginiSdk.oneginiClient.userClient.authenticatedUserProfile).thenReturn(null)
+  }
 
-    private fun whenAuthenticatorDoesNotExist() {
-        `when`(oneginiSdk.oneginiClient.userClient.getRegisteredAuthenticators(any())).thenReturn(setOf())
-    }
+  private fun whenAuthenticatorDoesNotExist() {
+    `when`(oneginiSdk.oneginiClient.userClient.getRegisteredAuthenticators(any())).thenReturn(setOf())
+  }
 
-    private fun whenAuthenticatorExists() {
-        `when`(oneginiSdk.oneginiClient.userClient.getRegisteredAuthenticators(any())).thenReturn(setOf(TestData.authenticator1))
-    }
+  private fun whenAuthenticatorExists() {
+    `when`(oneginiSdk.oneginiClient.userClient.getRegisteredAuthenticators(any())).thenReturn(setOf(TestData.authenticator1))
+  }
 }

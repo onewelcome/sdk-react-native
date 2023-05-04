@@ -11,15 +11,15 @@ import javax.inject.Singleton
 
 @Singleton
 class EnrollMobileAuthenticationUseCase @Inject constructor(private val oneginiSDK: OneginiSDK) {
-    operator fun invoke(promise: Promise) {
-        oneginiSDK.oneginiClient.userClient.enrollUserForMobileAuth(object : OneginiMobileAuthEnrollmentHandler {
-            override fun onSuccess() {
-                promise.resolve(null)
-            }
+  operator fun invoke(promise: Promise) {
+    oneginiSDK.oneginiClient.userClient.enrollUserForMobileAuth(object : OneginiMobileAuthEnrollmentHandler {
+      override fun onSuccess() {
+        promise.resolve(null)
+      }
 
-            override fun onError(error: OneginiMobileAuthEnrollmentError) {
-                promise.rejectOneginiException(error)
-            }
-        })
-    }
+      override fun onError(error: OneginiMobileAuthEnrollmentError) {
+        promise.rejectOneginiException(error)
+      }
+    })
+  }
 }

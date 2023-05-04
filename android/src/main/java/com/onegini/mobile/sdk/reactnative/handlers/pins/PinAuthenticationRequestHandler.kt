@@ -10,35 +10,35 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class PinAuthenticationRequestHandler @Inject constructor(private val eventEmitter: PinAuthenticationEventEmitter):
-    OneginiPinAuthenticationRequestHandler {
+class PinAuthenticationRequestHandler @Inject constructor(private val eventEmitter: PinAuthenticationEventEmitter) :
+  OneginiPinAuthenticationRequestHandler {
 
-    private var callback: OneginiPinCallback? = null
+  private var callback: OneginiPinCallback? = null
 
-    override fun startAuthentication(
-        userProfile: UserProfile,
-        oneginiPinCallback: OneginiPinCallback,
-        attemptCounter: AuthenticationAttemptCounter
-    ) {
-        callback = oneginiPinCallback
-        eventEmitter.onPinOpen(userProfile.profileId)
-    }
+  override fun startAuthentication(
+    userProfile: UserProfile,
+    oneginiPinCallback: OneginiPinCallback,
+    attemptCounter: AuthenticationAttemptCounter
+  ) {
+    callback = oneginiPinCallback
+    eventEmitter.onPinOpen(userProfile.profileId)
+  }
 
-    override fun onNextAuthenticationAttempt(attemptCounter: AuthenticationAttemptCounter) {
-        eventEmitter.onIncorrectPin(attemptCounter.remainingAttempts)
-    }
+  override fun onNextAuthenticationAttempt(attemptCounter: AuthenticationAttemptCounter) {
+    eventEmitter.onIncorrectPin(attemptCounter.remainingAttempts)
+  }
 
-    override fun finishAuthentication() {
-        callback = null
-        eventEmitter.onPinClose()
-    }
+  override fun finishAuthentication() {
+    callback = null
+    eventEmitter.onPinClose()
+  }
 
-    fun acceptAuthenticationRequest(pin: CharArray) {
-        callback?.acceptAuthenticationRequest(pin) ?: throw OneginiReactNativeException(AUTHENTICATION_NOT_IN_PROGRESS)
-    }
+  fun acceptAuthenticationRequest(pin: CharArray) {
+    callback?.acceptAuthenticationRequest(pin) ?: throw OneginiReactNativeException(AUTHENTICATION_NOT_IN_PROGRESS)
+  }
 
-    fun denyAuthenticationRequest() {
-        callback?.denyAuthenticationRequest() ?: throw OneginiReactNativeException(AUTHENTICATION_NOT_IN_PROGRESS)
-        callback = null
-    }
+  fun denyAuthenticationRequest() {
+    callback?.denyAuthenticationRequest() ?: throw OneginiReactNativeException(AUTHENTICATION_NOT_IN_PROGRESS)
+    callback = null
+  }
 }

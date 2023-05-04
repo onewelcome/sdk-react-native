@@ -14,20 +14,20 @@ import org.mockito.kotlin.verify
 @RunWith(MockitoJUnitRunner::class)
 class GetRedirectUriUseCaseTests {
 
-    @get:Rule
-    val reactArgumentsTestRule = ReactArgumentsTestRule()
+  @get:Rule
+  val reactArgumentsTestRule = ReactArgumentsTestRule()
 
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    lateinit var oneginiSdk: OneginiSDK
+  @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+  lateinit var oneginiSdk: OneginiSDK
 
-    @Mock
-    lateinit var promiseMock: Promise
+  @Mock
+  lateinit var promiseMock: Promise
 
-    @Test
-    fun `When calling redirectUri, Then should return proper url`() {
-        `when`(oneginiSdk.oneginiClient.configModel).thenReturn(TestData.configModel)
+  @Test
+  fun `When calling redirectUri, Then should return proper url`() {
+    `when`(oneginiSdk.oneginiClient.configModel).thenReturn(TestData.configModel)
 
-        GetRedirectUriUseCase(oneginiSdk)(promiseMock)
-        verify(promiseMock).resolve(TestData.configModel.redirectUri)
-    }
+    GetRedirectUriUseCase(oneginiSdk)(promiseMock)
+    verify(promiseMock).resolve(TestData.configModel.redirectUri)
+  }
 }

@@ -19,57 +19,57 @@ import org.mockito.kotlin.verify
 @RunWith(MockitoJUnitRunner::class)
 class CancelBrowserRegistrationUseCaseTests {
 
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    lateinit var oneginiSdk: OneginiSDK
+  @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+  lateinit var oneginiSdk: OneginiSDK
 
-    @Mock
-    lateinit var promiseMock: Promise
+  @Mock
+  lateinit var promiseMock: Promise
 
-    @Mock
-    lateinit var uri: Uri
+  @Mock
+  lateinit var uri: Uri
 
-    @Mock
-    lateinit var registrationEventEmitter: RegistrationEventEmitter
+  @Mock
+  lateinit var registrationEventEmitter: RegistrationEventEmitter
 
-    @Mock
-    lateinit var oneginiBrowserRegistrationCallback: OneginiBrowserRegistrationCallback
+  @Mock
+  lateinit var oneginiBrowserRegistrationCallback: OneginiBrowserRegistrationCallback
 
-    lateinit var cancelBrowserRegistrationUseCase: CancelBrowserRegistrationUseCase
+  lateinit var cancelBrowserRegistrationUseCase: CancelBrowserRegistrationUseCase
 
-    lateinit var registrationRequestHandler: RegistrationRequestHandler
+  lateinit var registrationRequestHandler: RegistrationRequestHandler
 
-    @Before
-    fun setup() {
-        registrationRequestHandler = RegistrationRequestHandler(registrationEventEmitter)
-        cancelBrowserRegistrationUseCase = CancelBrowserRegistrationUseCase(registrationRequestHandler)
-    }
+  @Before
+  fun setup() {
+    registrationRequestHandler = RegistrationRequestHandler(registrationEventEmitter)
+    cancelBrowserRegistrationUseCase = CancelBrowserRegistrationUseCase(registrationRequestHandler)
+  }
 
-    @Test
-    fun `When registration has not started should, Then reject with ACTION_NOT_ALLOWED`() {
-        cancelBrowserRegistrationUseCase(promiseMock)
-        verify(promiseMock).reject(ACTION_NOT_ALLOWED.code.toString(), CANCEL_BROWSER_REGISTRATION_NOT_ALLOWED)
-    }
+  @Test
+  fun `When registration has not started should, Then reject with ACTION_NOT_ALLOWED`() {
+    cancelBrowserRegistrationUseCase(promiseMock)
+    verify(promiseMock).reject(ACTION_NOT_ALLOWED.code.toString(), CANCEL_BROWSER_REGISTRATION_NOT_ALLOWED)
+  }
 
-    @Test
-    fun `When registration has started but pin creation has also started, Then should reject with ACTION_NOT_ALLOWED`() {
-        whenRegistrationStarted()
-        whenPinCreationStarted()
-        cancelBrowserRegistrationUseCase(promiseMock)
-        verify(promiseMock).reject(ACTION_NOT_ALLOWED.code.toString(), CANCEL_BROWSER_REGISTRATION_NOT_ALLOWED)
-    }
+  @Test
+  fun `When registration has started but pin creation has also started, Then should reject with ACTION_NOT_ALLOWED`() {
+    whenRegistrationStarted()
+    whenPinCreationStarted()
+    cancelBrowserRegistrationUseCase(promiseMock)
+    verify(promiseMock).reject(ACTION_NOT_ALLOWED.code.toString(), CANCEL_BROWSER_REGISTRATION_NOT_ALLOWED)
+  }
 
-    @Test
-    fun `When registration has started and pin creation has not started, Then should resolve with null`() {
-        whenRegistrationStarted()
-        cancelBrowserRegistrationUseCase(promiseMock)
-        verify(promiseMock).resolve(null)
-    }
+  @Test
+  fun `When registration has started and pin creation has not started, Then should resolve with null`() {
+    whenRegistrationStarted()
+    cancelBrowserRegistrationUseCase(promiseMock)
+    verify(promiseMock).resolve(null)
+  }
 
-    private fun whenRegistrationStarted() {
-        registrationRequestHandler.startRegistration(uri, oneginiBrowserRegistrationCallback)
-    }
+  private fun whenRegistrationStarted() {
+    registrationRequestHandler.startRegistration(uri, oneginiBrowserRegistrationCallback)
+  }
 
-    private fun whenPinCreationStarted() {
-        registrationRequestHandler.handleRegistrationCallback(null)
-    }
+  private fun whenPinCreationStarted() {
+    registrationRequestHandler.handleRegistrationCallback(null)
+  }
 }

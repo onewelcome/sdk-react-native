@@ -11,26 +11,26 @@ import okhttp3.Headers
 
 object ResourceRequestDetailsMapper {
 
-    fun toResourceRequestDetails(map: ReadableMap): ResourceRequestDetails {
-        val headerBuilder = Headers.Builder()
-        map.getMap("headers")?.entryIterator?.forEach {
-            val headerValue = it.value
-            if (headerValue is String) {
-                headerBuilder.add(it.key, headerValue)
-            }
-        }
-
-        val method = try {
-            ApiCall.valueOf(map.getString("method") ?: "")
-        } catch (e: IllegalArgumentException) {
-            throw OneginiReactNativeException(PARAMETERS_NOT_CORRECT.code, REQUEST_METHOD_NOT_SUPPORTED)
-        }
-
-        return ResourceRequestDetails(
-            path = map.getString("path") ?: throw OneginiReactNativeException(PARAMETERS_NOT_CORRECT.code, REQUEST_MISSING_PATH_PARAMETER),
-            method = method,
-            headers = headerBuilder.build(),
-            body = map.getString("body")
-        )
+  fun toResourceRequestDetails(map: ReadableMap): ResourceRequestDetails {
+    val headerBuilder = Headers.Builder()
+    map.getMap("headers")?.entryIterator?.forEach {
+      val headerValue = it.value
+      if (headerValue is String) {
+        headerBuilder.add(it.key, headerValue)
+      }
     }
+
+    val method = try {
+      ApiCall.valueOf(map.getString("method") ?: "")
+    } catch (e: IllegalArgumentException) {
+      throw OneginiReactNativeException(PARAMETERS_NOT_CORRECT.code, REQUEST_METHOD_NOT_SUPPORTED)
+    }
+
+    return ResourceRequestDetails(
+      path = map.getString("path") ?: throw OneginiReactNativeException(PARAMETERS_NOT_CORRECT.code, REQUEST_MISSING_PATH_PARAMETER),
+      method = method,
+      headers = headerBuilder.build(),
+      body = map.getString("body")
+    )
+  }
 }

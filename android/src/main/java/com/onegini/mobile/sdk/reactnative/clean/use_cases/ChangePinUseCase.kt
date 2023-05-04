@@ -11,15 +11,15 @@ import javax.inject.Singleton
 
 @Singleton
 class ChangePinUseCase @Inject constructor(private val oneginiSDK: OneginiSDK) {
-    operator fun invoke(promise: Promise) {
-        oneginiSDK.oneginiClient.userClient.changePin(object : OneginiChangePinHandler {
-            override fun onSuccess() {
-                promise.resolve(null)
-            }
+  operator fun invoke(promise: Promise) {
+    oneginiSDK.oneginiClient.userClient.changePin(object : OneginiChangePinHandler {
+      override fun onSuccess() {
+        promise.resolve(null)
+      }
 
-            override fun onError(error: OneginiChangePinError) {
-                promise.rejectOneginiException(error)
-            }
-        })
-    }
+      override fun onError(error: OneginiChangePinError) {
+        promise.rejectOneginiException(error)
+      }
+    })
+  }
 }

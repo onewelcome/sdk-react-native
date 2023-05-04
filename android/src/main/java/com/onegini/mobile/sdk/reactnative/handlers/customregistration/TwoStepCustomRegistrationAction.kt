@@ -5,12 +5,12 @@ import com.onegini.mobile.sdk.android.handlers.request.callback.OneginiCustomReg
 import com.onegini.mobile.sdk.android.model.entity.CustomInfo
 
 class TwoStepCustomRegistrationAction(
-    private val idProvider: String,
-    private val eventEmitter: CustomRegistrationEventEmitter
+  private val idProvider: String,
+  private val eventEmitter: CustomRegistrationEventEmitter
 ) : OneginiCustomTwoStepRegistrationAction, CustomRegistrationAction(idProvider, eventEmitter) {
 
-    override fun initRegistration(callback: OneginiCustomRegistrationCallback, info: CustomInfo?) {
-        this.callback = callback
-        eventEmitter.initRegistration(idProvider, info)
-    }
+  override fun initRegistration(callback: OneginiCustomRegistrationCallback, info: CustomInfo?) {
+    this.callback = callback
+    eventEmitter.initRegistration(idProvider, info)
+  }
 }

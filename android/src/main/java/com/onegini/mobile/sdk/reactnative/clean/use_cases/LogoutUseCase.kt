@@ -11,17 +11,17 @@ import javax.inject.Singleton
 @Singleton
 class LogoutUseCase @Inject constructor(private val oneginiSDK: OneginiSDK) {
 
-    operator fun invoke(promise: Promise) {
-        oneginiSDK.oneginiClient.userClient.logout(
-            object : OneginiLogoutHandler {
-                override fun onSuccess() {
-                    promise.resolve(null)
-                }
+  operator fun invoke(promise: Promise) {
+    oneginiSDK.oneginiClient.userClient.logout(
+      object : OneginiLogoutHandler {
+        override fun onSuccess() {
+          promise.resolve(null)
+        }
 
-                override fun onError(error: OneginiLogoutError) {
-                    promise.rejectOneginiException(error)
-                }
-            }
-        )
-    }
+        override fun onError(error: OneginiLogoutError) {
+          promise.rejectOneginiException(error)
+        }
+      }
+    )
+  }
 }
