@@ -261,8 +261,14 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
     @objc
     func changePin(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
-        let completion = makeCompletionHandler(resolver: resolve, rejecter: reject)
-        bridgeConnector.toChangePinHandler.onChangePinCalled(completion: completion)
+        bridgeConnector.toChangePinHandler.onChangePinCalled { result in
+            switch result {
+            case .success(let res):
+                resolve(res)
+            case .failure(let err):
+                self.rejectWithError(reject, err)
+            }
+        }
     }
 
     @objc
