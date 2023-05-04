@@ -86,7 +86,7 @@ class AuthenticateUserUseCaseTests {
 
     @Test
     fun `should call SDK method with proper id and authenticatorId`() {
-        `when`(getRegisteredAuthenticatorsUseCase.getList(any())).thenReturn(setOf(authenticator))
+        `when`(getRegisteredAuthenticatorsUseCase(any())).thenReturn(setOf(authenticator))
 
         authenticateUserUseCase("123456", "1", promiseMock)
 

@@ -37,8 +37,7 @@ class AuthenticateUserUseCase @Inject constructor(
       }
     }
 
-    getRegisteredAuthenticatorsUseCase
-      .getList(userProfile)
+    getRegisteredAuthenticatorsUseCase(userProfile)
       .find { it.id == authenticatorId }
       ?.let { authenticator ->
         oneginiSDK.oneginiClient.userClient.authenticateUser(

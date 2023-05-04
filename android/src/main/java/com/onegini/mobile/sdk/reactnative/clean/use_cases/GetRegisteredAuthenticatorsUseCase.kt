@@ -21,4 +21,8 @@ class GetRegisteredAuthenticatorsUseCase @Inject constructor(
         val authenticators = oneginiSDK.oneginiClient.userClient.getRegisteredAuthenticators(userProfile)
         promise.resolve(OneginiAuthenticatorMapper.toWritableMap(authenticators))
     }
+
+    operator fun invoke(userProfile: UserProfile): Set<OneginiAuthenticator> {
+        return oneginiSDK.oneginiClient.userClient.getRegisteredAuthenticators(userProfile)
+    }
 }

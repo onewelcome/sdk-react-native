@@ -19,7 +19,6 @@ import javax.inject.Singleton
 class AuthenticatorManager @Inject constructor(private val oneginiSDK: OneginiSDK) {
 
   fun registerFingerprintAuthenticator(profileId: String, callback: RegistrationCallback) {
-    getUserProfile()
     val userProfile =
       getUserProfile(profileId) ?: return callback.onError(PROFILE_DOES_NOT_EXIST.code.toString(), PROFILE_DOES_NOT_EXIST.message)
     val authenticator = getNotRegisteredAuthenticators(userProfile, OneginiAuthenticator.FINGERPRINT) ?: return callback.onError(
@@ -62,8 +61,8 @@ class AuthenticatorManager @Inject constructor(private val oneginiSDK: OneginiSD
       })
   }
 
-  fun getUserProfile(profileId: String?): UserProfile? {
-    return oneginiSDK.oneginiClient.userClient.userProfiles.firstOrNull { it == profileId }
+  fun getUserProfile(profileId: String): UserProfile? {
+    return oneginiSDK.oneginiClient.userClient.userProfiles.firstOrNull { it.profileId == profileId }
   }
 
   fun getNotRegisteredAuthenticators(profile: UserProfile, type: Int): OneginiAuthenticator? {
