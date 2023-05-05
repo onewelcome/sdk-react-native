@@ -23,7 +23,7 @@ class RegisterUserUseCase @Inject constructor(private val oneginiSDK: OneginiSDK
   operator fun invoke(identityProviderId: String?, scopes: ReadableArray?, promise: Promise) {
     val identityProvider = getIdentityProvider(identityProviderId)
 
-    //Why additional identityProviderId check?
+    // When identityProviderId IS supplied, but no corresponding IDP is found.
     if (identityProvider == null && identityProviderId != null) {
       promise.rejectWrapperError(IDENTITY_PROVIDER_NOT_FOUND)
       return
