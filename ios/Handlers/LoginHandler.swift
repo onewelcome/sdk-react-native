@@ -73,7 +73,6 @@ class AuthenticationDelegateImpl: AuthenticationDelegate {
     private let completion: (Result<RegistrationResponse, Error>) -> Void
     private let loginHandler: LoginHandler
 
-    
     init(loginHandler: LoginHandler, completion: @escaping (Result<RegistrationResponse, Error>) -> Void) {
         self.completion = completion
         self.loginHandler = loginHandler
@@ -101,10 +100,9 @@ class AuthenticationDelegateImpl: AuthenticationDelegate {
         // We don't want to send a close pin event when we encounter an action already in progress
         if error.code == ONGGenericError.actionAlreadyInProgress.rawValue { return }
         loginHandler.handleDidFailToAuthenticateUser()
-        
+
     }
 }
-
 
 private func mapErrorFromPinChallenge(_ challenge: PinChallenge) -> Error? {
     if let error = challenge.error, error.code != ONGAuthenticationError.touchIDAuthenticatorFailure.rawValue {

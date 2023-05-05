@@ -443,8 +443,14 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
             rejectWithError(reject, WrapperError.noProfileAuthenticated)
             return
         }
-        let completion = makeCompletionHandler(resolver: resolve, rejecter: reject)
-        bridgeConnector.toAuthenticatorsHandler.setPreferredAuthenticator(profile, authenticatorId, completion: completion)
+        bridgeConnector.toAuthenticatorsHandler.setPreferredAuthenticator(profile, authenticatorId) { result in
+            switch result {
+            case .success:
+                resolve(nil)
+            case .failure(let error):
+                self.rejectWithError(reject, error)
+            }
+        }
     }
 
     @objc
@@ -464,8 +470,14 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
             rejectWithError(reject, WrapperError.profileDoesNotExist)
             return
         }
-        let completion = makeCompletionHandler(resolver: resolve, rejecter: reject)
-        bridgeConnector.toAuthenticatorsHandler.registerAuthenticator(profile, authenticatorId, completion: completion)
+        bridgeConnector.toAuthenticatorsHandler.registerAuthenticator(profile, authenticatorId) { result in
+            switch result {
+            case .success:
+                resolve(nil)
+            case .failure(let error):
+                self.rejectWithError(reject, error)
+            }
+        }
     }
 
     @objc
@@ -477,7 +489,13 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
             reject(String(WrapperError.noProfileAuthenticated.code), WrapperError.noProfileAuthenticated.localizedDescription, WrapperError.noProfileAuthenticated)
             return
         }
-        let completion = makeCompletionHandler(resolver: resolve, rejecter: reject)
-        bridgeConnector.toAuthenticatorsHandler.deregisterAuthenticator(profile, authenticatorId, completion: completion)
+        bridgeConnector.toAuthenticatorsHandler.deregisterAuthenticator(profile, authenticatorId) { result in
+            switch result {
+            case .success:
+                resolve(nil)
+            case .failure(let error):
+                self.rejectWithError(reject, error)
+            }
+        }
     }
 }
