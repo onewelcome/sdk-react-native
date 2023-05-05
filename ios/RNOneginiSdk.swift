@@ -175,9 +175,13 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
             provider = userClient.identityProviders.first(where: { $0.identifier == identityProviderId })
         }
         bridgeConnector.toRegistrationConnector.registrationHandler.signUp(identityProvider: provider,
-                                                                           scopes: scopes) { (userProfile, customInfo, error) -> Void in
-            let result = mapToAuthData(profile: userProfile, info: customInfo)
-            self.resolveResultOrRejectError(resolve, reject, result, error)
+                                                                           scopes: scopes) { result in
+            switch result {
+            case .success(let registrationResponse):
+                resolve(registrationResponse.toList())
+            case .failure(let error):
+                self.rejectWithError(reject, error)
+            }
         }
     }
 

@@ -1,10 +1,11 @@
-class RegistrationHandler: NSObject {
+class RegistrationHandler {
+
     private var createPinChallenge: CreatePinChallenge?
     private var browserRegistrationChallenge: BrowserRegistrationChallenge?
     private var customRegistrationChallenge: CustomRegistrationChallenge?
-    private var signUpCompletion: ((UserProfile?, CustomInfo?, Error?) -> Void)?
-    private let createPinEventEmitter = CreatePinEventEmitter()
-    private let registrationEventEmitter = RegistrationEventEmitter()
+    let createPinEventEmitter = CreatePinEventEmitter()
+    let registrationEventEmitter = RegistrationEventEmitter()
+
     static let cancelCustomRegistrationNotAllowed = "Canceling the custom registration right now is not allowed. Registration is not in progress or pin creation has already started."
     static let cancelBrowserRegistrationNotAllowed = "Canceling the browser registration right now is not allowed. Registration is not in progress or pin creation has already started."
 
@@ -50,7 +51,7 @@ class RegistrationHandler: NSObject {
         }
     }
 
-    private func sendCustomRegistrationNotification(_ event: CustomRegistrationNotification, _ data: NSMutableDictionary) {
+    func sendCustomRegistrationNotification(_ event: CustomRegistrationNotification, _ data: NSMutableDictionary) {
         BridgeConnector.shared?.toRegistrationConnector.sendCustomRegistrationNotification(event, data)
     }
 }
@@ -60,9 +61,9 @@ extension RegistrationHandler {
         createPinChallenge = challenge
     }
 
-    func signUp(identityProvider: IdentityProvider? = nil, scopes: [String], completion: @escaping (UserProfile?, CustomInfo?, Error?) -> Void) {
-        signUpCompletion = completion
-        SharedUserClient.instance.registerUserWith(identityProvider: identityProvider, scopes: scopes, delegate: self)
+    func signUp(identityProvider: IdentityProvider? = nil, scopes: [String], completion: @escaping (Result<RegistrationResponse, Error>) -> Void) {
+        let delegate = RegistrationDelegateImpl(registrationHandler: self, completion: completion)
+        SharedUserClient.instance.registerUserWith(identityProvider: identityProvider, scopes: scopes, delegate: delegate)
     }
 
     func cancelCustomRegistration(completion: @escaping (Error?) -> Void) {
@@ -103,6 +104,15 @@ extension RegistrationHandler {
         }
     }
 
+    func handleDidReceiveBrowserRegistrationChallenge(_ challenge: BrowserRegistrationChallenge) {
+        browserRegistrationChallenge = challenge
+        registrationEventEmitter.onSendUrl(challenge.url)
+    }
+
+    func handleDidReceiveCustomRegistrationChallenge(_ challenge: CustomRegistrationChallenge) {
+        customRegistrationChallenge = challenge
+    }
+
     func handleDidFailToRegister() {
         createPinChallenge = nil
         customRegistrationChallenge = nil
@@ -118,29 +128,35 @@ extension RegistrationHandler {
     }
 }
 
-extension RegistrationHandler: RegistrationDelegate {
+class RegistrationDelegateImpl: RegistrationDelegate {
+    private let completion: ((Result<RegistrationResponse, Error>) -> Void)
+    private let registrationHandler: RegistrationHandler
+
+    init(registrationHandler: RegistrationHandler, completion: @escaping (Result<RegistrationResponse, Error>) -> Void) {
+        self.completion = completion
+        self.registrationHandler = registrationHandler
+    }
 
     func userClient(_ userClient: UserClient, didReceiveCreatePinChallenge challenge: CreatePinChallenge) {
-        handleDidReceivePinRegistrationChallenge(challenge)
+        registrationHandler.handleDidReceivePinRegistrationChallenge(challenge)
     }
 
     func userClient(_ userClient: UserClient, didReceiveBrowserRegistrationChallenge challenge: BrowserRegistrationChallenge) {
-        browserRegistrationChallenge = challenge
-        registrationEventEmitter.onSendUrl(challenge.url)
+        registrationHandler.handleDidReceiveBrowserRegistrationChallenge(challenge)
+
     }
 
     func userClient(_ userClient: UserClient, didReceiveCustomRegistrationInitChallenge challenge: CustomRegistrationChallenge) {
-        customRegistrationChallenge = challenge
-
+        registrationHandler.handleDidReceiveCustomRegistrationChallenge(challenge)
+        
         let result = NSMutableDictionary()
         result.setValue(challenge.identityProvider.identifier, forKey: "identityProviderId")
 
-        sendCustomRegistrationNotification(CustomRegistrationNotification.initRegistration, result)
+        registrationHandler.sendCustomRegistrationNotification(CustomRegistrationNotification.initRegistration, result)
     }
 
     func userClient(_ userClient: UserClient, didReceiveCustomRegistrationFinishChallenge challenge: CustomRegistrationChallenge) {
-        customRegistrationChallenge = challenge
-
+        registrationHandler.handleDidReceiveCustomRegistrationChallenge(challenge)
         let result = NSMutableDictionary()
         result.setValue(challenge.identityProvider.identifier, forKey: "identityProviderId")
 
@@ -152,18 +168,46 @@ extension RegistrationHandler: RegistrationDelegate {
             result.setValue(customInfo, forKey: "customInfo")
         }
 
-        sendCustomRegistrationNotification(CustomRegistrationNotification.finishRegistration, result)
+        registrationHandler.sendCustomRegistrationNotification(CustomRegistrationNotification.finishRegistration, result)
+    }
+
+    func userClientDidStartRegistration(_ userClient: UserClient) {
+        // Unused
     }
 
     func userClient(_ userClient: UserClient, didRegisterUser profile: UserProfile, with identityProvider: IdentityProvider, info: CustomInfo?) {
-        handleDidRegisterUser()
-        signUpCompletion?(profile, info, nil)
-        signUpCompletion = nil
+        registrationHandler.handleDidRegisterUser()
+        completion(.success(
+            RegistrationResponse(userProfile: profile,
+                                   customInfo: info)))
     }
 
     func userClient(_ userClient: UserClient, didFailToRegisterUserWith identityProvider: IdentityProvider, error: Error) {
-        handleDidFailToRegister()
-        signUpCompletion?(nil, nil, error)
-        signUpCompletion = nil
+        registrationHandler.handleDidFailToRegister()
+        completion(.failure(error))
+    }
+}
+
+struct RegistrationResponse {
+  var userProfile: UserProfile
+  var customInfo: CustomInfo?
+
+    func toList() -> [String: Any?] {
+    return [
+        "userProfile": userProfile.toList(),
+        "customInfo": customInfo?.toList()
+    ]
+  }
+}
+
+extension UserProfile {
+    func toList() -> [String: String] {
+        return ["id": self.profileId]
+    }
+}
+
+extension CustomInfo {
+    func toList() -> [String: Any] {
+        ["status": self.status, "data": self.data]
     }
 }
