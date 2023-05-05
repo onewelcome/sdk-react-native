@@ -18,120 +18,94 @@ import javax.inject.Singleton
 @Singleton
 class AuthenticatorManager @Inject constructor(private val oneginiSDK: OneginiSDK) {
 
-    fun registerFingerprintAuthenticator(profileId: String, callback: RegistrationCallback) {
-        val userProfile = getUserProfile(profileId)
-        if (userProfile == null) {
-            callback.onError(PROFILE_DOES_NOT_EXIST.code.toString(), PROFILE_DOES_NOT_EXIST.message)
-            return
+  fun registerFingerprintAuthenticator(profileId: String, callback: RegistrationCallback) {
+    val userProfile =
+      getUserProfile(profileId) ?: return callback.onError(PROFILE_DOES_NOT_EXIST.code.toString(), PROFILE_DOES_NOT_EXIST.message)
+    val authenticator = getNotRegisteredAuthenticators(userProfile, OneginiAuthenticator.FINGERPRINT) ?: return callback.onError(
+      AUTHENTICATOR_DOES_NOT_EXIST.code.toString(),
+      AUTHENTICATOR_DOES_NOT_EXIST.message
+    )
+
+    oneginiSDK.oneginiClient.userClient.registerAuthenticator(
+      authenticator,
+      object : OneginiAuthenticatorRegistrationHandler {
+        override fun onSuccess(info: CustomInfo?) {
+          callback.onSuccess(info)
         }
 
-        val authenticator = getNotRegisteredAuthenticators(userProfile, OneginiAuthenticator.FINGERPRINT)
-        if (authenticator == null) {
-            callback.onError(AUTHENTICATOR_DOES_NOT_EXIST.code.toString(), AUTHENTICATOR_DOES_NOT_EXIST.message)
-            return
+        override fun onError(error: OneginiAuthenticatorRegistrationError) {
+          callback.onError(error.errorType.toString(), error.message)
+        }
+      }
+    )
+  }
+
+  fun deregisterFingerprintAuthenticator(profileId: String, callback: DeregistrationCallback) {
+    val userProfile =
+      getUserProfile(profileId) ?: return callback.onError(PROFILE_DOES_NOT_EXIST.code.toString(), PROFILE_DOES_NOT_EXIST.message)
+    val authenticator = getRegisteredAuthenticators(userProfile, OneginiAuthenticator.FINGERPRINT) ?: return callback.onError(
+      AUTHENTICATOR_DOES_NOT_EXIST.code.toString(),
+      AUTHENTICATOR_DOES_NOT_EXIST.message
+    )
+
+    oneginiSDK.oneginiClient.userClient.deregisterAuthenticator(
+      authenticator,
+      object : OneginiAuthenticatorDeregistrationHandler {
+        override fun onSuccess() {
+          callback.onSuccess()
         }
 
-        oneginiSDK.oneginiClient.userClient.registerAuthenticator(
-            authenticator,
-            object : OneginiAuthenticatorRegistrationHandler {
-                override fun onSuccess(info: CustomInfo?) {
-                    callback.onSuccess(info)
-                }
-
-                override fun onError(error: OneginiAuthenticatorRegistrationError) {
-                    callback.onError(error.errorType.toString(), error.message)
-                }
-            }
-        )
-    }
-
-    fun deregisterFingerprintAuthenticator(profileId: String, callback: DeregistrationCallback) {
-        val userProfile = getUserProfile(profileId)
-        if (userProfile == null) {
-            callback.onError(PROFILE_DOES_NOT_EXIST.code.toString(), PROFILE_DOES_NOT_EXIST.message)
-            return
+        override fun onError(error: OneginiAuthenticatorDeregistrationError) {
+          callback.onError(error.errorType.toString(), error.message)
         }
+      })
+  }
 
-        val authenticator = getRegisteredAuthenticators(userProfile, OneginiAuthenticator.FINGERPRINT)
-        if (authenticator == null) {
-            callback.onError(AUTHENTICATOR_DOES_NOT_EXIST.code.toString(), AUTHENTICATOR_DOES_NOT_EXIST.message)
-            return
-        }
+  fun getUserProfile(profileId: String): UserProfile? {
+    return oneginiSDK.oneginiClient.userClient.userProfiles.firstOrNull { it.profileId == profileId }
+  }
 
-        oneginiSDK.oneginiClient.userClient.deregisterAuthenticator(
-            authenticator,
-            object : OneginiAuthenticatorDeregistrationHandler {
-                override fun onSuccess() {
-                    callback.onSuccess()
-                }
+  fun getNotRegisteredAuthenticators(profile: UserProfile, type: Int): OneginiAuthenticator? {
+    return oneginiSDK.oneginiClient.userClient
+      .getNotRegisteredAuthenticators(profile)
+      .firstOrNull { it.type == type }
+  }
 
-                override fun onError(error: OneginiAuthenticatorDeregistrationError) {
-                    callback.onError(error.errorType.toString(), error.message)
-                }
-            })
-    }
+  fun getRegisteredAuthenticators(profile: UserProfile, type: Int): OneginiAuthenticator? {
+    return oneginiSDK.oneginiClient.userClient
+      .getRegisteredAuthenticators(profile)
+      .firstOrNull { it.type == type }
+  }
 
-    fun getUserProfile(profileId: String?): UserProfile? {
-        if (profileId == null) {
-            return null
-        }
-        oneginiSDK.oneginiClient.userClient.userProfiles.forEach {
-            if (it.profileId == profileId) {
-                return it
-            }
-        }
-        return null
-    }
+  fun getRegisteredAuthenticator(profile: UserProfile, id: String): OneginiAuthenticator? {
+    return oneginiSDK.oneginiClient.userClient
+      .getRegisteredAuthenticators(profile)
+      .firstOrNull { it.id == id }
+  }
 
-    fun getNotRegisteredAuthenticators(profile: UserProfile, type: Int): OneginiAuthenticator? {
-        val notRegisteredAuthenticators: Set<OneginiAuthenticator> = oneginiSDK.oneginiClient.userClient.getNotRegisteredAuthenticators(profile)
-        for (auth in notRegisteredAuthenticators) {
-            if (auth.type == type) {
-                return auth
-            }
-        }
-        return null
-    }
+  fun getAuthenticator(profile: UserProfile, id: String): OneginiAuthenticator? {
+    return oneginiSDK.oneginiClient.userClient
+      .getAllAuthenticators(profile)
+      .firstOrNull { it.id == id }
+  }
 
-    fun getRegisteredAuthenticators(profile: UserProfile, type: Int): OneginiAuthenticator? {
-        val registeredAuthenticators: Set<OneginiAuthenticator> = oneginiSDK.oneginiClient.userClient.getRegisteredAuthenticators(profile)
-        for (auth in registeredAuthenticators) {
-            if (auth.type == type) {
-                return auth
-            }
-        }
-        return null
-    }
+  fun setPreferredAuthenticator(authenticatorId: String) {
+    val userProfile = oneginiSDK.oneginiClient.userClient.authenticatedUserProfile
+      ?: throw OneginiReactNativeException(NO_PROFILE_AUTHENTICATED)
 
-    fun getRegisteredAuthenticator(profile: UserProfile, id: String): OneginiAuthenticator? {
-        return oneginiSDK.oneginiClient.userClient
-            .getRegisteredAuthenticators(profile)
-            .firstOrNull { it.id == id }
-    }
+    val authenticator = getRegisteredAuthenticator(userProfile, authenticatorId)
+      ?: throw OneginiReactNativeException(AUTHENTICATOR_DOES_NOT_EXIST)
 
-    fun getAuthenticator(profile: UserProfile, id: String): OneginiAuthenticator? {
-        return oneginiSDK.oneginiClient.userClient
-            .getAllAuthenticators(profile)
-            .firstOrNull { it.id == id }
-    }
+    oneginiSDK.oneginiClient.userClient.setPreferredAuthenticator(authenticator)
+  }
 
-    fun setPreferredAuthenticator(authenticatorId: String) {
-        val userProfile = oneginiSDK.oneginiClient.userClient.authenticatedUserProfile
-            ?: throw OneginiReactNativeException(NO_PROFILE_AUTHENTICATED)
+  interface RegistrationCallback {
+    fun onSuccess(customInfo: CustomInfo?)
+    fun onError(code: String?, message: String?)
+  }
 
-        val authenticator = getRegisteredAuthenticator(userProfile, authenticatorId)
-            ?: throw OneginiReactNativeException(AUTHENTICATOR_DOES_NOT_EXIST)
-
-        oneginiSDK.oneginiClient.userClient.setPreferredAuthenticator(authenticator)
-    }
-
-    interface RegistrationCallback {
-        fun onSuccess(customInfo: CustomInfo?)
-        fun onError(code: String?, message: String?)
-    }
-
-    interface DeregistrationCallback {
-        fun onSuccess()
-        fun onError(code: String?, message: String?)
-    }
+  interface DeregistrationCallback {
+    fun onSuccess()
+    fun onError(code: String?, message: String?)
+  }
 }

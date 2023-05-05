@@ -23,87 +23,87 @@ import org.mockito.kotlin.verify
 @RunWith(MockitoJUnitRunner::class)
 class SubmitCustomRegistrationActionUseCaseTests {
 
-    @get:Rule
-    val reactArgumentsTestRule = ReactArgumentsTestRule()
+  @get:Rule
+  val reactArgumentsTestRule = ReactArgumentsTestRule()
 
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    lateinit var oneginiSdk: OneginiSDK
+  @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+  lateinit var oneginiSdk: OneginiSDK
 
-    @Mock
-    lateinit var promiseMock: Promise
+  @Mock
+  lateinit var promiseMock: Promise
 
-    @Mock
-    lateinit var customRegistrationEventEmitter: CustomRegistrationEventEmitter
+  @Mock
+  lateinit var customRegistrationEventEmitter: CustomRegistrationEventEmitter
 
-    @Mock
-    lateinit var oneginiCustomRegistrationCallback: OneginiCustomRegistrationCallback
+  @Mock
+  lateinit var oneginiCustomRegistrationCallback: OneginiCustomRegistrationCallback
 
-    lateinit var submitCustomRegistrationActionUseCase: SubmitCustomRegistrationActionUseCase
+  lateinit var submitCustomRegistrationActionUseCase: SubmitCustomRegistrationActionUseCase
 
-    lateinit var customRegistrationActionManager: CustomRegistrationActionManager
+  lateinit var customRegistrationActionManager: CustomRegistrationActionManager
 
-    private val token = "testToken"
+  private val token = "testToken"
 
-    @Before
-    fun setup() {
-        customRegistrationActionManager = spy(CustomRegistrationActionManager())
-        submitCustomRegistrationActionUseCase = SubmitCustomRegistrationActionUseCase(customRegistrationActionManager)
-    }
+  @Before
+  fun setup() {
+    customRegistrationActionManager = spy(CustomRegistrationActionManager())
+    submitCustomRegistrationActionUseCase = SubmitCustomRegistrationActionUseCase(customRegistrationActionManager)
+  }
 
-    @Test
-    fun `When identity provider does not exist, Then should reject with IDENTITY_PROVIDER_NOT_FOUND error`() {
-        submitCustomRegistrationActionUseCase(TestData.identityProvider1.id, token, promiseMock)
-        verify(promiseMock).reject(IDENTITY_PROVIDER_NOT_FOUND.code.toString(), IDENTITY_PROVIDER_NOT_FOUND.message)
-    }
+  @Test
+  fun `When identity provider does not exist, Then should reject with IDENTITY_PROVIDER_NOT_FOUND error`() {
+    submitCustomRegistrationActionUseCase(TestData.identityProvider1.id, token, promiseMock)
+    verify(promiseMock).reject(IDENTITY_PROVIDER_NOT_FOUND.code.toString(), IDENTITY_PROVIDER_NOT_FOUND.message)
+  }
 
-    @Test
-    fun `When identity provider exists but registration is not in progress, Then should reject with ACTION_NOT_ALLOWED error`() {
-        whenIdentityProviderExists(false)
-        submitCustomRegistrationActionUseCase(TestData.identityProvider1.id, token, promiseMock)
-        verify(promiseMock).reject(ACTION_NOT_ALLOWED.code.toString(), SUBMIT_CUSTOM_REGISTRATION_ACTION_NOT_ALLOWED)
-    }
+  @Test
+  fun `When identity provider exists but registration is not in progress, Then should reject with ACTION_NOT_ALLOWED error`() {
+    whenIdentityProviderExists(false)
+    submitCustomRegistrationActionUseCase(TestData.identityProvider1.id, token, promiseMock)
+    verify(promiseMock).reject(ACTION_NOT_ALLOWED.code.toString(), SUBMIT_CUSTOM_REGISTRATION_ACTION_NOT_ALLOWED)
+  }
 
-    @Test
-    fun `OneStep - When identity provider exists and registration is in progress, Then should resolve with null`() {
-        whenIdentityProviderExists(false)
-        whenRegistrationIsInProgress()
-        submitCustomRegistrationActionUseCase(TestData.identityProvider1.id, token, promiseMock)
-        verify(promiseMock).resolve(null)
-    }
+  @Test
+  fun `OneStep - When identity provider exists and registration is in progress, Then should resolve with null`() {
+    whenIdentityProviderExists(false)
+    whenRegistrationIsInProgress()
+    submitCustomRegistrationActionUseCase(TestData.identityProvider1.id, token, promiseMock)
+    verify(promiseMock).resolve(null)
+  }
 
-    @Test
-    fun `TwoStep - When identity provider exists and registration is in progress, Then should resolve with null`() {
-        whenIdentityProviderExists(true)
-        whenRegistrationIsInProgress()
-        submitCustomRegistrationActionUseCase(TestData.identityProvider1.id, token, promiseMock)
-        verify(promiseMock).resolve(null)
-    }
+  @Test
+  fun `TwoStep - When identity provider exists and registration is in progress, Then should resolve with null`() {
+    whenIdentityProviderExists(true)
+    whenRegistrationIsInProgress()
+    submitCustomRegistrationActionUseCase(TestData.identityProvider1.id, token, promiseMock)
+    verify(promiseMock).resolve(null)
+  }
 
-    @Test
-    fun `OneStep - When identity provider exists and registration is in progress, Then should call returnSuccess with the supplied token on the registration action`() {
-        whenIdentityProviderExists(false)
-        whenRegistrationIsInProgress()
-        submitCustomRegistrationActionUseCase(TestData.identityProvider1.id, token, promiseMock)
-        verify(customRegistrationActionManager.getCustomRegistrationActions().first()).returnSuccess(token)
-    }
+  @Test
+  fun `OneStep - When identity provider exists and registration is in progress, Then should call returnSuccess with the supplied token on the registration action`() {
+    whenIdentityProviderExists(false)
+    whenRegistrationIsInProgress()
+    submitCustomRegistrationActionUseCase(TestData.identityProvider1.id, token, promiseMock)
+    verify(customRegistrationActionManager.getCustomRegistrationActions().first()).returnSuccess(token)
+  }
 
-    @Test
-    fun `TwoStep - When identity provider exists and registration is in progress, Then should call returnSuccess with the supplied token on the registration action`() {
-        whenIdentityProviderExists(true)
-        whenRegistrationIsInProgress()
-        submitCustomRegistrationActionUseCase(TestData.identityProvider1.id, token, promiseMock)
-        verify(customRegistrationActionManager.getCustomRegistrationActions().first()).returnSuccess(token)
-    }
+  @Test
+  fun `TwoStep - When identity provider exists and registration is in progress, Then should call returnSuccess with the supplied token on the registration action`() {
+    whenIdentityProviderExists(true)
+    whenRegistrationIsInProgress()
+    submitCustomRegistrationActionUseCase(TestData.identityProvider1.id, token, promiseMock)
+    verify(customRegistrationActionManager.getCustomRegistrationActions().first()).returnSuccess(token)
+  }
 
-    private fun whenIdentityProviderExists(isTwoStep: Boolean) {
-        val identityProvider = ReactNativeIdentityProvider(TestData.identityProvider1.id, isTwoStep)
-        val customRegistrationAction = spy(TwoStepCustomRegistrationAction(identityProvider.id, customRegistrationEventEmitter))
-        customRegistrationActionManager.addCustomRegistrationAction(customRegistrationAction)
-    }
+  private fun whenIdentityProviderExists(isTwoStep: Boolean) {
+    val identityProvider = ReactNativeIdentityProvider(TestData.identityProvider1.id, isTwoStep)
+    val customRegistrationAction = spy(TwoStepCustomRegistrationAction(identityProvider.id, customRegistrationEventEmitter))
+    customRegistrationActionManager.addCustomRegistrationAction(customRegistrationAction)
+  }
 
-    private fun whenRegistrationIsInProgress() {
-        // finishRegistration is what is called by the SDK when it starts registration
-        customRegistrationActionManager.getCustomRegistrationActions().first().finishRegistration(oneginiCustomRegistrationCallback, null)
-    }
+  private fun whenRegistrationIsInProgress() {
+    // finishRegistration is what is called by the SDK when it starts registration
+    customRegistrationActionManager.getCustomRegistrationActions().first().finishRegistration(oneginiCustomRegistrationCallback, null)
+  }
 
 }

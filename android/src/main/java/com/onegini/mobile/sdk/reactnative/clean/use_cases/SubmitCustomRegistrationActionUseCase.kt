@@ -13,22 +13,22 @@ import javax.inject.Singleton
 
 @Singleton
 class SubmitCustomRegistrationActionUseCase @Inject constructor(private val customRegistrationActionManager: CustomRegistrationActionManager) {
-    operator fun invoke(identityProviderId: String, token: String?, promise: Promise) {
-        customRegistrationActionManager.getCustomRegistrationAction(identityProviderId)?.let { action ->
-            tryReturnSuccess(action, token, promise)
-        } ?: promise.rejectWrapperError(IDENTITY_PROVIDER_NOT_FOUND)
-    }
+  operator fun invoke(identityProviderId: String, token: String?, promise: Promise) {
+    customRegistrationActionManager.getCustomRegistrationAction(identityProviderId)?.let { action ->
+      tryReturnSuccess(action, token, promise)
+    } ?: promise.rejectWrapperError(IDENTITY_PROVIDER_NOT_FOUND)
+  }
 
-    private fun tryReturnSuccess(
-        action: CustomRegistrationAction,
-        token: String?,
-        promise: Promise
-    ) {
-        try {
-            action.returnSuccess(token)
-            promise.resolve(null)
-        } catch (exception: OneginiReactNativeException) {
-            promise.reject(ACTION_NOT_ALLOWED.code.toString(), SUBMIT_CUSTOM_REGISTRATION_ACTION_NOT_ALLOWED)
-        }
+  private fun tryReturnSuccess(
+    action: CustomRegistrationAction,
+    token: String?,
+    promise: Promise
+  ) {
+    try {
+      action.returnSuccess(token)
+      promise.resolve(null)
+    } catch (exception: OneginiReactNativeException) {
+      promise.reject(ACTION_NOT_ALLOWED.code.toString(), SUBMIT_CUSTOM_REGISTRATION_ACTION_NOT_ALLOWED)
     }
+  }
 }

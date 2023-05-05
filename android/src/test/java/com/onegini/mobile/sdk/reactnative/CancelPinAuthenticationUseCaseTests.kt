@@ -19,45 +19,45 @@ import org.mockito.kotlin.verify
 @RunWith(MockitoJUnitRunner::class)
 class CancelPinAuthenticationUseCaseTests {
 
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    lateinit var oneginiSdk: OneginiSDK
+  @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+  lateinit var oneginiSdk: OneginiSDK
 
-    @Mock
-    lateinit var promiseMock: Promise
+  @Mock
+  lateinit var promiseMock: Promise
 
-    @Mock
-    lateinit var oneginiPinCallback: OneginiPinCallback
+  @Mock
+  lateinit var oneginiPinCallback: OneginiPinCallback
 
-    @Mock
-    lateinit var pinAuthenticationEventEmitter: PinAuthenticationEventEmitter
+  @Mock
+  lateinit var pinAuthenticationEventEmitter: PinAuthenticationEventEmitter
 
-    @Mock
-    lateinit var authenticationAttemptCounter: AuthenticationAttemptCounter
+  @Mock
+  lateinit var authenticationAttemptCounter: AuthenticationAttemptCounter
 
-    lateinit var cancelPinAuthenticationUseCase: CancelPinAuthenticationUseCase
+  lateinit var cancelPinAuthenticationUseCase: CancelPinAuthenticationUseCase
 
-    lateinit var pinAuthenticationRequestHandler: PinAuthenticationRequestHandler
+  lateinit var pinAuthenticationRequestHandler: PinAuthenticationRequestHandler
 
-    @Before
-    fun setup() {
-        pinAuthenticationRequestHandler = PinAuthenticationRequestHandler(pinAuthenticationEventEmitter)
-        cancelPinAuthenticationUseCase = CancelPinAuthenticationUseCase(pinAuthenticationRequestHandler)
-    }
+  @Before
+  fun setup() {
+    pinAuthenticationRequestHandler = PinAuthenticationRequestHandler(pinAuthenticationEventEmitter)
+    cancelPinAuthenticationUseCase = CancelPinAuthenticationUseCase(pinAuthenticationRequestHandler)
+  }
 
-    @Test
-    fun `When pin authentication has not started, Then should reject with AUTHENTICATION_NOT_IN_PROGRESS`() {
-        cancelPinAuthenticationUseCase(promiseMock)
-        verify(promiseMock).reject(AUTHENTICATION_NOT_IN_PROGRESS.code.toString(), AUTHENTICATION_NOT_IN_PROGRESS.message)
-    }
+  @Test
+  fun `When pin authentication has not started, Then should reject with AUTHENTICATION_NOT_IN_PROGRESS`() {
+    cancelPinAuthenticationUseCase(promiseMock)
+    verify(promiseMock).reject(AUTHENTICATION_NOT_IN_PROGRESS.code.toString(), AUTHENTICATION_NOT_IN_PROGRESS.message)
+  }
 
-    @Test
-    fun `When pin authentication has started, Then should resolve with null`() {
-        whenPinAuthenticationStarted()
-        cancelPinAuthenticationUseCase(promiseMock)
-        verify(promiseMock).resolve(null)
-    }
+  @Test
+  fun `When pin authentication has started, Then should resolve with null`() {
+    whenPinAuthenticationStarted()
+    cancelPinAuthenticationUseCase(promiseMock)
+    verify(promiseMock).resolve(null)
+  }
 
-    private fun whenPinAuthenticationStarted() {
-        pinAuthenticationRequestHandler.startAuthentication(UserProfile("123456"), oneginiPinCallback, authenticationAttemptCounter)
-    }
+  private fun whenPinAuthenticationStarted() {
+    pinAuthenticationRequestHandler.startAuthentication(UserProfile("123456"), oneginiPinCallback, authenticationAttemptCounter)
+  }
 }

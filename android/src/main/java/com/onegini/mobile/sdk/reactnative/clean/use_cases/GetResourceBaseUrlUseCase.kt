@@ -7,7 +7,7 @@ import javax.inject.Singleton
 
 @Singleton
 class GetResourceBaseUrlUseCase @Inject constructor(private val oneginiSDK: OneginiSDK) {
-    operator fun invoke(promise: Promise) {
-        promise.resolve(oneginiSDK.oneginiClient.configModel.resourceBaseUrl)
-    }
+  operator fun invoke(promise: Promise) {
+    promise.resolve(oneginiSDK.oneginiClient.configModel.resourceBaseUrl)
+  }
 }

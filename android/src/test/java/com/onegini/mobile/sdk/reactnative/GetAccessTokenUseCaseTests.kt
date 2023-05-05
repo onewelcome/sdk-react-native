@@ -15,30 +15,33 @@ import org.mockito.kotlin.verify
 @RunWith(MockitoJUnitRunner::class)
 class GetAccessTokenUseCaseTests {
 
-    @get:Rule
-    val reactArgumentsTestRule = ReactArgumentsTestRule()
+  @get:Rule
+  val reactArgumentsTestRule = ReactArgumentsTestRule()
 
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    lateinit var oneginiSdk: OneginiSDK
+  @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+  lateinit var oneginiSdk: OneginiSDK
 
-    @Mock
-    lateinit var promiseMock: Promise
+  @Mock
+  lateinit var promiseMock: Promise
 
-    //
+  //
 
-    @Test
-    fun `should resolve with proper access token`() {
-        Mockito.`when`(oneginiSdk.oneginiClient.accessToken).thenReturn("token123")
+  @Test
+  fun `should resolve with proper access token`() {
+    Mockito.`when`(oneginiSdk.oneginiClient.accessToken).thenReturn("token123")
 
-        GetAccessTokenUseCase(oneginiSdk)(promiseMock)
-        verify(promiseMock).resolve("token123")
-    }
+    GetAccessTokenUseCase(oneginiSdk)(promiseMock)
+    verify(promiseMock).resolve("token123")
+  }
 
-    @Test
-    fun `when receive null should not crash and resolve with null`() {
-        Mockito.`when`(oneginiSdk.oneginiClient.accessToken).thenReturn(null)
+  @Test
+  fun `when receive null should not crash and resolve with null`() {
+    Mockito.`when`(oneginiSdk.oneginiClient.accessToken).thenReturn(null)
 
-        GetAccessTokenUseCase(oneginiSdk)(promiseMock)
-        verify(promiseMock).reject(OneginiWrapperError.NO_PROFILE_AUTHENTICATED.code.toString(), OneginiWrapperError.NO_PROFILE_AUTHENTICATED.message)
-    }
+    GetAccessTokenUseCase(oneginiSdk)(promiseMock)
+    verify(promiseMock).reject(
+      OneginiWrapperError.NO_PROFILE_AUTHENTICATED.code.toString(),
+      OneginiWrapperError.NO_PROFILE_AUTHENTICATED.message
+    )
+  }
 }

@@ -14,18 +14,18 @@ import javax.inject.Singleton
 @Singleton
 class StartSingleSignOnUseCase @Inject constructor(private val oneginiSDK: OneginiSDK, private val uriFacade: UriFacade) {
 
-    operator fun invoke (uri: String, promise: Promise) {
-        oneginiSDK.oneginiClient.userClient.getAppToWebSingleSignOn(
-            uriFacade.parse(uri),
-            object : OneginiAppToWebSingleSignOnHandler {
-                override fun onSuccess(oneginiAppToWebSingleSignOn: OneginiAppToWebSingleSignOn) {
-                    promise.resolve(OneginiAppToWebSingleSignOnMapper.toWritableMap(oneginiAppToWebSingleSignOn))
-                }
+  operator fun invoke(uri: String, promise: Promise) {
+    oneginiSDK.oneginiClient.userClient.getAppToWebSingleSignOn(
+      uriFacade.parse(uri),
+      object : OneginiAppToWebSingleSignOnHandler {
+        override fun onSuccess(oneginiAppToWebSingleSignOn: OneginiAppToWebSingleSignOn) {
+          promise.resolve(OneginiAppToWebSingleSignOnMapper.toWritableMap(oneginiAppToWebSingleSignOn))
+        }
 
-                override fun onError(error: OneginiAppToWebSingleSignOnError) {
-                    promise.rejectOneginiException(error)
-                }
-            }
-        )
-    }
+        override fun onError(error: OneginiAppToWebSingleSignOnError) {
+          promise.rejectOneginiException(error)
+        }
+      }
+    )
+  }
 }

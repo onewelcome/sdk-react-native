@@ -20,35 +20,36 @@ import javax.inject.Singleton
 @Singleton
 class RegisterUserUseCase @Inject constructor(private val oneginiSDK: OneginiSDK) {
 
-    operator fun invoke(identityProviderId: String?, scopes: ReadableArray?, promise: Promise) {
-        val identityProvider = getIdentityProvider(identityProviderId)
+  operator fun invoke(identityProviderId: String?, scopes: ReadableArray?, promise: Promise) {
+    val identityProvider = getIdentityProvider(identityProviderId)
 
-        if (identityProvider == null && identityProviderId != null) {
-            promise.rejectWrapperError(IDENTITY_PROVIDER_NOT_FOUND)
-            return
+    // When identityProviderId IS supplied, but no corresponding IDP is found.
+    if (identityProvider == null && identityProviderId != null) {
+      promise.rejectWrapperError(IDENTITY_PROVIDER_NOT_FOUND)
+      return
+    }
+
+    val scopesArray = ScopesMapper.toStringArray(scopes)
+
+    oneginiSDK.oneginiClient.userClient.registerUser(
+      identityProvider, scopesArray,
+      object : OneginiRegistrationHandler {
+        override fun onSuccess(userProfile: UserProfile, customInfo: CustomInfo?) {
+          val result = Arguments.createMap()
+          UserProfileMapper.add(result, userProfile)
+          CustomInfoMapper.add(result, customInfo)
+          promise.resolve(result)
         }
 
-        val scopesArray = ScopesMapper.toStringArray(scopes)
+        override fun onError(error: OneginiRegistrationError) {
+          val cause = error.cause?.message ?: error.message
+          promise.reject(error.errorType.toString(), cause)
+        }
+      }
+    )
+  }
 
-        oneginiSDK.oneginiClient.userClient.registerUser(
-            identityProvider, scopesArray,
-            object : OneginiRegistrationHandler {
-                override fun onSuccess(userProfile: UserProfile, customInfo: CustomInfo?) {
-                    val result = Arguments.createMap()
-                    UserProfileMapper.add(result, userProfile)
-                    CustomInfoMapper.add(result, customInfo)
-                    promise.resolve(result)
-                }
-
-                override fun onError(error: OneginiRegistrationError) {
-                    val cause = error.cause?.message ?: error.message
-                    promise.reject(error.errorType.toString(), cause)
-                }
-            }
-        )
-    }
-
-    private fun getIdentityProvider(id: String?): OneginiIdentityProvider? {
-        return oneginiSDK.oneginiClient.userClient.identityProviders.find { it.id == id }
-    }
+  private fun getIdentityProvider(id: String?): OneginiIdentityProvider? {
+    return oneginiSDK.oneginiClient.userClient.identityProviders.find { it.id == id }
+  }
 }

@@ -18,40 +18,40 @@ import org.mockito.kotlin.whenever
 @RunWith(MockitoJUnitRunner::class)
 
 class LogoutUseCaseTests {
-    @get:Rule
-    val reactArgumentsTestRule = ReactArgumentsTestRule()
+  @get:Rule
+  val reactArgumentsTestRule = ReactArgumentsTestRule()
 
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private lateinit var oneginiSdk: OneginiSDK
+  @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+  private lateinit var oneginiSdk: OneginiSDK
 
-    @Mock
-    private lateinit var oneginiLogoutError: OneginiLogoutError
+  @Mock
+  private lateinit var oneginiLogoutError: OneginiLogoutError
 
-    @Mock
-    private lateinit var promiseMock: Promise
+  @Mock
+  private lateinit var promiseMock: Promise
 
-    private lateinit var logoutUseCase: LogoutUseCase
+  private lateinit var logoutUseCase: LogoutUseCase
 
-    @Before
-    fun setup() {
-        logoutUseCase = LogoutUseCase(oneginiSdk)
+  @Before
+  fun setup() {
+    logoutUseCase = LogoutUseCase(oneginiSdk)
+  }
+
+  @Test
+  fun `When oginini getAppToWebSingleSignOn calls onSuccess on the handler, Then promise should resolve with a map containing the content from the result`() {
+    whenever(oneginiSdk.oneginiClient.userClient.logout(any())).thenAnswer {
+      it.getArgument<OneginiLogoutHandler>(0).onSuccess()
     }
+    logoutUseCase(promiseMock)
+    verify(promiseMock).resolve(null)
+  }
 
-    @Test
-    fun `When oginini getAppToWebSingleSignOn calls onSuccess on the handler, Then promise should resolve with a map containing the content from the result`() {
-        whenever(oneginiSdk.oneginiClient.userClient.logout(any())).thenAnswer {
-            it.getArgument<OneginiLogoutHandler>(0).onSuccess()
-        }
-        logoutUseCase(promiseMock)
-        verify(promiseMock).resolve(null)
+  @Test
+  fun `When oginini getAppToWebSingleSignOn calls onSuccess on the handler, Then promise should reject with the error message and code`() {
+    whenever(oneginiSdk.oneginiClient.userClient.logout(any())).thenAnswer {
+      it.getArgument<OneginiLogoutHandler>(0).onError(oneginiLogoutError)
     }
-
-    @Test
-    fun `When oginini getAppToWebSingleSignOn calls onSuccess on the handler, Then promise should reject with the error message and code`() {
-        whenever(oneginiSdk.oneginiClient.userClient.logout(any())).thenAnswer {
-            it.getArgument<OneginiLogoutHandler>(0).onError(oneginiLogoutError)
-        }
-        logoutUseCase(promiseMock)
-        verify(promiseMock).reject(oneginiLogoutError.errorType.toString(), oneginiLogoutError.message)
-    }
+    logoutUseCase(promiseMock)
+    verify(promiseMock).reject(oneginiLogoutError.errorType.toString(), oneginiLogoutError.message)
+  }
 }

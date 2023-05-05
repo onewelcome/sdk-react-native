@@ -8,7 +8,7 @@ import dagger.Module
 @Module
 interface FacadeModule {
 
-    @Binds
-    fun bindUriFacade(uriFacade: UriFacadeImpl): UriFacade
+  @Binds
+  fun bindUriFacade(uriFacade: UriFacadeImpl): UriFacade
 }
 

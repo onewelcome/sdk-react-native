@@ -18,40 +18,41 @@ import org.mockito.kotlin.whenever
 @RunWith(MockitoJUnitRunner::class)
 class EnrollMobileAuthenticationUseCaseTests {
 
-    @get:Rule
-    val reactArgumentsTestRule = ReactArgumentsTestRule()
+  @get:Rule
+  val reactArgumentsTestRule = ReactArgumentsTestRule()
 
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    lateinit var oneginiSdk: OneginiSDK
+  @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+  lateinit var oneginiSdk: OneginiSDK
 
-    @Mock
-    lateinit var promiseMock: Promise
+  @Mock
+  lateinit var promiseMock: Promise
 
-    @Mock
-    lateinit var oneginiMobileAuthEnrollmentError: OneginiMobileAuthEnrollmentError
+  @Mock
+  lateinit var oneginiMobileAuthEnrollmentError: OneginiMobileAuthEnrollmentError
 
-    lateinit var enrollMobileAuthenticationUseCase: EnrollMobileAuthenticationUseCase
+  lateinit var enrollMobileAuthenticationUseCase: EnrollMobileAuthenticationUseCase
 
-    @Before
-    fun setup() {
-        enrollMobileAuthenticationUseCase = EnrollMobileAuthenticationUseCase(oneginiSdk)
+  @Before
+  fun setup() {
+    enrollMobileAuthenticationUseCase = EnrollMobileAuthenticationUseCase(oneginiSdk)
+  }
+
+  @Test
+  fun `When android sdk calls onSuccess on the handler of enrollUserForMobileAuth, Then promise should resolve with null`() {
+    whenever(oneginiSdk.oneginiClient.userClient.enrollUserForMobileAuth(any())).thenAnswer {
+      it.getArgument<OneginiMobileAuthEnrollmentHandler>(0).onSuccess()
     }
-    @Test
-    fun `When android sdk calls onSuccess on the handler of enrollUserForMobileAuth, Then promise should resolve with null`() {
-        whenever(oneginiSdk.oneginiClient.userClient.enrollUserForMobileAuth(any())).thenAnswer {
-            it.getArgument<OneginiMobileAuthEnrollmentHandler>(0).onSuccess()
-        }
-        enrollMobileAuthenticationUseCase(promiseMock)
-        verify(promiseMock).resolve(null)
-    }
+    enrollMobileAuthenticationUseCase(promiseMock)
+    verify(promiseMock).resolve(null)
+  }
 
-    @Test
-    fun `When android sdk calls onError on the handler of enrollUserForMobileAuth, Then promise should reject with the given code and message`() {
-        whenever(oneginiSdk.oneginiClient.userClient.enrollUserForMobileAuth(any())).thenAnswer {
-            it.getArgument<OneginiMobileAuthEnrollmentHandler>(0).onError(oneginiMobileAuthEnrollmentError)
-        }
-        enrollMobileAuthenticationUseCase(promiseMock)
-        verify(promiseMock).reject(oneginiMobileAuthEnrollmentError.errorType.toString(), oneginiMobileAuthEnrollmentError.message)
+  @Test
+  fun `When android sdk calls onError on the handler of enrollUserForMobileAuth, Then promise should reject with the given code and message`() {
+    whenever(oneginiSdk.oneginiClient.userClient.enrollUserForMobileAuth(any())).thenAnswer {
+      it.getArgument<OneginiMobileAuthEnrollmentHandler>(0).onError(oneginiMobileAuthEnrollmentError)
     }
+    enrollMobileAuthenticationUseCase(promiseMock)
+    verify(promiseMock).reject(oneginiMobileAuthEnrollmentError.errorType.toString(), oneginiMobileAuthEnrollmentError.message)
+  }
 
 }

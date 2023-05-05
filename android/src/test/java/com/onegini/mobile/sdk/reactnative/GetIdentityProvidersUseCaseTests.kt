@@ -16,38 +16,38 @@ import org.mockito.kotlin.verify
 @RunWith(MockitoJUnitRunner::class)
 class GetIdentityProvidersUseCaseTests {
 
-    @get:Rule
-    val reactArgumentsTestRule = ReactArgumentsTestRule()
+  @get:Rule
+  val reactArgumentsTestRule = ReactArgumentsTestRule()
 
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    lateinit var oneginiSdk: OneginiSDK
+  @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+  lateinit var oneginiSdk: OneginiSDK
 
-    @Mock
-    lateinit var promiseMock: Promise
+  @Mock
+  lateinit var promiseMock: Promise
 
-    //
+  //
 
-    @Test
-    fun `should resolve with properly parsed data`() {
-        `when`(oneginiSdk.oneginiClient.userClient.identityProviders).thenReturn(setOf(TestData.identityProvider1, TestData.identityProvider2))
+  @Test
+  fun `should resolve with properly parsed data`() {
+    `when`(oneginiSdk.oneginiClient.userClient.identityProviders).thenReturn(setOf(TestData.identityProvider1, TestData.identityProvider2))
 
-        GetIdentityProvidersUseCase(oneginiSdk)(promiseMock)
+    GetIdentityProvidersUseCase(oneginiSdk)(promiseMock)
 
-        val provider1 = JavaOnlyMap()
-        provider1.putString("id", TestData.identityProvider1.id)
-        provider1.putString("name", TestData.identityProvider1.name)
+    val provider1 = JavaOnlyMap()
+    provider1.putString("id", TestData.identityProvider1.id)
+    provider1.putString("name", TestData.identityProvider1.name)
 
-        val provider2 = JavaOnlyMap()
-        provider2.putString("id", TestData.identityProvider2.id)
-        provider2.putString("name", TestData.identityProvider2.name)
-        verify(promiseMock).resolve(JavaOnlyArray.of(provider1, provider2))
-    }
+    val provider2 = JavaOnlyMap()
+    provider2.putString("id", TestData.identityProvider2.id)
+    provider2.putString("name", TestData.identityProvider2.name)
+    verify(promiseMock).resolve(JavaOnlyArray.of(provider1, provider2))
+  }
 
-    @Test
-    fun `when no providers should resolve with empty data`() {
-        `when`(oneginiSdk.oneginiClient.userClient.identityProviders).thenReturn(setOf())
+  @Test
+  fun `when no providers should resolve with empty data`() {
+    `when`(oneginiSdk.oneginiClient.userClient.identityProviders).thenReturn(setOf())
 
-        GetIdentityProvidersUseCase(oneginiSdk)(promiseMock)
-        verify(promiseMock).resolve(JavaOnlyArray.of())
-    }
+    GetIdentityProvidersUseCase(oneginiSdk)(promiseMock)
+    verify(promiseMock).resolve(JavaOnlyArray.of())
+  }
 }

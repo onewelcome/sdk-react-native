@@ -7,8 +7,7 @@ import javax.inject.Singleton
 
 @Singleton
 class GetRedirectUriUseCase @Inject constructor(private val oneginiSDK: OneginiSDK) {
-
-    operator fun invoke(promise: Promise) {
-        promise.resolve(oneginiSDK.oneginiClient.configModel.redirectUri)
-    }
+  operator fun invoke(promise: Promise) {
+    promise.resolve(oneginiSDK.oneginiClient.configModel.redirectUri)
+  }
 }

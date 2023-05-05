@@ -9,12 +9,12 @@ import javax.inject.Singleton
 
 @Singleton
 class CancelPinAuthenticationUseCase @Inject constructor(private val pinAuthenticationRequestHandler: PinAuthenticationRequestHandler) {
-    operator fun invoke(promise: Promise) {
-        try {
-            pinAuthenticationRequestHandler.denyAuthenticationRequest()
-            promise.resolve(null)
-        } catch (exception: OneginiReactNativeException) {
-            promise.rejectRNException(exception)
-        }
+  operator fun invoke(promise: Promise) {
+    try {
+      pinAuthenticationRequestHandler.denyAuthenticationRequest()
+      promise.resolve(null)
+    } catch (exception: OneginiReactNativeException) {
+      promise.rejectRNException(exception)
     }
+  }
 }

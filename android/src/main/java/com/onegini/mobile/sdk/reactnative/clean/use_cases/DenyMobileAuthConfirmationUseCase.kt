@@ -10,15 +10,15 @@ import javax.inject.Singleton
 
 @Singleton
 class DenyMobileAuthConfirmationUseCase @Inject constructor(private val mobileAuthOtpRequestHandler: MobileAuthOtpRequestHandler) {
-    operator fun invoke(promise: Promise) {
-            tryDenyAuthenticationRequest(promise)
-    }
+  operator fun invoke(promise: Promise) {
+    tryDenyAuthenticationRequest(promise)
+  }
 
-    private fun tryDenyAuthenticationRequest(promise: Promise) {
-        if (mobileAuthOtpRequestHandler.denyAuthenticationRequest()) {
-            promise.resolve(null)
-        } else {
-            promise.rejectWrapperError(MOBILE_AUTH_OTP_NOT_IN_PROGRESS)
-        }
+  private fun tryDenyAuthenticationRequest(promise: Promise) {
+    if (mobileAuthOtpRequestHandler.denyAuthenticationRequest()) {
+      promise.resolve(null)
+    } else {
+      promise.rejectWrapperError(MOBILE_AUTH_OTP_NOT_IN_PROGRESS)
     }
+  }
 }

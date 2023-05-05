@@ -17,46 +17,46 @@ import org.mockito.kotlin.verify
 @RunWith(MockitoJUnitRunner::class)
 class DenyMobileAuthConfirmationUseCaseTests {
 
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    lateinit var oneginiSdk: OneginiSDK
+  @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+  lateinit var oneginiSdk: OneginiSDK
 
-    @Mock
-    lateinit var promiseMock: Promise
+  @Mock
+  lateinit var promiseMock: Promise
 
-    @Mock
-    lateinit var mobileAuthOtpRequestEventEmitter: MobileAuthOtpRequestEventEmitter
+  @Mock
+  lateinit var mobileAuthOtpRequestEventEmitter: MobileAuthOtpRequestEventEmitter
 
-    @Mock
-    lateinit var oneginiMobileAuthenticationRequest: OneginiMobileAuthenticationRequest
+  @Mock
+  lateinit var oneginiMobileAuthenticationRequest: OneginiMobileAuthenticationRequest
 
-    @Mock
-    lateinit var oneginiAcceptDenyCallback: OneginiAcceptDenyCallback
+  @Mock
+  lateinit var oneginiAcceptDenyCallback: OneginiAcceptDenyCallback
 
-    lateinit var mobileAuthOtpRequestHandler: MobileAuthOtpRequestHandler
+  lateinit var mobileAuthOtpRequestHandler: MobileAuthOtpRequestHandler
 
-    lateinit var denyMobileAuthConfirmationUseCase: DenyMobileAuthConfirmationUseCase
+  lateinit var denyMobileAuthConfirmationUseCase: DenyMobileAuthConfirmationUseCase
 
-    @Before
-    fun setup() {
-        mobileAuthOtpRequestHandler = MobileAuthOtpRequestHandler(mobileAuthOtpRequestEventEmitter)
-        denyMobileAuthConfirmationUseCase = DenyMobileAuthConfirmationUseCase(mobileAuthOtpRequestHandler)
-    }
+  @Before
+  fun setup() {
+    mobileAuthOtpRequestHandler = MobileAuthOtpRequestHandler(mobileAuthOtpRequestEventEmitter)
+    denyMobileAuthConfirmationUseCase = DenyMobileAuthConfirmationUseCase(mobileAuthOtpRequestHandler)
+  }
 
-    @Test
-    fun `When no mobile authentication is in progress, Then should reject with MOBILE_AUTH_OTP_NOT_IN_PROGRESS`() {
-        denyMobileAuthConfirmationUseCase(promiseMock)
-        verify(promiseMock).reject(MOBILE_AUTH_OTP_NOT_IN_PROGRESS.code.toString(), MOBILE_AUTH_OTP_NOT_IN_PROGRESS.message)
-    }
+  @Test
+  fun `When no mobile authentication is in progress, Then should reject with MOBILE_AUTH_OTP_NOT_IN_PROGRESS`() {
+    denyMobileAuthConfirmationUseCase(promiseMock)
+    verify(promiseMock).reject(MOBILE_AUTH_OTP_NOT_IN_PROGRESS.code.toString(), MOBILE_AUTH_OTP_NOT_IN_PROGRESS.message)
+  }
 
-    @Test
-    fun `When mobile authentication is in progress, Then should resolve with null`() {
-        startMobileAuthentication()
-        denyMobileAuthConfirmationUseCase(promiseMock)
-        verify(promiseMock).resolve(null)
-    }
+  @Test
+  fun `When mobile authentication is in progress, Then should resolve with null`() {
+    startMobileAuthentication()
+    denyMobileAuthConfirmationUseCase(promiseMock)
+    verify(promiseMock).resolve(null)
+  }
 
-    private fun startMobileAuthentication() {
-        mobileAuthOtpRequestHandler.startAuthentication(oneginiMobileAuthenticationRequest, oneginiAcceptDenyCallback)
-    }
+  private fun startMobileAuthentication() {
+    mobileAuthOtpRequestHandler.startAuthentication(oneginiMobileAuthenticationRequest, oneginiAcceptDenyCallback)
+  }
 
 }

@@ -10,12 +10,12 @@ import org.junit.runner.Description
 import org.junit.runners.model.Statement
 
 class ReactArgumentsTestRule : TestRule {
-    override fun apply(base: Statement, description: Description?): Statement {
+  override fun apply(base: Statement, description: Description?): Statement {
 
-        mockkStatic(Arguments::class)
-        every { Arguments.createArray() } answers { JavaOnlyArray() }
-        every { Arguments.createMap() } answers { JavaOnlyMap() }
+    mockkStatic(Arguments::class)
+    every { Arguments.createArray() } answers { JavaOnlyArray() }
+    every { Arguments.createMap() } answers { JavaOnlyMap() }
 
-        return base
-    }
+    return base
+  }
 }

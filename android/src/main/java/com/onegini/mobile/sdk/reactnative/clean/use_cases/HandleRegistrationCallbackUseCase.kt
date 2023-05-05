@@ -10,17 +10,17 @@ import javax.inject.Singleton
 
 @Singleton
 class HandleRegistrationCallbackUseCase @Inject constructor(
-    private val registrationRequestHandler: RegistrationRequestHandler,
-    private val uriFacade: UriFacade
+  private val registrationRequestHandler: RegistrationRequestHandler,
+  private val uriFacade: UriFacade
 ) {
 
-    operator fun invoke(uriString: String, promise: Promise) {
-        val uri = uriFacade.parse(uriString)
-        try {
-            registrationRequestHandler.handleRegistrationCallback(uri)
-            promise.resolve(null)
-        } catch (exception: OneginiReactNativeException) {
-            promise.rejectRNException(exception)
-        }
+  operator fun invoke(uriString: String, promise: Promise) {
+    val uri = uriFacade.parse(uriString)
+    try {
+      registrationRequestHandler.handleRegistrationCallback(uri)
+      promise.resolve(null)
+    } catch (exception: OneginiReactNativeException) {
+      promise.rejectRNException(exception)
     }
+  }
 }

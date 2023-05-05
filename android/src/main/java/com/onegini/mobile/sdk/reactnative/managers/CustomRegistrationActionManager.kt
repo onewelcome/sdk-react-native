@@ -7,21 +7,21 @@ import javax.inject.Singleton
 @Singleton
 class CustomRegistrationActionManager @Inject constructor() {
 
-    private val customRegistrationActions = ArrayList<CustomRegistrationAction>()
+  private val customRegistrationActions = ArrayList<CustomRegistrationAction>()
 
-    fun getCustomRegistrationAction(id: String?): CustomRegistrationAction? {
-        return customRegistrationActions.firstOrNull { it.id == id}
-    }
+  fun getCustomRegistrationAction(id: String?): CustomRegistrationAction? {
+    return customRegistrationActions.firstOrNull { it.id == id }
+  }
 
-    fun getCustomRegistrationActions(): ArrayList<CustomRegistrationAction> {
-        return customRegistrationActions
-    }
+  fun getCustomRegistrationActions(): ArrayList<CustomRegistrationAction> {
+    return customRegistrationActions
+  }
 
-    fun addCustomRegistrationAction(action: CustomRegistrationAction) {
-        customRegistrationActions.add(action)
-    }
+  fun addCustomRegistrationAction(action: CustomRegistrationAction) {
+    customRegistrationActions.add(action)
+  }
 
-    fun getActiveCustomRegistrationAction(): CustomRegistrationAction? {
-        return customRegistrationActions.firstOrNull { it.isInProgress() }
-    }
+  fun getActiveCustomRegistrationAction(): CustomRegistrationAction? {
+    return customRegistrationActions.firstOrNull { it.isInProgress() }
+  }
 }
