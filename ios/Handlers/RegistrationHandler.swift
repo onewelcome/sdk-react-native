@@ -148,7 +148,7 @@ class RegistrationDelegateImpl: RegistrationDelegate {
 
     func userClient(_ userClient: UserClient, didReceiveCustomRegistrationInitChallenge challenge: CustomRegistrationChallenge) {
         registrationHandler.handleDidReceiveCustomRegistrationChallenge(challenge)
-        
+
         let result = NSMutableDictionary()
         result.setValue(challenge.identityProvider.identifier, forKey: "identityProviderId")
 

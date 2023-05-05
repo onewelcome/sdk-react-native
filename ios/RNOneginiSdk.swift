@@ -367,28 +367,52 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
     @objc
     func enrollMobileAuthentication(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
-        let completion = makeCompletionHandler(resolver: resolve, rejecter: reject)
-        bridgeConnector.toMobileAuthConnector.mobileAuthHandler.enrollForMobileAuth(completion)
+        bridgeConnector.toMobileAuthConnector.mobileAuthHandler.enrollForMobileAuth { result in
+            switch result {
+            case .success:
+                resolve(nil)
+            case .failure(let error):
+                self.rejectWithError(reject, error)
+            }
+        }
     }
 
     @objc
     func handleMobileAuthWithOtp(_ otpCode: String,
                                  resolver resolve: @escaping RCTPromiseResolveBlock,
                                  rejecter reject: @escaping RCTPromiseRejectBlock) {
-        let completion = makeCompletionHandler(resolver: resolve, rejecter: reject)
-        bridgeConnector.toMobileAuthConnector.mobileAuthHandler.handleOTPMobileAuth(otpCode, completion)
+        bridgeConnector.toMobileAuthConnector.mobileAuthHandler.handleOTPMobileAuth(otpCode) { result in
+            switch result {
+            case .success:
+                resolve(nil)
+            case .failure(let error):
+                self.rejectWithError(reject, error)
+            }
+        }
     }
 
     @objc
     func acceptMobileAuthConfirmation(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
-        let completion = makeCompletionHandler(resolver: resolve, rejecter: reject)
-        bridgeConnector.toMobileAuthConnector.mobileAuthHandler.handleMobileAuthConfirmation(accepted: true, completion: completion)
+        bridgeConnector.toMobileAuthConnector.mobileAuthHandler.handleMobileAuthConfirmation(accepted: true) { result in
+            switch result {
+            case .success:
+                resolve(nil)
+            case .failure(let error):
+                self.rejectWithError(reject, error)
+            }
+        }
     }
 
     @objc
     func denyMobileAuthConfirmation(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
-        let completion = makeCompletionHandler(resolver: resolve, rejecter: reject)
-        bridgeConnector.toMobileAuthConnector.mobileAuthHandler.handleMobileAuthConfirmation(accepted: false, completion: completion)
+        bridgeConnector.toMobileAuthConnector.mobileAuthHandler.handleMobileAuthConfirmation(accepted: false) { result in
+            switch result {
+            case .success:
+                resolve(nil)
+            case .failure(let error):
+                self.rejectWithError(reject, error)
+            }
+        }
     }
 
     // Authenticators management

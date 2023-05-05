@@ -12,6 +12,7 @@ enum WrapperError: LocalizedError {
     case pinCreationNotInProgress
     case actionNotAllowed(description: String)
     case authenticatorNotRegistered
+    case mobileAuthAlreadyInProgress
 
     var errorDescription: String? {
         switch self {
@@ -41,6 +42,8 @@ enum WrapperError: LocalizedError {
             return description
         case .authenticatorNotRegistered:
             return "The authenticator is not registered"
+        case .mobileAuthAlreadyInProgress:
+            return "Mobile Auth is already in progress"
         }
     }
     var code: Int {
@@ -71,6 +74,8 @@ enum WrapperError: LocalizedError {
             return 8017
         case .authenticatorNotRegistered:
             return 8019
+        case .mobileAuthAlreadyInProgress:
+            return 8020
         }
     }
 }
