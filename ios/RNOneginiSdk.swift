@@ -178,7 +178,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
                                                                            scopes: scopes) { result in
             switch result {
             case .success(let registrationResponse):
-                resolve(registrationResponse.toList())
+                resolve(registrationResponse.toList)
             case .failure(let error):
                 self.rejectWithError(reject, error)
             }
@@ -289,7 +289,7 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
         bridgeConnector.toLoginHandler.authenticateUser(profile, authenticator: authenticator) { result in
             switch result {
             case .success(let response):
-                resolve(response.toList())
+                resolve(response.toList)
             case .failure(let error):
                 self.rejectWithError(reject, error)
             }

@@ -191,23 +191,22 @@ class RegistrationDelegateImpl: RegistrationDelegate {
 struct RegistrationResponse {
   var userProfile: UserProfile
   var customInfo: CustomInfo?
-
-    func toList() -> [String: Any?] {
+    var toList:[String: Any?] {
     return [
-        "userProfile": userProfile.toList(),
-        "customInfo": customInfo?.toList()
+        "userProfile": userProfile.toList,
+        "customInfo": customInfo?.toList
     ]
   }
 }
 
 extension UserProfile {
-    func toList() -> [String: String] {
+    var toList: [String: String] {
         return ["id": self.profileId]
     }
 }
 
 extension CustomInfo {
-    func toList() -> [String: Any] {
+    var toList: [String: Any] {
         ["status": self.status, "data": self.data]
     }
 }
