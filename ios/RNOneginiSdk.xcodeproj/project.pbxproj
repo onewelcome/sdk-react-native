@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		495554CF2A1E1A34000977EC /* OneginiSDKiOS+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495554CE2A1E1A34000977EC /* OneginiSDKiOS+Extensions.swift */; };
+		495554D12A1E24BD000977EC /* ResponseStructs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495554D02A1E24BD000977EC /* ResponseStructs.swift */; };
 		4960B01428DDAB830072B103 /* OneginiWrapperErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4960B01328DDAB830072B103 /* OneginiWrapperErrors.swift */; };
 		496788ED28C8CD0100EB65A8 /* ChangePinHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496788EC28C8CD0100EB65A8 /* ChangePinHandler.swift */; };
 		496788F428C8CE5400EB65A8 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 496788F328C8CE5400EB65A8 /* Enums.swift */; };
@@ -46,6 +48,8 @@
 		05CA46825F3E575BBBEDCF92 /* Pods-RNOneginiSdk.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNOneginiSdk.debug.xcconfig"; path = "Target Support Files/Pods-RNOneginiSdk/Pods-RNOneginiSdk.debug.xcconfig"; sourceTree = "<group>"; };
 		134814201AA4EA6300B7C361 /* libRNOneginiSdk.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNOneginiSdk.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		22E60303ED99790FD7F7F103 /* Pods-RNOneginiSdk.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNOneginiSdk.release.xcconfig"; path = "Target Support Files/Pods-RNOneginiSdk/Pods-RNOneginiSdk.release.xcconfig"; sourceTree = "<group>"; };
+		495554CE2A1E1A34000977EC /* OneginiSDKiOS+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OneginiSDKiOS+Extensions.swift"; sourceTree = "<group>"; };
+		495554D02A1E24BD000977EC /* ResponseStructs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseStructs.swift; sourceTree = "<group>"; };
 		4960B01328DDAB830072B103 /* OneginiWrapperErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneginiWrapperErrors.swift; sourceTree = "<group>"; };
 		496788EC28C8CD0100EB65A8 /* ChangePinHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChangePinHandler.swift; sourceTree = "<group>"; };
 		496788F328C8CE5400EB65A8 /* Enums.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
@@ -126,6 +130,7 @@
 				C7AA005D2558E4B80001AB19 /* RNOneginiSdk.swift */,
 				C7AA0204255925FA0001AB19 /* RNOneginiSdk.m */,
 				496788F328C8CE5400EB65A8 /* Enums.swift */,
+				495554D02A1E24BD000977EC /* ResponseStructs.swift */,
 				4960B01328DDAB830072B103 /* OneginiWrapperErrors.swift */,
 				134814211AA4EA7D00B7C361 /* Products */,
 				C7AA005C2558E4B70001AB19 /* RNOneginiSdk-Bridging-Header.h */,
@@ -173,6 +178,7 @@
 			children = (
 				C7AA00972558E6D40001AB19 /* ErrorExtension.swift */,
 				49D3DA072A03FA9500834E9F /* ResultExtension.swift */,
+				495554CE2A1E1A34000977EC /* OneginiSDKiOS+Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -286,6 +292,7 @@
 				496788F428C8CE5400EB65A8 /* Enums.swift in Sources */,
 				F0622594258CD03F00527A7D /* AppToWebHandler.swift in Sources */,
 				C7BD311125AC5DF10057440C /* MobileAuthHandler.swift in Sources */,
+				495554CF2A1E1A34000977EC /* OneginiSDKiOS+Extensions.swift in Sources */,
 				496788FC28CB793B00EB65A8 /* RegistrationEventEmitter.swift in Sources */,
 				C7AA00652558E55B0001AB19 /* BridgeConnector.swift in Sources */,
 				C7AA0205255925FA0001AB19 /* RNOneginiSdk.m in Sources */,
@@ -298,6 +305,7 @@
 				49D3DA082A03FA9500834E9F /* ResultExtension.swift in Sources */,
 				C78992E525816243002CA5AF /* LoginHandler.swift in Sources */,
 				C7AA006C2558E5920001AB19 /* RegistrationHandler.swift in Sources */,
+				495554D12A1E24BD000977EC /* ResponseStructs.swift in Sources */,
 				49958F80299A760600530008 /* Mappers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

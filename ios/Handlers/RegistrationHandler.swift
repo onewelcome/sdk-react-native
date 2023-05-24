@@ -171,10 +171,6 @@ class RegistrationDelegateImpl: RegistrationDelegate {
         registrationHandler.sendCustomRegistrationNotification(CustomRegistrationNotification.finishRegistration, result)
     }
 
-    func userClientDidStartRegistration(_ userClient: UserClient) {
-        // Unused
-    }
-
     func userClient(_ userClient: UserClient, didRegisterUser profile: UserProfile, with identityProvider: IdentityProvider, info: CustomInfo?) {
         registrationHandler.handleDidRegisterUser()
         completion(.success(
@@ -185,28 +181,5 @@ class RegistrationDelegateImpl: RegistrationDelegate {
     func userClient(_ userClient: UserClient, didFailToRegisterUserWith identityProvider: IdentityProvider, error: Error) {
         registrationHandler.handleDidFailToRegister()
         completion(.failure(error))
-    }
-}
-
-struct RegistrationResponse {
-  var userProfile: UserProfile
-  var customInfo: CustomInfo?
-    var toList:[String: Any?] {
-    return [
-        "userProfile": userProfile.toList,
-        "customInfo": customInfo?.toList
-    ]
-  }
-}
-
-extension UserProfile {
-    var toList: [String: String] {
-        return ["id": self.profileId]
-    }
-}
-
-extension CustomInfo {
-    var toList: [String: Any] {
-        ["status": self.status, "data": self.data]
     }
 }
