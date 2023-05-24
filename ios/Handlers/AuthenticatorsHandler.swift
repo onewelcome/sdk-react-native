@@ -15,14 +15,6 @@ class AuthenticatorsHandler: NSObject {
     init(loginHandler: LoginHandler) {
         self.loginHandler = loginHandler
     }
-
-    fileprivate func mapErrorFromPinChallenge(_ challenge: PinChallenge) -> Error? {
-        if let error = challenge.error {
-            return error
-        } else {
-            return nil
-        }
-    }
 }
 
 extension AuthenticatorsHandler: BridgeToAuthenticatorsHandlerProtocol {
@@ -97,14 +89,6 @@ class AuthenticatorRegistrationDelegateImpl: AuthenticatorRegistrationDelegate {
         loginHandler.handleDidReceiveChallenge(challenge)
     }
 
-    func userClient(_ userClient: UserClient, didReceiveCustomAuthFinishRegistrationChallenge challenge: CustomAuthFinishRegistrationChallenge) {
-        // We currently don't support custom authenticators
-    }
-
-    func userClient(_ userClient: UserClient, didStartRegistering authenticator: Authenticator, for userProfile: UserProfile) {
-        // Unused
-    }
-
     func userClient(_ userClient: UserClient, didFailToRegister authenticator: Authenticator, for userProfile: UserProfile, error: Error) {
         completion(.failure(error))
     }
@@ -122,19 +106,11 @@ class AuthenticatorDeregistrationDelegateImpl: AuthenticatorDeregistrationDelega
         self.completion = completion
     }
 
-    func userClient(_ userClient: UserClient, didStartDeregistering authenticator: Authenticator, forUser userProfile: UserProfile) {
-        // Unused
-    }
-
     func userClient(_ userClient: UserClient, didDeregister authenticator: Authenticator, forUser userProfile: UserProfile) {
         completion(.success)
     }
 
     func userClient(_ userClient: UserClient, didFailToDeregister authenticator: Authenticator, forUser userProfile: UserProfile, error: Error) {
         completion(.failure(error))
-    }
-
-    func userClient(_ userClient: UserClient, didReceiveCustomAuthDeregistrationChallenge challenge: CustomAuthDeregistrationChallenge) {
-        // We currently don't support custom authenticators
     }
 }

@@ -74,18 +74,6 @@ class MobileAuthDelegate: MobileAuthRequestDelegate {
         sendConnectorNotification(MobileAuthNotification.startAuthentication, request.message, nil)
     }
 
-    func userClient(_ userClient: UserClient, didReceivePinChallenge challenge: PinChallenge, for request: MobileAuthRequest) {
-        // todo: will need this for PUSH
-    }
-
-    func userClient(_ userClient: UserClient, didReceiveBiometricChallenge challenge: BiometricChallenge, for request: MobileAuthRequest) {
-        // todo: will need this for PUSH
-    }
-
-    func userClient(_ userClient: UserClient, didReceiveCustomAuthFinishAuthenticationChallenge challenge: CustomAuthFinishAuthenticationChallenge, for request: MobileAuthRequest) {
-        // todo: will need this for PUSH Custom
-    }
-
     func userClient(_ userClient: UserClient, didFailToHandleRequest request: MobileAuthRequest, authenticator: Authenticator?, error: Error) {
         mobileAuthHandler.handleDidFinishMobileAuth()
         sendConnectorNotification(MobileAuthNotification.finishAuthentication, request.message, nil)

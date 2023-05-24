@@ -43,7 +43,6 @@ class LoginHandler: NSObject {
         pinChallenge = nil
         pinAuthenticationEventEmitter.onPinClose()
     }
-
 }
 
 extension LoginHandler: BridgeToLoginHandlerProtocol {
@@ -82,14 +81,6 @@ class AuthenticationDelegateImpl: AuthenticationDelegate {
         loginHandler.handleDidReceiveChallenge(challenge)
     }
 
-    func userClient(_ userClient: UserClient, didStartAuthenticationForUser profile: UserProfile, authenticator: Authenticator) {
-        // unused
-    }
-
-    func userClient(_ userClient: UserClient, didReceiveCustomAuthFinishAuthenticationChallenge challenge: CustomAuthFinishAuthenticationChallenge) {
-        // We don't support custom authenticators in React Native plugin right now.
-    }
-
     func userClient(_ userClient: UserClient, didAuthenticateUser profile: UserProfile, authenticator: Authenticator, info customAuthInfo: CustomInfo?) {
         loginHandler.handleDidAuthenticateUser()
         completion(.success(RegistrationResponse(userProfile: profile, customInfo: customAuthInfo)))
@@ -100,7 +91,6 @@ class AuthenticationDelegateImpl: AuthenticationDelegate {
         // We don't want to send a close pin event when we encounter an action already in progress
         if error.code == ONGGenericError.actionAlreadyInProgress.rawValue { return }
         loginHandler.handleDidFailToAuthenticateUser()
-
     }
 }
 

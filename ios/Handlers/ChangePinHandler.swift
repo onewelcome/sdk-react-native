@@ -43,10 +43,6 @@ class ChangePinDelegateImpl: ChangePinDelegate {
         registrationHandler.handleDidReceivePinRegistrationChallenge(challenge)
     }
 
-    func userClient(_ userClient: UserClient, didStartPinChangeForUser profile: UserProfile) {
-        // Unused
-    }
-
     func userClient(_ userClient: UserClient, didChangePinForUser profile: UserProfile) {
         registrationHandler.handleDidRegisterUser()
         completion(.success)
