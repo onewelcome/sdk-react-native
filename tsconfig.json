@@ -5,22 +5,26 @@
     "esModuleInterop": true,
     "isolatedModules": false,
     "jsx": "react-native",
-    "module": "commonjs" /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "skipLibCheck": true,
     "lib": [
       "es6",
       "es2017",
       "es2018.promise"
     ],
-    "moduleResolution": "node",
-    "noEmit": true,
     "strict": true,
     "target": "esnext",
-    "baseUrl": "./",
+    "baseUrl": ".",
     "paths": {
-      "onewelcome-react-native-sdk": ["ts/index"]
+      "onewelcome-react-native-sdk": ["src/index"]
     },
   },
   "exclude": [
+    "lib",
+    "android",
+    "ios",
+    "jest.setup.js",
     "node_modules",
     "babel.config.js",
     "metro.config.js",
