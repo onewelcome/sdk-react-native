@@ -21,3 +21,4 @@ metro.config.js
 ._*
 .Trashes
 .idea
+docs/internal
