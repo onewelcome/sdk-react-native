@@ -1,6 +1,10 @@
-*/project.xcworkspace/
+*.xcworkspace/
 */xcuserdata/
+*.xcodeproj/
 .DS_Store
 .npmignore
 Pods/
 build/
+.swiftlint.yml
+Podfile
+Podfile.lock
