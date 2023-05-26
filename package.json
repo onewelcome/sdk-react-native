@@ -12,7 +12,7 @@
     "!**/__fixtures__",
     "!**/__mocks__",
     "README.md",
-    "android/src",
+    "android/",
     "android/build.gradle",
     "ios/",
     "onewelcome-react-native-sdk.podspec"
