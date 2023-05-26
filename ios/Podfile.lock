@@ -381,7 +381,7 @@ SPEC REPOS:
     - libevent
     - SwiftLint
     - Typhoon
-  https://repo.onegini.com/artifactory/api/pods/cocoapods-public:
+  https://repo.onewelcome.com/artifactory/api/pods/cocoapods-public:
     - OneginiSDKiOS
 
 EXTERNAL SOURCES:
