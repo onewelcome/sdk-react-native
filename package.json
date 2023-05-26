@@ -1,5 +1,5 @@
 {
-  "name": "onewelcome-react-native-sdk",
+  "name": "@onewelcome/react-native-sdk",
   "title": "OneWelcome React Native SDK",
   "version": "0.6.0",
   "description": "OneWelcome SDK component for React Native (iOS and Android)",
@@ -26,7 +26,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/onewelcome/sdk-react-native.git",
-    "baseUrl": "https://www.npmjs.com/package/onewelcome-react-native-sdk"
+    "baseUrl": "https://www.npmjs.com/package/@onewelcome/react-native-sdk"
   },
   "keywords": [
     "react-native",

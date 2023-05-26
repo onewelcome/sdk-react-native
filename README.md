@@ -25,7 +25,7 @@ To get started, install yalc following their instructions.
 
 In the SDK folder run: `yalc publish`
 
-In the example app folder run `yalc add onewelcome-react-native-sdk`
+In the example app folder run `yalc add @onewelcome/react-native-sdk`
 
 After making changes to the SDK you can run `yalc publish --push`. This will automatically update the dependency in the example app aswell. 
 
