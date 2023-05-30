@@ -1,26 +1,28 @@
 {
-  "name": "onewelcome-react-native-sdk",
+  "name": "@onewelcome/react-native-sdk",
   "title": "OneWelcome React Native SDK",
   "version": "0.6.0",
   "description": "OneWelcome SDK component for React Native (iOS and Android)",
-  "main": "ts/index.ts",
+  "main": "lib/commonjs/index.js",
+  "module": "lib/module/index.js",
+  "types": "lib/typescript/index.d.ts",
   "files": [
+    "lib",
     "README.md",
-    "android/src",
+    "android/",
     "android/build.gradle",
     "ios/",
-    "ts/",
     "onewelcome-react-native-sdk.podspec"
   ],
   "scripts": {
     "start": "react-native start",
-    "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "prepack": "bob build"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/onewelcome/sdk-react-native.git",
-    "baseUrl": "https://www.npmjs.com/package/onewelcome-react-native-sdk"
+    "baseUrl": "https://www.npmjs.com/package/@onewelcome/react-native-sdk"
   },
   "keywords": [
     "react-native",
@@ -37,18 +39,29 @@
   "licenseFilename": "LICENSE",
   "readmeFilename": "README.md",
   "peerDependencies": {
-    "react": ">=16.13.1 < 19",
     "react-native": ">=0.63.0"
   },
   "devDependencies": {
     "@react-native-community/eslint-config": "^2.0.0",
-    "@types/jest": "^26.0.21",
-    "@types/react": "^17.0.3",
-    "@types/react-native": "^0.70.6",
+    "@types/react": "^16.14.0",
+    "@types/react-native": "0.70.5",
     "eslint": "^7.11.0",
-    "jest": "^26.6.0",
-    "react": "16.13.1",
+    "react": "18",
     "react-native": "0.70.5",
+    "react-native-builder-bob": "^0.20.4",
     "typescript": "^4.2.3"
-  }
+  },
+  "react-native-builder-bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      "commonjs",
+      "module",
+      "typescript"
+    ]
+  },
+  "eslintIgnore": [
+    "node_modules/",
+    "lib/"
+  ]
 }
