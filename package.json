@@ -12,7 +12,7 @@
     "android/",
     "android/build.gradle",
     "ios/",
-    "onewelcome-react-native-sdk.podspec"
+    "react-native-sdk.podspec"
   ],
   "scripts": {
     "start": "react-native start",
