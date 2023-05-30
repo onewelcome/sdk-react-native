@@ -1,7 +1,7 @@
 {
   "name": "@onewelcome/react-native-sdk",
   "title": "OneWelcome React Native SDK",
-  "version": "0.6.1-rc.0",
+  "version": "1.0.0",
   "description": "OneWelcome SDK component for React Native (iOS and Android)",
   "main": "lib/commonjs/index.js",
   "module": "lib/module/index.js",
