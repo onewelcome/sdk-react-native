@@ -6,7 +6,7 @@ class BridgeConnector: BridgeConnectorProtocol {
     let toRegistrationConnector = RegistrationConnector()
     let toLoginHandler = LoginHandler()
     let toMobileAuthConnector = MobileAuthConnector()
-    let toAuthenticatorsHandler = AuthenticatorsHandler()
+    let toAuthenticatorsHandler: AuthenticatorsHandler
     let toAppToWebHandler = AppToWebHandler()
     let toResourceHandler = ResourceHandler()
     let toChangePinHandler: ChangePinHandler
@@ -15,6 +15,7 @@ class BridgeConnector: BridgeConnectorProtocol {
 
     init() {
         self.toChangePinHandler = ChangePinHandler(loginHandler: toLoginHandler, registrationHandler: toRegistrationConnector.registrationHandler)
+        self.toAuthenticatorsHandler = AuthenticatorsHandler(loginHandler: toLoginHandler)
         self.toRegistrationConnector.bridgeConnector = self
         self.toMobileAuthConnector.bridgeConnector = self
         BridgeConnector.shared = self
