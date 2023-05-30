@@ -1,21 +1,27 @@
 protocol BridgeConnectorProtocol: AnyObject {
-    func sendBridgeEvent(eventName: OneginiBridgeEvents, data: Any!) -> Void
+    func sendBridgeEvent(eventName: OneWelcomeBridgeEvents, data: Any)
 }
 
-class BridgeConnector : BridgeConnectorProtocol {
-    let toRegistrationHandler: BridgeToRegisterHandlerProtocol = RegistrationHandler()
-    let toLoginHandler: BridgeToLoginHandlerProtocol = LoginHandler()
-    var toPinHandlerConnector: BridgeToPinConnectorProtocol
+class BridgeConnector: BridgeConnectorProtocol {
+    let toRegistrationConnector = RegistrationConnector()
+    let toLoginHandler = LoginHandler()
+    let toMobileAuthConnector = MobileAuthConnector()
+    let toAuthenticatorsHandler: AuthenticatorsHandler
+    let toAppToWebHandler = AppToWebHandler()
+    let toResourceHandler = ResourceHandler()
+    let toChangePinHandler: ChangePinHandler
     unowned var bridge: ConnectorToRNBridgeProtocol?
-    public static var shared:BridgeConnector?
+    public static var shared: BridgeConnector?
 
     init() {
-        self.toPinHandlerConnector = PinConnector()
-        self.toPinHandlerConnector.bridgeConnector = self
+        self.toChangePinHandler = ChangePinHandler(loginHandler: toLoginHandler, registrationHandler: toRegistrationConnector.registrationHandler)
+        self.toAuthenticatorsHandler = AuthenticatorsHandler(loginHandler: toLoginHandler)
+        self.toRegistrationConnector.bridgeConnector = self
+        self.toMobileAuthConnector.bridgeConnector = self
         BridgeConnector.shared = self
     }
 
-    func sendBridgeEvent(eventName: OneginiBridgeEvents, data: Any!) {
+    func sendBridgeEvent(eventName: OneWelcomeBridgeEvents, data: Any) {
         bridge?.sendBridgeEvent(eventName: eventName, data: data)
     }
 }

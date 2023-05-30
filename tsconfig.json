@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "isolatedModules": false,
+    "jsx": "react-native",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "lib": [
+      "es6",
+      "es2017",
+      "es2018.promise"
+    ],
+    "strict": true,
+    "target": "esnext",
+    "baseUrl": ".",
+    "paths": {
+      "onewelcome-react-native-sdk": ["src/index"]
+    },
+  },
+  "exclude": [
+    "lib",
+    "android",
+    "ios",
+    "node_modules",
+    "babel.config.js",
+    "metro.config.js",
+  ]
+}

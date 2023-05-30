@@ -1,66 +1,67 @@
 {
-  "name": "react-native-sdk-beta",
-  "title": "React Native SDK",
-  "version": "0.6.0",
-  "description": "Onegini SDK component for React Native (iOS and Android)",
-  "main": "index.js",
+  "name": "@onewelcome/react-native-sdk",
+  "title": "OneWelcome React Native SDK",
+  "version": "1.0.0",
+  "description": "OneWelcome SDK component for React Native (iOS and Android)",
+  "main": "lib/commonjs/index.js",
+  "module": "lib/module/index.js",
+  "types": "lib/typescript/index.d.ts",
   "files": [
+    "lib",
     "README.md",
-    "android/src",
+    "android/",
     "android/build.gradle",
     "ios/",
-    "js/",
-    "index.js",
-    "react-native-sdk-beta.podspec"
+    "react-native-sdk.podspec"
   ],
   "scripts": {
-    "android": "react-native run-android",
-    "ios": "react-native run-ios --project-path './example/ios' --scheme 'RNExampleApp'",
     "start": "react-native start",
-    "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "prepack": "bob build"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://gitlab.com/develocraft/onegini-react-native-sdk.git",
-    "baseUrl": "https://www.npmjs.com/package/react-native-sdk-beta"
+    "url": "git+https://github.com/onewelcome/sdk-react-native.git",
+    "baseUrl": "https://www.npmjs.com/package/@onewelcome/react-native-sdk"
   },
   "keywords": [
     "react-native",
     "react native",
-    "onegini-sdk",
-    "onegini sdk",
+    "onewelcome-sdk",
+    "onewelcome",
     "sdk"
   ],
   "author": {
-    "name": "Valeriy Rumak",
-    "email": "valeriy.rumak@develocraft.com"
+    "name": "OneWelcome",
+    "email": "contact@onewelcome.com"
   },
   "license": "MIT",
   "licenseFilename": "LICENSE",
   "readmeFilename": "README.md",
   "peerDependencies": {
-    "react": "^16.13.1",
     "react-native": ">=0.63.0"
   },
   "devDependencies": {
-    "react": "16.13.1",
-    "react-native": "0.63.3",
-    "@babel/core": "^7.12.3",
-    "@babel/runtime": "^7.12.1",
     "@react-native-community/eslint-config": "^2.0.0",
-    "@react-native-async-storage/async-storage": "^1.13.2",
-    "react-native-modal-selector": "^2.0.3",
-    "babel-jest": "^26.6.0",
+    "@types/react": "^16.14.0",
+    "@types/react-native": "0.70.5",
     "eslint": "^7.11.0",
-    "jest": "^26.6.0",
-    "metro-react-native-babel-preset": "^0.63.0",
-    "react-test-renderer": "16.13.1"
+    "react": "18",
+    "react-native": "0.70.5",
+    "react-native-builder-bob": "^0.20.4",
+    "typescript": "^4.2.3"
   },
-  "jest": {
-    "preset": "react-native",
-    "setupFiles": [
-      "./example/jest.setup.js"
+  "react-native-builder-bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      "commonjs",
+      "module",
+      "typescript"
     ]
-  }
+  },
+  "eslintIgnore": [
+    "node_modules/",
+    "lib/"
+  ]
 }
