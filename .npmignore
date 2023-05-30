@@ -13,6 +13,7 @@ metro.config.js
 .flowconfig
 .npmrc
 .buckconfig
+bitrise.yml
 
 # Scripts
 scripts/
