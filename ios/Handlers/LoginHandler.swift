@@ -1,7 +1,7 @@
 protocol BridgeToLoginHandlerProtocol: AnyObject {
     func authenticateUser(_ profile: UserProfile,
                           authenticator: Authenticator?,
-                          completion: @escaping (UserProfile, Result<CustomInfo?, Error>) -> Void)
+                          completion: @escaping (Result<RegistrationResponse, Error>) -> Void)
     func setAuthPinChallenge(_ challenge: PinChallenge?)
     func handlePin(_ pin: String?, completion: @escaping (Error?) -> Void)
     func cancelPinAuthentication(completion: @escaping (Error?) -> Void)
@@ -43,15 +43,14 @@ class LoginHandler: NSObject {
         pinChallenge = nil
         pinAuthenticationEventEmitter.onPinClose()
     }
-
 }
 
 extension LoginHandler: BridgeToLoginHandlerProtocol {
     func authenticateUser(_ profile: UserProfile,
                           authenticator: Authenticator? = nil,
-                          completion: @escaping (UserProfile, Result<CustomInfo?, Error>) -> Void
+                          completion: @escaping (Result<RegistrationResponse, Error>) -> Void
     ) {
-        let delegate = LoginDelegate(loginCompletion: completion)
+        let delegate = AuthenticationDelegateImpl(loginHandler: self, completion: completion)
         SharedUserClient.instance.authenticateUserWith(profile: profile, authenticator: authenticator, delegate: delegate)
     }
 
@@ -69,42 +68,29 @@ extension LoginHandler: BridgeToLoginHandlerProtocol {
     }
 }
 
-class LoginDelegate: AuthenticationDelegate {
+class AuthenticationDelegateImpl: AuthenticationDelegate {
+    private let completion: (Result<RegistrationResponse, Error>) -> Void
+    private let loginHandler: LoginHandler
 
-    private var loginCompletion: ((UserProfile, Result<CustomInfo?, Error>) -> Void)?
-
-    init(loginCompletion: ((UserProfile, Result<CustomInfo?, Error>) -> Void)?) {
-        self.loginCompletion = loginCompletion
+    init(loginHandler: LoginHandler, completion: @escaping (Result<RegistrationResponse, Error>) -> Void) {
+        self.completion = completion
+        self.loginHandler = loginHandler
     }
 
     func userClient(_ userClient: UserClient, didReceivePinChallenge challenge: PinChallenge) {
-        BridgeConnector.shared?.toLoginHandler.handleDidReceiveChallenge(challenge)
+        loginHandler.handleDidReceiveChallenge(challenge)
     }
 
-    func userClient(_ userClient: UserClient, didReceiveBiometricChallenge challenge: BiometricChallenge) {
-        challenge.sender.respond(with: "", to: challenge)
+    func userClient(_ userClient: UserClient, didAuthenticateUser profile: UserProfile, authenticator: Authenticator, info customAuthInfo: CustomInfo?) {
+        loginHandler.handleDidAuthenticateUser()
+        completion(.success(RegistrationResponse(userProfile: profile, customInfo: customAuthInfo)))
     }
 
-    func userClient(_ userClient: OneginiSDKiOS.UserClient,
-                    didAuthenticateUser profile: OneginiSDKiOS.UserProfile,
-                    authenticator: OneginiSDKiOS.Authenticator,
-                    info customAuthInfo: OneginiSDKiOS.CustomInfo?
-    ) {
-            BridgeConnector.shared?.toLoginHandler.handleDidAuthenticateUser()
-            loginCompletion?(profile, .success(customAuthInfo))
-            loginCompletion = nil
-    }
-
-    func userClient(_ userClient: OneginiSDKiOS.UserClient,
-                    didFailToAuthenticateUser profile: OneginiSDKiOS.UserProfile,
-                    authenticator: OneginiSDKiOS.Authenticator,
-                    error: Error
-    ) {
-        loginCompletion?(profile, .failure(error))
-        loginCompletion = nil
+    func userClient(_ userClient: UserClient, didFailToAuthenticateUser profile: UserProfile, authenticator: Authenticator, error: Error) {
+        completion(.failure(error))
         // We don't want to send a close pin event when we encounter an action already in progress
         if error.code == ONGGenericError.actionAlreadyInProgress.rawValue { return }
-        BridgeConnector.shared?.toLoginHandler.handleDidFailToAuthenticateUser()
+        loginHandler.handleDidFailToAuthenticateUser()
     }
 }
 

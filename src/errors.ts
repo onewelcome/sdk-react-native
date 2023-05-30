@@ -17,6 +17,7 @@ export enum WrapperErrors {
   ActionNotAllowed = '8017',
   IncorrectPinFlow = '8018',
   AuthenticatorNotRegisteredWrapper = '8019',
+  MobileAuthAlreadyInProgress = '8020', // iOS only
 }
 
 export enum AndroidErrors {

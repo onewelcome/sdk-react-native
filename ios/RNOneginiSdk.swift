@@ -175,9 +175,13 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
             provider = userClient.identityProviders.first(where: { $0.identifier == identityProviderId })
         }
         bridgeConnector.toRegistrationConnector.registrationHandler.signUp(identityProvider: provider,
-                                                                           scopes: scopes) { (userProfile, customInfo, error) -> Void in
-            let result = mapToAuthData(profile: userProfile, info: customInfo)
-            self.resolveResultOrRejectError(resolve, reject, result, error)
+                                                                           scopes: scopes) { result in
+            switch result {
+            case .success(let registrationResponse):
+                resolve(registrationResponse.toList)
+            case .failure(let error):
+                self.rejectWithError(reject, error)
+            }
         }
     }
 
@@ -261,8 +265,14 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
     @objc
     func changePin(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
-        let completion = makeCompletionHandler(resolver: resolve, rejecter: reject)
-        bridgeConnector.toChangePinHandler.onChangePinCalled(completion: completion)
+        bridgeConnector.toChangePinHandler.onChangePinCalled { result in
+            switch result {
+            case .success(let res):
+                resolve(res)
+            case .failure(let err):
+                self.rejectWithError(reject, err)
+            }
+        }
     }
 
     @objc
@@ -276,10 +286,10 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
         }
         let authenticators = userClient.authenticators(.all, for: profile)
         let authenticator = authenticators.first(where: {$0.identifier == authenticatorId}) ?? userClient.preferredAuthenticator
-        bridgeConnector.toLoginHandler.authenticateUser(profile, authenticator: authenticator) { (userProfile, result) -> Void in
+        bridgeConnector.toLoginHandler.authenticateUser(profile, authenticator: authenticator) { result in
             switch result {
             case .success(let response):
-                resolve(mapToAuthData(profile: userProfile, info: response))
+                resolve(response.toList)
             case .failure(let error):
                 self.rejectWithError(reject, error)
             }
@@ -357,28 +367,52 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
 
     @objc
     func enrollMobileAuthentication(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
-        let completion = makeCompletionHandler(resolver: resolve, rejecter: reject)
-        bridgeConnector.toMobileAuthConnector.mobileAuthHandler.enrollForMobileAuth(completion)
+        bridgeConnector.toMobileAuthConnector.mobileAuthHandler.enrollForMobileAuth { result in
+            switch result {
+            case .success:
+                resolve(nil)
+            case .failure(let error):
+                self.rejectWithError(reject, error)
+            }
+        }
     }
 
     @objc
     func handleMobileAuthWithOtp(_ otpCode: String,
                                  resolver resolve: @escaping RCTPromiseResolveBlock,
                                  rejecter reject: @escaping RCTPromiseRejectBlock) {
-        let completion = makeCompletionHandler(resolver: resolve, rejecter: reject)
-        bridgeConnector.toMobileAuthConnector.mobileAuthHandler.handleOTPMobileAuth(otpCode, completion)
+        bridgeConnector.toMobileAuthConnector.mobileAuthHandler.handleOTPMobileAuth(otpCode) { result in
+            switch result {
+            case .success:
+                resolve(nil)
+            case .failure(let error):
+                self.rejectWithError(reject, error)
+            }
+        }
     }
 
     @objc
     func acceptMobileAuthConfirmation(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
-        let completion = makeCompletionHandler(resolver: resolve, rejecter: reject)
-        bridgeConnector.toMobileAuthConnector.mobileAuthHandler.handleMobileAuthConfirmation(accepted: true, completion: completion)
+        bridgeConnector.toMobileAuthConnector.mobileAuthHandler.handleMobileAuthConfirmation(accepted: true) { result in
+            switch result {
+            case .success:
+                resolve(nil)
+            case .failure(let error):
+                self.rejectWithError(reject, error)
+            }
+        }
     }
 
     @objc
     func denyMobileAuthConfirmation(_ resolve: @escaping RCTPromiseResolveBlock, rejecter reject: @escaping RCTPromiseRejectBlock) {
-        let completion = makeCompletionHandler(resolver: resolve, rejecter: reject)
-        bridgeConnector.toMobileAuthConnector.mobileAuthHandler.handleMobileAuthConfirmation(accepted: false, completion: completion)
+        bridgeConnector.toMobileAuthConnector.mobileAuthHandler.handleMobileAuthConfirmation(accepted: false) { result in
+            switch result {
+            case .success:
+                resolve(nil)
+            case .failure(let error):
+                self.rejectWithError(reject, error)
+            }
+        }
     }
 
     // Authenticators management
@@ -433,8 +467,14 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
             rejectWithError(reject, WrapperError.noProfileAuthenticated)
             return
         }
-        let completion = makeCompletionHandler(resolver: resolve, rejecter: reject)
-        bridgeConnector.toAuthenticatorsHandler.setPreferredAuthenticator(profile, authenticatorId, completion: completion)
+        bridgeConnector.toAuthenticatorsHandler.setPreferredAuthenticator(profile, authenticatorId) { result in
+            switch result {
+            case .success:
+                resolve(nil)
+            case .failure(let error):
+                self.rejectWithError(reject, error)
+            }
+        }
     }
 
     @objc
@@ -454,8 +494,14 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
             rejectWithError(reject, WrapperError.profileDoesNotExist)
             return
         }
-        let completion = makeCompletionHandler(resolver: resolve, rejecter: reject)
-        bridgeConnector.toAuthenticatorsHandler.registerAuthenticator(profile, authenticatorId, completion: completion)
+        bridgeConnector.toAuthenticatorsHandler.registerAuthenticator(profile, authenticatorId) { result in
+            switch result {
+            case .success:
+                resolve(nil)
+            case .failure(let error):
+                self.rejectWithError(reject, error)
+            }
+        }
     }
 
     @objc
@@ -467,7 +513,13 @@ class RNOneginiSdk: RCTEventEmitter, ConnectorToRNBridgeProtocol {
             reject(String(WrapperError.noProfileAuthenticated.code), WrapperError.noProfileAuthenticated.localizedDescription, WrapperError.noProfileAuthenticated)
             return
         }
-        let completion = makeCompletionHandler(resolver: resolve, rejecter: reject)
-        bridgeConnector.toAuthenticatorsHandler.deregisterAuthenticator(profile, authenticatorId, completion: completion)
+        bridgeConnector.toAuthenticatorsHandler.deregisterAuthenticator(profile, authenticatorId) { result in
+            switch result {
+            case .success:
+                resolve(nil)
+            case .failure(let error):
+                self.rejectWithError(reject, error)
+            }
+        }
     }
 }

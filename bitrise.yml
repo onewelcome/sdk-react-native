@@ -1,0 +1,140 @@
+---
+format_version: '11'
+default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
+project_type: android
+workflows:
+  deploy:
+    description: |
+      Deploys app using [Deploy to bitrise.io Step](https://devcenter.bitrise.io/en/getting-started/getting-started-with-android-apps.html#deploying-an-android-app-to-bitrise-io-53056).
+
+      Next steps:
+      - Check out [Getting started with Android apps](https://devcenter.bitrise.io/en/getting-started/getting-started-with-android-apps.html) for signing and deployment options.
+      - [Set up code signing with *Android Sign* Step](https://devcenter.bitrise.io/en/code-signing/android-code-signing/android-code-signing-using-the-android-sign-step.html).
+    steps:
+      - activate-ssh-key@4: {}
+      - git-clone@6: {}
+      - cache-pull@2: {}
+      - install-missing-android-tools@3:
+          inputs:
+            - gradlew_path: '$PROJECT_LOCATION/gradlew'
+      - change-android-versioncode-and-versionname@1:
+          inputs:
+            - build_gradle_path: '$PROJECT_LOCATION/$MODULE/build.gradle'
+      - android-lint@0:
+          inputs:
+            - project_location: '$PROJECT_LOCATION'
+            - variant: '$VARIANT'
+      - android-unit-test@1:
+          inputs:
+            - project_location: '$PROJECT_LOCATION'
+            - variant: '$VARIANT'
+      - android-build@1:
+          inputs:
+            - project_location: '$PROJECT_LOCATION'
+            - module: '$MODULE'
+            - variant: '$VARIANT'
+      - sign-apk@1:
+          run_if: '{{getenv "BITRISEIO_ANDROID_KEYSTORE_URL" | ne ""}}'
+      - cache-push@2: {}
+      - deploy-to-bitrise-io@2: {}
+  iOS:
+    description: |
+      Runs tests.
+
+      Next steps:
+      - Check out [Getting started with Android apps](https://devcenter.bitrise.io/en/getting-started/getting-started-with-android-apps.html).
+    steps:
+      - activate-ssh-key@4: {}
+      - git-clone@6: {}
+      - cache-pull@2: {}
+      - yarn@0:
+          title: Install NPM dependencies
+      - script@1:
+          inputs:
+            - content: |
+                #!/usr/bin/env bash
+                # fail if any commands fails
+                set -e
+                # debug log
+                set -x
+
+                gem install cocoapods-art -v 1.0.1
+                > /Users/vagrant/.netrc
+                echo "machine repo.onewelcome.com" > /Users/vagrant/.netrc
+                echo "login $ARTIFACTORY_USER" >> /Users/vagrant/.netrc
+                echo "password $ARTIFACTORY_PASSWORD" >> /Users/vagrant/.netrc
+                chmod 600 /Users/vagrant/.netrc
+                pod repo-art add onegini https://repo.onewelcome.com/artifactory/api/pods/cocoapods-public
+      - cocoapods-install@2: {}
+      - xcodebuild@0:
+          inputs:
+            - xcodebuild_output_formatter: tee
+            - xcodebuild_actions: build
+      - cache-push@2: {}
+      - deploy-to-bitrise-io@2: {}
+    meta:
+      bitrise.io:
+        stack: osx-xcode-13.4.x
+  primary:
+    description: |
+      Runs tests.
+
+      Next steps:
+      - Check out [Getting started with Android apps](https://devcenter.bitrise.io/en/getting-started/getting-started-with-android-apps.html).
+    steps:
+      - build-router-start@0:
+          inputs:
+            - workflows: iOS
+            - abort_on_fail: 'yes'
+            - access_token: '$BITRISE_API_TOKEN'
+      - activate-ssh-key@4: {}
+      - git-clone@6: {}
+      - cache-pull@2: {}
+      - yarn@0:
+          title: Install NPM dependencies
+      - install-missing-android-tools@3:
+          inputs:
+            - gradlew_path: '$PROJECT_LOCATION/gradlew'
+      - gradle-runner@2:
+          inputs:
+            - gradlew_path: '$PROJECT_LOCATION/gradlew'
+            - gradle_file: '$PROJECT_LOCATION/build.gradle'
+            - gradle_task: clean build -x test
+      - android-unit-test@1:
+          inputs:
+            - project_location: '$PROJECT_LOCATION'
+            - variant: '$VARIANT'
+      - cache-push@2: {}
+      - deploy-to-bitrise-io@2: {}
+      - build-router-wait@0:
+          inputs:
+            - access_token: '$BITRISE_API_TOKEN'
+meta:
+  bitrise.io:
+    stack: linux-docker-android-20.04
+app:
+  envs:
+    - opts:
+        is_expand: false
+      PROJECT_LOCATION: android
+    - opts:
+        is_expand: false
+      MODULE: app
+    - opts:
+        is_expand: false
+      VARIANT: ''
+    - opts:
+        is_expand: false
+      BITRISE_SCHEME: RNOneginiSdk
+    - opts:
+        is_expand: false
+      BITRISE_PROJECT_PATH: ios/RNOneginiSdk.xcworkspace
+    - opts:
+        is_expand: false
+      SIMULATOR_DEVICE: iPhone 11
+    - opts:
+        is_expand: false
+      SIMULATOR_OS_VERSION: latest
+trigger_map:
+  - pull_request_target_branch: '*'
+    workflow: primary

@@ -1,90 +1,89 @@
 protocol MobileAuthConnectorToHandlerProtocol: AnyObject {
-    func enrollForMobileAuth(_ completion: @escaping (Error?) -> Void)
-    func isUserEnrolledForMobileAuth() -> Bool
-    func handleMobileAuthConfirmation(accepted: Bool, completion: @escaping (Error?) -> Void)
-    func handleOTPMobileAuth(_ otp: String, _ completion: @escaping (Error?) -> Void)
+    func enrollForMobileAuth(_ completion: @escaping (Result<Void, Error>) -> Void)
+    func handleMobileAuthConfirmation(accepted: Bool, completion: @escaping (Result<Void, Error>) -> Void)
+    func handleOTPMobileAuth(_ otp: String, _ completion: @escaping (Result<Void, Error>) -> Void)
 }
 
-enum MobileAuthAuthenticatorType: String {
-    case fingerprint = "biometric"
-    case pin = "PIN"
-    case confirmation = ""
+private func sendConnectorNotification(_ event: MobileAuthNotification, _ requestMessage: String?, _ error: Error?) {
+    BridgeConnector.shared?.toMobileAuthConnector.sendNotification(event: event, requestMessage: requestMessage, error: error)
 }
 
 class MobileAuthHandler: NSObject {
-    private var userProfile: ONGUserProfile?
-    private var message: String?
-    private var authenticatorType: MobileAuthAuthenticatorType?
-    private var confirmation: ((Bool) -> Void)?
-    private var mobileAuthCompletion: ((Error?) -> Void)?
-
-    private func sendConnectorNotification(_ event: MobileAuthNotification, _ requestMessage: String?, _ error: Error?) {
-        BridgeConnector.shared?.toMobileAuthConnector.sendNotification(event: event, requestMessage: requestMessage, error: error)
-    }
+    private var mobileAuthConfirmation: ((Bool) -> Void)?
 }
 
 extension MobileAuthHandler: MobileAuthConnectorToHandlerProtocol {
 
-    func enrollForMobileAuth(_ completion: @escaping (Error?) -> Void) {
-        ONGClient.sharedInstance().userClient.enroll { _, error in
-            completion(error)
+    func enrollForMobileAuth(_ completion: @escaping (Result<Void, Error>) -> Void) {
+        SharedUserClient.instance.enrollMobileAuth { error in
+            guard let error = error else {
+                completion(.success)
+                return
+            }
+            completion(.failure(error))
         }
     }
 
-    func isUserEnrolledForMobileAuth() -> Bool {
-        let userClient = ONGUserClient.sharedInstance()
-        if let userProfile = userClient.authenticatedUserProfile() {
-            return userClient.isUserEnrolled(forMobileAuth: userProfile)
-        }
-        return false
-    }
-
-    func handleMobileAuthConfirmation(accepted: Bool, completion: @escaping (Error?) -> Void) {
-        // FIXME: RNP-94 Check if this method is implemented correctly
-        guard let confirmation = confirmation else {
-            completion(WrapperError.mobileAuthNotInProgress)
+    func handleMobileAuthConfirmation(accepted: Bool, completion: @escaping (Result<Void, Error>) -> Void) {
+        guard let mobileAuthConfirmation = mobileAuthConfirmation else {
+            completion(.failure(WrapperError.mobileAuthNotInProgress))
             return
         }
-        confirmation(accepted)
-        completion(nil)
-        return
+        mobileAuthConfirmation(accepted)
+        completion(.success)
     }
 
-    func handleOTPMobileAuth(_ otp: String, _ completion: @escaping (Error?) -> Void) {
-        mobileAuthCompletion = completion
-        ONGUserClient.sharedInstance().handleOTPMobileAuthRequest(otp, delegate: self)
+    func handleOTPMobileAuth(_ otp: String, _ completion: @escaping (Result<Void, Error>) -> Void) {
+        // Check to prevent breaking iOS SDK; https://onewelcome.atlassian.net/browse/SDKIOS-987
+        guard SharedUserClient.instance.authenticatedUserProfile != nil else {
+            completion(.failure(WrapperError.noProfileAuthenticated))
+            return
+        }
+
+        // Prevent concurrent OTP mobile authentication flows at same time; https://onewelcome.atlassian.net/browse/SDKIOS-989
+        guard mobileAuthConfirmation == nil else {
+            completion(.failure(WrapperError.mobileAuthAlreadyInProgress))
+            return
+        }
+
+        let delegate = MobileAuthDelegate(handler: self, completion: completion)
+        SharedUserClient.instance.handleOTPMobileAuthRequest(otp: otp, delegate: delegate)
+    }
+
+    func handleDidReceiveMobileAuthConfirmation(_ confirmation: @escaping (Bool) -> Void) {
+        mobileAuthConfirmation = confirmation
+    }
+
+    func handleDidFinishMobileAuth() {
+        mobileAuthConfirmation = nil
     }
 }
 
-extension MobileAuthHandler: ONGMobileAuthRequestDelegate {
-    func userClient(_ userClient: ONGUserClient, didFailToHandle request: ONGMobileAuthRequest, authenticator: ONGAuthenticator?, error: Error) {
-        mobileAuthCompletion?(error)
-        mobileAuthCompletion = nil
+// MARK: - MobileAuthRequestDelegate
+class MobileAuthDelegate: MobileAuthRequestDelegate {
+    private let handleMobileAuthCompletion: (Result<Void, Error>) -> Void
+    private let mobileAuthHandler: MobileAuthHandler
+
+    init(handler: MobileAuthHandler, completion: @escaping (Result<Void, Error>) -> Void) {
+        self.handleMobileAuthCompletion = completion
+        self.mobileAuthHandler = handler
     }
 
-    func userClient(_ userClient: ONGUserClient, didHandle request: ONGMobileAuthRequest, authenticator: ONGAuthenticator?, info customAuthenticatorInfo: ONGCustomInfo?) {
-        mobileAuthCompletion?(nil)
-        mobileAuthCompletion = nil
-    }
-
-    func userClient(_: ONGUserClient, didReceiveConfirmationChallenge confirmation: @escaping (Bool) -> Void, for request: ONGMobileAuthRequest) {
-        message = request.message
-        userProfile = request.userProfile
-        authenticatorType = .confirmation
-        self.confirmation = confirmation
+    func userClient(_ userClient: UserClient, didReceiveConfirmation confirmation: @escaping (Bool) -> Void, for request: MobileAuthRequest) {
+        mobileAuthHandler.handleDidReceiveMobileAuthConfirmation(confirmation)
         sendConnectorNotification(MobileAuthNotification.startAuthentication, request.message, nil)
     }
 
-    func userClient(_: ONGUserClient, didReceive challenge: ONGPinChallenge, for request: ONGMobileAuthRequest) {
-       // FIXME: RNP-94 use for PUSH with Pin
+    func userClient(_ userClient: UserClient, didFailToHandleRequest request: MobileAuthRequest, authenticator: Authenticator?, error: Error) {
+        mobileAuthHandler.handleDidFinishMobileAuth()
+        sendConnectorNotification(MobileAuthNotification.finishAuthentication, request.message, nil)
+        handleMobileAuthCompletion(.failure(error))
     }
 
-    func userClient(_: ONGUserClient, didReceive challenge: ONGBiometricChallenge, for request: ONGMobileAuthRequest) {
-        // FIXME: RNP-94 use for PUSH with Fingerprint
-    }
+    func userClient(_ userClient: UserClient, didHandleRequest request: MobileAuthRequest, authenticator: Authenticator?, info customAuthenticatorInfo: CustomInfo?) {
+        mobileAuthHandler.handleDidFinishMobileAuth()
+        sendConnectorNotification(MobileAuthNotification.startAuthentication, request.message, nil)
 
-    func userClient(_: ONGUserClient, didReceive challenge: ONGCustomAuthFinishAuthenticationChallenge, for request: ONGMobileAuthRequest) {
-        // We don't support custom authenticators
+        handleMobileAuthCompletion(.success)
     }
-
 }
