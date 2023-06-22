@@ -22,3 +22,4 @@ bitrise.yml
 ._*
 .Trashes
 .idea
+docs/internal
